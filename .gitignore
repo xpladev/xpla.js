@@ -9,4 +9,5 @@ docs
 .pytest_cache
 yarn.lock
 dist
+.github/
 integration-tests/
