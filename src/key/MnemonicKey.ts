@@ -4,7 +4,7 @@ import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
 import { RawKey } from './RawKey';
 
-export const COIN_TYPE = 1017;
+export const COIN_TYPE = 60;
 
 interface MnemonicKeyOptions {
   /**

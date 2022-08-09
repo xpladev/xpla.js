@@ -154,7 +154,7 @@ export class TreasuryAPI extends BaseAPI {
         `/terra/treasury/v1beta1/seigniorage_proceeds`,
         params
       )
-      .then(d => new Coin('udim', d.seigniorage_proceeds));
+      .then(d => new Coin('axpla', d.seigniorage_proceeds));
   }
 
   /**

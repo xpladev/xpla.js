@@ -275,8 +275,8 @@ export class StakingAPI extends BaseAPI {
     return this.c
       .get<{ pool: StakingPool.Data }>(`/cosmos/staking/v1beta1/pool`, params)
       .then(({ pool: d }) => ({
-        bonded_tokens: new Coin('udim', d.bonded_tokens),
-        not_bonded_tokens: new Coin('udim', d.not_bonded_tokens),
+        bonded_tokens: new Coin('axpla', d.bonded_tokens),
+        not_bonded_tokens: new Coin('axpla', d.not_bonded_tokens),
       }));
   }
 
