@@ -24,7 +24,6 @@ export namespace MintingParams {
 }
 
 export class MintAPI extends BaseAPI {
-
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
   }

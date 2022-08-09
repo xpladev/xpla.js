@@ -62,7 +62,6 @@ export namespace SigningInfo {
 }
 
 export class SlashingAPI extends BaseAPI {
-
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
   }

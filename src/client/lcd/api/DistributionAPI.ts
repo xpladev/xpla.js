@@ -62,7 +62,6 @@ export namespace Rewards {
 }
 
 export class DistributionAPI extends BaseAPI {
-
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
   }

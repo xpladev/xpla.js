@@ -4,7 +4,6 @@ import { APIParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class TendermintAPI extends BaseAPI {
-
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
   }
