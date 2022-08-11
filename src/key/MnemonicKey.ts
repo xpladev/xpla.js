@@ -78,9 +78,9 @@ export class MnemonicKey extends RawKey {
     }
     const seed: Buffer = bip39.mnemonicToSeedSync(mnemonic);
     const masterKey = bip32.fromSeed(seed);
-    const hdPathLuna = `m/44'/${coinType}'/${account}'/0/${index}`;
-    const terraHD = masterKey.derivePath(hdPathLuna);
-    const privateKey = terraHD.privateKey;
+    const hdPathXpla = `m/44'/${coinType}'/${account}'/0/${index}`;
+    const xplaHD = masterKey.derivePath(hdPathXpla);
+    const privateKey = xplaHD.privateKey;
 
     if (!privateKey) {
       throw new Error('Failed to derive key pair');
