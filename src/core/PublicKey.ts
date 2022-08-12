@@ -1,5 +1,5 @@
 import { JSONSerializable } from '../util/json';
-import { sha256, ripemd160 } from '../util/hash';
+import { sha256 } from '../util/hash';
 import { LegacyAminoPubKey as LegacyAminoPubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/multisig/keys';
 import { Any } from '@terra-money/terra.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/secp256k1/keys';
@@ -7,8 +7,8 @@ import { PubKey as ValConsPubKey_pb } from '@terra-money/terra.proto/cosmos/cryp
 import { bech32 } from 'bech32';
 import { ec } from 'elliptic';
 import { keccak256 } from '@ethersproject/keccak256';
-import { hexDataSlice } from "@ethersproject/bytes";
-import { stripHexPrefix } from 'ethereumjs-util'
+import { hexDataSlice } from '@ethersproject/bytes';
+import { stripHexPrefix } from 'ethereumjs-util';
 
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
@@ -150,13 +150,13 @@ export class SimplePublicKey extends JSONSerializable<
 
   public rawAddress(): Uint8Array {
     const pubkeyData = Buffer.from(this.key, 'base64');
-    var curve = new ec("secp256k1");	
-    var x0 = "0x" + curve.keyFromPublic(pubkeyData).getPublic(false, "hex");
+    const curve = new ec('secp256k1');
+    const x0 = '0x' + curve.keyFromPublic(pubkeyData).getPublic(false, 'hex');
 
-    var x1 = keccak256(hexDataSlice(x0, 1));
-    var x2 = hexDataSlice(x1, 12);
+    const x1 = keccak256(hexDataSlice(x0, 1));
+    const x2 = hexDataSlice(x1, 12);
 
-    return  Buffer.from(stripHexPrefix(x2), 'hex')
+    return Buffer.from(stripHexPrefix(x2), 'hex');
   }
 
   public address(): string {

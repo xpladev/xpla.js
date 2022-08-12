@@ -60,18 +60,18 @@ const DEFAULT_LCD_OPTIONS: Partial<LCDClientConfig> = {
 const DEFAULT_NETWORK_TYPE_BY_CHAIN_ID: { [key: string]: boolean } = {
   default: false,
   'dimension-1': false,
-  'cube-1': false,
+  'cube_7870-3': false,
 };
 
 const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
   default: {
-    axpla: 0.15,
+    axpla: 380000000000,
   },
   'dimension-1': {
-    axpla: 0.15,
+    axpla: 380000000000,
   },
-  'cube-1': {
-    axpla: 0.15,
+  'cube_7870-3': {
+    axpla: 380000000000,
   },
 };
 
