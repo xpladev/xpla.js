@@ -5,6 +5,10 @@ import { Any } from '@terra-money/terra.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/secp256k1/keys';
 import { PubKey as ValConsPubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/ed25519/keys';
 import { bech32 } from 'bech32';
+import { ec } from 'elliptic';
+import { keccak256 } from '@ethersproject/keccak256';
+import { hexDataSlice } from "@ethersproject/bytes";
+import { stripHexPrefix } from 'ethereumjs-util'
 
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
@@ -62,7 +66,7 @@ export namespace PublicKey {
 
   export function fromData(data: PublicKey.Data): PublicKey {
     switch (data['@type']) {
-      case '/cosmos.crypto.secp256k1.PubKey':
+      case '/ethermint.crypto.v1.ethsecp256k1.PubKey':
         return SimplePublicKey.fromData(data);
       case '/cosmos.crypto.multisig.LegacyAminoPubKey':
         return LegacyAminoMultisigPublicKey.fromData(data);
@@ -73,7 +77,7 @@ export namespace PublicKey {
 
   export function fromProto(pubkeyAny: PublicKey.Proto): PublicKey {
     const typeUrl = pubkeyAny.typeUrl;
-    if (typeUrl === '/cosmos.crypto.secp256k1.PubKey') {
+    if (typeUrl === '/ethermint.crypto.v1.ethsecp256k1.PubKey') {
       return SimplePublicKey.unpackAny(pubkeyAny);
     } else if (typeUrl === '/cosmos.crypto.multisig.LegacyAminoPubKey') {
       return LegacyAminoMultisigPublicKey.unpackAny(pubkeyAny);
@@ -111,7 +115,7 @@ export class SimplePublicKey extends JSONSerializable<
 
   public toData(): SimplePublicKey.Data {
     return {
-      '@type': '/cosmos.crypto.secp256k1.PubKey',
+      '@type': '/ethermint.crypto.v1.ethsecp256k1.PubKey',
       key: this.key,
     };
   }
@@ -128,7 +132,7 @@ export class SimplePublicKey extends JSONSerializable<
 
   public packAny(): Any {
     return Any.fromPartial({
-      typeUrl: '/cosmos.crypto.secp256k1.PubKey',
+      typeUrl: '/ethermint.crypto.v1.ethsecp256k1.PubKey',
       value: PubKey_pb.encode(this.toProto()).finish(),
     });
   }
@@ -146,7 +150,13 @@ export class SimplePublicKey extends JSONSerializable<
 
   public rawAddress(): Uint8Array {
     const pubkeyData = Buffer.from(this.key, 'base64');
-    return ripemd160(sha256(pubkeyData));
+    var curve = new ec("secp256k1");	
+    var x0 = "0x" + curve.keyFromPublic(pubkeyData).getPublic(false, "hex");
+
+    var x1 = keccak256(hexDataSlice(x0, 1));
+    var x2 = hexDataSlice(x1, 12);
+
+    return  Buffer.from(stripHexPrefix(x2), 'hex')
   }
 
   public address(): string {
@@ -165,7 +175,7 @@ export namespace SimplePublicKey {
   }
 
   export interface Data {
-    '@type': '/cosmos.crypto.secp256k1.PubKey';
+    '@type': '/ethermint.crypto.v1.ethsecp256k1.PubKey';
     key: string;
   }
 
