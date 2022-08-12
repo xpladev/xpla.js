@@ -3,6 +3,10 @@ import * as secp256k1 from 'secp256k1';
 import { Key } from './Key';
 import { SimplePublicKey } from '../core/PublicKey';
 
+import { SigningKey } from '@ethersproject/signing-key';
+import { keccak256 } from '@ethersproject/keccak256';
+
+import { Signature, splitSignature, arrayify, concat } from "@ethersproject/bytes";
 /**
  * An implementation of the Key interfaces that uses a raw private key.
  */
@@ -21,19 +25,20 @@ export class RawKey extends Key {
     this.privateKey = privateKey;
   }
 
-  public ecdsaSign(payload: Buffer): { signature: Uint8Array; recid: number } {
-    const hash = Buffer.from(
-      SHA256.hash(new Word32Array(payload)).toString(),
-      'hex'
-    );
-    return secp256k1.ecdsaSign(
-      Uint8Array.from(hash),
-      Uint8Array.from(this.privateKey)
-    );
+  public ecdsaSign(payload: Buffer):  Signature  {
+
+    var signingKey = new SigningKey(this.privateKey);
+    var signature = signingKey.signDigest(keccak256(payload))
+
+    return signature
   }
 
   public async sign(payload: Buffer): Promise<Buffer> {
-    const { signature } = this.ecdsaSign(payload);
-    return Buffer.from(signature);
+    const signature  = this.ecdsaSign(payload);
+
+    const splite = splitSignature(signature)
+
+    return Buffer.from(arrayify(concat([splite.r, splite.s])));
+
   }
 }
