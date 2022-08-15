@@ -48,6 +48,7 @@
     }
   },
   "devDependencies": {
+    "@types/elliptic": "^6.4.14",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.11.7",
     "@types/readable-stream": "^2.3.9",
@@ -56,6 +57,7 @@
     "@types/ws": "^7.4.7",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.5.0",
@@ -82,7 +84,6 @@
     "@ethersproject/signing-key": "^5.6.2",
     "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7",
     "@terra-money/terra.proto": "^2.1.0",
-    "@types/elliptic": "^6.4.14",
     "axios": "^0.26.1",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
@@ -90,6 +91,7 @@
     "bufferutil": "^4.0.3",
     "crypto-addr-codec": "^0.1.7",
     "decimal.js": "^10.2.1",
+    "elliptic": "^6.5.4",
     "ethereumjs-util": "^7.1.5",
     "jscrypto": "^1.0.1",
     "readable-stream": "^3.6.0",
