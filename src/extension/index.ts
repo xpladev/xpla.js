@@ -38,7 +38,7 @@ declare global {
 export class Extension {
   private inpageStream!: PostMessageStream;
 
-  constructor(identifier = 'xplawallet') {
+  constructor(identifier = 'xplavault') {
     this.inpageStream = new PostMessageStream({
       name: `${identifier}:inpage`,
       target: `${identifier}:content`,
