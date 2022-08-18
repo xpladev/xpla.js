@@ -1,5 +1,6 @@
 import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
 import { BaseAccount } from './BaseAccount';
+//import { EthAccount } from './EthAccount';
 import { LazyGradedVestingAccount } from './LazyGradedVestingAccount';
 import { ContinuousVestingAccount } from './ContinuousVestingAccount';
 import { DelayedVestingAccount } from './DelayedVestingAccount';
@@ -58,7 +59,13 @@ export namespace Account {
   export function fromData(data: Account.Data, isClassic?: boolean): Account {
     switch (data['@type']) {
       case '/cosmos.auth.v1beta1.BaseAccount':
+      case '/ethermint.types.v1.EthAccount': {
+        if (Object.keys(data).includes('base_account')) {
+          const ba = (data as any).base_account;
+          return BaseAccount.fromData(ba, isClassic);
+        }
         return BaseAccount.fromData(data, isClassic);
+      }
       case '/cosmos.vesting.v1beta1.BaseVestingAccount':
         return BaseVestingAccount.fromData(data, isClassic);
       case '/terra.vesting.v1beta1.LazyGradedVestingAccount':

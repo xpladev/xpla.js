@@ -156,7 +156,9 @@ export namespace BaseAccount {
   }
 
   export interface Data extends DataValue {
-    '@type': '/cosmos.auth.v1beta1.BaseAccount';
+    '@type':
+      | '/cosmos.auth.v1beta1.BaseAccount'
+      | '/ethermint.types.v1.EthAccount';
   }
 
   export type Proto = BaseAccount_pb;
