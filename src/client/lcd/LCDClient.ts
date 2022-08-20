@@ -59,7 +59,7 @@ const DEFAULT_LCD_OPTIONS: Partial<LCDClientConfig> = {
 // forked network : false
 const DEFAULT_NETWORK_TYPE_BY_CHAIN_ID: { [key: string]: boolean } = {
   default: false,
-  'dimension-1': false,
+  'dimension_37-1': false,
   'cube_47-4': false,
 };
 
@@ -67,7 +67,7 @@ const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
   default: {
     axpla: 850000000000,
   },
-  'dimension-1': {
+  'dimension_37-1': {
     axpla: 850000000000,
   },
   'cube_47-4': {
