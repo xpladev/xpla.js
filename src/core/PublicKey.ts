@@ -142,10 +142,7 @@ export class SimplePublicKey extends JSONSerializable<
   }
 
   public encodeAminoPubkey(): Uint8Array {
-    return Buffer.concat([
-      pubkeyAminoPrefixSecp256k1,
-      Buffer.from(this.key, 'base64'),
-    ]);
+    return Buffer.from(this.key, 'base64');
   }
 
   public rawAddress(): Uint8Array {
@@ -197,6 +194,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
     out.push(...encodeUvarint(this.threshold));
     for (const pubkeyData of this.pubkeys.map(p => p.encodeAminoPubkey())) {
       out.push(0x12);
+      out.push(0x22);
       out.push(...encodeUvarint(pubkeyData.length));
       out.push(...Array.from(pubkeyData));
     }
