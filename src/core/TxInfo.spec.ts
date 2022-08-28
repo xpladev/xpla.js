@@ -5,7 +5,7 @@ const instantiateContractTxAmino = {
   height: '301435',
   txhash: '69CA62F1328A3FBC810A3E370A186BC2A5FAED2739848CA3336580DD17C58F7E',
   raw_log:
-    '[{"msg_index":0,"log":"","events":[{"type":"instantiate_contract","attributes":[{"key":"owner","value":"terra1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3"},{"key":"code_id","value":"118"},{"key":"contract_address","value":"terra1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s"}]},{"type":"message","attributes":[{"key":"action","value":"instantiate_contract"},{"key":"module","value":"wasm"}]}]}]',
+    '[{"msg_index":0,"log":"","events":[{"type":"instantiate_contract","attributes":[{"key":"owner","value":"xpla1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3"},{"key":"code_id","value":"118"},{"key":"contract_address","value":"xpla1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s"}]},{"type":"message","attributes":[{"key":"action","value":"instantiate_contract"},{"key":"module","value":"wasm"}]}]}]',
   logs: [
     {
       msg_index: 0,
@@ -16,7 +16,7 @@ const instantiateContractTxAmino = {
           attributes: [
             {
               key: 'creator',
-              value: 'terra1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3',
+              value: 'xpla1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3',
             },
             {
               key: 'admin',
@@ -28,7 +28,7 @@ const instantiateContractTxAmino = {
             },
             {
               key: 'contract_address',
-              value: 'terra1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s',
+              value: 'xpla1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s',
             },
           ],
         },
@@ -63,13 +63,13 @@ const instantiateContractTxAmino = {
           salt: '7b4c',
           exchange_rates:
             '41.753679997386404699uaud,38.152897754805427746ucad,27.674031355218179072uchf,196.026837309362459253ucny,191.737686262835618671udkk,25.782554425634391941ueur,22.070815310496596573ugbp,235.918907556073354996uhkd,2245.955815077995150686uinr,3326.162377566256916073ujpy,35308.691895711128492846ukrw,86357.377776669110190178umnt,267.642031750061676333unok,21.345339717339129734usdr,263.288481492217392139usek,41.027386540303457627usgd,997.082326305691696722uthb,30.291256499267926454uusd',
-          feeder: 'terra1fa0trn2nqjc2n6mmz9txta7ky5h5nnp9m6cra3',
+          feeder: 'xpla1fa0trn2nqjc2n6mmz9txta7ky5h5nnp9m6cra3',
           validator: 'terravaloper1vk20anceu6h9s00d27pjlvslz3avetkvnwmr35',
         },
         {
           '@type': '/terra.oracle.v1beta1.MsgAggregateExchangeRatePrevote',
           hash: '65789f9286d21370e3c0c6eaaba1eb7bd54acb6e',
-          feeder: 'terra1fa0trn2nqjc2n6mmz9txta7ky5h5nnp9m6cra3',
+          feeder: 'xpla1fa0trn2nqjc2n6mmz9txta7ky5h5nnp9m6cra3',
           validator: 'terravaloper1vk20anceu6h9s00d27pjlvslz3avetkvnwmr35',
         },
       ],
@@ -136,10 +136,10 @@ describe('TxInfo', () => {
     }).toMatchObject({
       action: 'instantiate_contract',
       module: 'wasm',
-      creator: 'terra1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3',
+      creator: 'xpla1t72mplryz3n2y953w44fc3rj0yp4m82qvkhrz3',
       admin: '',
       code_id: '118',
-      contract_address: 'terra1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s',
+      contract_address: 'xpla1emf0rwa3nfljdn6mq0mycy8vxcdaklgmzwam2s',
     });
   });
 });

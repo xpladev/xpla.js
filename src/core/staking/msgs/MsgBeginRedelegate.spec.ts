@@ -19,7 +19,7 @@ describe('MsgBeginRedelegate', () => {
     const send = MsgBeginRedelegate.fromAmino({
       type: 'cosmos-sdk/MsgBeginRedelegate',
       value: {
-        delegator_address: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         validator_src_address:
           'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
         validator_dst_address:
@@ -32,7 +32,7 @@ describe('MsgBeginRedelegate', () => {
     });
 
     expect(send).toMatchObject({
-      delegator_address: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       validator_src_address:
         'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
       validator_dst_address:
@@ -43,7 +43,7 @@ describe('MsgBeginRedelegate', () => {
     expect(send.toAmino()).toMatchObject({
       type: 'cosmos-sdk/MsgBeginRedelegate',
       value: {
-        delegator_address: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         validator_src_address:
           'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
         validator_dst_address:

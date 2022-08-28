@@ -53,7 +53,7 @@ describe('MnemonicKey', () => {
 
     const msgSend = new MsgSend(
       accAddress,
-      'terra1wg2mlrxdmnnkkykgqg4znky86nyrtc45q336yv',
+      'xpla1wg2mlrxdmnnkkykgqg4znky86nyrtc45q336yv',
       new Coins({ uluna: '100000000' })
     );
 
@@ -75,8 +75,8 @@ describe('MnemonicKey', () => {
   });
 
   it('multisig', async () => {
-    const receiverAddr = 'terra1ptdx6akgk7wwemlk5j73artt5t6j8am08ql3qv';
-    const multisigAddr = 'terra16ddrexknvk2e443jsnle4n6s2ewjc6z3mjcu6d';
+    const receiverAddr = 'xpla1ptdx6akgk7wwemlk5j73artt5t6j8am08ql3qv';
+    const multisigAddr = 'xpla16ddrexknvk2e443jsnle4n6s2ewjc6z3mjcu6d';
     const multisigAccountNumber = 46;
     const multisigSequenceNumber = 0;
     const a1Key = new MnemonicKey({
@@ -84,21 +84,21 @@ describe('MnemonicKey', () => {
         'swamp increase solar renew twelve easily possible pig ostrich harvest more indicate lion denial kind target small dumb mercy under proud arrive gentle field',
     });
     expect(a1Key.accAddress).toEqual(
-      'terra12dazwl3yq6nwrce052ah3fudkarglsgvacyvl9'
+      'xpla12dazwl3yq6nwrce052ah3fudkarglsgvacyvl9'
     );
     const a2Key = new MnemonicKey({
       mnemonic:
         'service frozen keen unveil luggage initial surge name conduct mesh soup escape weather gas clown brand holiday result protect chat plug false pitch little',
     });
     expect(a2Key.accAddress).toEqual(
-      'terra1jqw25580qljucyy2xkpp7j02kd4mwx69wvfgf9'
+      'xpla1jqw25580qljucyy2xkpp7j02kd4mwx69wvfgf9'
     );
     const a3Key = new MnemonicKey({
       mnemonic:
         'corn peasant blue sight spy three stove confirm night brother vote dish reduce sick observe outside vacant arena laugh devote exotic wasp supply rally',
     });
     expect(a3Key.accAddress).toEqual(
-      'terra13hrg8ul0p7sh85jwalh3leysdrw9swh44dql2h'
+      'xpla13hrg8ul0p7sh85jwalh3leysdrw9swh44dql2h'
     );
 
     const msgSend = new MsgSend(
@@ -153,13 +153,13 @@ describe('MnemonicKey', () => {
             ],
             [
               new MsgMultiSend.Output(
-                'terra12dazwl3yq6nwrce052ah3fudkarglsgvacyvl9',
+                'xpla12dazwl3yq6nwrce052ah3fudkarglsgvacyvl9',
                 {
                   uluna: 500000,
                 }
               ),
               new MsgMultiSend.Output(
-                'terra1ptdx6akgk7wwemlk5j73artt5t6j8am08ql3qv',
+                'xpla1ptdx6akgk7wwemlk5j73artt5t6j8am08ql3qv',
                 {
                   uluna: 500000,
                   usdr: 1000000,

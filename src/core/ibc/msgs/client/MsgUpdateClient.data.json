@@ -2673,7 +2673,7 @@
             "total_voting_power": "117995194"
           }
         },
-        "signer": "terra1jhtgfp42f2sz4d047sehpjfnqyj2v6cq68eda5"
+        "signer": "xpla1jhtgfp42f2sz4d047sehpjfnqyj2v6cq68eda5"
       },
       {
         "@type": "/ibc.core.channel.v1.MsgAcknowledgement",
@@ -2696,7 +2696,7 @@
           "revision_number": "1",
           "revision_height": "3822812"
         },
-        "signer": "terra1jhtgfp42f2sz4d047sehpjfnqyj2v6cq68eda5"
+        "signer": "xpla1jhtgfp42f2sz4d047sehpjfnqyj2v6cq68eda5"
       }
     ],
     "memo": "relayed by larry stakehouse 🥩 | hermes 0.11.1+e16d5f64 (https://hermes.informal.systems)",

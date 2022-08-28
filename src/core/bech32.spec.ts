@@ -14,7 +14,7 @@ describe('AccAddress', () => {
     ).toBe(false);
 
     expect(
-      AccAddress.validate('terra1pdx498r0h7c2fj36sjhs8vu8rz9hd2cw0tmam9')
+      AccAddress.validate('xpla1pdx498r0h7c2fj36sjhs8vu8rz9hd2cw0tmam9')
     ).toBe(false); // bad checksum
 
     expect(
@@ -27,12 +27,12 @@ describe('AccAddress', () => {
     expect(AccAddress.validate(badAddress)).toBe(false);
     // normal account address
     expect(
-      AccAddress.validate('terra1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9')
+      AccAddress.validate('xpla1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9')
     ).toBe(true);
     // contract account address
     expect(
       AccAddress.validate(
-        'terra1uj9dm5xdm34fy5xwd84lfakarcnlpxw0ppgy7vpsruj0vtks29cqn0ztcs'
+        'xpla1uj9dm5xdm34fy5xwd84lfakarcnlpxw0ppgy7vpsruj0vtks29cqn0ztcs'
       )
     ).toBe(true);
   });
@@ -42,7 +42,7 @@ describe('AccAddress', () => {
       AccAddress.fromValAddress(
         'terravaloper1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0yhqtk'
       )
-    ).toEqual('terra1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9');
+    ).toEqual('xpla1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9');
   });
 });
 
@@ -60,7 +60,7 @@ describe('ValAddress', () => {
 
   it('converts from account address', () => {
     expect(
-      ValAddress.fromAccAddress('terra1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9')
+      ValAddress.fromAccAddress('xpla1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0tmam9')
     ).toEqual('terravaloper1pdx498r0hrc2fj36sjhs8vuhrz9hd2cw0yhqtk');
   });
 });
@@ -84,7 +84,7 @@ describe('AccPubKey', () => {
 
   it('converts from validator pubkey', () => {
     expect(
-      AccPubKey.fromAccAddress('terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v')
+      AccPubKey.fromAccAddress('xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v')
     ).toEqual('terrapub1x46rqay4d3cssq8gxxvqz8xt6nwlz4tdh39t77');
   });
 });

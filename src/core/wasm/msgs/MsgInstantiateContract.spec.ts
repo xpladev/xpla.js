@@ -3,15 +3,15 @@ import { MsgInstantiateContract as MsgInstantiateContract_legacy_pb } from '@ter
 import { MsgInstantiateContract as MsgInstantiateContract_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/tx';
 
 const msgWithAdmin = new MsgInstantiateContract(
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
   1,
   { count: 0 },
   { uluna: 120400 }
 );
 
 const msgWithoutAdmin = new MsgInstantiateContract(
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
   undefined,
   1,
   { count: 0 },
@@ -19,7 +19,7 @@ const msgWithoutAdmin = new MsgInstantiateContract(
 );
 
 const msgWithInitString = new MsgInstantiateContract(
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
   undefined,
   1,
   'init_msg_as_string',

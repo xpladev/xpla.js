@@ -25,23 +25,23 @@ import {
  *
  * const inputs: MsgMultiSend.Input[] = [
  *    new MsgMultiSend.Input(
- *      'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+ *      'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
  *      {
  *        ukrw: 123123,
  *      })
  *    ),
- *    new MsgMultiSend.Input('terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad', [
+ *    new MsgMultiSend.Input('xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad', [
  *      new Coin('uluna', 123123),
  *    ]),
  *  ];
  *   const outputs: MsgMultiSend.Output[] = [
  *    new MsgMultiSend.Output(
- *      'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
+ *      'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
  *        {
  *          ukrw: 123123,
  *        }
  *    ),
- *    new MsgMultiSend.Output('terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga',
+ *    new MsgMultiSend.Output('xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga',
  *      {
  *        uluna: 123123,
  *      }

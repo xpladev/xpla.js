@@ -7,7 +7,7 @@ describe('DelayedVestingAccount', () => {
       value: {
         base_vesting_account: {
           base_account: {
-            address: 'terra1ucp369yry6n70qq3zaxyt85cnug75r7ln8l6se',
+            address: 'xpla1ucp369yry6n70qq3zaxyt85cnug75r7ln8l6se',
             public_key: null,
             account_number: '0',
             sequence: '0',
@@ -30,7 +30,7 @@ describe('DelayedVestingAccount', () => {
       value: {
         base_vesting_account: {
           base_account: {
-            address: 'terra1ucp369yry6n70qq3zaxyt85cnug75r7ln8l6se',
+            address: 'xpla1ucp369yry6n70qq3zaxyt85cnug75r7ln8l6se',
             public_key: null,
             account_number: '0',
             sequence: '0',

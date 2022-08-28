@@ -3,15 +3,15 @@ import { MsgMigrateContract as MsgMigrateContract_legacy_pb } from '@terra-money
 import { MsgMigrateContract as MsgMigrateContract_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/tx';
 
 const msgWithAdmin = new MsgMigrateContract(
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
   2,
   { count: 0 }
 );
 
 const msgWithMigrateString = new MsgMigrateContract(
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
-  'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+  'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
   2,
   'migrate_msg_as_string'
 );

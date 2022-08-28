@@ -6,7 +6,7 @@ describe('MsgFundCommunityPool', () => {
     const fund = MsgFundCommunityPool.fromAmino({
       type: 'distribution/MsgFundCommunityPool',
       value: {
-        depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',
@@ -17,7 +17,7 @@ describe('MsgFundCommunityPool', () => {
     });
 
     expect(fund).toMatchObject({
-      depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: new Coins({
         uluna: 8102024952,
       }),
@@ -26,7 +26,7 @@ describe('MsgFundCommunityPool', () => {
     expect(fund.toAmino(true)).toMatchObject({
       type: 'distribution/MsgFundCommunityPool',
       value: {
-        depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',
@@ -40,7 +40,7 @@ describe('MsgFundCommunityPool', () => {
   it('legacy deserialize proto', () => {
     const fund = MsgFundCommunityPool.fromData({
       '@type': '/cosmos.distribution.v1beta1.MsgFundCommunityPool',
-      depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
           denom: 'uluna',
@@ -50,7 +50,7 @@ describe('MsgFundCommunityPool', () => {
     });
 
     expect(fund).toMatchObject({
-      depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: new Coins({
         uluna: 8102024952,
       }),
@@ -58,7 +58,7 @@ describe('MsgFundCommunityPool', () => {
 
     expect(fund.toData()).toMatchObject({
       '@type': '/cosmos.distribution.v1beta1.MsgFundCommunityPool',
-      depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
           denom: 'uluna',
@@ -72,7 +72,7 @@ describe('MsgFundCommunityPool', () => {
     const fund = MsgFundCommunityPool.fromAmino({
       type: 'cosmos-sdk/MsgFundCommunityPool',
       value: {
-        depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',
@@ -83,7 +83,7 @@ describe('MsgFundCommunityPool', () => {
     });
 
     expect(fund).toMatchObject({
-      depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: new Coins({
         uluna: 8102024952,
       }),
@@ -92,7 +92,7 @@ describe('MsgFundCommunityPool', () => {
     expect(fund.toAmino()).toMatchObject({
       type: 'cosmos-sdk/MsgFundCommunityPool',
       value: {
-        depositor: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',

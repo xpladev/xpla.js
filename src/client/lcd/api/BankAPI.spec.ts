@@ -10,7 +10,7 @@ const bank = new BankAPI(terra);
 describe('BankAPI', () => {
   describe('balance', () => {
     it('account exists', async () => {
-      await bank.balance('terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v');
+      await bank.balance('xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v');
     });
 
     it('invalid account', async () => {

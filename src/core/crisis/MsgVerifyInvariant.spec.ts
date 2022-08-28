@@ -6,7 +6,7 @@ describe('MsgVerifyInvariant', () => {
       {
         type: 'crisis/MsgVerifyInvariant',
         value: {
-          sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+          sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
           invariantModuleName: 'bank',
           invariantRoute: 'nonnegative-outstanding-supply',
         },
@@ -15,7 +15,7 @@ describe('MsgVerifyInvariant', () => {
     );
 
     expect(send).toMatchObject({
-      sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       invariantModuleName: 'bank',
       invariantRoute: 'nonnegative-outstanding-supply',
     });
@@ -26,7 +26,7 @@ describe('MsgVerifyInvariant', () => {
       {
         type: 'cosmos-sdk/MsgVerifyInvariant',
         value: {
-          sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+          sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
           invariantModuleName: 'bank',
           invariantRoute: 'nonnegative-outstanding-supply',
         },
@@ -35,7 +35,7 @@ describe('MsgVerifyInvariant', () => {
     );
 
     expect(send).toMatchObject({
-      sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       invariantModuleName: 'bank',
       invariantRoute: 'nonnegative-outstanding-supply',
     });
@@ -44,20 +44,20 @@ describe('MsgVerifyInvariant', () => {
   it('deserialize correctly proto', () => {
     const send = MsgVerifyInvariant.fromData({
       '@type': '/cosmos.crisis.v1beta1.MsgVerifyInvariant',
-      sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       invariantModuleName: 'bank',
       invariantRoute: 'nonnegative-outstanding-supply',
     });
 
     expect(send).toMatchObject({
-      sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       invariantModuleName: 'bank',
       invariantRoute: 'nonnegative-outstanding-supply',
     });
 
     expect(send.toData()).toMatchObject({
       '@type': '/cosmos.crisis.v1beta1.MsgVerifyInvariant',
-      sender: 'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      sender: 'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       invariantModuleName: 'bank',
       invariantRoute: 'nonnegative-outstanding-supply',
     });
@@ -65,7 +65,7 @@ describe('MsgVerifyInvariant', () => {
 
   it('not allowed conversion to amino/proto', () => {
     const Msg = new MsgVerifyInvariant(
-      'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
+      'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v',
       'bank',
       'nonnegative-outstanding-supply'
     );

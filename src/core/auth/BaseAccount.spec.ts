@@ -8,7 +8,7 @@ describe('Account', () => {
     const data: BaseAccount.Amino = {
       type: 'core/Account',
       value: {
-        address: 'terra12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
+        address: 'xpla12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
         public_key: {
           type: 'tendermint/PubKeySecp256k1',
           value: 'AvBeqhogW0wd7OtF8M8hJ/P1A/IBY1+uNvBO/tbVlfq2',
@@ -19,7 +19,7 @@ describe('Account', () => {
     };
     const acct = BaseAccount.fromAmino(data);
     expect(acct).toMatchObject({
-      address: 'terra12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
+      address: 'xpla12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
       public_key: new SimplePublicKey(
         'AvBeqhogW0wd7OtF8M8hJ/P1A/IBY1+uNvBO/tbVlfq2'
       ),
@@ -48,7 +48,7 @@ describe('Account', () => {
 
   it('legacy serializes accounts correctly', () => {
     const acct = new BaseAccount(
-      'terra12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
+      'xpla12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
       new SimplePublicKey('abc'),
       251248,
       58
@@ -57,7 +57,7 @@ describe('Account', () => {
     expect(acct.toAmino(true)).toMatchObject({
       type: 'core/Account',
       value: {
-        address: 'terra12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
+        address: 'xpla12fm3tql2uu0gheuj3st9cwz7ml97tq9mla88c2',
         public_key: {
           type: 'tendermint/PubKeySecp256k1',
           value: 'abc',
