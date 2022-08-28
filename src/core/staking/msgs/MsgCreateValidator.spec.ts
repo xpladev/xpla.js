@@ -32,7 +32,7 @@ describe('MsgCreateValidator', () => {
           max_change_rate: '0.010000000000000000',
         },
         min_self_delegation: '1',
-        delegator_address: 'terra1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
+        delegator_address: 'xpla1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
         validator_address:
           'terravaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
         pubkey: {
@@ -56,7 +56,7 @@ describe('MsgCreateValidator', () => {
           max_change_rate: '0.010000000000000000',
         },
         min_self_delegation: '1',
-        delegator_address: 'terra1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
+        delegator_address: 'xpla1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
         validator_address:
           'terravaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
         pubkey: {

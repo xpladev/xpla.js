@@ -120,8 +120,8 @@ describe('TxAPI', () => {
       });
 
       const send = new MsgSend(
-        'terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
-        'terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
+        'xpla1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
+        'xpla1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
         { uluna: '1000000' }
       );
 
@@ -142,8 +142,8 @@ describe('TxAPI', () => {
       });
 
       const send = new MsgSend(
-        'terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
-        'terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
+        'xpla1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
+        'xpla1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8',
         { uluna: '1' }
       );
 

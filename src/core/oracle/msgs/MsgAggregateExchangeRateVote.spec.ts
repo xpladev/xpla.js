@@ -9,7 +9,7 @@ describe('MsgAggregateExchangeRateVote', () => {
         usdr: '0.182',
       },
       'salt',
-      'terra1krj7amhhagjnyg2tkkuh6l0550y733jnjulzjh',
+      'xpla1krj7amhhagjnyg2tkkuh6l0550y733jnjulzjh',
       'terravaloper1krj7amhhagjnyg2tkkuh6l0550y733jnjnnlzy'
     );
     msg.getPrevote();
@@ -25,7 +25,7 @@ describe('MsgAggregateExchangeRateVote', () => {
         usdr: '0.182',
       },
       'salt',
-      'terra1krj7amhhagjnyg2tkkuh6l0550y733jnjulzjh',
+      'xpla1krj7amhhagjnyg2tkkuh6l0550y733jnjulzjh',
       'terravaloper1krj7amhhagjnyg2tkkuh6l0550y733jnjnnlzy'
     );
     const anyObj = msg.packAny(true);

@@ -7,7 +7,7 @@ describe('PeriodicVestingAccount', () => {
       value: {
         base_vesting_account: {
           base_account: {
-            address: 'terra1upg95nlwkfkrq4hhjrn3k9s6ud0aqx36gwnlsn',
+            address: 'xpla1upg95nlwkfkrq4hhjrn3k9s6ud0aqx36gwnlsn',
             public_key: null,
             account_number: '684082',
             sequence: '0',
@@ -56,7 +56,7 @@ describe('PeriodicVestingAccount', () => {
       value: {
         base_vesting_account: {
           base_account: {
-            address: 'terra1upg95nlwkfkrq4hhjrn3k9s6ud0aqx36gwnlsn',
+            address: 'xpla1upg95nlwkfkrq4hhjrn3k9s6ud0aqx36gwnlsn',
             public_key: null,
             account_number: '684082',
             sequence: '0',

@@ -8,7 +8,7 @@ describe('CommunityPoolSpendProposal', () => {
       value: {
         title: 'Community Pool',
         description: 'Community Pool',
-        recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',
@@ -21,7 +21,7 @@ describe('CommunityPoolSpendProposal', () => {
     expect(fund).toMatchObject({
       title: 'Community Pool',
       description: 'Community Pool',
-      recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: new Coins({
         uluna: 8102024952,
       }),
@@ -32,7 +32,7 @@ describe('CommunityPoolSpendProposal', () => {
       value: {
         title: 'Community Pool',
         description: 'Community Pool',
-        recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+        recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
             denom: 'uluna',
@@ -50,7 +50,7 @@ it('deserialize amino', () => {
     value: {
       title: 'Community Pool',
       description: 'Community Pool',
-      recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
           denom: 'uluna',
@@ -63,7 +63,7 @@ it('deserialize amino', () => {
   expect(fund).toMatchObject({
     title: 'Community Pool',
     description: 'Community Pool',
-    recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+    recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
     amount: new Coins({
       uluna: 8102024952,
     }),
@@ -74,7 +74,7 @@ it('deserialize amino', () => {
     value: {
       title: 'Community Pool',
       description: 'Community Pool',
-      recipient: 'terra1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
+      recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
           denom: 'uluna',

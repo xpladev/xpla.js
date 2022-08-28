@@ -22,7 +22,7 @@ describe('DistributionAPI', () => {
 
   it('rewards', async () => {
     await expect(
-      distribution.rewards('terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v')
+      distribution.rewards('xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v')
     ).resolves.toMatchObject({
       rewards: expect.anything(),
       total: expect.any(Coins),
@@ -36,9 +36,9 @@ describe('DistributionAPI', () => {
   it('withdrawAddress', async () => {
     await expect(
       distribution.withdrawAddress(
-        'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v'
+        'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v'
       )
-    ).resolves.toEqual('terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v');
+    ).resolves.toEqual('xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v');
   });
 
   it('communityPool', async () => {

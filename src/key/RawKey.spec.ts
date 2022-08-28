@@ -55,7 +55,7 @@ describe('RawKey', () => {
 
     const msgSend = new MsgSend(
       accAddress,
-      'terra1wg2mlrxdmnnkkykgqg4znky86nyrtc45q336yv',
+      'xpla1wg2mlrxdmnnkkykgqg4znky86nyrtc45q336yv',
       new Coins({ uluna: '100000000' })
     );
 

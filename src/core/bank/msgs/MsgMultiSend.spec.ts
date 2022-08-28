@@ -7,7 +7,7 @@ const example_legacy: MsgMultiSend.Amino = {
   value: {
     inputs: [
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -16,7 +16,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
+        address: 'xpla1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
         coins: [
           {
             denom: 'uluna',
@@ -25,7 +25,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
+        address: 'xpla1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
         coins: [
           {
             denom: 'uluna',
@@ -34,7 +34,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
+        address: 'xpla1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
         coins: [
           {
             denom: 'uluna',
@@ -43,7 +43,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
+        address: 'xpla1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
         coins: [
           {
             denom: 'uluna',
@@ -52,7 +52,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
+        address: 'xpla10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
         coins: [
           {
             denom: 'uluna',
@@ -61,7 +61,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
+        address: 'xpla13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
         coins: [
           {
             denom: 'uluna',
@@ -72,7 +72,7 @@ const example_legacy: MsgMultiSend.Amino = {
     ],
     outputs: [
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -81,7 +81,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -90,7 +90,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -99,7 +99,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -108,7 +108,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -117,7 +117,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -126,7 +126,7 @@ const example_legacy: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -142,7 +142,7 @@ const proto_example: MsgMultiSend.Data = {
   '@type': '/cosmos.bank.v1beta1.MsgMultiSend',
   inputs: [
     {
-      address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+      address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
       coins: [
         {
           denom: 'uluna',
@@ -151,7 +151,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
+      address: 'xpla1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
       coins: [
         {
           denom: 'uluna',
@@ -160,7 +160,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
+      address: 'xpla1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
       coins: [
         {
           denom: 'uluna',
@@ -169,7 +169,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
+      address: 'xpla1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
       coins: [
         {
           denom: 'uluna',
@@ -178,7 +178,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
+      address: 'xpla1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
       coins: [
         {
           denom: 'uluna',
@@ -187,7 +187,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
+      address: 'xpla10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
       coins: [
         {
           denom: 'uluna',
@@ -196,7 +196,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
+      address: 'xpla13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
       coins: [
         {
           denom: 'uluna',
@@ -207,7 +207,7 @@ const proto_example: MsgMultiSend.Data = {
   ],
   outputs: [
     {
-      address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+      address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
       coins: [
         {
           denom: 'uluna',
@@ -216,7 +216,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+      address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
       coins: [
         {
           denom: 'uluna',
@@ -225,7 +225,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+      address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
       coins: [
         {
           denom: 'uluna',
@@ -234,7 +234,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+      address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
       coins: [
         {
           denom: 'uluna',
@@ -243,7 +243,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+      address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
       coins: [
         {
           denom: 'uluna',
@@ -252,7 +252,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+      address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
       coins: [
         {
           denom: 'uluna',
@@ -261,7 +261,7 @@ const proto_example: MsgMultiSend.Data = {
       ],
     },
     {
-      address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+      address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
       coins: [
         {
           denom: 'uluna',
@@ -277,7 +277,7 @@ const example: MsgMultiSend.Amino = {
   value: {
     inputs: [
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -286,7 +286,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
+        address: 'xpla1gg64sjt947atmh45ls45avdwd89ey4c4r72u9h',
         coins: [
           {
             denom: 'uluna',
@@ -295,7 +295,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
+        address: 'xpla1yh9u2x8phrh2dan56nntgpmg7xnjrwtldhgmyu',
         coins: [
           {
             denom: 'uluna',
@@ -304,7 +304,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
+        address: 'xpla1c5a0njk9q6q6nheja8gp4ymt2c0qspd8ggpg49',
         coins: [
           {
             denom: 'uluna',
@@ -313,7 +313,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
+        address: 'xpla1psswnm8mvy9qg5z4cxc2nvptc9dx62r4tvfrmh',
         coins: [
           {
             denom: 'uluna',
@@ -322,7 +322,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
+        address: 'xpla10lgpfm8wjrl4d9datzw6r6dl83k977afzel4t5',
         coins: [
           {
             denom: 'uluna',
@@ -331,7 +331,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
+        address: 'xpla13uj5qs3lcqtffqtu6aa089uf6a2pusgwndzzch',
         coins: [
           {
             denom: 'uluna',
@@ -342,7 +342,7 @@ const example: MsgMultiSend.Amino = {
     ],
     outputs: [
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -351,7 +351,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -360,7 +360,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
+        address: 'xpla1fex9f78reuwhfsnc8sun6mz8rl9zwqh03fhwf3',
         coins: [
           {
             denom: 'uluna',
@@ -369,7 +369,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -378,7 +378,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -387,7 +387,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -396,7 +396,7 @@ const example: MsgMultiSend.Amino = {
         ],
       },
       {
-        address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         coins: [
           {
             denom: 'uluna',
@@ -424,24 +424,24 @@ describe('MsgMultiSend', () => {
   it('can be created manually', () => {
     const inputs: MsgMultiSend.Input[] = [
       new MsgMultiSend.Input(
-        'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+        'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
         new Coins({
           uluna: 123123,
         })
       ),
-      new MsgMultiSend.Input('terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad', [
+      new MsgMultiSend.Input('xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad', [
         new Coin('uluna', 123123),
       ]),
     ];
 
     const outputs: MsgMultiSend.Output[] = [
       new MsgMultiSend.Output(
-        'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
+        'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
         new Coins({
           uluna: 123123,
         })
       ),
-      new MsgMultiSend.Output('terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga', {
+      new MsgMultiSend.Output('xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga', {
         uluna: 123123,
       }),
     ];
@@ -451,7 +451,7 @@ describe('MsgMultiSend', () => {
       value: {
         inputs: [
           {
-            address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
+            address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axf6p',
             coins: [
               {
                 denom: 'uluna',
@@ -460,7 +460,7 @@ describe('MsgMultiSend', () => {
             ],
           },
           {
-            address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
+            address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
             coins: [
               {
                 denom: 'uluna',
@@ -471,7 +471,7 @@ describe('MsgMultiSend', () => {
         ],
         outputs: [
           {
-            address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
+            address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfad',
             coins: [
               {
                 denom: 'uluna',
@@ -480,7 +480,7 @@ describe('MsgMultiSend', () => {
             ],
           },
           {
-            address: 'terra105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga',
+            address: 'xpla105rz2q5a4w7nv7239tl9c4px5cjy7axx3axfga',
             coins: [
               {
                 denom: 'uluna',

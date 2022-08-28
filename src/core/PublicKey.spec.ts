@@ -13,7 +13,7 @@ describe('PublicKey', () => {
     ]);
 
     expect(pubkey.address()).toEqual(
-      'terra1gufrav46pnpwf03yu7xz76ylkmatsxtplrxnmc'
+      'xpla1gufrav46pnpwf03yu7xz76ylkmatsxtplrxnmc'
     );
   });
 
@@ -22,7 +22,7 @@ describe('PublicKey', () => {
       'AjszqFJDRAYbEjZMuiD+ChqzbUSGq/RRu3zr0R6iJB5b'
     );
     expect(pubkey.address()).toEqual(
-      'terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v'
+      'xpla1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v'
     );
   });
 
