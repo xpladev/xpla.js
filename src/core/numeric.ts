@@ -1,6 +1,7 @@
 import Decimal from 'decimal.js';
 
 export const DEC_PRECISION = 18;
+Decimal.set({ precision: 64, rounding: 3 });
 
 export interface Numeric<T> {
   add(other: any): T;
