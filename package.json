@@ -1,6 +1,6 @@
 {
   "name": "@xpla/xpla.js",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "The JavaScript SDK for Xpla",
   "license": "MIT",
   "author": "Xpla",
