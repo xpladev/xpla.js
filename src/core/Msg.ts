@@ -87,6 +87,177 @@ import {
 import { MsgVerifyInvariant, CrisisMsg } from './crisis';
 import { Any } from '@terra-money/terra.proto/google/protobuf/any';
 
+export class MsgEthereumTxData {
+  public attype: string;
+  public r: string;
+  public s: string;
+  public v: string;
+  public to: string;
+  public gas: string;
+  public data: string | null;
+  public nonce: string;
+  public value: string;
+  public gas_price: string | null;
+  public gas_tip_cap: string | null;
+  public gas_fee_cap: string | null;
+
+  constructor(
+    attype: string,
+    r: string,
+    s: string,
+    v: string,
+    to: string,
+    gas: string,
+    data: string | null,
+    nonce: string,
+    value: string,
+    gas_price: string | null,
+    gas_tip_cap: string | null,
+    gas_fee_cap: string | null
+  ) {
+    this.attype = attype;
+    this.r = r;
+    this.s = s;
+    this.v = v;
+    this.to = to;
+    this.gas = gas;
+    this.data = data;
+    this.nonce = nonce;
+    this.value = value;
+    this.gas_price = gas_price;
+    this.gas_tip_cap = gas_tip_cap;
+    this.gas_fee_cap = gas_fee_cap;
+  }
+}
+
+export class MsgEthereumTx {
+  public data: MsgEthereumTxData;
+  public size: number;
+  public hash: string;
+  public from: string;
+
+  constructor(
+    data: MsgEthereumTxData,
+    size: number,
+    hash: string,
+    from: string
+  ) {
+    this.data = data;
+    this.size = size;
+    this.hash = hash;
+    this.from = from;
+  }
+
+  public toAmino(_?: boolean): null {
+    _;
+    return null;
+  }
+
+  public packAny(_?: boolean): {} {
+    _;
+    return {};
+  }
+
+  public toJSON(_?: boolean): string {
+    _;
+    return JSON.stringify(this.toData());
+  }
+
+  public static fromData(msgdata: MsgEthereumTx.Data): MsgEthereumTx {
+    const {
+      r,
+      s,
+      v,
+      to,
+      gas,
+      data,
+      nonce,
+      value,
+      gas_price,
+      gas_tip_cap,
+      gas_fee_cap,
+    } = msgdata.data;
+    return new MsgEthereumTx(
+      new MsgEthereumTxData(
+        msgdata.data['@type'],
+        r,
+        s,
+        v,
+        to,
+        gas,
+        data,
+        nonce,
+        value,
+        gas_price,
+        gas_tip_cap,
+        gas_fee_cap
+      ),
+      msgdata.size,
+      msgdata.hash,
+      msgdata.from
+    );
+  }
+
+  public toData(): MsgEthereumTx.Data {
+    const {
+      r,
+      s,
+      v,
+      to,
+      gas,
+      data,
+      nonce,
+      value,
+      gas_price,
+      gas_tip_cap,
+      gas_fee_cap,
+    } = this.data;
+    return {
+      '@type': '/ethermint.evm.v1.MsgEthereumTx',
+      data: {
+        '@type': this.data.attype,
+        r,
+        s,
+        v,
+        to,
+        gas,
+        data,
+        nonce,
+        value,
+        gas_price,
+        gas_tip_cap,
+        gas_fee_cap,
+      },
+      size: this.size,
+      hash: this.hash,
+      from: this.from,
+    };
+  }
+}
+
+export namespace MsgEthereumTx {
+  export interface Data {
+    '@type': '/ethermint.evm.v1.MsgEthereumTx';
+    data: {
+      '@type': string;
+      r: string;
+      s: string;
+      v: string;
+      to: string;
+      gas: string;
+      data: string | null;
+      nonce: string;
+      value: string;
+      gas_price: string | null;
+      gas_tip_cap: string | null;
+      gas_fee_cap: string | null;
+    };
+    size: number;
+    hash: string;
+    from: string;
+  }
+}
+
 export type Msg =
   | BankMsg
   | DistributionMsg
@@ -103,7 +274,8 @@ export type Msg =
   | IbcClientMsg
   | IbcConnectionMsg
   | IbcChannelMsg
-  | CrisisMsg;
+  | CrisisMsg
+  | MsgEthereumTx;
 
 export namespace Msg {
   export type Amino =
@@ -137,7 +309,8 @@ export namespace Msg {
     | IbcClientMsg.Data
     | IbcConnectionMsg.Data
     | IbcChannelMsg.Data
-    | CrisisMsg.Data;
+    | CrisisMsg.Data
+    | MsgEthereumTx.Data;
 
   export type Proto =
     | BankMsg.Proto
@@ -428,6 +601,10 @@ export namespace Msg {
         return MsgTimeout.fromData(data, isClassic);
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
         return MsgTimeoutOnClose.fromData(data, isClassic);
+
+      // evm
+      case '/ethermint.evm.v1.MsgEthereumTx':
+        return MsgEthereumTx.fromData(data);
 
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':

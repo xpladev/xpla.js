@@ -23,11 +23,13 @@ export abstract class JSONSerializable<A, D, P> {
   public abstract toAmino(isClassic?: boolean): A;
   public abstract toData(isClassic?: boolean): D;
   public abstract toProto(isClassic?: boolean): P;
-  public toJSON(isClassic?: boolean): string {
-    return JSON.stringify(prepareSignBytes(this.toData(isClassic)));
+  public toJSON(_?: boolean): string {
+    _;
+    return JSON.stringify(prepareSignBytes(this.toData(false)));
   }
-  public toAminoJSON(isClassic?: boolean): string {
-    return JSON.stringify(prepareSignBytes(this.toAmino(isClassic)));
+  public toAminoJSON(_?: boolean): string {
+    _;
+    return JSON.stringify(prepareSignBytes(this.toAmino(false)));
   }
 }
 
