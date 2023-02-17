@@ -8,7 +8,6 @@ import { bech32 } from 'bech32';
 import { ec } from 'elliptic';
 import { keccak256 } from '@ethersproject/keccak256';
 import { hexDataSlice } from '@ethersproject/bytes';
-import { stripHexPrefix } from 'ethereumjs-util';
 
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
@@ -35,6 +34,25 @@ const encodeUvarint = (value: number | string): number[] => {
     );
   }
   return [checked];
+};
+
+const isHexPrefixed = (str: string): boolean => {
+  if (typeof str !== 'string') {
+    throw new Error(
+      `[isHexPrefixed] input must be type 'string', received type ${typeof str}`
+    );
+  }
+
+  return str[0] === '0' && str[1] === 'x';
+};
+
+const stripHexPrefix = (str: string): string => {
+  if (typeof str !== 'string')
+    throw new Error(
+      `[stripHexPrefix] input must be type 'string', received ${typeof str}`
+    );
+
+  return isHexPrefixed(str) ? str.slice(2) : str;
 };
 
 export type PublicKey =
@@ -67,6 +85,7 @@ export namespace PublicKey {
   export function fromData(data: PublicKey.Data): PublicKey {
     switch (data['@type']) {
       case '/ethermint.crypto.v1.ethsecp256k1.PubKey':
+      case '/cosmos.crypto.secp256k1.PubKey':
         return SimplePublicKey.fromData(data);
       case '/cosmos.crypto.multisig.LegacyAminoPubKey':
         return LegacyAminoMultisigPublicKey.fromData(data);
@@ -77,7 +96,10 @@ export namespace PublicKey {
 
   export function fromProto(pubkeyAny: PublicKey.Proto): PublicKey {
     const typeUrl = pubkeyAny.typeUrl;
-    if (typeUrl === '/ethermint.crypto.v1.ethsecp256k1.PubKey') {
+    if (
+      typeUrl === '/ethermint.crypto.v1.ethsecp256k1.PubKey' ||
+      typeUrl === '/cosmos.crypto.secp256k1.PubKey'
+    ) {
       return SimplePublicKey.unpackAny(pubkeyAny);
     } else if (typeUrl === '/cosmos.crypto.multisig.LegacyAminoPubKey') {
       return LegacyAminoMultisigPublicKey.unpackAny(pubkeyAny);
@@ -172,7 +194,9 @@ export namespace SimplePublicKey {
   }
 
   export interface Data {
-    '@type': '/ethermint.crypto.v1.ethsecp256k1.PubKey';
+    '@type':
+      | '/ethermint.crypto.v1.ethsecp256k1.PubKey'
+      | '/cosmos.crypto.secp256k1.PubKey';
     key: string;
   }
 
