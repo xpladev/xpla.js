@@ -5,6 +5,7 @@ import { CommunityPoolSpendProposal } from '../distribution/proposals';
 import { ParameterChangeProposal } from '../params/proposals';
 import { ClientUpdateProposal } from '../ibc/proposals';
 import { TextProposal } from './proposals';
+import { RegisterVolunteerValidatorProposal } from './proposals/RegisterVolunteerValidatorProposal';
 import {
   SoftwareUpgradeProposal,
   CancelSoftwareUpgradeProposal,
@@ -253,7 +254,8 @@ export namespace Proposal {
     | SudoContractProposal
     | UnpinCodesProposal
     | UpdateAdminProposal
-    | UpdateInstantiateConfigProposal;
+    | UpdateInstantiateConfigProposal
+    | RegisterVolunteerValidatorProposal;
 
   export namespace Content {
     export type Amino =
@@ -272,7 +274,8 @@ export namespace Proposal {
       | SudoContractProposal.Amino
       | UnpinCodesProposal.Amino
       | UpdateAdminProposal.Amino
-      | UpdateInstantiateConfigProposal.Amino;
+      | UpdateInstantiateConfigProposal.Amino
+      | RegisterVolunteerValidatorProposal.Amino;
 
     export type Data =
       | TextProposal.Data
@@ -290,7 +293,8 @@ export namespace Proposal {
       | SudoContractProposal.Data
       | UnpinCodesProposal.Data
       | UpdateAdminProposal.Data
-      | UpdateInstantiateConfigProposal.Data;
+      | UpdateInstantiateConfigProposal.Data
+      | RegisterVolunteerValidatorProposal.Data;
 
     export type Proto =
       | TextProposal.Proto
@@ -308,7 +312,8 @@ export namespace Proposal {
       | SudoContractProposal.Proto
       | UnpinCodesProposal.Proto
       | UpdateAdminProposal.Proto
-      | UpdateInstantiateConfigProposal.Proto;
+      | UpdateInstantiateConfigProposal.Proto
+      | RegisterVolunteerValidatorProposal.Proto;
 
     export function fromAmino(
       amino: Proposal.Content.Amino,
@@ -352,6 +357,8 @@ export namespace Proposal {
           return UpdateAdminProposal.fromAmino(amino, isClassic);
         case 'wasm/UpdateInstantiateConfigProposal':
           return UpdateInstantiateConfigProposal.fromAmino(amino, isClassic);
+        case 'xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
+          return RegisterVolunteerValidatorProposal.fromAmino(amino, isClassic);
       }
     }
 
@@ -392,6 +399,8 @@ export namespace Proposal {
           return UpdateAdminProposal.fromData(data, isClassic);
         case '/cosmwasm.wasm.v1.UpdateInstantiateConfigProposal':
           return UpdateInstantiateConfigProposal.fromData(data, isClassic);
+        case '/xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
+          return RegisterVolunteerValidatorProposal.fromData(data, isClassic);
       }
     }
 
