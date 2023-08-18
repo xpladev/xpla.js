@@ -17,6 +17,7 @@ import { TxLog } from '../../../core';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { BroadcastMode as BroadcastModeV1 } from '@terra-money/legacy.proto/cosmos/tx/v1beta1/service';
 import { BroadcastMode as BroadcastModeV2 } from '@terra-money/terra.proto/cosmos/tx/v1beta1/service';
+import { EvmMsg } from '../../../client/ecd/msgs';
 
 interface Wait {
   height: number;
@@ -251,8 +252,19 @@ export class TxAPI extends BaseAPI {
       fee = await this.lcd.tx.estimateFee(signerDatas, options);
     }
 
+    // EvmMsg를 무시하기
+    if (Array.isArray(msgs)) {
+      if (msgs.length < 1 || msgs[0] instanceof EvmMsg) {
+        return new Tx(
+          new TxBody([], memo || '', timeoutHeight || 0),
+          new AuthInfo([], fee),
+          []
+        );
+      }
+    }
+
     return new Tx(
-      new TxBody(msgs, memo || '', timeoutHeight || 0),
+      new TxBody(msgs as Msg[], memo || '', timeoutHeight || 0),
       new AuthInfo([], fee),
       []
     );
@@ -296,6 +308,7 @@ export class TxAPI extends BaseAPI {
     const feeDenoms = options.feeDenoms || [
       this.lcd.config.isClassic ? 'uusd' : 'axpla',
     ];
+    const msgs = options.msgs;
     let gas = options.gas;
     let gasPricesCoins: Coins | undefined;
 
@@ -313,7 +326,14 @@ export class TxAPI extends BaseAPI {
       }
     }
 
-    const txBody = new TxBody(options.msgs, options.memo || '');
+    // EvmMsg를 무시하기
+    if (Array.isArray(msgs)) {
+      if (msgs.length < 1 || msgs[0] instanceof EvmMsg) {
+        return new Fee(0, '0axpla', '', '');
+      }
+    }
+
+    const txBody = new TxBody(msgs as Msg[], options.memo || '');
     const authInfo = new AuthInfo([], new Fee(0, new Coins()));
     const tx = new Tx(txBody, authInfo, []);
 

@@ -1,9 +1,9 @@
 {
   "name": "@xpla/xpla.js",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "description": "The JavaScript SDK for Xpla",
   "license": "MIT",
-  "author": "Xpla",
+  "author": "XPLA",
   "keywords": [
     "xpla",
     "cryptocurrency",
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/c2xdev/xpla.js.git"
+    "url": "https://github.com/xpladev/xpla.js.git"
   },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -87,14 +87,15 @@
     "axios": "^0.26.1",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
-    "bip39": "^3.0.3",
+    "bip39": "3.0.3",
     "bufferutil": "^4.0.3",
     "crypto-addr-codec": "^0.1.7",
     "decimal.js": "^10.2.1",
+    "eip55": "^2.1.1",
     "elliptic": "^6.5.4",
-    "ethereumjs-util": "^7.1.5",
     "jscrypto": "^1.0.1",
     "readable-stream": "^3.6.0",
+    "rlp": "^3.0.0",
     "secp256k1": "^4.0.2",
     "tmp": "^0.2.1",
     "utf-8-validate": "^5.0.5",

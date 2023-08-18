@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 import {
   AccAddress,
+  EvmAddress,
   ValAddress,
   Tx,
   SignDoc,
@@ -31,11 +32,24 @@ export abstract class Key {
   /**
    * Xpla account address. `xpla-` prefixed.
    */
-  public get accAddress(): AccAddress {
+  public get accAddress(): AccAddress | EvmAddress | string {
+    if (this.evm) {
+      return this.eip55Address;
+    }
+    return this.bech32Address;
+  }
+
+  public get eip55Address(): EvmAddress {
     if (!this.publicKey) {
       throw new Error('Could not compute accAddress: missing rawAddress');
     }
+    return this.publicKey.evmAddress();
+  }
 
+  public get bech32Address(): AccAddress {
+    if (!this.publicKey) {
+      throw new Error('Could not compute accAddress: missing rawAddress');
+    }
     return this.publicKey.address();
   }
 
@@ -59,7 +73,7 @@ export abstract class Key {
    *
    * @param publicKey raw compressed bytes public key
    */
-  constructor(public publicKey?: PublicKey) {}
+  constructor(public publicKey?: PublicKey, public evm: boolean = false) {}
 
   /**
    * Signs a [[StdSignMsg]] with the method supplied by the child class.

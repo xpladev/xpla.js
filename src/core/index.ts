@@ -22,6 +22,7 @@ export * from './auth/LazyGradedVestingAccount';
 export * from './auth/DelayedVestingAccount';
 export * from './auth/ContinuousVestingAccount';
 export * from './auth/PeriodicVestingAccount';
+export * from './auth/EvmAccount';
 
 // Bank
 export * from './bank/msgs';
@@ -90,3 +91,6 @@ export * from './ibc/applications/transfer';
 
 // bech32 types
 export * from './bech32';
+
+// eip55 types
+export * from './eip55';

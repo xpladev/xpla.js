@@ -5,6 +5,7 @@ import { Any } from '@terra-money/terra.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/secp256k1/keys';
 import { PubKey as ValConsPubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/ed25519/keys';
 import { bech32 } from 'bech32';
+import { encode as eip55 } from 'eip55';
 import { ec } from 'elliptic';
 import { keccak256 } from '@ethersproject/keccak256';
 import { hexDataSlice } from '@ethersproject/bytes';
@@ -12,10 +13,10 @@ import { hexDataSlice } from '@ethersproject/bytes';
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
 // Last bytes is varint-encoded length prefix
-const pubkeyAminoPrefixSecp256k1 = Buffer.from(
-  'eb5ae987' + '21' /* fixed length */,
-  'hex'
-);
+// const pubkeyAminoPrefixSecp256k1 = Buffer.from(
+//   'eb5ae987' + '21' /* fixed length */,
+//   'hex'
+// );
 const pubkeyAminoPrefixEd25519 = Buffer.from(
   '1624de64' + '20' /* fixed length */,
   'hex'
@@ -185,6 +186,10 @@ export class SimplePublicKey extends JSONSerializable<
   public pubkeyAddress(): string {
     return bech32.encode('xplapub', bech32.toWords(this.encodeAminoPubkey()));
   }
+
+  public evmAddress(): string {
+    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+  }
 }
 
 export namespace SimplePublicKey {
@@ -237,6 +242,10 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
 
   public pubkeyAddress(): string {
     return bech32.encode('xplapub', bech32.toWords(this.encodeAminoPubkey()));
+  }
+
+  public evmAddress(): string {
+    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
   }
 
   public static fromAmino(
@@ -400,6 +409,10 @@ export class ValConsPublicKey extends JSONSerializable<
       'xplavalconspub',
       bech32.toWords(this.encodeAminoPubkey())
     );
+  }
+
+  public evmAddress(): string {
+    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
   }
 }
 
