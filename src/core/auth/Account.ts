@@ -1,6 +1,6 @@
 import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
 import { BaseAccount } from './BaseAccount';
-//import { EthAccount } from './EthAccount';
+import { EvmAccount } from './EvmAccount';
 import { LazyGradedVestingAccount } from './LazyGradedVestingAccount';
 import { ContinuousVestingAccount } from './ContinuousVestingAccount';
 import { DelayedVestingAccount } from './DelayedVestingAccount';
@@ -13,7 +13,8 @@ export type Account =
   | LazyGradedVestingAccount
   | ContinuousVestingAccount
   | DelayedVestingAccount
-  | PeriodicVestingAccount;
+  | PeriodicVestingAccount
+  | EvmAccount;
 /**
  * Stores information about an account fetched from the blockchain.
  */

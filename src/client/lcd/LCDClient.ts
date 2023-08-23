@@ -60,7 +60,7 @@ const DEFAULT_LCD_OPTIONS: Partial<LCDClientConfig> = {
 const DEFAULT_NETWORK_TYPE_BY_CHAIN_ID: { [key: string]: boolean } = {
   default: false,
   'dimension_37-1': false,
-  'cube_47-4': false,
+  'cube_47-5': false,
 };
 
 const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
@@ -70,7 +70,7 @@ const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
   'dimension_37-1': {
     axpla: 850000000000,
   },
-  'cube_47-4': {
+  'cube_47-5': {
     axpla: 850000000000,
   },
 };
@@ -85,8 +85,8 @@ const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
  * import { LCDClient, Coin } from 'xpla.js';
  *
  * const xpla = new LCDClient({
- *    URL: "https://lcd.xpla.net",
- *    chainID: "dimension"
+ *    URL: "https://cube-lcd.xpla.dev",
+ *    chainID: "cube_47-5"
  * });
  * ```
  */
@@ -157,6 +157,18 @@ export class LCDClient {
 
   /** Creates a new wallet with the Key. */
   public wallet(key: Key): Wallet {
+    key.evm = false;
     return new Wallet(this, key);
+  }
+
+  public async info(): Promise<any> {
+    return this.apiRequester.get<any>('/node_info', {});
+  }
+
+  public async getGasPrices(): Promise<Coins> {
+    if (!this.config.gasPrices) {
+      return Promise.reject(this.config.gasPrices);
+    }
+    return Promise.resolve(this.config.gasPrices as Coins);
   }
 }

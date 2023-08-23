@@ -1,4 +1,5 @@
-import { CreateTxOptions } from '../client';
+import { Msg } from '../core';
+import { CreateTxOptions, EvmMsg } from '../client';
 import PostMessageStream from './PostMessageStream';
 
 interface ResponseData {
@@ -169,9 +170,18 @@ export class Extension {
    * @return {StdSignMsg.Data} payload.result.stdSignMsgData
    */
   sign(options: Option): number {
+    // EvmMsg를 무시하기
+    if (Array.isArray(options.msgs)) {
+      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMsg) {
+        throw new Error('not yet implemented for EvmMsg');
+      }
+    }
+    const msgs = options.msgs.map(msg =>
+      (msg as Msg).toJSON(options.isClassic)
+    );
     return this.send('sign', {
       ...options,
-      msgs: options.msgs.map(msg => msg.toJSON(options.isClassic)),
+      msgs,
       fee: options.fee?.toJSON(),
       memo: options.memo,
       gasPrices: options.gasPrices?.toString(),
@@ -218,8 +228,17 @@ export class Extension {
    * @return {string}  payload.result.txhash  transaction hash
    */
   post(options: Option): number {
+    // EvmMsg를 무시하기
+    if (Array.isArray(options.msgs)) {
+      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMsg) {
+        throw new Error('not yet implemented for EvmMsg');
+      }
+    }
+    const msgs = options.msgs.map(msg =>
+      (msg as Msg).toJSON(options.isClassic)
+    );
     return this.send('post', {
-      msgs: options.msgs.map(msg => msg.toJSON(options.isClassic)),
+      msgs,
       fee: options.fee?.toJSON(),
       memo: options.memo,
       gasPrices: options.gasPrices?.toString(),

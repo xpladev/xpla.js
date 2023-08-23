@@ -36,11 +36,17 @@ export class APIRequester {
   }
 
   private computeEndpoint(endpoint: string) {
-    const url = new URL(this.baseURL);
+    return this.computeEndpointFrom(this.baseURL, endpoint);
+  }
 
-    url.pathname === '/'
-      ? (url.pathname = endpoint)
-      : (url.pathname += endpoint);
+  private computeEndpointFrom(base: string, endpoint: string) {
+    const url = new URL(base);
+
+    if (url.pathname === '/') {
+      url.pathname = endpoint;
+    } else {
+      url.pathname += endpoint;
+    }
 
     return url.toString();
   }
@@ -69,5 +75,17 @@ export class APIRequester {
   public async post<T>(endpoint: string, data?: any): Promise<T> {
     const url = this.computeEndpoint(endpoint);
     return this.axios.post(url, data).then(d => d.data);
+  }
+
+  public async getFcd<T>(
+    endpoint: string,
+    params: URLSearchParams | APIParams = {},
+    fcdURL?: string
+  ): Promise<T> {
+    const url = this.computeEndpointFrom(
+      fcdURL ? fcdURL : this.baseURL.replace('lcd', 'fcd'),
+      endpoint
+    );
+    return this.axios.get(url, { params }).then(d => d.data);
   }
 }
