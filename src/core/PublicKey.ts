@@ -1,9 +1,9 @@
 import { JSONSerializable } from '../util/json';
 import { sha256 } from '../util/hash';
-import { LegacyAminoPubKey as LegacyAminoPubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/multisig/keys';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { PubKey as PubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/secp256k1/keys';
-import { PubKey as ValConsPubKey_pb } from '@terra-money/terra.proto/cosmos/crypto/ed25519/keys';
+import { LegacyAminoPubKey as LegacyAminoPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/multisig/keys';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { PubKey as PubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/secp256k1/keys';
+import { PubKey as ValConsPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/ed25519/keys';
 import { bech32 } from 'bech32';
 import { encode as eip55 } from 'eip55';
 import { ec } from 'elliptic';
@@ -44,7 +44,7 @@ const isHexPrefixed = (str: string): boolean => {
     );
   }
 
-  return str[0] === '0' && str[1] === 'x';
+  return str.startsWith('0x');
 };
 
 const stripHexPrefix = (str: string): string => {

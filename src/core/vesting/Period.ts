@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Coins } from '../Coins';
 import { Period as Period_pb } from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
-
 import { JSONSerializable } from '../../util/json';
 import * as Long from 'long';
+
 /**
  * Period defines a length of time and amount of coins that will vest.
  */
@@ -22,14 +23,12 @@ export class Period extends JSONSerializable<
     this.amount = new Coins(amount);
   }
 
-  public static fromAmino(data: Period.Amino, _?: boolean): Period {
-    _;
+  public static fromAmino(data: Period.Amino, _isClassic?: boolean): Period {
     const { length, amount } = data;
     return new Period(Number.parseInt(length), Coins.fromAmino(amount));
   }
 
-  public toAmino(_?: boolean): Period.Amino {
-    _;
+  public toAmino(_isClassic?: boolean): Period.Amino {
     const { length, amount } = this;
 
     const res: Period.Amino = {
@@ -39,14 +38,12 @@ export class Period extends JSONSerializable<
     return res;
   }
 
-  public static fromData(data: Period.Data, _?: boolean): Period {
-    _;
+  public static fromData(data: Period.Data, _isClassic?: boolean): Period {
     const { length, amount } = data;
     return new Period(Number.parseInt(length), Coins.fromData(amount));
   }
 
-  public toData(_?: boolean): Period.Data {
-    _;
+  public toData(_isClassic?: boolean): Period.Data {
     const { length, amount } = this;
 
     const res: Period.Amino = {
@@ -56,13 +53,11 @@ export class Period extends JSONSerializable<
     return res;
   }
 
-  public static fromProto(proto: Period.Proto, _?: boolean): Period {
-    _;
+  public static fromProto(proto: Period.Proto, _isClassic?: boolean): Period {
     return new Period(proto.length.toNumber(), Coins.fromProto(proto.amount));
   }
 
-  public toProto(_?: boolean): Period.Proto {
-    _;
+  public toProto(_isClassic?: boolean): Period.Proto {
     const { length, amount } = this;
     return Period_pb.fromPartial({
       length: Long.fromNumber(length),

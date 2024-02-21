@@ -1,8 +1,7 @@
 import { JSONSerializable } from '../util/json';
 import { Fee } from './Fee';
 import { Msg } from './Msg';
-import * as Long from 'long';
-import { SignDoc as SignDoc_pb } from '@terra-money/terra.proto/cosmos/tx/v1beta1/tx';
+import { SignDoc as SignDoc_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/tx';
 import { TxBody, AuthInfo, Tx } from './Tx';
 /**
  * A sign message is a data structure that is used to create a [[StdSignature]] to be later
@@ -75,7 +74,7 @@ export class SignDoc extends JSONSerializable<
     return SignDoc_pb.fromPartial({
       bodyBytes: tx_body.toBytes(isClassic),
       authInfoBytes: auth_info.toBytes(),
-      accountNumber: Long.fromNumber(account_number),
+      accountNumber: account_number,
       chainId: chain_id,
     });
   }

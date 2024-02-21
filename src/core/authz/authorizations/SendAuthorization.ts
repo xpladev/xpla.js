@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
-import { SendAuthorization as SendAuthorization_pb } from '@terra-money/terra.proto/cosmos/bank/v1beta1/authz';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { SendAuthorization as SendAuthorization_pb } from '@xpla/xpla.proto/cosmos/bank/v1beta1/authz';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export class SendAuthorization extends JSONSerializable<
   SendAuthorization.Amino,
@@ -16,9 +17,8 @@ export class SendAuthorization extends JSONSerializable<
 
   public static fromAmino(
     data: SendAuthorization.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): SendAuthorization {
-    _;
     return new SendAuthorization(Coins.fromAmino(data.value.spend_limit));
   }
 
@@ -36,14 +36,12 @@ export class SendAuthorization extends JSONSerializable<
 
   public static fromData(
     data: SendAuthorization.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): SendAuthorization {
-    _;
     return new SendAuthorization(Coins.fromData(data.spend_limit));
   }
 
-  public toData(_?: boolean): SendAuthorization.Data {
-    _;
+  public toData(_isClassic?: boolean): SendAuthorization.Data {
     const { spend_limit } = this;
     return {
       '@type': '/cosmos.bank.v1beta1.SendAuthorization',
@@ -53,14 +51,12 @@ export class SendAuthorization extends JSONSerializable<
 
   public static fromProto(
     proto: SendAuthorization.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): SendAuthorization {
-    _;
     return new SendAuthorization(Coins.fromProto(proto.spendLimit));
   }
 
-  public toProto(_?: boolean): SendAuthorization.Proto {
-    _;
+  public toProto(_isClassic?: boolean): SendAuthorization.Proto {
     return SendAuthorization_pb.fromPartial({
       spendLimit: this.spend_limit.toProto(),
     });

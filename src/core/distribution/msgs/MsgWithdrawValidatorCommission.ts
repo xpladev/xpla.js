@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { ValAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgWithdrawValidatorCommission as MsgWithdrawValidatorCommission_pb } from '@terra-money/legacy.proto/cosmos/distribution/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgWithdrawValidatorCommission as MsgWithdrawValidatorCommission_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/tx';
 
 /**
  * A validator can withdraw their outstanding commission rewards accrued from all
@@ -22,9 +23,8 @@ export class MsgWithdrawValidatorCommission extends JSONSerializable<
 
   public static fromAmino(
     data: MsgWithdrawValidatorCommission.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawValidatorCommission {
-    _;
     const {
       value: { validator_address },
     } = data;
@@ -45,15 +45,13 @@ export class MsgWithdrawValidatorCommission extends JSONSerializable<
 
   public static fromData(
     proto: MsgWithdrawValidatorCommission.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawValidatorCommission {
-    _;
     const { validator_address } = proto;
     return new MsgWithdrawValidatorCommission(validator_address);
   }
 
-  public toData(_?: boolean): MsgWithdrawValidatorCommission.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgWithdrawValidatorCommission.Data {
     const { validator_address } = this;
     return {
       '@type': '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
@@ -63,14 +61,12 @@ export class MsgWithdrawValidatorCommission extends JSONSerializable<
 
   public static fromProto(
     proto: MsgWithdrawValidatorCommission.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawValidatorCommission {
-    _;
     return new MsgWithdrawValidatorCommission(proto.validatorAddress);
   }
 
-  public toProto(_?: boolean): MsgWithdrawValidatorCommission.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgWithdrawValidatorCommission.Proto {
     const { validator_address } = this;
     return MsgWithdrawValidatorCommission_pb.fromPartial({
       validatorAddress: validator_address,

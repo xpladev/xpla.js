@@ -1,6 +1,6 @@
 import { JSONSerializable } from '../../../util/json';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { UpdateInstantiateConfigProposal as UpdateInstantiateConfigProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { UpdateInstantiateConfigProposal as UpdateInstantiateConfigProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 import { AccessConfigUpdate } from '../AccessConfigUpdate';
 
 /**
@@ -34,7 +34,7 @@ export class UpdateInstantiateConfigProposal extends JSONSerializable<
     }
     const {
       value: { title, description, access_config_updates },
-    } = data as UpdateInstantiateConfigProposal.Amino;
+    } = data;
     return new UpdateInstantiateConfigProposal(
       title,
       description,
@@ -114,8 +114,7 @@ export class UpdateInstantiateConfigProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, access_config_updates } =
-      data as UpdateInstantiateConfigProposal.Data;
+    const { title, description, access_config_updates } = data;
     return new UpdateInstantiateConfigProposal(
       title,
       description,

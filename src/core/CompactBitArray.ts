@@ -1,4 +1,4 @@
-import { CompactBitArray as CompactBitArray_pb } from '@terra-money/terra.proto/cosmos/crypto/multisig/v1beta1/multisig';
+import { CompactBitArray as CompactBitArray_pb } from '@xpla/xpla.proto/cosmos/crypto/multisig/v1beta1/multisig';
 
 export class CompactBitArray {
   constructor(public extra_bits_stored: number, public elems: Buffer) {}

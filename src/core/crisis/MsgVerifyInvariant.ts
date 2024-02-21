@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../util/json';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-//import { MsgVerifyInvariant as MsgVerifyInvariant_pb } from '@terra-money/legacy.proto/cosmos/crisis/v1beta1/tx';
-import { MsgVerifyInvariant as MsgVerifyInvariant_pb } from '@terra-money/terra.proto/cosmos/crisis/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgVerifyInvariant as MsgVerifyInvariant_pb } from '@xpla/xpla.proto/cosmos/crisis/v1beta1/tx';
 import { AccAddress } from '../bech32';
 
 /**
@@ -27,31 +27,27 @@ export class MsgVerifyInvariant extends JSONSerializable<
 
   public static fromAmino(
     data: MsgVerifyInvariant.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVerifyInvariant {
-    _;
     const {
       value: { sender, invariantModuleName, invariantRoute },
     } = data;
     return new MsgVerifyInvariant(sender, invariantModuleName, invariantRoute);
   }
 
-  public toAmino(_?: boolean): MsgVerifyInvariant.Amino {
-    _;
+  public toAmino(_isClassic?: boolean): MsgVerifyInvariant.Amino {
     throw new Error('MsgVerifyInvarant is not allowed to send');
   }
 
   public static fromData(
     data: MsgVerifyInvariant.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVerifyInvariant {
-    _;
     const { sender, invariantModuleName, invariantRoute } = data;
     return new MsgVerifyInvariant(sender, invariantModuleName, invariantRoute);
   }
 
-  public toData(_?: boolean): MsgVerifyInvariant.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgVerifyInvariant.Data {
     const { sender, invariantModuleName, invariantRoute } = this;
     return {
       '@type': '/cosmos.crisis.v1beta1.MsgVerifyInvariant',
@@ -63,9 +59,8 @@ export class MsgVerifyInvariant extends JSONSerializable<
 
   public static fromProto(
     proto: MsgVerifyInvariant.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVerifyInvariant {
-    _;
     return new MsgVerifyInvariant(
       proto.sender,
       proto.invariantModuleName,
@@ -73,8 +68,7 @@ export class MsgVerifyInvariant extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgVerifyInvariant.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgVerifyInvariant.Proto {
     throw new Error('MsgVerifyInvarant is not allowed to send');
   }
 

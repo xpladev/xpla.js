@@ -76,11 +76,6 @@ export interface PinnedCodes {
   code_ids: number[];
 }
 
-export namespace PinnedCodes {
-  export interface Data {
-    code_ids: string[];
-  }
-}
 export interface QueryResult {
   data: string;
 }
@@ -216,11 +211,11 @@ export class WasmAPI extends BaseAPI {
       throw new Error('Not supported for the network');
     }
     return this.c
-      .get<{ pinned_code: PinnedCodes.Data }>(
-        `/cosmwasm/wasm/v1/codes/pinned`,
-        params
-      )
-      .then(({ pinned_code: d }) => ({
+      .get<{
+        code_ids: string[];
+        pagination: Pagination;
+      }>(`/cosmwasm/wasm/v1/codes/pinned`, params)
+      .then(d => ({
         code_ids: d.code_ids.map(code_id => Number.parseInt(code_id)),
       }));
   }
@@ -316,11 +311,11 @@ export class WasmAPI extends BaseAPI {
     }
     return this.c
       .get<{
-        codeInfos: CodeInfo.DataV2[];
+        code_infos: CodeInfo.DataV2[];
         pagination: Pagination;
       }>(`/cosmwasm/wasm/v1/code`, params)
       .then(d => [
-        d.codeInfos.map(codeInfo => {
+        d.code_infos.map(codeInfo => {
           return {
             code_id: +codeInfo.code_id,
             code_hash: codeInfo.data_hash,

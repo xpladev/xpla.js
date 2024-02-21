@@ -1,7 +1,6 @@
 import { JSONSerializable } from '../../../util/json';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { PinCodesProposal as PinCodesProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { PinCodesProposal as PinCodesProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /**
  * PinCodesProposal gov proposal content type to pin a set of code ids in the
@@ -34,7 +33,7 @@ export class PinCodesProposal extends JSONSerializable<
     }
     const {
       value: { title, description, code_ids },
-    } = data as PinCodesProposal.Amino;
+    } = data;
     return new PinCodesProposal(
       title,
       description,
@@ -79,7 +78,7 @@ export class PinCodesProposal extends JSONSerializable<
     return PinCodesProposal_pb.fromPartial({
       title,
       description,
-      codeIds: code_ids.map(cid => Long.fromNumber(cid)),
+      codeIds: code_ids,
     });
   }
   public packAny(isClassic?: boolean): Any {
@@ -109,7 +108,7 @@ export class PinCodesProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, code_ids } = data as PinCodesProposal.Data;
+    const { title, description, code_ids } = data;
     return new PinCodesProposal(
       title,
       description,

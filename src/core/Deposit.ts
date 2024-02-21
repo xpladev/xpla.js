@@ -1,8 +1,7 @@
 import { Coins } from './Coins';
 import { JSONSerializable } from '../util/json';
 import { AccAddress } from './bech32';
-import { Deposit as Deposit_pb } from '@terra-money/terra.proto/cosmos/gov/v1beta1/gov';
-import * as Long from 'long';
+import { Deposit as Deposit_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 
 /**
  * Stores deposit information for a proposal
@@ -74,7 +73,7 @@ export class Deposit extends JSONSerializable<
   public toProto(): Deposit.Proto {
     const { proposal_id, depositor, amount } = this;
     return Deposit_pb.fromPartial({
-      proposalId: Long.fromNumber(proposal_id),
+      proposalId: proposal_id,
       depositor: depositor,
       amount: amount.toProto(),
     });

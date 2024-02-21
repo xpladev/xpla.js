@@ -5,10 +5,10 @@ import {
   SignMode as SignMode_pb,
   signModeFromJSON,
   signModeToJSON,
-} from '@terra-money/terra.proto/cosmos/tx/signing/v1beta1/signing';
-import { MultiSignature } from '@terra-money/terra.proto/cosmos/crypto/multisig/v1beta1/multisig';
+} from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
+import { MultiSignature } from '@xpla/xpla.proto/cosmos/crypto/multisig/v1beta1/multisig';
 
-export { SignMode } from '@terra-money/terra.proto/cosmos/tx/signing/v1beta1/signing';
+export { SignMode } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
 
 export class SignatureV2 {
   constructor(

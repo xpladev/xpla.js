@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { EvmAPI } from './BaseAPI';
-import { Coins, EvmAddress } from '../../../core';
+import { EvmAddress } from '../../../core';
 import { Numeric } from '../../../core/numeric';
 import { Pagination, PaginationOptions } from '../../lcd/APIRequester';
 import { ECDClient } from '../ECDClient';
@@ -47,8 +48,7 @@ export class EvmNftAPI extends EvmAPI {
       });
   }
 
-  public async decimals(_: EvmAddress): Promise<number> {
-    _;
+  public async decimals(_contract: EvmAddress): Promise<number> {
     return 0;
   }
 

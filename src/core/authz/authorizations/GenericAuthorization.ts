@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
-import { GenericAuthorization as GenericAuthorization_pb } from '@terra-money/terra.proto/cosmos/authz/v1beta1/authz';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { GenericAuthorization as GenericAuthorization_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/authz';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export class GenericAuthorization extends JSONSerializable<
   GenericAuthorization.Amino,
@@ -13,9 +14,8 @@ export class GenericAuthorization extends JSONSerializable<
 
   public static fromAmino(
     data: GenericAuthorization.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): GenericAuthorization {
-    _;
     return new GenericAuthorization(data.value.msg);
   }
 
@@ -33,14 +33,12 @@ export class GenericAuthorization extends JSONSerializable<
 
   public static fromData(
     data: GenericAuthorization.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): GenericAuthorization {
-    _;
     return new GenericAuthorization(data.msg);
   }
 
-  public toData(_?: boolean): GenericAuthorization.Data {
-    _;
+  public toData(_isClassic?: boolean): GenericAuthorization.Data {
     const { msg } = this;
     return {
       '@type': '/cosmos.authz.v1beta1.GenericAuthorization',
@@ -50,14 +48,12 @@ export class GenericAuthorization extends JSONSerializable<
 
   public static fromProto(
     data: GenericAuthorization.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): GenericAuthorization {
-    _;
     return new GenericAuthorization(data.msg);
   }
 
-  public toProto(_?: boolean): GenericAuthorization.Proto {
-    _;
+  public toProto(_isClassic?: boolean): GenericAuthorization.Proto {
     return GenericAuthorization_pb.fromPartial({
       msg: this.msg,
     });

@@ -1,11 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Dec, Int } from '../../numeric';
 import { ValAddress } from '../../bech32';
 import { Validator } from '../Validator';
-// import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// import { MsgEditValidator as MsgEditValidator_pb } from '@terra-money/legacy.proto/cosmos/staking/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgEditValidator as MsgEditValidator_pb } from '@terra-money/terra.proto/cosmos/staking/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgEditValidator as MsgEditValidator_pb } from '@xpla/xpla.proto/cosmos/staking/v1beta1/tx';
 
 /**
  * A validator can edit its delegate information, such as moniker, website, commission
@@ -37,9 +36,8 @@ export class MsgEditValidator extends JSONSerializable<
 
   public static fromAmino(
     data: MsgEditValidator.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgEditValidator {
-    _;
     const {
       value: {
         description,
@@ -82,9 +80,8 @@ export class MsgEditValidator extends JSONSerializable<
 
   public static fromProto(
     data: MsgEditValidator.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgEditValidator {
-    _;
     return new MsgEditValidator(
       Validator.Description.fromProto(
         data.description as Validator.Description.Proto
@@ -97,8 +94,7 @@ export class MsgEditValidator extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgEditValidator.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgEditValidator.Proto {
     const {
       description,
       validator_address,
@@ -107,8 +103,8 @@ export class MsgEditValidator extends JSONSerializable<
     } = this;
     return MsgEditValidator_pb.fromPartial({
       description: description.toProto(),
-      commissionRate: commission_rate?.toString() || '',
-      minSelfDelegation: min_self_delegation?.toString() || '',
+      commissionRate: commission_rate?.toString() ?? '',
+      minSelfDelegation: min_self_delegation?.toString() ?? '',
       validatorAddress: validator_address,
     });
   }
@@ -129,9 +125,8 @@ export class MsgEditValidator extends JSONSerializable<
 
   public static fromData(
     data: MsgEditValidator.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgEditValidator {
-    _;
     const {
       description,
       validator_address,
@@ -146,8 +141,7 @@ export class MsgEditValidator extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgEditValidator.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgEditValidator.Data {
     const {
       description,
       validator_address,

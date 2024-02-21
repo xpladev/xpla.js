@@ -1,8 +1,8 @@
 import { JSONSerializable, removeNull } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Coins } from '../../Coins';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { ExecuteContractProposal as ExecuteContractProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { ExecuteContractProposal as ExecuteContractProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /**
  * ExecuteContractProposal gov proposal content type to call execute on a
@@ -44,7 +44,7 @@ export class ExecuteContractProposal extends JSONSerializable<
     }
     const {
       value: { title, description, run_as, contract, msg, funds },
-    } = data as ExecuteContractProposal.Amino;
+    } = data;
     return new ExecuteContractProposal(
       title,
       description,
@@ -136,8 +136,7 @@ export class ExecuteContractProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, run_as, contract, msg, funds } =
-      data as ExecuteContractProposal.Data;
+    const { title, description, run_as, contract, msg, funds } = data;
     return new ExecuteContractProposal(
       title,
       description,

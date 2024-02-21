@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgVote as MsgVote_pb } from '@terra-money/terra.proto/cosmos/gov/v1beta1/tx';
-import { VoteOption } from '@terra-money/terra.proto/cosmos/gov/v1beta1/gov';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgVote as MsgVote_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/tx';
+import { VoteOption } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 
 /**
  * Vote for a proposal
@@ -26,8 +26,7 @@ export class MsgVote extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: MsgVote.Amino, _?: boolean): MsgVote {
-    _;
+  public static fromAmino(data: MsgVote.Amino, _isClassic?: boolean): MsgVote {
     const {
       value: { proposal_id, voter, option },
     } = data;
@@ -46,14 +45,12 @@ export class MsgVote extends JSONSerializable<
     };
   }
 
-  public static fromData(data: MsgVote.Data, _?: boolean): MsgVote {
-    _;
+  public static fromData(data: MsgVote.Data, _isClassic?: boolean): MsgVote {
     const { proposal_id, voter, option } = data;
     return new MsgVote(Number.parseInt(proposal_id), voter, option);
   }
 
-  public toData(_?: boolean): MsgVote.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgVote.Data {
     const { proposal_id, voter, option } = this;
     return {
       '@type': '/cosmos.gov.v1beta1.MsgVote',
@@ -63,31 +60,27 @@ export class MsgVote extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgVote.Proto, _?: boolean): MsgVote {
-    _;
+  public static fromProto(proto: MsgVote.Proto, _isClassic?: boolean): MsgVote {
     return new MsgVote(proto.proposalId.toNumber(), proto.voter, proto.option);
   }
 
-  public toProto(_?: boolean): MsgVote.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgVote.Proto {
     const { proposal_id, voter, option } = this;
     return MsgVote_pb.fromPartial({
       option,
-      proposalId: Long.fromNumber(proposal_id),
+      proposalId: proposal_id,
       voter,
     });
   }
 
-  public packAny(_?: boolean): Any {
-    _;
+  public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
       typeUrl: '/cosmos.gov.v1beta1.MsgVote',
       value: MsgVote_pb.encode(this.toProto()).finish(),
     });
   }
 
-  public static unpackAny(msgAny: Any, _?: boolean): MsgVote {
-    _;
+  public static unpackAny(msgAny: Any, _isClassic?: boolean): MsgVote {
     return MsgVote.fromProto(MsgVote_pb.decode(msgAny.value));
   }
 }

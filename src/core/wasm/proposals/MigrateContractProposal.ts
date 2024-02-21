@@ -1,8 +1,7 @@
 import { JSONSerializable, removeNull } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MigrateContractProposal as MigrateContractProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MigrateContractProposal as MigrateContractProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /** MigrateContractProposal gov proposal content type to migrate a contract. */
 export class MigrateContractProposal extends JSONSerializable<
@@ -36,7 +35,7 @@ export class MigrateContractProposal extends JSONSerializable<
     }
     const {
       value: { title, description, contract, code_id, msg },
-    } = data as MigrateContractProposal.Amino;
+    } = data;
     return new MigrateContractProposal(
       title,
       description,
@@ -88,7 +87,7 @@ export class MigrateContractProposal extends JSONSerializable<
       title,
       description,
       contract,
-      codeId: Long.fromNumber(new_code_id),
+      codeId: new_code_id,
       msg: Buffer.from(JSON.stringify(migrate_msg), 'utf-8'),
     });
   }
@@ -124,8 +123,7 @@ export class MigrateContractProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, contract, code_id, msg } =
-      data as MigrateContractProposal.Data;
+    const { title, description, contract, code_id, msg } = data;
     return new MigrateContractProposal(
       title,
       description,

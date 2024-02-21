@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { UpdateAdminProposal as UpdateAdminProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { UpdateAdminProposal as UpdateAdminProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /** UpdateAdminProposal gov proposal content type to set an admin for a contract. */
 export class UpdateAdminProposal extends JSONSerializable<
@@ -33,7 +33,7 @@ export class UpdateAdminProposal extends JSONSerializable<
     }
     const {
       value: { title, description, contract, new_admin },
-    } = data as UpdateAdminProposal.Amino;
+    } = data;
     return new UpdateAdminProposal(title, description, contract, new_admin);
   }
 
@@ -110,8 +110,7 @@ export class UpdateAdminProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, contract, new_admin } =
-      data as UpdateAdminProposal.Data;
+    const { title, description, contract, new_admin } = data;
     return new UpdateAdminProposal(title, description, contract, new_admin);
   }
 

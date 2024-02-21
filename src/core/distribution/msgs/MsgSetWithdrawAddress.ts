@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-// there's no difference between two protos
-// import { MsgSetWithdrawAddress as MsgSetWithdrawAddress_legacy_pb } from '@terra-money/legacy.proto/cosmos/distribution/v1beta1/tx';
-import { MsgSetWithdrawAddress as MsgSetWithdrawAddress_pb } from '@terra-money/terra.proto/cosmos/distribution/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgSetWithdrawAddress as MsgSetWithdrawAddress_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/tx';
 
 /**
  * A validator can withdraw their outstanding commission rewards accrued from all
@@ -28,9 +27,8 @@ export class MsgSetWithdrawAddress extends JSONSerializable<
 
   public static fromAmino(
     data: MsgSetWithdrawAddress.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgSetWithdrawAddress {
-    _;
     const {
       value: { delegator_address, withdraw_address },
     } = data;
@@ -52,15 +50,13 @@ export class MsgSetWithdrawAddress extends JSONSerializable<
 
   public static fromData(
     data: MsgSetWithdrawAddress.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgSetWithdrawAddress {
-    _;
     const { delegator_address, withdraw_address } = data;
     return new MsgSetWithdrawAddress(delegator_address, withdraw_address);
   }
 
-  public toData(_?: boolean): MsgSetWithdrawAddress.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgSetWithdrawAddress.Data {
     const { delegator_address, withdraw_address } = this;
     return {
       '@type': '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress',
@@ -71,17 +67,15 @@ export class MsgSetWithdrawAddress extends JSONSerializable<
 
   public static fromProto(
     proto: MsgSetWithdrawAddress.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgSetWithdrawAddress {
-    _;
     return new MsgSetWithdrawAddress(
       proto.delegatorAddress,
       proto.withdrawAddress
     );
   }
 
-  public toProto(_?: boolean): MsgSetWithdrawAddress.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgSetWithdrawAddress.Proto {
     const { delegator_address, withdraw_address } = this;
     return MsgSetWithdrawAddress_pb.fromPartial({
       delegatorAddress: delegator_address,

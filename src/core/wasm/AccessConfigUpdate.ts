@@ -1,7 +1,7 @@
-import { AccessConfigUpdate as AccessConfigUpdate_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { AccessConfigUpdate as AccessConfigUpdate_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 import { JSONSerializable } from '../../util/json';
 import { AccessConfig } from './AccessConfig';
-import * as Long from 'long';
+
 /**
  *
  */
@@ -66,7 +66,7 @@ export class AccessConfigUpdate extends JSONSerializable<
 
   public toProto(): AccessConfigUpdate.Proto {
     return AccessConfigUpdate_pb.fromPartial({
-      codeId: Long.fromNumber(this.code_id),
+      codeId: this.code_id,
       instantiatePermission: this.instantiate_permission?.toProto(),
     });
   }

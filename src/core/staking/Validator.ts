@@ -8,9 +8,8 @@ import {
   Commission as Commission_pb,
   CommissionRates as CommissionRates_pb,
   BondStatus,
-} from '@terra-money/terra.proto/cosmos/staking/v1beta1/staking';
-import * as Long from 'long';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+} from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * Stores information fetched from the blockchain about the current status of a validator.
@@ -141,7 +140,7 @@ export class Validator extends JSONSerializable<
       operatorAddress: operator_address,
       status,
       tokens: tokens.toString(),
-      unbondingHeight: Long.fromNumber(unbonding_height),
+      unbondingHeight: unbonding_height,
       unbondingTime: unbonding_time,
     });
   }

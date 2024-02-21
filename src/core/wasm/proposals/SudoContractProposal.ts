@@ -1,7 +1,7 @@
 import { JSONSerializable, removeNull } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { SudoContractProposal as SudoContractProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { SudoContractProposal as SudoContractProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 export class SudoContractProposal extends JSONSerializable<
   SudoContractProposal.Amino,
@@ -32,7 +32,7 @@ export class SudoContractProposal extends JSONSerializable<
     }
     const {
       value: { title, description, contract, msg },
-    } = data as SudoContractProposal.Amino;
+    } = data;
     return new SudoContractProposal(title, description, contract, msg);
   }
 
@@ -109,8 +109,7 @@ export class SudoContractProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, contract, msg } =
-      data as SudoContractProposal.Data;
+    const { title, description, contract, msg } = data;
     return new SudoContractProposal(title, description, contract, msg);
   }
 

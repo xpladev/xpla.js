@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../util/json';
 import { Denom } from './Denom';
 import { Dec, Int, Numeric } from './numeric';
-import { Coin as Coin_pb } from '@terra-money/terra.proto/cosmos/base/v1beta1/coin';
+import { Coin as Coin_pb } from '@xpla/xpla.proto/cosmos/base/v1beta1/coin';
 
 /**
  * Captures `sdk.Coin` and `sdk.DecCoin` from Cosmos SDK. A composite value that combines

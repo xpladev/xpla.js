@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress, ValAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-// there's no difference between two protos
-// import { MsgWithdrawDelegatorReward as MsgWithdrawDelegatorReward_legacy_pb } from '@terra-money/legacy.proto/cosmos/distribution/v1beta1/tx';
-import { MsgWithdrawDelegatorReward as MsgWithdrawDelegatorReward_pb } from '@terra-money/terra.proto/cosmos/distribution/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgWithdrawDelegatorReward as MsgWithdrawDelegatorReward_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/tx';
 
 /**
  * A delegator can withdraw currently outstanding rewards accrued from their delegation
@@ -30,9 +29,8 @@ export class MsgWithdrawDelegatorReward extends JSONSerializable<
 
   public static fromAmino(
     data: MsgWithdrawDelegatorReward.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawDelegatorReward {
-    _;
     const {
       value: { delegator_address, validator_address },
     } = data;
@@ -54,15 +52,13 @@ export class MsgWithdrawDelegatorReward extends JSONSerializable<
 
   public static fromData(
     proto: MsgWithdrawDelegatorReward.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawDelegatorReward {
-    _;
     const { delegator_address, validator_address } = proto;
     return new MsgWithdrawDelegatorReward(delegator_address, validator_address);
   }
 
-  public toData(_?: boolean): MsgWithdrawDelegatorReward.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgWithdrawDelegatorReward.Data {
     const { delegator_address, validator_address } = this;
     return {
       '@type': '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
@@ -73,17 +69,15 @@ export class MsgWithdrawDelegatorReward extends JSONSerializable<
 
   public static fromProto(
     proto: MsgWithdrawDelegatorReward.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgWithdrawDelegatorReward {
-    _;
     return new MsgWithdrawDelegatorReward(
       proto.delegatorAddress,
       proto.validatorAddress
     );
   }
 
-  public toProto(_?: boolean): MsgWithdrawDelegatorReward.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgWithdrawDelegatorReward.Proto {
     const { delegator_address, validator_address } = this;
     return MsgWithdrawDelegatorReward_pb.fromPartial({
       delegatorAddress: delegator_address,

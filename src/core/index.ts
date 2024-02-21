@@ -17,6 +17,7 @@ export * from './MultiSignature';
 // Auth
 export * from './auth/Account';
 export * from './auth/BaseAccount';
+export * from './auth/BaseAccountTerra';
 export * from './auth/BaseVestingAccount';
 export * from './auth/LazyGradedVestingAccount';
 export * from './auth/DelayedVestingAccount';
@@ -30,6 +31,13 @@ export * from './bank/msgs';
 // Distribution
 export * from './distribution/msgs';
 export * from './distribution/proposals';
+
+// ERC20
+export * from './erc20/msgs';
+export * from './erc20/proposals';
+
+// EVM
+export * from './evm/msgs';
 
 // FeeGrant
 export * from './feegrant/msgs';
@@ -88,6 +96,10 @@ export * from './ibc/msgs/connection';
 
 // IBC-transfer
 export * from './ibc/applications/transfer';
+
+// XPLA
+export * from './xpla/msgs';
+export * from './xpla/proposals';
 
 // bech32 types
 export * from './bech32';

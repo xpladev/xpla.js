@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Coins } from '../../Coins';
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgDeposit as MsgDeposit_pb } from '@terra-money/terra.proto/cosmos/gov/v1beta1/tx';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgDeposit as MsgDeposit_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/tx';
 
 /**
  * Add a deposit for a proposal
@@ -28,8 +28,10 @@ export class MsgDeposit extends JSONSerializable<
     this.amount = new Coins(amount);
   }
 
-  public static fromAmino(data: MsgDeposit.Amino, _?: boolean): MsgDeposit {
-    _;
+  public static fromAmino(
+    data: MsgDeposit.Amino,
+    _isClassic?: boolean
+  ): MsgDeposit {
     const {
       value: { proposal_id, depositor, amount },
     } = data;
@@ -52,8 +54,10 @@ export class MsgDeposit extends JSONSerializable<
     };
   }
 
-  public static fromData(data: MsgDeposit.Data, _?: boolean): MsgDeposit {
-    _;
+  public static fromData(
+    data: MsgDeposit.Data,
+    _isClassic?: boolean
+  ): MsgDeposit {
     const { proposal_id, depositor, amount } = data;
     return new MsgDeposit(
       Number.parseInt(proposal_id),
@@ -62,8 +66,7 @@ export class MsgDeposit extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgDeposit.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgDeposit.Data {
     const { proposal_id, depositor, amount } = this;
     return {
       '@type': '/cosmos.gov.v1beta1.MsgDeposit',
@@ -73,8 +76,10 @@ export class MsgDeposit extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgDeposit.Proto, _?: boolean): MsgDeposit {
-    _;
+  public static fromProto(
+    proto: MsgDeposit.Proto,
+    _isClassic?: boolean
+  ): MsgDeposit {
     return new MsgDeposit(
       proto.proposalId.toNumber(),
       proto.depositor,
@@ -82,13 +87,12 @@ export class MsgDeposit extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgDeposit.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgDeposit.Proto {
     const { proposal_id, depositor, amount } = this;
     return MsgDeposit_pb.fromPartial({
       amount: amount.toProto(),
       depositor,
-      proposalId: Long.fromNumber(proposal_id),
+      proposalId: proposal_id,
     });
   }
 

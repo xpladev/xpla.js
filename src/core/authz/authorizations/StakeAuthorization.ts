@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coin } from '../../Coin';
 import { AccAddress } from '../../bech32';
@@ -7,8 +8,8 @@ import {
   StakeAuthorization_Validators as StakeAuthorizationValidators_pb,
   authorizationTypeFromJSON,
   authorizationTypeToJSON,
-} from '@terra-money/terra.proto/cosmos/staking/v1beta1/authz';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+} from '@xpla/xpla.proto/cosmos/staking/v1beta1/authz';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export class StakeAuthorization extends JSONSerializable<
   any,
@@ -25,16 +26,13 @@ export class StakeAuthorization extends JSONSerializable<
   }
 
   public static fromAmino(
-    _: any,
-    isClassic?: boolean
+    _data: any,
+    _isClassic?: boolean
   ): StakeAuthorizationValidators {
-    _;
-    isClassic;
     throw new Error('Amino not supported');
   }
 
-  public toAmino(_?: boolean): any {
-    _;
+  public toAmino(_isClassic?: boolean): any {
     throw new Error('Amino not supported');
   }
 
@@ -119,29 +117,24 @@ export class StakeAuthorizationValidators extends JSONSerializable<
   }
 
   public static fromAmino(
-    _: any,
-    isClassic?: boolean
+    _data: any,
+    _isClassic?: boolean
   ): StakeAuthorizationValidators {
-    _;
-    isClassic;
     throw new Error('Amino not supported');
   }
 
-  public toAmino(_?: boolean): any {
-    _;
+  public toAmino(_isClassic?: boolean): any {
     throw new Error('Amino not supported');
   }
 
   public static fromData(
     data: StakeAuthorizationValidators.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): StakeAuthorizationValidators {
-    _;
     return new StakeAuthorizationValidators(data.address);
   }
 
-  public toData(_?: boolean): StakeAuthorizationValidators.Data {
-    _;
+  public toData(_isClassic?: boolean): StakeAuthorizationValidators.Data {
     return {
       address: this.address,
     };
@@ -149,14 +142,12 @@ export class StakeAuthorizationValidators extends JSONSerializable<
 
   public static fromProto(
     proto: StakeAuthorizationValidators.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): StakeAuthorizationValidators {
-    _;
     return new StakeAuthorizationValidators(proto.address);
   }
 
-  public toProto(_?: boolean): StakeAuthorizationValidators.Proto {
-    _;
+  public toProto(_isClassic?: boolean): StakeAuthorizationValidators.Proto {
     return StakeAuthorizationValidators_pb.fromPartial({
       address: this.address,
     });

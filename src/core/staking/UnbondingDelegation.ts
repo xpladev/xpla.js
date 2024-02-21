@@ -4,8 +4,7 @@ import { AccAddress, ValAddress } from '../bech32';
 import {
   UnbondingDelegation as UnbondingDelegation_pb,
   UnbondingDelegationEntry as UnbondingDelegationEntry_pb,
-} from '@terra-money/terra.proto/cosmos/staking/v1beta1/staking';
-import * as Long from 'long';
+} from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';
 
 /**
  * When a delegator decides to take out their funds from the staking pool, they must
@@ -171,7 +170,7 @@ export namespace UnbondingDelegation {
       return UnbondingDelegationEntry_pb.fromPartial({
         balance: balance.toString(),
         completionTime: completion_time,
-        creationHeight: Long.fromNumber(creation_height),
+        creationHeight: creation_height,
         initialBalance: initial_balance.toString(),
       });
     }

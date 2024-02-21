@@ -1,8 +1,8 @@
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Msg } from '../../Msg';
-import { MsgExec as MsgExec_pb } from '@terra-money/terra.proto/cosmos/authz/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { MsgExec as MsgExec_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export class MsgExecAuthorized extends JSONSerializable<
   MsgExecAuthorized.Amino,

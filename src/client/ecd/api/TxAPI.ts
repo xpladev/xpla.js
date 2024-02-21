@@ -1,6 +1,6 @@
 import { EvmAPI } from './BaseAPI';
 import { EvmAddress } from '../../../core/eip55';
-import { EvmTx, EvmTxInfo, EvmMsg } from '../msgs/EvmTx';
+import { EvmTx, EvmTxInfo, EvmMessage } from '../msgs/EvmTx';
 import { Numeric } from '../../../core';
 import { ECDClient } from '../ECDClient';
 import { EvmWallet } from '../EvmWallet';
@@ -10,7 +10,7 @@ import { keccak256 } from '@ethersproject/keccak256';
 import * as secp256k1 from 'secp256k1';
 
 export interface CreateEvmTxOptions {
-  msgs: EvmMsg[];
+  msgs: EvmMessage[];
   gasLimit?: string;
   gasPrice?: string;
 }
@@ -98,7 +98,7 @@ export class EvmTxAPI extends EvmAPI {
       sequence?: number;
     }
   ): Promise<EvmTx> {
-    const msg = options.msgs[0] as EvmMsg;
+    const msg = options.msgs[0];
     const utx = msg.tx();
 
     if (utx.chainId == undefined) {

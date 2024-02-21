@@ -1,5 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
-import { OrderBy as OrderBy_pb } from '@terra-money/legacy.proto/cosmos/tx/v1beta1/service';
+import { OrderBy as OrderBy_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
 
 export type APIParams = Record<string, string | number | null | undefined>;
 
@@ -83,7 +83,7 @@ export class APIRequester {
     fcdURL?: string
   ): Promise<T> {
     const url = this.computeEndpointFrom(
-      fcdURL ? fcdURL : this.baseURL.replace('lcd', 'fcd'),
+      fcdURL ?? this.baseURL.replace('lcd', 'fcd'),
       endpoint
     );
     return this.axios.get(url, { params }).then(d => d.data);

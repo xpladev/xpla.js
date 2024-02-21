@@ -1,9 +1,8 @@
 import { JSONSerializable, removeNull } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Coins } from '../../Coins';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { InstantiateContractProposal as InstantiateContractProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { InstantiateContractProposal as InstantiateContractProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /**
  * InstantiateContractProposal gov proposal content type to instantiate a
@@ -34,7 +33,7 @@ export class InstantiateContractProposal extends JSONSerializable<
     public code_id: number,
     public init_msg: object | string,
     init_coins: Coins.Input = {},
-    public label: string
+    public label: string = ''
   ) {
     super();
     this.init_coins = new Coins(init_coins);
@@ -49,7 +48,7 @@ export class InstantiateContractProposal extends JSONSerializable<
     }
     const {
       value: { title, description, run_as, admin, code_id, msg, funds, label },
-    } = data as InstantiateContractProposal.Amino;
+    } = data;
     return new InstantiateContractProposal(
       title,
       description,
@@ -129,7 +128,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       description,
       runAs: run_as,
       admin,
-      codeId: Long.fromNumber(code_id),
+      codeId: code_id,
       funds: init_coins.toProto(),
       msg: Buffer.from(JSON.stringify(init_msg), 'utf-8'),
       label,
@@ -169,7 +168,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       throw new Error('Not supported for the network');
     }
     const { title, description, run_as, admin, code_id, label, msg, funds } =
-      data as InstantiateContractProposal.Data;
+      data;
     return new InstantiateContractProposal(
       title,
       description,
@@ -201,7 +200,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       title,
       description,
       run_as,
-      admin: admin || '',
+      admin: admin ?? '',
       code_id: code_id.toFixed(),
       label,
       msg: removeNull(init_msg),

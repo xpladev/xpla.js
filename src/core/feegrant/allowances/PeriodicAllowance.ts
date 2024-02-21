@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { BasicAllowance } from './BasicAllowance';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { PeriodicAllowance as PeriodicAllowance_pb } from '@terra-money/terra.proto/cosmos/feegrant/v1beta1/feegrant';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { PeriodicAllowance as PeriodicAllowance_pb } from '@xpla/xpla.proto/cosmos/feegrant/v1beta1/feegrant';
+
 /**
  * PeriodicAllowance extends Allowance to allow for both a maximum cap,
  * as well as a limit per time period.
@@ -83,9 +84,8 @@ export class PeriodicAllowance extends JSONSerializable<
 
   public static fromData(
     proto: PeriodicAllowance.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): PeriodicAllowance {
-    _;
     const {
       basic,
       period,
@@ -102,8 +102,7 @@ export class PeriodicAllowance extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): PeriodicAllowance.Data {
-    _;
+  public toData(_isClassic?: boolean): PeriodicAllowance.Data {
     const {
       basic,
       period,
@@ -123,9 +122,8 @@ export class PeriodicAllowance extends JSONSerializable<
 
   public static fromProto(
     proto: PeriodicAllowance.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): PeriodicAllowance {
-    _;
     return new PeriodicAllowance(
       BasicAllowance.fromProto(proto.basic as BasicAllowance.Proto),
       proto.period?.seconds.toNumber() as number,
@@ -135,8 +133,7 @@ export class PeriodicAllowance extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): PeriodicAllowance.Proto {
-    _;
+  public toProto(_isClassic?: boolean): PeriodicAllowance.Proto {
     const {
       basic,
       period,
@@ -147,7 +144,7 @@ export class PeriodicAllowance extends JSONSerializable<
 
     return PeriodicAllowance_pb.fromPartial({
       basic,
-      period: { seconds: Long.fromNumber(period) },
+      period: { seconds: period },
       periodCanSpend: period_can_spend.toProto(),
       periodReset: period_reset,
       periodSpendLimit: period_spend_limit.toProto(),
