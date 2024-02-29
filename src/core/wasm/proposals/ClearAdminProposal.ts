@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { ClearAdminProposal as ClearAdminProposal_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/proposal';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { ClearAdminProposal as ClearAdminProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal';
 
 /**
  * ClearAdminProposal gov proposal content type to clear the admin of a
@@ -34,7 +34,7 @@ export class ClearAdminProposal extends JSONSerializable<
     }
     const {
       value: { title, description, contract },
-    } = data as ClearAdminProposal.Amino;
+    } = data;
     return new ClearAdminProposal(title, description, contract);
   }
 
@@ -108,7 +108,7 @@ export class ClearAdminProposal extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { title, description, contract } = data as ClearAdminProposal.Data;
+    const { title, description, contract } = data;
     return new ClearAdminProposal(title, description, contract);
   }
 

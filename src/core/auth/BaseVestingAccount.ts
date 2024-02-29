@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../util/json';
 import { Coins } from '../Coins';
 import { BaseAccount } from './BaseAccount';
-import { BaseAccount as BaseAccount_pb } from '@terra-money/terra.proto/cosmos/auth/v1beta1/auth';
-import { BaseVestingAccount as BaseVestingAccount_pb } from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
-import * as Long from 'long';
+import { BaseAccount as BaseAccount_pb } from '@xpla/xpla.proto/cosmos/auth/v1beta1/auth';
+import { BaseVestingAccount as BaseVestingAccount_pb } from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
 import { PublicKey } from '../PublicKey';
 
 /**
@@ -85,8 +85,7 @@ export class BaseVestingAccount extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): BaseVestingAccount.Data {
-    _;
+  public toData(_isClassic?: boolean): BaseVestingAccount.Data {
     const {
       base_account,
       original_vesting,
@@ -107,9 +106,8 @@ export class BaseVestingAccount extends JSONSerializable<
 
   public static fromData(
     data: BaseVestingAccount.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): BaseVestingAccount {
-    _;
     const base_account = BaseAccount.fromData({
       '@type': '/cosmos.auth.v1beta1.BaseAccount',
       ...data.base_account,
@@ -124,8 +122,7 @@ export class BaseVestingAccount extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): BaseVestingAccount.Proto {
-    _;
+  public toProto(_isClassic?: boolean): BaseVestingAccount.Proto {
     const {
       base_account,
       original_vesting,
@@ -138,16 +135,15 @@ export class BaseVestingAccount extends JSONSerializable<
       baseAccount: base_account.toProto(),
       delegatedFree: delegated_free.toProto(),
       delegatedVesting: delegated_vesting.toProto(),
-      endTime: Long.fromNumber(end_time),
+      endTime: end_time,
       originalVesting: original_vesting.toProto(),
     });
   }
 
   public static fromProto(
     proto: BaseVestingAccount.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): BaseVestingAccount {
-    _;
     const baseAccount = BaseAccount.fromProto(
       proto.baseAccount as BaseAccount_pb
     );

@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coin } from '../../Coin';
 import { AccAddress, ValAddress } from '../../bech32';
-// import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// import { MsgBeginRedelegate as MsgBeginRedelegate_pb } from '@terra-money/legacy.proto/cosmos/staking/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgBeginRedelegate as MsgBeginRedelegate_pb } from '@terra-money/terra.proto/cosmos/staking/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgBeginRedelegate as MsgBeginRedelegate_pb } from '@xpla/xpla.proto/cosmos/staking/v1beta1/tx';
 /**
  * A delegator can choose to redelegate their bonded Luna and transfer a delegation
  * amount from one validator to another. Unlike undelegating, redelegations do not incur
@@ -33,9 +32,8 @@ export class MsgBeginRedelegate extends JSONSerializable<
 
   public static fromAmino(
     data: MsgBeginRedelegate.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgBeginRedelegate {
-    _;
     const {
       value: {
         delegator_address,
@@ -74,9 +72,8 @@ export class MsgBeginRedelegate extends JSONSerializable<
 
   public static fromData(
     data: MsgBeginRedelegate.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgBeginRedelegate {
-    _;
     const {
       delegator_address,
       validator_src_address,
@@ -91,8 +88,7 @@ export class MsgBeginRedelegate extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgBeginRedelegate.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgBeginRedelegate.Data {
     const {
       delegator_address,
       validator_src_address,
@@ -110,9 +106,8 @@ export class MsgBeginRedelegate extends JSONSerializable<
 
   public static fromProto(
     proto: MsgBeginRedelegate.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgBeginRedelegate {
-    _;
     return new MsgBeginRedelegate(
       proto.delegatorAddress,
       proto.validatorSrcAddress,
@@ -121,8 +116,7 @@ export class MsgBeginRedelegate extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgBeginRedelegate.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgBeginRedelegate.Proto {
     const {
       delegator_address,
       validator_src_address,

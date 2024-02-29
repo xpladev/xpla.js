@@ -1,5 +1,5 @@
 import { Msg } from '../core';
-import { CreateTxOptions, EvmMsg } from '../client';
+import { CreateTxOptions, EvmMessage } from '../client';
 import PostMessageStream from './PostMessageStream';
 
 interface ResponseData {
@@ -172,7 +172,7 @@ export class Extension {
   sign(options: Option): number {
     // EvmMsg를 무시하기
     if (Array.isArray(options.msgs)) {
-      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMsg) {
+      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMessage) {
         throw new Error('not yet implemented for EvmMsg');
       }
     }
@@ -230,7 +230,7 @@ export class Extension {
   post(options: Option): number {
     // EvmMsg를 무시하기
     if (Array.isArray(options.msgs)) {
-      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMsg) {
+      if (options.msgs.length < 1 || options.msgs[0] instanceof EvmMessage) {
         throw new Error('not yet implemented for EvmMsg');
       }
     }

@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coin } from '../../Coin';
 import { Int } from '../../numeric';
 import { AccAddress, ValAddress } from '../../bech32';
 import { Validator } from '../Validator';
-// import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// import { MsgCreateValidator as MsgCreateValidator_pb } from '@terra-money/legacy.proto/cosmos/staking/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgCreateValidator as MsgCreateValidator_pb } from '@terra-money/terra.proto/cosmos/staking/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgCreateValidator as MsgCreateValidator_pb } from '@xpla/xpla.proto/cosmos/staking/v1beta1/tx';
 import { ValConsPublicKey, PublicKey } from '../../PublicKey';
 
 /**
@@ -42,9 +41,8 @@ export class MsgCreateValidator extends JSONSerializable<
 
   public static fromAmino(
     data: MsgCreateValidator.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgCreateValidator {
-    _;
     const {
       value: {
         description,
@@ -95,9 +93,8 @@ export class MsgCreateValidator extends JSONSerializable<
 
   public static fromData(
     data: MsgCreateValidator.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgCreateValidator {
-    _;
     const {
       description,
       commission,
@@ -118,8 +115,7 @@ export class MsgCreateValidator extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgCreateValidator.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgCreateValidator.Data {
     const {
       description,
       commission,
@@ -143,9 +139,8 @@ export class MsgCreateValidator extends JSONSerializable<
 
   public static fromProto(
     proto: MsgCreateValidator.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgCreateValidator {
-    _;
     return new MsgCreateValidator(
       Validator.Description.fromProto(
         proto.description as Validator.Description.Proto
@@ -161,8 +156,7 @@ export class MsgCreateValidator extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgCreateValidator.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgCreateValidator.Proto {
     const {
       description,
       commission,

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-import { CancelSoftwareUpgradeProposal as CancelSoftwareUpgradeProposal_pb } from '@terra-money/legacy.proto/cosmos/upgrade/v1beta1/upgrade';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { CancelSoftwareUpgradeProposal as CancelSoftwareUpgradeProposal_pb } from '@xpla/xpla.proto/cosmos/upgrade/v1beta1/upgrade';
 
 /**
  *  CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software upgrade
@@ -21,9 +22,8 @@ export class CancelSoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromAmino(
     data: CancelSoftwareUpgradeProposal.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): CancelSoftwareUpgradeProposal {
-    _;
     const {
       value: { title, description },
     } = data;
@@ -45,15 +45,13 @@ export class CancelSoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromData(
     data: CancelSoftwareUpgradeProposal.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): CancelSoftwareUpgradeProposal {
-    _;
     const { title, description } = data;
     return new CancelSoftwareUpgradeProposal(title, description);
   }
 
-  public toData(_?: boolean): CancelSoftwareUpgradeProposal.Data {
-    _;
+  public toData(_isClassic?: boolean): CancelSoftwareUpgradeProposal.Data {
     const { title, description } = this;
     return {
       '@type': '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
@@ -64,14 +62,12 @@ export class CancelSoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromProto(
     proto: CancelSoftwareUpgradeProposal.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): CancelSoftwareUpgradeProposal {
-    _;
     return new CancelSoftwareUpgradeProposal(proto.title, proto.description);
   }
 
-  public toProto(_?: boolean): CancelSoftwareUpgradeProposal.Proto {
-    _;
+  public toProto(_isClassic?: boolean): CancelSoftwareUpgradeProposal.Proto {
     const { title, description } = this;
     return CancelSoftwareUpgradeProposal_pb.fromPartial({
       title,

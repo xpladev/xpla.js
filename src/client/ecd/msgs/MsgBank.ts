@@ -1,11 +1,11 @@
 import { EvmAddress, Coin, Coins, Numeric } from '../../../core';
-import { EvmTx, EvmMsg } from './EvmTx';
+import { EvmTx, EvmMessage } from './EvmTx';
 import Decimal from 'decimal.js';
 
 /**
  * A basic message for sending [[Coins]] between Xpla accounts.
  */
-export class EvmSend extends EvmMsg {
+export class EvmSend extends EvmMessage {
   public amount: Coin;
 
   /**

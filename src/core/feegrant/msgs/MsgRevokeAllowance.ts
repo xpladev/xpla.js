@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgRevokeAllowance as MsgRevokeAllowance_pb } from '@terra-money/terra.proto/cosmos/feegrant/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgRevokeAllowance as MsgRevokeAllowance_pb } from '@xpla/xpla.proto/cosmos/feegrant/v1beta1/tx';
 
 /**
  * MsgRevokeAllowance remove permission any existing Allowance from Granter to Grantee.
@@ -22,9 +23,8 @@ export class MsgRevokeAllowance extends JSONSerializable<
 
   public static fromAmino(
     data: MsgRevokeAllowance.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAllowance {
-    _;
     const {
       value: { granter, grantee },
     } = data;
@@ -46,15 +46,13 @@ export class MsgRevokeAllowance extends JSONSerializable<
 
   public static fromData(
     proto: MsgRevokeAllowance.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAllowance {
-    _;
     const { granter, grantee } = proto;
     return new MsgRevokeAllowance(granter, grantee);
   }
 
-  public toData(_?: boolean): MsgRevokeAllowance.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgRevokeAllowance.Data {
     const { granter, grantee } = this;
     return {
       '@type': '/cosmos.feegrant.v1beta1.MsgRevokeAllowance',
@@ -65,14 +63,12 @@ export class MsgRevokeAllowance extends JSONSerializable<
 
   public static fromProto(
     proto: MsgRevokeAllowance.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAllowance {
-    _;
     return new MsgRevokeAllowance(proto.granter, proto.grantee);
   }
 
-  public toProto(_?: boolean): MsgRevokeAllowance.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgRevokeAllowance.Proto {
     const { granter, grantee } = this;
     return MsgRevokeAllowance_pb.fromPartial({
       grantee,

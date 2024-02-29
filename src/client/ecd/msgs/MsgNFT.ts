@@ -1,11 +1,11 @@
 import { EvmAddress, Numeric } from '../../../core';
-import { EvmTx, EvmMsg } from './EvmTx';
+import { EvmTx, EvmMessage } from './EvmTx';
 import { ECDClient } from '../ECDClient';
 
 /**
  * A basic message for sending [[Coins]] between Xpla accounts.
  */
-export class EvmSendNft extends EvmMsg {
+export class EvmSendNft extends EvmMessage {
   /**
    * @param contract erc721 token contract address
    * @param from_address sender's address
@@ -39,7 +39,7 @@ export class EvmSendNft extends EvmMsg {
   }
 }
 
-export class EvmMintNft extends EvmMsg {
+export class EvmMintNft extends EvmMessage {
   /**
    * @param contract erc20 token contract address
    * @param owner_address contract owner's address

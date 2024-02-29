@@ -3,12 +3,12 @@ import {
   SimplePublicKey,
   LegacyAminoMultisigPublicKey,
 } from './PublicKey';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import {
   SignMode as SignMode_pb,
   signModeFromJSON,
   signModeToJSON,
-} from '@terra-money/terra.proto/cosmos/tx/signing/v1beta1/signing';
+} from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
 import {
   Tx as Tx_pb,
   TxBody as TxBody_pb,
@@ -17,11 +17,10 @@ import {
   AuthInfo as AuthInfo_pb,
   ModeInfo_Single as ModeInfoSingle_pb,
   ModeInfo_Multi as ModeInfoMulti_pb,
-} from '@terra-money/terra.proto/cosmos/tx/v1beta1/tx';
+} from '@xpla/xpla.proto/cosmos/tx/v1beta1/tx';
 import { CompactBitArray } from './CompactBitArray';
 import { Msg } from './Msg';
 import { Fee } from './Fee';
-import * as Long from 'long';
 import { SignatureV2 } from './SignatureV2';
 import { SignerData } from '../client/lcd/api/TxAPI';
 
@@ -42,7 +41,7 @@ export class Tx {
         Number.parseInt(data.value.timeout_height)
       ),
       new AuthInfo([], Fee.fromAmino(data.value.fee)),
-      signatures.map(s => s.data.single?.signature || '')
+      signatures.map(s => s.data.single?.signature ?? '')
     );
   }
 
@@ -199,7 +198,7 @@ export class TxBody {
     return TxBody_pb.fromPartial({
       memo: this.memo,
       messages: this.messages.map(m => m.packAny(isClassic)),
-      timeoutHeight: Long.fromNumber(this.timeout_height ?? 0),
+      timeoutHeight: this.timeout_height ?? 0,
     });
   }
 
@@ -223,7 +222,7 @@ export class AuthInfo {
   public static fromData(data: AuthInfo.Data): AuthInfo {
     return new AuthInfo(
       data.signer_infos.map(s => SignerInfo.fromData(s)),
-      Fee.fromData(data.fee as Fee.Data)
+      Fee.fromData(data.fee)
     );
   }
 
@@ -298,7 +297,7 @@ export class SignerInfo {
     return SignerInfo_pb.fromPartial({
       modeInfo: mode_info.toProto(),
       publicKey: public_key?.packAny(),
-      sequence: Long.fromNumber(sequence),
+      sequence: sequence,
     });
   }
 }
@@ -411,7 +410,7 @@ export namespace ModeInfo {
 
     public static fromData(proto: Multi.Data): Multi {
       return new Multi(
-        CompactBitArray.fromData(proto.bitarray as CompactBitArray.Data),
+        CompactBitArray.fromData(proto.bitarray),
         proto.mode_infos.map(m => ModeInfo.fromData(m))
       );
     }

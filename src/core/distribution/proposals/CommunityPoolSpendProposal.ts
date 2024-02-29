@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// there's no difference between two protos
-// import { CommunityPoolSpendProposal as CommunityPoolSpendProposal_legacy_pb } from '@terra-money/legacy.proto/cosmos/distribution/v1beta1/distribution';
-import { CommunityPoolSpendProposal as CommunityPoolSpendProposal_pb } from '@terra-money/terra.proto/cosmos/distribution/v1beta1/distribution';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { CommunityPoolSpendProposal as CommunityPoolSpendProposal_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/distribution';
 
 /**
  * Proposal that disburses funds from the Distribution module's community pool to the
@@ -34,9 +33,8 @@ export class CommunityPoolSpendProposal extends JSONSerializable<
 
   public static fromAmino(
     data: CommunityPoolSpendProposal.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): CommunityPoolSpendProposal {
-    _;
     const {
       value: { title, description, recipient, amount },
     } = data;
@@ -65,9 +63,8 @@ export class CommunityPoolSpendProposal extends JSONSerializable<
 
   public static fromData(
     data: CommunityPoolSpendProposal.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): CommunityPoolSpendProposal {
-    _;
     const { title, description, recipient, amount } = data;
     return new CommunityPoolSpendProposal(
       title,
@@ -77,8 +74,7 @@ export class CommunityPoolSpendProposal extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): CommunityPoolSpendProposal.Data {
-    _;
+  public toData(_isClassic?: boolean): CommunityPoolSpendProposal.Data {
     const { title, description, recipient, amount } = this;
     return {
       '@type': '/cosmos.distribution.v1beta1.CommunityPoolSpendProposal',
@@ -91,9 +87,8 @@ export class CommunityPoolSpendProposal extends JSONSerializable<
 
   public static fromProto(
     proto: CommunityPoolSpendProposal.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): CommunityPoolSpendProposal {
-    _;
     return new CommunityPoolSpendProposal(
       proto.title,
       proto.description,
@@ -102,8 +97,7 @@ export class CommunityPoolSpendProposal extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): CommunityPoolSpendProposal.Proto {
-    _;
+  public toProto(_isClassic?: boolean): CommunityPoolSpendProposal.Proto {
     const { title, description, recipient, amount } = this;
     return CommunityPoolSpendProposal_pb.fromPartial({
       amount: amount.toProto(),

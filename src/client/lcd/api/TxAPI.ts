@@ -10,14 +10,14 @@ import {
   Fee,
   Dec,
   PublicKey,
+  TxLog,
 } from '../../../core';
 import { hashToHex } from '../../../util/hash';
 import { LCDClient } from '../LCDClient';
-import { TxLog } from '../../../core';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { BroadcastMode as BroadcastModeV1 } from '@terra-money/legacy.proto/cosmos/tx/v1beta1/service';
-import { BroadcastMode as BroadcastModeV2 } from '@terra-money/terra.proto/cosmos/tx/v1beta1/service';
-import { EvmMsg } from '../../../client/ecd/msgs';
+import { BroadcastMode as BroadcastModeV2 } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
+import { EvmMessage } from '../../../client/ecd/msgs';
 
 interface Wait {
   height: number;
@@ -254,9 +254,9 @@ export class TxAPI extends BaseAPI {
 
     // EvmMsg를 무시하기
     if (Array.isArray(msgs)) {
-      if (msgs.length < 1 || msgs[0] instanceof EvmMsg) {
+      if (msgs.length < 1 || msgs[0] instanceof EvmMessage) {
         return new Tx(
-          new TxBody([], memo || '', timeoutHeight || 0),
+          new TxBody([], memo ?? '', timeoutHeight ?? 0),
           new AuthInfo([], fee),
           []
         );
@@ -264,7 +264,7 @@ export class TxAPI extends BaseAPI {
     }
 
     return new Tx(
-      new TxBody(msgs as Msg[], memo || '', timeoutHeight || 0),
+      new TxBody(msgs, memo ?? '', timeoutHeight ?? 0),
       new AuthInfo([], fee),
       []
     );
@@ -302,10 +302,10 @@ export class TxAPI extends BaseAPI {
     signers: SignerData[],
     options: CreateTxOptions
   ): Promise<Fee> {
-    const gasPrices = options.gasPrices || this.lcd.config.gasPrices;
+    const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
     const gasAdjustment =
-      options.gasAdjustment || this.lcd.config.gasAdjustment;
-    const feeDenoms = options.feeDenoms || [
+      options.gasAdjustment ?? this.lcd.config.gasAdjustment;
+    const feeDenoms = options.feeDenoms ?? [
       this.lcd.config.isClassic ? 'uusd' : 'axpla',
     ];
     const msgs = options.msgs;
@@ -328,12 +328,12 @@ export class TxAPI extends BaseAPI {
 
     // EvmMsg를 무시하기
     if (Array.isArray(msgs)) {
-      if (msgs.length < 1 || msgs[0] instanceof EvmMsg) {
+      if (msgs.length < 1 || msgs[0] instanceof EvmMessage) {
         return new Fee(0, '0axpla', '', '');
       }
     }
 
-    const txBody = new TxBody(msgs as Msg[], options.memo || '');
+    const txBody = new TxBody(msgs, options.memo ?? '');
     const authInfo = new AuthInfo([], new Fee(0, new Coins()));
     const tx = new Tx(txBody, authInfo, []);
 
@@ -362,12 +362,12 @@ export class TxAPI extends BaseAPI {
     }
   ): Promise<number> {
     const gasAdjustment =
-      options?.gasAdjustment || this.lcd.config.gasAdjustment;
+      options?.gasAdjustment ?? this.lcd.config.gasAdjustment;
 
     // append empty signatures if there's no signatures in tx
     let simTx: Tx = tx;
     if (tx.signatures.length <= 0) {
-      if (!(options && options.signers && options.signers.length > 0)) {
+      if (!(options?.signers && options.signers.length > 0)) {
         throw Error('cannot append signature');
       }
       const authInfo = new AuthInfo([], new Fee(0, new Coins()));
@@ -414,7 +414,7 @@ export class TxAPI extends BaseAPI {
    * @param tx transaction to hash
    */
   public async hash(tx: Tx): Promise<string> {
-    const txBytes = await this.encode(tx);
+    const txBytes = this.encode(tx);
     return hashToHex(txBytes);
   }
 
@@ -488,7 +488,7 @@ export class TxAPI extends BaseAPI {
       gas_wanted: txInfo.gas_wanted,
       gas_used: txInfo.gas_used,
       height: +txInfo.height,
-      logs: (txInfo.logs || []).map(l => TxLog.fromData(l)),
+      logs: (txInfo.logs ?? []).map(l => TxLog.fromData(l)),
       code: txInfo.code,
       codespace: txInfo.codespace,
       timestamp: txInfo.timestamp,

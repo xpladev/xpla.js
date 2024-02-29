@@ -1,12 +1,11 @@
-import { EvmAddress, Coin, Coins, Numeric } from '../../../core';
-import { EvmTx, EvmMsg } from './EvmTx';
+import { EvmAddress, Numeric } from '../../../core';
+import { EvmTx, EvmMessage } from './EvmTx';
 import { ECDClient } from '../ECDClient';
-import Decimal from 'decimal.js';
 
 /**
  * A basic message for sending [[Coins]] between Xpla accounts.
  */
-export class EvmSendToken extends EvmMsg {
+export class EvmSendToken extends EvmMessage {
   /**
    * @param contract erc20 token contract address
    * @param from_address sender's address
@@ -40,7 +39,7 @@ export class EvmSendToken extends EvmMsg {
   }
 }
 
-export class EvmMintToken extends EvmMsg {
+export class EvmMintToken extends EvmMessage {
   /**
    * @param contract erc20 token contract address
    * @param owner_address contract owner's address

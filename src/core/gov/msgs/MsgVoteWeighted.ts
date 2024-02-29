@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { WeightedVoteOption } from '../Vote';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgVoteWeighted as MsgVoteWeighted_pb } from '@terra-money/terra.proto/cosmos/gov/v1beta1/tx';
-import * as Long from 'long';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgVoteWeighted as MsgVoteWeighted_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/tx';
 
 /**
  * Weighted vote for a proposal
@@ -28,9 +28,8 @@ export class MsgVoteWeighted extends JSONSerializable<
 
   public static fromAmino(
     data: MsgVoteWeighted.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVoteWeighted {
-    _;
     const {
       value: { proposal_id, voter, options },
     } = data;
@@ -55,9 +54,8 @@ export class MsgVoteWeighted extends JSONSerializable<
 
   public static fromData(
     data: MsgVoteWeighted.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVoteWeighted {
-    _;
     const { proposal_id, voter, options } = data;
     return new MsgVoteWeighted(
       Number.parseInt(proposal_id),
@@ -66,8 +64,7 @@ export class MsgVoteWeighted extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgVoteWeighted.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgVoteWeighted.Data {
     const { proposal_id, voter, options } = this;
     return {
       '@type': '/cosmos.gov.v1beta1.MsgVoteWeighted',
@@ -79,9 +76,8 @@ export class MsgVoteWeighted extends JSONSerializable<
 
   public static fromProto(
     proto: MsgVoteWeighted.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgVoteWeighted {
-    _;
     return new MsgVoteWeighted(
       proto.proposalId.toNumber(),
       proto.voter,
@@ -89,26 +85,23 @@ export class MsgVoteWeighted extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgVoteWeighted.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgVoteWeighted.Proto {
     const { proposal_id, voter, options } = this;
     return MsgVoteWeighted_pb.fromPartial({
       options: options.map(o => o.toProto()),
-      proposalId: Long.fromNumber(proposal_id),
+      proposalId: proposal_id,
       voter,
     });
   }
 
-  public packAny(_?: boolean): Any {
-    _;
+  public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
       typeUrl: '/cosmos.gov.v1beta1.MsgVoteWeighted',
       value: MsgVoteWeighted_pb.encode(this.toProto()).finish(),
     });
   }
 
-  public static unpackAny(msgAny: Any, _?: boolean): MsgVoteWeighted {
-    _;
+  public static unpackAny(msgAny: Any, _isClassic?: boolean): MsgVoteWeighted {
     return MsgVoteWeighted.fromProto(MsgVoteWeighted_pb.decode(msgAny.value));
   }
 }

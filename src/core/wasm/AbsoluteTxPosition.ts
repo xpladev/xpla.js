@@ -1,6 +1,6 @@
-import { AbsoluteTxPosition as AbsoluteTxPosition_pb } from '@terra-money/terra.proto/cosmwasm/wasm/v1/types';
+import { AbsoluteTxPosition as AbsoluteTxPosition_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 import { JSONSerializable } from '../../util/json';
-import * as Long from 'long';
+
 /**
  *
  */
@@ -56,8 +56,8 @@ export class AbsoluteTxPosition extends JSONSerializable<
 
   public toProto(): AbsoluteTxPosition.Proto {
     return AbsoluteTxPosition_pb.fromPartial({
-      blockHeight: Long.fromNumber(this.block_height),
-      txIndex: Long.fromNumber(this.tx_index),
+      blockHeight: this.block_height,
+      txIndex: this.tx_index,
     });
   }
 }

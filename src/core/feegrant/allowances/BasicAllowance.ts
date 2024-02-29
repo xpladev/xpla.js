@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { BasicAllowance as BasicAllowance_pb } from '@terra-money/terra.proto/cosmos/feegrant/v1beta1/feegrant';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { BasicAllowance as BasicAllowance_pb } from '@xpla/xpla.proto/cosmos/feegrant/v1beta1/feegrant';
 
 /**
  * BasicAllowance implements Allowance with a one-time grant of tokens
@@ -39,9 +40,8 @@ export class BasicAllowance extends JSONSerializable<
 
   public static fromAmino(
     data: BasicAllowance.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): BasicAllowance {
-    _;
     const {
       value: { spend_limit, expiration },
     } = data;
@@ -50,8 +50,6 @@ export class BasicAllowance extends JSONSerializable<
       spend_limit ? Coins.fromAmino(spend_limit) : undefined,
       expiration ? new Date(expiration) : undefined
     );
-
-    new BasicAllowance('');
   }
 
   public toAmino(isClassic?: boolean): BasicAllowance.Amino {
@@ -59,18 +57,17 @@ export class BasicAllowance extends JSONSerializable<
     return {
       type: isClassic ? 'feegrant/BasicAllowance' : 'cosmos-sdk/BasicAllowance',
       value: {
-        spend_limit: spend_limit?.toAmino() || undefined,
+        spend_limit: spend_limit?.toAmino() ?? undefined,
         expiration:
-          expiration?.toISOString().replace(/\.000Z$/, 'Z') || undefined,
+          expiration?.toISOString().replace(/\.000Z$/, 'Z') ?? undefined,
       },
     };
   }
 
   public static fromData(
     proto: BasicAllowance.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): BasicAllowance {
-    _;
     const { spend_limit, expiration } = proto;
     return new BasicAllowance(
       spend_limit ? Coins.fromData(spend_limit) : undefined,
@@ -78,34 +75,31 @@ export class BasicAllowance extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): BasicAllowance.Data {
-    _;
+  public toData(_isClassic?: boolean): BasicAllowance.Data {
     const { spend_limit, expiration } = this;
     return {
       '@type': '/cosmos.feegrant.v1beta1.BasicAllowance',
-      spend_limit: spend_limit?.toData() || undefined,
+      spend_limit: spend_limit?.toData() ?? undefined,
       expiration:
-        expiration?.toISOString().replace(/\.000Z$/, 'Z') || undefined,
+        expiration?.toISOString().replace(/\.000Z$/, 'Z') ?? undefined,
     };
   }
 
   public static fromProto(
     proto: BasicAllowance.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): BasicAllowance {
-    _;
     return new BasicAllowance(
       Coins.fromProto(proto.spendLimit),
-      proto.expiration ? (proto.expiration as Date) : undefined
+      proto.expiration ?? undefined
     );
   }
 
-  public toProto(_?: boolean): BasicAllowance.Proto {
-    _;
+  public toProto(_isClassic?: boolean): BasicAllowance.Proto {
     const { spend_limit, expiration } = this;
     return BasicAllowance_pb.fromPartial({
       expiration,
-      spendLimit: spend_limit?.toProto() || undefined,
+      spendLimit: spend_limit?.toProto() ?? undefined,
     });
   }
 

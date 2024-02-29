@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-import { SoftwareUpgradeProposal as SoftwareUpgradeProposal_pb } from '@terra-money/legacy.proto/cosmos/upgrade/v1beta1/upgrade';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { SoftwareUpgradeProposal as SoftwareUpgradeProposal_pb } from '@xpla/xpla.proto/cosmos/upgrade/v1beta1/upgrade';
 import { Plan } from '../Plan';
 
 /**
@@ -27,9 +28,8 @@ export class SoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromAmino(
     data: SoftwareUpgradeProposal.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): SoftwareUpgradeProposal {
-    _;
     const {
       value: { title, description, plan },
     } = data;
@@ -56,9 +56,8 @@ export class SoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromData(
     data: SoftwareUpgradeProposal.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): SoftwareUpgradeProposal {
-    _;
     const { title, description, plan } = data;
     return new SoftwareUpgradeProposal(
       title,
@@ -67,8 +66,7 @@ export class SoftwareUpgradeProposal extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): SoftwareUpgradeProposal.Data {
-    _;
+  public toData(_isClassic?: boolean): SoftwareUpgradeProposal.Data {
     const { title, description, plan } = this;
     return {
       '@type': '/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal',
@@ -80,9 +78,8 @@ export class SoftwareUpgradeProposal extends JSONSerializable<
 
   public static fromProto(
     proto: SoftwareUpgradeProposal.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): SoftwareUpgradeProposal {
-    _;
     return new SoftwareUpgradeProposal(
       proto.title,
       proto.description,
@@ -90,8 +87,7 @@ export class SoftwareUpgradeProposal extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): SoftwareUpgradeProposal.Proto {
-    _;
+  public toProto(_isClassic?: boolean): SoftwareUpgradeProposal.Proto {
     const { title, description, plan } = this;
     return SoftwareUpgradeProposal_pb.fromPartial({
       title,

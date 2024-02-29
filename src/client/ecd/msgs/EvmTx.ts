@@ -22,25 +22,6 @@ export type EvmTx = {
   accessList?: null | string[];
 };
 
-// export type EvmTxInfo = {
-//   blockHash?: null | string;
-//   blockNumber?: null | string;
-//   from?: null | string;
-//   to?: null | string;
-//   contractAddress?: null | string;
-//   cumulativeGasUsed?: null | string;
-//   effectiveGasPrice?: null | string;
-//   gasUsed?: null | string;
-//   transactionHash?: null | string;
-//   transactionIndex?: null | string;
-//   value?: null | string;
-//   type?: null | string;
-//   logs?: null | any[];
-//   logsBloom?: null | string;
-//   root?: null | string;
-//   status?: null | string;
-// };
-
 export class EvmTxInfo {
   constructor(
     public blockHash: string,
@@ -81,6 +62,6 @@ export class EvmTxInfo {
   }
 }
 
-export abstract class EvmMsg {
+export abstract class EvmMessage {
   public abstract tx(): EvmTx;
 }

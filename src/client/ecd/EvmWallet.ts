@@ -1,7 +1,7 @@
 import { Key } from '../../key';
 import { CreateEvmTxOptions } from './api/TxAPI';
 import { ECDClient } from './ECDClient';
-import { EvmTx, EvmMsg } from './msgs';
+import { EvmTx, EvmMessage } from './msgs';
 
 export class EvmWallet {
   constructor(public ecd: ECDClient, public key: Key) {}
@@ -39,7 +39,7 @@ export class EvmWallet {
     if (
       !Array.isArray(msgs) ||
       msgs.length != 1 ||
-      !(msgs[0] instanceof EvmMsg)
+      !(msgs[0] instanceof EvmMessage)
     ) {
       return Promise.reject('ECDClient must need one EvmMsg');
     }

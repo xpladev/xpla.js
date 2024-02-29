@@ -6,6 +6,8 @@ import {
   MsgWithdrawValidatorCommission,
   MsgFundCommunityPool,
 } from './distribution/msgs';
+import { Erc20Msg, MsgConvertCoin, MsgConvertERC20 } from './erc20/msgs';
+import { EvmMsg, MsgEthereumTx } from './evm/msgs';
 import {
   MsgGrantAllowance,
   MsgRevokeAllowance,
@@ -85,178 +87,8 @@ import {
   IbcChannelMsg,
 } from './ibc/msgs/channel';
 import { MsgVerifyInvariant, CrisisMsg } from './crisis';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-
-export class MsgEthereumTxData {
-  public attype: string;
-  public r: string;
-  public s: string;
-  public v: string;
-  public to: string;
-  public gas: string;
-  public data: string | null;
-  public nonce: string;
-  public value: string;
-  public gas_price: string | null;
-  public gas_tip_cap: string | null;
-  public gas_fee_cap: string | null;
-
-  constructor(
-    attype: string,
-    r: string,
-    s: string,
-    v: string,
-    to: string,
-    gas: string,
-    data: string | null,
-    nonce: string,
-    value: string,
-    gas_price: string | null,
-    gas_tip_cap: string | null,
-    gas_fee_cap: string | null
-  ) {
-    this.attype = attype;
-    this.r = r;
-    this.s = s;
-    this.v = v;
-    this.to = to;
-    this.gas = gas;
-    this.data = data;
-    this.nonce = nonce;
-    this.value = value;
-    this.gas_price = gas_price;
-    this.gas_tip_cap = gas_tip_cap;
-    this.gas_fee_cap = gas_fee_cap;
-  }
-}
-
-export class MsgEthereumTx {
-  public data: MsgEthereumTxData;
-  public size: number;
-  public hash: string;
-  public from: string;
-
-  constructor(
-    data: MsgEthereumTxData,
-    size: number,
-    hash: string,
-    from: string
-  ) {
-    this.data = data;
-    this.size = size;
-    this.hash = hash;
-    this.from = from;
-  }
-
-  public toAmino(_?: boolean): null {
-    _;
-    return null;
-  }
-
-  public packAny(_?: boolean): {} {
-    _;
-    return {};
-  }
-
-  public toJSON(_?: boolean): string {
-    _;
-    return JSON.stringify(this.toData());
-  }
-
-  public static fromData(msgdata: MsgEthereumTx.Data): MsgEthereumTx {
-    const {
-      r,
-      s,
-      v,
-      to,
-      gas,
-      data,
-      nonce,
-      value,
-      gas_price,
-      gas_tip_cap,
-      gas_fee_cap,
-    } = msgdata.data;
-    return new MsgEthereumTx(
-      new MsgEthereumTxData(
-        msgdata.data['@type'],
-        r,
-        s,
-        v,
-        to,
-        gas,
-        data,
-        nonce,
-        value,
-        gas_price,
-        gas_tip_cap,
-        gas_fee_cap
-      ),
-      msgdata.size,
-      msgdata.hash,
-      msgdata.from
-    );
-  }
-
-  public toData(): MsgEthereumTx.Data {
-    const {
-      r,
-      s,
-      v,
-      to,
-      gas,
-      data,
-      nonce,
-      value,
-      gas_price,
-      gas_tip_cap,
-      gas_fee_cap,
-    } = this.data;
-    return {
-      '@type': '/ethermint.evm.v1.MsgEthereumTx',
-      data: {
-        '@type': this.data.attype,
-        r,
-        s,
-        v,
-        to,
-        gas,
-        data,
-        nonce,
-        value,
-        gas_price,
-        gas_tip_cap,
-        gas_fee_cap,
-      },
-      size: this.size,
-      hash: this.hash,
-      from: this.from,
-    };
-  }
-}
-
-export namespace MsgEthereumTx {
-  export interface Data {
-    '@type': '/ethermint.evm.v1.MsgEthereumTx';
-    data: {
-      '@type': string;
-      r: string;
-      s: string;
-      v: string;
-      to: string;
-      gas: string;
-      data: string | null;
-      nonce: string;
-      value: string;
-      gas_price: string | null;
-      gas_tip_cap: string | null;
-      gas_fee_cap: string | null;
-    };
-    size: number;
-    hash: string;
-    from: string;
-  }
-}
+import { XplaMsg, MsgFundFeeCollector } from './xpla/msgs';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
   | BankMsg
@@ -275,7 +107,9 @@ export type Msg =
   | IbcConnectionMsg
   | IbcChannelMsg
   | CrisisMsg
-  | MsgEthereumTx;
+  | Erc20Msg
+  | EvmMsg
+  | XplaMsg;
 
 export namespace Msg {
   export type Amino =
@@ -291,7 +125,10 @@ export namespace Msg {
     | VestingMsg.Amino
     | WasmMsg.Amino
     | IbcTransferMsg.Amino
-    | CrisisMsg.Amino;
+    | CrisisMsg.Amino
+    | Erc20Msg.Amino
+    | EvmMsg.Amino
+    | XplaMsg.Amino;
 
   export type Data =
     | BankMsg.Data
@@ -310,7 +147,9 @@ export namespace Msg {
     | IbcConnectionMsg.Data
     | IbcChannelMsg.Data
     | CrisisMsg.Data
-    | MsgEthereumTx.Data;
+    | Erc20Msg.Data
+    | EvmMsg.Data
+    | XplaMsg.Data;
 
   export type Proto =
     | BankMsg.Proto
@@ -328,7 +167,10 @@ export namespace Msg {
     | IbcClientMsg.Proto
     | IbcConnectionMsg.Proto
     | IbcChannelMsg.Proto
-    | CrisisMsg.Proto;
+    | CrisisMsg.Proto
+    | Erc20Msg.Proto
+    | EvmMsg.Proto
+    | XplaMsg.Proto;
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
@@ -361,6 +203,7 @@ export namespace Msg {
       case 'feegrant/MsgRevokeAllowance':
       case 'cosmos-sdk/MsgRevokeAllowance':
         return MsgRevokeAllowance.fromAmino(data, isClassic);
+
       // gov
       case 'gov/MsgDeposit':
       case 'cosmos-sdk/MsgDeposit':
@@ -399,6 +242,7 @@ export namespace Msg {
         return MsgAggregateExchangeRatePrevote.fromAmino(data, isClassic);
       case 'oracle/MsgAggregateExchangeRateVote':
         return MsgAggregateExchangeRateVote.fromAmino(data, isClassic);
+
       // slashing
       case 'slashing/MsgUnjail':
       case 'cosmos-sdk/MsgUnjail':
@@ -440,19 +284,37 @@ export namespace Msg {
         return MsgExecuteContract.fromAmino(data, isClassic);
       case 'wasm/MsgMigrateContract':
         return MsgMigrateContract.fromAmino(data, isClassic);
-      case 'wasm/MsgUpdateContractAdmin':
       case 'wasm/MsgUpdateAdmin':
         return MsgUpdateContractAdmin.fromAmino(data, isClassic);
       case 'wasm/MsgClearContractAdmin':
       case 'wasm/MsgClearAdmin':
         return MsgClearContractAdmin.fromAmino(data, isClassic);
+
       // ibc-transfer
       case 'cosmos-sdk/MsgTransfer':
         return MsgTransfer.fromAmino(data, isClassic);
+
       // crisis
       case 'crisis/MsgVerifyInvariant':
       case 'cosmos-sdk/MsgVerifyInvariant':
         return MsgVerifyInvariant.fromAmino(data, isClassic);
+
+      // erc20
+      case 'erc20/MsgConvertCoin':
+        return MsgConvertCoin.fromAmino(data);
+      case 'erc20/MsgConvertERC20':
+        return MsgConvertERC20.fromAmino(data);
+
+      // evm
+      case 'evm/MsgEthereumTx':
+        return MsgEthereumTx.fromAmino(data);
+
+      // xpla
+      case 'xpla/MsgFundFeeCollector':
+        return MsgFundFeeCollector.fromAmino(data);
+
+      default:
+        throw Error(`not supported msg ${data['type']}`);
     }
   }
   export function fromData(data: Msg.Data, isClassic?: boolean): Msg {
@@ -510,6 +372,7 @@ export namespace Msg {
         return MsgAggregateExchangeRatePrevote.fromData(data, isClassic);
       case '/terra.oracle.v1beta1.MsgAggregateExchangeRateVote':
         return MsgAggregateExchangeRateVote.fromData(data, isClassic);
+
       // slashing
       case '/cosmos.slashing.v1beta1.MsgUnjail':
         return MsgUnjail.fromData(data, isClassic);
@@ -535,21 +398,16 @@ export namespace Msg {
         return MsgDonateAllVestingTokens.fromData(data, isClassic);
 
       // wasm
-      case '/terra.wasm.v1beta1.MsgStoreCode':
       case '/cosmwasm.wasm.v1.MsgStoreCode':
         return MsgStoreCode.fromData(data, isClassic);
       case '/terra.wasm.v1beta1.MsgMigrateCode': // isClassic only
         return MsgMigrateCode.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgInstantiateContract':
       case '/cosmwasm.wasm.v1.MsgInstantiateContract':
         return MsgInstantiateContract.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgExecuteContract':
       case '/cosmwasm.wasm.v1.MsgExecuteContract':
         return MsgExecuteContract.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgMigrateContract':
       case '/cosmwasm.wasm.v1.MsgMigrateContract':
         return MsgMigrateContract.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgUpdateContractAdmin':
       case '/cosmwasm.wasm.v1.MsgUpdateAdmin':
         return MsgUpdateContractAdmin.fromData(data, isClassic);
       case '/terra.wasm.v1beta1.MsgClearContractAdmin':
@@ -602,13 +460,24 @@ export namespace Msg {
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
         return MsgTimeoutOnClose.fromData(data, isClassic);
 
+      // crisis
+      case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
+        return MsgVerifyInvariant.fromData(data, isClassic);
+
+      // erc20
+      case '/evmos.erc20.v1.MsgConvertCoin':
+        return MsgConvertCoin.fromData(data);
+      case '/evmos.erc20.v1.MsgConvertERC20':
+        return MsgConvertERC20.fromData(data);
+
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
         return MsgEthereumTx.fromData(data);
 
-      // crisis
-      case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
-        return MsgVerifyInvariant.fromData(data, isClassic);
+      // xpla
+      case '/xpla.reward.v1beta1.MsgFundFeeCollector':
+        return MsgFundFeeCollector.fromData(data);
+
       default:
         throw Error(`not supported msg ${data['@type']}`);
     }
@@ -762,6 +631,21 @@ export namespace Msg {
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
         return MsgVerifyInvariant.unpackAny(proto, isClassic);
+
+      // erc20
+      case 'erc20/MsgConvertCoin':
+        return MsgConvertCoin.unpackAny(proto);
+      case 'erc20/MsgConvertERC20':
+        return MsgConvertERC20.unpackAny(proto);
+
+      // evm
+      case 'evm/MsgEthereumTx':
+        return MsgEthereumTx.unpackAny(proto);
+
+      // xpla
+      case 'xpla/MsgFundFeeCollector':
+        return MsgFundFeeCollector.unpackAny(proto);
+
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);
     }

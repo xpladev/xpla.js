@@ -1,11 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PublicKey } from '../PublicKey';
 import { JSONSerializable } from '../../util/json';
 import { AccAddress } from '../bech32';
-// import { BaseAccount as BaseAccount_pb } from '@terra-money/legacy.proto/cosmos/auth/v1beta1/auth';
-// import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-import { BaseAccount as BaseAccount_pb } from '@terra-money/terra.proto/cosmos/auth/v1beta1/auth';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import * as Long from 'long';
+import { BaseAccount as BaseAccount_pb } from '@xpla/xpla.proto/cosmos/auth/v1beta1/auth';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * Stores information about an account fetched from the blockchain.
@@ -57,8 +55,10 @@ export class BaseAccount extends JSONSerializable<
     };
   }
 
-  public static fromAmino(data: BaseAccount.Amino, _?: boolean): BaseAccount {
-    _;
+  public static fromAmino(
+    data: BaseAccount.Amino,
+    _isClassic?: boolean
+  ): BaseAccount {
     const {
       value: { address, public_key, account_number, sequence },
     } = data;
@@ -71,8 +71,10 @@ export class BaseAccount extends JSONSerializable<
     );
   }
 
-  public static fromData(data: BaseAccount.Data, _?: boolean): BaseAccount {
-    _;
+  public static fromData(
+    data: BaseAccount.Data,
+    _isClassic?: boolean
+  ): BaseAccount {
     const { address, pub_key, account_number, sequence } = data;
 
     return new BaseAccount(
@@ -83,8 +85,7 @@ export class BaseAccount extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): BaseAccount.Data {
-    _;
+  public toData(_isClassic?: boolean): BaseAccount.Data {
     const { address, public_key, account_number, sequence } = this;
     return {
       '@type': '/cosmos.auth.v1beta1.BaseAccount',
@@ -95,22 +96,20 @@ export class BaseAccount extends JSONSerializable<
     };
   }
 
-  public toProto(_?: boolean): BaseAccount.Proto {
-    _;
+  public toProto(_isClassic?: boolean): BaseAccount.Proto {
     const { address, public_key, account_number, sequence } = this;
     return BaseAccount_pb.fromPartial({
       address,
       pubKey: public_key?.packAny(),
-      accountNumber: Long.fromNumber(account_number),
-      sequence: Long.fromNumber(sequence),
+      accountNumber: account_number,
+      sequence: sequence,
     });
   }
 
   public static fromProto(
     baseAccountProto: BaseAccount.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): BaseAccount {
-    _;
     const pubkey = baseAccountProto.pubKey;
     return new BaseAccount(
       baseAccountProto.address,

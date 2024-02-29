@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { BasicAllowance } from './BasicAllowance';
 import { PeriodicAllowance } from './PeriodicAllowance';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { AllowedMsgAllowance as AllowedMsgAllowance_pb } from '@terra-money/terra.proto/cosmos/feegrant/v1beta1/feegrant';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { AllowedMsgAllowance as AllowedMsgAllowance_pb } from '@xpla/xpla.proto/cosmos/feegrant/v1beta1/feegrant';
 
 /**
  * AllowedMsgAllowance creates allowance only for specified message types.
@@ -34,7 +35,7 @@ export class AllowedMsgAllowance extends JSONSerializable<
     return new AllowedMsgAllowance(
       allowance.type === 'feegrant/BasicAllowance' ||
       allowance.type === 'cosmos-sdk/BasicAllowance'
-        ? BasicAllowance.fromAmino(allowance as BasicAllowance.Amino, isClassic)
+        ? BasicAllowance.fromAmino(allowance, isClassic)
         : PeriodicAllowance.fromAmino(
             allowance as PeriodicAllowance.Amino,
             isClassic
@@ -58,9 +59,8 @@ export class AllowedMsgAllowance extends JSONSerializable<
 
   public static fromData(
     proto: AllowedMsgAllowance.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): AllowedMsgAllowance {
-    _;
     const { allowance, allowed_messages } = proto;
     return new AllowedMsgAllowance(
       allowance['@type'] === '/cosmos.feegrant.v1beta1.BasicAllowance'
@@ -70,8 +70,7 @@ export class AllowedMsgAllowance extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): AllowedMsgAllowance.Data {
-    _;
+  public toData(_isClassic?: boolean): AllowedMsgAllowance.Data {
     const { allowance, allowed_messages } = this;
     return {
       '@type': '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',

@@ -2,7 +2,7 @@ import {
   AccessType,
   accessTypeToJSON,
   AccessTypeParam as AccessTypeParam_pb,
-} from '@terra-money/terra.proto/cosmwasm/wasm/v1/types';
+} from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 import { JSONSerializable } from '../../util/json';
 import { convertAccessTypeFromJSON } from './util';
 

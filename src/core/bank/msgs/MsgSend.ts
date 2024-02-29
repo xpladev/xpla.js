@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Coins } from '../../Coins';
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// there's no difference between two protos
-//import { MsgSend as MsgSend_legacy_pb } from '@terra-money/legacy.proto/cosmos/bank/v1beta1/tx';
-import { MsgSend as MsgSend_pb } from '@terra-money/terra.proto/cosmos/bank/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgSend as MsgSend_pb } from '@xpla/xpla.proto/cosmos/bank/v1beta1/tx';
 
 /**
  * A basic message for sending [[Coins]] between Xpla accounts.
@@ -33,8 +32,7 @@ export class MsgSend extends JSONSerializable<
     this.amount = new Coins(amount);
   }
 
-  public static fromAmino(data: MsgSend.Amino, _?: boolean): MsgSend {
-    _;
+  public static fromAmino(data: MsgSend.Amino, _isClassic?: boolean): MsgSend {
     const {
       value: { from_address, to_address, amount },
     } = data;
@@ -53,15 +51,12 @@ export class MsgSend extends JSONSerializable<
     };
   }
 
-  public static fromData(data: MsgSend.Data, isClassic?: boolean): MsgSend {
-    isClassic;
+  public static fromData(data: MsgSend.Data, _isClassic?: boolean): MsgSend {
     const { from_address, to_address, amount } = data;
-
     return new MsgSend(from_address, to_address, Coins.fromData(amount));
   }
 
-  public toData(_?: boolean): MsgSend.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgSend.Data {
     const { from_address, to_address, amount } = this;
     return {
       '@type': '/cosmos.bank.v1beta1.MsgSend',
@@ -71,8 +66,7 @@ export class MsgSend extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgSend.Proto, _?: boolean): MsgSend {
-    _;
+  public static fromProto(proto: MsgSend.Proto, _isClassic?: boolean): MsgSend {
     return new MsgSend(
       proto.fromAddress,
       proto.toAddress,
@@ -80,8 +74,7 @@ export class MsgSend extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgSend.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgSend.Proto {
     const { from_address, to_address, amount } = this;
     return MsgSend_pb.fromPartial({
       fromAddress: from_address,

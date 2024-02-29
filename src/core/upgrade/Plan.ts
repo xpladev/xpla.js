@@ -1,6 +1,5 @@
 import { JSONSerializable } from '../../util/json';
-import { Plan as Plan_pb } from '@terra-money/terra.proto/cosmos/upgrade/v1beta1/upgrade';
-import Long from 'long';
+import { Plan as Plan_pb } from '@xpla/xpla.proto/cosmos/upgrade/v1beta1/upgrade';
 
 /*
  * Plan specifies information about a planned upgrade and when it should occur.
@@ -23,7 +22,7 @@ export class Plan extends JSONSerializable<Plan.Amino, Plan.Data, Plan.Proto> {
     time: Date | undefined,
     height: string,
     info: string,
-    upgraded_client_state: any | undefined
+    upgraded_client_state: any
   ) {
     super();
     this.name = name;
@@ -82,10 +81,10 @@ export class Plan extends JSONSerializable<Plan.Amino, Plan.Data, Plan.Proto> {
   public static fromProto(proto: Plan.Proto): Plan {
     return new Plan(
       proto.name,
-      proto.time as Date,
+      undefined,
       proto.height.toString(),
       proto.info,
-      proto.upgradedClientState
+      undefined
     );
   }
 
@@ -94,7 +93,7 @@ export class Plan extends JSONSerializable<Plan.Amino, Plan.Data, Plan.Proto> {
     return Plan_pb.fromPartial({
       name,
       time,
-      height: Long.fromString(height),
+      height: height,
       info,
       upgradedClientState: upgraded_client_state,
     });

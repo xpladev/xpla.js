@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { ParamChange, ParamChanges } from '../ParamChange';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { ParameterChangeProposal as ParameterChangeProposal_pb } from '@terra-money/terra.proto/cosmos/params/v1beta1/params';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { ParameterChangeProposal as ParameterChangeProposal_pb } from '@xpla/xpla.proto/cosmos/params/v1beta1/params';
 
 /**
  * Describes a proposal for directly altering the value of the module parameters.
@@ -58,9 +59,8 @@ export class ParameterChangeProposal extends JSONSerializable<
 
   public static fromAmino(
     data: ParameterChangeProposal.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): ParameterChangeProposal {
-    _;
     const {
       value: { title, description, changes },
     } = data;
@@ -87,9 +87,8 @@ export class ParameterChangeProposal extends JSONSerializable<
 
   public static fromData(
     proto: ParameterChangeProposal.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): ParameterChangeProposal {
-    _;
     const { title, description, changes } = proto;
     return new ParameterChangeProposal(
       title,
@@ -98,8 +97,7 @@ export class ParameterChangeProposal extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): ParameterChangeProposal.Data {
-    _;
+  public toData(_isClassic?: boolean): ParameterChangeProposal.Data {
     const { title, description, changes } = this;
     return {
       '@type': '/cosmos.params.v1beta1.ParameterChangeProposal',
@@ -111,9 +109,8 @@ export class ParameterChangeProposal extends JSONSerializable<
 
   public static fromProto(
     proto: ParameterChangeProposal.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): ParameterChangeProposal {
-    _;
     return new ParameterChangeProposal(
       proto.title,
       proto.description,
@@ -121,8 +118,7 @@ export class ParameterChangeProposal extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): ParameterChangeProposal.Proto {
-    _;
+  public toProto(_isClassic?: boolean): ParameterChangeProposal.Proto {
     const { title, description, changes } = this;
     return ParameterChangeProposal_pb.fromPartial({
       changes: changes.toProto(),

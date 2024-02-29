@@ -2,10 +2,14 @@ import { Coins } from '../Coins';
 import { Int } from '../numeric';
 import { JSONSerializable } from '../../util/json';
 import { CommunityPoolSpendProposal } from '../distribution/proposals';
+import {
+  RegisterCoinProposal,
+  RegisterERC20Proposal,
+  ToggleTokenConversionProposal,
+} from '../erc20/proposals';
 import { ParameterChangeProposal } from '../params/proposals';
 import { ClientUpdateProposal } from '../ibc/proposals';
 import { TextProposal } from './proposals';
-import { RegisterVolunteerValidatorProposal } from './proposals/RegisterVolunteerValidatorProposal';
 import {
   SoftwareUpgradeProposal,
   CancelSoftwareUpgradeProposal,
@@ -22,15 +26,15 @@ import {
   UpdateAdminProposal,
   UpdateInstantiateConfigProposal,
 } from '../wasm/proposals';
+import { RegisterVolunteerValidatorProposal } from '../xpla/proposals';
 import {
   Proposal as Proposal_pb,
   ProposalStatus,
   TallyResult,
   proposalStatusFromJSON,
   proposalStatusToJSON,
-} from '@terra-money/terra.proto/cosmos/gov/v1beta1/gov';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import * as Long from 'long';
+} from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * Stores information pertaining to a submitted proposal, such as its status and time of
@@ -187,10 +191,10 @@ export class Proposal extends JSONSerializable<
       Proposal.Content.fromProto(content as Any, isClassic),
       status,
       {
-        yes: new Int(final_tally_result?.yes || 0),
-        no: new Int(final_tally_result?.no || 0),
-        abstain: new Int(final_tally_result?.abstain || 0),
-        no_with_veto: new Int(final_tally_result?.noWithVeto || 0),
+        yes: new Int(final_tally_result?.yes ?? 0),
+        no: new Int(final_tally_result?.no ?? 0),
+        abstain: new Int(final_tally_result?.abstain ?? 0),
+        no_with_veto: new Int(final_tally_result?.noWithVeto ?? 0),
       },
       submit_time as Date,
       deposit_end_time as Date,
@@ -214,7 +218,7 @@ export class Proposal extends JSONSerializable<
     }
 
     return Proposal_pb.fromPartial({
-      proposalId: Long.fromNumber(this.id),
+      proposalId: this.id,
       content: this.content.packAny(isClassic),
       status,
       finalTallyResult: ftr,
@@ -255,6 +259,9 @@ export namespace Proposal {
     | UnpinCodesProposal
     | UpdateAdminProposal
     | UpdateInstantiateConfigProposal
+    | RegisterCoinProposal
+    | RegisterERC20Proposal
+    | ToggleTokenConversionProposal
     | RegisterVolunteerValidatorProposal;
 
   export namespace Content {
@@ -275,6 +282,9 @@ export namespace Proposal {
       | UnpinCodesProposal.Amino
       | UpdateAdminProposal.Amino
       | UpdateInstantiateConfigProposal.Amino
+      | RegisterCoinProposal.Amino
+      | RegisterERC20Proposal.Amino
+      | ToggleTokenConversionProposal.Amino
       | RegisterVolunteerValidatorProposal.Amino;
 
     export type Data =
@@ -294,6 +304,9 @@ export namespace Proposal {
       | UnpinCodesProposal.Data
       | UpdateAdminProposal.Data
       | UpdateInstantiateConfigProposal.Data
+      | RegisterCoinProposal.Data
+      | RegisterERC20Proposal.Data
+      | ToggleTokenConversionProposal.Data
       | RegisterVolunteerValidatorProposal.Data;
 
     export type Proto =
@@ -313,6 +326,9 @@ export namespace Proposal {
       | UnpinCodesProposal.Proto
       | UpdateAdminProposal.Proto
       | UpdateInstantiateConfigProposal.Proto
+      | RegisterCoinProposal.Proto
+      | RegisterERC20Proposal.Proto
+      | ToggleTokenConversionProposal.Proto
       | RegisterVolunteerValidatorProposal.Proto;
 
     export function fromAmino(
@@ -357,7 +373,13 @@ export namespace Proposal {
           return UpdateAdminProposal.fromAmino(amino, isClassic);
         case 'wasm/UpdateInstantiateConfigProposal':
           return UpdateInstantiateConfigProposal.fromAmino(amino, isClassic);
-        case 'xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
+        case 'erc20/RegisterCoinProposal':
+          return RegisterCoinProposal.fromAmino(amino, isClassic);
+        case 'erc20/RegisterERC20Proposal':
+          return RegisterERC20Proposal.fromAmino(amino, isClassic);
+        case 'erc20/ToggleTokenConversionProposal':
+          return ToggleTokenConversionProposal.fromAmino(amino, isClassic);
+        case 'xpla/RegisterVolunteerValidatorProposal':
           return RegisterVolunteerValidatorProposal.fromAmino(amino, isClassic);
       }
     }
@@ -399,6 +421,12 @@ export namespace Proposal {
           return UpdateAdminProposal.fromData(data, isClassic);
         case '/cosmwasm.wasm.v1.UpdateInstantiateConfigProposal':
           return UpdateInstantiateConfigProposal.fromData(data, isClassic);
+        case '/evmos.erc20.v1.RegisterCoinProposal':
+          return RegisterCoinProposal.fromData(data, isClassic);
+        case '/evmos.erc20.v1.RegisterERC20Proposal':
+          return RegisterERC20Proposal.fromData(data, isClassic);
+        case '/evmos.erc20.v1.ToggleTokenConversionProposal':
+          return ToggleTokenConversionProposal.fromData(data, isClassic);
         case '/xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
           return RegisterVolunteerValidatorProposal.fromData(data, isClassic);
       }
@@ -442,6 +470,17 @@ export namespace Proposal {
           return UpdateAdminProposal.unpackAny(anyProto, isClassic);
         case '/cosmwasm.wasm.v1.UpdateInstantiateConfigProposal':
           return UpdateInstantiateConfigProposal.unpackAny(anyProto, isClassic);
+        case '/evmos.erc20.v1.RegisterCoinProposal':
+          return RegisterCoinProposal.unpackAny(anyProto, isClassic);
+        case '/evmos.erc20.v1.RegisterERC20Proposal':
+          return RegisterERC20Proposal.unpackAny(anyProto, isClassic);
+        case '/evmos.erc20.v1.ToggleTokenConversionProposal':
+          return ToggleTokenConversionProposal.unpackAny(anyProto, isClassic);
+        case '/xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
+          return RegisterVolunteerValidatorProposal.unpackAny(
+            anyProto,
+            isClassic
+          );
       }
 
       throw `Proposal content ${typeUrl} not recognized`;

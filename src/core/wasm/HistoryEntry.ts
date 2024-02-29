@@ -3,10 +3,10 @@ import {
   ContractCodeHistoryOperationType,
   contractCodeHistoryOperationTypeFromJSON,
   contractCodeHistoryOperationTypeToJSON,
-} from '@terra-money/terra.proto/cosmwasm/wasm/v1/types';
+} from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 import { JSONSerializable, removeNull } from '../../util/json';
-import * as Long from 'long';
 import { AbsoluteTxPosition } from './AbsoluteTxPosition';
+
 /**
  *
  */
@@ -78,7 +78,7 @@ export class HistoryEntry extends JSONSerializable<
   public toProto(): HistoryEntry.Proto {
     return HistoryEntry_pb.fromPartial({
       operation: this.operation,
-      codeId: Long.fromNumber(this.code_id),
+      codeId: this.code_id,
       updated: this.updated?.toProto(),
       msg: Buffer.from(JSON.stringify(removeNull(this.msg)), 'utf-8'),
     });

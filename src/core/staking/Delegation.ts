@@ -5,7 +5,7 @@ import { Coin } from '../Coin';
 import {
   DelegationResponse as DelegationResponse_pb,
   Delegation as Delegation_pb,
-} from '@terra-money/terra.proto/cosmos/staking/v1beta1/staking';
+} from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';
 
 /**
  * Stores information about the status of a delegation between a delegator and validator, fetched from the blockchain.

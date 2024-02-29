@@ -2,8 +2,7 @@ import { JSONSerializable } from '../util/json';
 import { Coins } from './Coins';
 import { Int } from './numeric';
 import { AccAddress } from './bech32';
-import { Fee as Fee_pb } from '@terra-money/terra.proto/cosmos/tx/v1beta1/tx';
-import * as Long from 'long';
+import { Fee as Fee_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/tx';
 
 /**
  * A transaction must include a fee, otherwise it will be rejected.
@@ -71,7 +70,7 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
     const { amount, gas_limit, payer, granter } = this;
     return Fee_pb.fromPartial({
       amount: amount.toProto(),
-      gasLimit: Long.fromNumber(gas_limit),
+      gasLimit: gas_limit,
       granter,
       payer,
     });

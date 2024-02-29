@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Denom } from '../Denom';
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { Dec } from '../numeric';
-import { BaseVestingAccount as BaseVestingAccount_pb } from '@terra-money/legacy.proto/cosmos/vesting/v1beta1/vesting';
+import { BaseVestingAccount as BaseVestingAccount_pb } from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
 import {
   LazyGradedVestingAccount as LazyGradedVestingAccount_pb,
   Schedule as Schedule_pb,
   VestingSchedule as VestingSchedule_pb,
 } from '@terra-money/legacy.proto/terra/vesting/v1beta1/vesting';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import * as Long from 'long';
 import { PublicKey } from '../PublicKey';
 
@@ -44,8 +45,7 @@ export class LazyGradedVestingAccount extends JSONSerializable<
     return this.base_vesting_account.base_account.public_key;
   }
 
-  public toAmino(_?: boolean): LazyGradedVestingAccount.Amino {
-    _;
+  public toAmino(_isClassic?: boolean): LazyGradedVestingAccount.Amino {
     const { base_vesting_account, vesting_schedules } = this;
     return {
       type: 'core/LazyGradedVestingAccount',
@@ -58,9 +58,8 @@ export class LazyGradedVestingAccount extends JSONSerializable<
 
   public static fromAmino(
     data: LazyGradedVestingAccount.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): LazyGradedVestingAccount {
-    _;
     const base_vesting_account = BaseVestingAccount.fromAmino({
       type: 'core/BaseVestingAccount',
       value: data.value.base_vesting_account,
@@ -74,8 +73,7 @@ export class LazyGradedVestingAccount extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): LazyGradedVestingAccount.Data {
-    _;
+  public toData(_isClassic?: boolean): LazyGradedVestingAccount.Data {
     const { base_vesting_account, vesting_schedules } = this;
     return {
       '@type': '/terra.vesting.v1beta1.LazyGradedVestingAccount',
@@ -86,9 +84,8 @@ export class LazyGradedVestingAccount extends JSONSerializable<
 
   public static fromData(
     data: LazyGradedVestingAccount.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): LazyGradedVestingAccount {
-    _;
     const base_vesting_account = BaseVestingAccount.fromData({
       '@type': '/cosmos.vesting.v1beta1.BaseVestingAccount',
       ...data.base_vesting_account,
@@ -102,8 +99,7 @@ export class LazyGradedVestingAccount extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): LazyGradedVestingAccount.Proto {
-    _;
+  public toProto(_isClassic?: boolean): LazyGradedVestingAccount.Proto {
     const { base_vesting_account, vesting_schedules } = this;
 
     return LazyGradedVestingAccount_pb.fromPartial({
@@ -114,9 +110,8 @@ export class LazyGradedVestingAccount extends JSONSerializable<
 
   public static fromProto(
     lazyGradedVestingAccountProto: LazyGradedVestingAccount.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): LazyGradedVestingAccount {
-    _;
     const baseVestingAccount = BaseVestingAccount.fromProto(
       lazyGradedVestingAccountProto.baseVestingAccount as BaseVestingAccount_pb
     );

@@ -1,11 +1,12 @@
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
-import * as Long from 'long';
 import { PublicKey } from '../PublicKey';
 
-import { BaseVestingAccount as BaseVestingAccount_pb } from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
-import { ContinuousVestingAccount as ContinuousVestingAccount_pb } from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import {
+  BaseVestingAccount as BaseVestingAccount_pb,
+  ContinuousVestingAccount as ContinuousVestingAccount_pb,
+} from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * ContinuousVestingAccount implements the VestingAccount interface. It
@@ -109,7 +110,7 @@ export class ContinuousVestingAccount extends JSONSerializable<
 
     return ContinuousVestingAccount_pb.fromPartial({
       baseVestingAccount: base_vesting_account.toProto(),
-      startTime: Long.fromNumber(start_time),
+      startTime: start_time,
     });
   }
 

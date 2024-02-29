@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Coin } from '../../Coin';
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress, ValAddress } from '../../bech32';
-// import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
-// import { MsgDelegate as MsgDelegate_pb } from '@terra-money/legacy.proto/cosmos/staking/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgDelegate as MsgDelegate_pb } from '@terra-money/terra.proto/cosmos/staking/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgDelegate as MsgDelegate_pb } from '@xpla/xpla.proto/cosmos/staking/v1beta1/tx';
+
 /**
  * A delegator can submit this message to send more Luna to be staked through a
  * validator delegate.
@@ -28,8 +28,10 @@ export class MsgDelegate extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: MsgDelegate.Amino, _?: boolean): MsgDelegate {
-    _;
+  public static fromAmino(
+    data: MsgDelegate.Amino,
+    _isClassic?: boolean
+  ): MsgDelegate {
     const {
       value: { delegator_address, validator_address, amount },
     } = data;
@@ -52,8 +54,10 @@ export class MsgDelegate extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgDelegate.Proto, _?: boolean): MsgDelegate {
-    _;
+  public static fromProto(
+    proto: MsgDelegate.Proto,
+    _isClassic?: boolean
+  ): MsgDelegate {
     return new MsgDelegate(
       proto.delegatorAddress,
       proto.validatorAddress,
@@ -61,8 +65,7 @@ export class MsgDelegate extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgDelegate.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgDelegate.Proto {
     const { delegator_address, validator_address, amount } = this;
     return MsgDelegate_pb.fromPartial({
       amount: amount.toProto(),
@@ -85,8 +88,10 @@ export class MsgDelegate extends JSONSerializable<
     );
   }
 
-  public static fromData(data: MsgDelegate.Data, _?: boolean): MsgDelegate {
-    _;
+  public static fromData(
+    data: MsgDelegate.Data,
+    _isClassic?: boolean
+  ): MsgDelegate {
     const { delegator_address, validator_address, amount } = data;
     return new MsgDelegate(
       delegator_address,
@@ -95,8 +100,7 @@ export class MsgDelegate extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgDelegate.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgDelegate.Data {
     const { delegator_address, validator_address, amount } = this;
     return {
       '@type': '/cosmos.staking.v1beta1.MsgDelegate',

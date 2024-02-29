@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
-import { MsgRevoke as MsgRevoke_pb } from '@terra-money/terra.proto/cosmos/authz/v1beta1/tx';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { MsgRevoke as MsgRevoke_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export class MsgRevokeAuthorization extends JSONSerializable<
   MsgRevokeAuthorization.Amino,
@@ -23,9 +24,8 @@ export class MsgRevokeAuthorization extends JSONSerializable<
 
   public static fromAmino(
     data: MsgRevokeAuthorization.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAuthorization {
-    _;
     const {
       value: { granter, grantee, msg_type_url },
     } = data;
@@ -48,15 +48,13 @@ export class MsgRevokeAuthorization extends JSONSerializable<
 
   public static fromData(
     data: MsgRevokeAuthorization.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAuthorization {
-    _;
     const { granter, grantee, msg_type_url } = data;
     return new MsgRevokeAuthorization(granter, grantee, msg_type_url);
   }
 
-  public toData(_?: boolean): MsgRevokeAuthorization.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgRevokeAuthorization.Data {
     const { granter, grantee, msg_type_url } = this;
     return {
       '@type': '/cosmos.authz.v1beta1.MsgRevoke',
@@ -68,9 +66,8 @@ export class MsgRevokeAuthorization extends JSONSerializable<
 
   public static fromProto(
     proto: MsgRevokeAuthorization.Proto,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgRevokeAuthorization {
-    _;
     return new MsgRevokeAuthorization(
       proto.granter,
       proto.grantee,
@@ -78,8 +75,7 @@ export class MsgRevokeAuthorization extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgRevokeAuthorization.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgRevokeAuthorization.Proto {
     const { granter, grantee, msg_type_url } = this;
     return MsgRevoke_pb.fromPartial({
       grantee,

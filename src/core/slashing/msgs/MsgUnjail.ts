@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { ValAddress } from '../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgUnjail as MsgUnjail_pb } from '@terra-money/terra.proto/cosmos/slashing/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgUnjail as MsgUnjail_pb } from '@xpla/xpla.proto/cosmos/slashing/v1beta1/tx';
 
 /**
  * A validator can be jailed by the blockchain if misbehavior is detected, such as
@@ -23,8 +24,10 @@ export class MsgUnjail extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: MsgUnjail.Amino, _?: boolean): MsgUnjail {
-    _;
+  public static fromAmino(
+    data: MsgUnjail.Amino,
+    _isClassic?: boolean
+  ): MsgUnjail {
     const {
       value: { address },
     } = data;
@@ -41,14 +44,15 @@ export class MsgUnjail extends JSONSerializable<
     };
   }
 
-  public static fromData(proto: MsgUnjail.Data, _?: boolean): MsgUnjail {
-    _;
+  public static fromData(
+    proto: MsgUnjail.Data,
+    _isClassic?: boolean
+  ): MsgUnjail {
     const { address } = proto;
     return new MsgUnjail(address);
   }
 
-  public toData(_?: boolean): MsgUnjail.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgUnjail.Data {
     const { address } = this;
     return {
       '@type': '/cosmos.slashing.v1beta1.MsgUnjail',
@@ -56,13 +60,14 @@ export class MsgUnjail extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgUnjail.Proto, _?: boolean): MsgUnjail {
-    _;
+  public static fromProto(
+    proto: MsgUnjail.Proto,
+    _isClassic?: boolean
+  ): MsgUnjail {
     return new MsgUnjail(proto.validatorAddr);
   }
 
-  public toProto(_?: boolean): MsgUnjail.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgUnjail.Proto {
     const { address } = this;
     return MsgUnjail_pb.fromPartial({
       validatorAddr: address,

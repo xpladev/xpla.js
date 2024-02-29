@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Coins } from '../../Coins';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-// there's no difference between two protos
-// import { MsgFundCommunityPool as MsgFundCommunityPool_legacy_pb } from '@terra-money/legacy.proto/cosmos/distribution/v1beta1/tx';
-import { MsgFundCommunityPool as MsgFundCommunityPool_pb } from '@terra-money/terra.proto/cosmos/distribution/v1beta1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgFundCommunityPool as MsgFundCommunityPool_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/tx';
 
 export class MsgFundCommunityPool extends JSONSerializable<
   MsgFundCommunityPool.Amino,
@@ -23,12 +22,11 @@ export class MsgFundCommunityPool extends JSONSerializable<
 
   public static fromAmino(
     data: MsgFundCommunityPool.Amino,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgFundCommunityPool {
     const {
       value: { depositor, amount },
     } = data;
-    _;
     return new MsgFundCommunityPool(depositor, Coins.fromAmino(amount));
   }
 
@@ -47,15 +45,13 @@ export class MsgFundCommunityPool extends JSONSerializable<
 
   public static fromData(
     proto: MsgFundCommunityPool.Data,
-    _?: boolean
+    _isClassic?: boolean
   ): MsgFundCommunityPool {
-    _;
     const { depositor, amount } = proto;
     return new MsgFundCommunityPool(depositor, Coins.fromData(amount));
   }
 
-  public toData(_?: boolean): MsgFundCommunityPool.Data {
-    _;
+  public toData(_isClassic?: boolean): MsgFundCommunityPool.Data {
     const { depositor, amount } = this;
     return {
       '@type': '/cosmos.distribution.v1beta1.MsgFundCommunityPool',
@@ -66,17 +62,15 @@ export class MsgFundCommunityPool extends JSONSerializable<
 
   public static fromProto(
     proto: MsgFundCommunityPool.Proto,
-    _?: Boolean
+    _isClassic?: Boolean
   ): MsgFundCommunityPool {
-    _;
     return new MsgFundCommunityPool(
       proto.depositor,
       Coins.fromProto(proto.amount)
     );
   }
 
-  public toProto(_?: boolean): MsgFundCommunityPool.Proto {
-    _;
+  public toProto(_isClassic?: boolean): MsgFundCommunityPool.Proto {
     const { depositor, amount } = this;
     return MsgFundCommunityPool_pb.fromPartial({
       amount: amount.toProto(),

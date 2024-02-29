@@ -1,13 +1,12 @@
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { Coins } from '../Coins';
-import { BaseVestingAccount as BaseVestingAccount_pb } from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
 import {
+  BaseVestingAccount as BaseVestingAccount_pb,
   PeriodicVestingAccount as PeriodicVestingAccount_pb,
   Period as Period_pb,
-} from '@terra-money/terra.proto/cosmos/vesting/v1beta1/vesting';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import * as Long from 'long';
+} from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { PublicKey } from '../PublicKey';
 
 /**
@@ -222,7 +221,7 @@ export namespace PeriodicVestingAccount {
     public toProto(): Period.Proto {
       const { length, amount } = this;
       return Period_pb.fromPartial({
-        length: Long.fromNumber(length),
+        length,
         amount: amount.toProto(),
       });
     }

@@ -3,7 +3,7 @@ import { Key } from '../../key';
 import { CreateTxOptions } from '../lcd/api/TxAPI';
 import { Tx } from '../../core/Tx';
 import { SignMode as SignModeV1 } from '@terra-money/legacy.proto/cosmos/tx/signing/v1beta1/signing';
-import { SignMode as SignModeV2 } from '@terra-money/terra.proto/cosmos/tx/signing/v1beta1/signing';
+import { SignMode as SignModeV2 } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
 
 export class Wallet {
   constructor(public lcd: LCDClient, public key: Key) {}
@@ -81,7 +81,7 @@ export class Wallet {
         sequence,
         chainID: this.lcd.config.chainID,
         signMode:
-          options.signMode ||
+          options.signMode ??
           (this.lcd.config.isClassic
             ? SignModeV1.SIGN_MODE_DIRECT
             : SignModeV2.SIGN_MODE_DIRECT),

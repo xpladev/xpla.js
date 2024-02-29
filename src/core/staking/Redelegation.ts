@@ -6,8 +6,7 @@ import {
   Redelegation as Redelegation_pb,
   RedelegationEntry as RedelegationEntry_pb,
   RedelegationEntryResponse as RedelegationEntryResponse_pb,
-} from '@terra-money/terra.proto/cosmos/staking/v1beta1/staking';
-import * as Long from 'long';
+} from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';
 
 /**
  * A redelegation is when a delegator decides to stop staking with one validator and
@@ -260,7 +259,7 @@ export namespace Redelegation {
         balance: balance.toString(),
         redelegationEntry: RedelegationEntry_pb.fromPartial({
           completionTime: completion_time,
-          creationHeight: Long.fromNumber(creation_height),
+          creationHeight: creation_height,
           initialBalance: initial_balance.toString(),
           sharesDst: shares_dst.toString(),
         }),
