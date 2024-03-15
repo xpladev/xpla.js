@@ -20,7 +20,7 @@ import {
  * Example:
  *
  * ```ts
- * import { MsgMultiSend } from "@terra-money/terra.js";
+ * import { MsgMultiSend } from "@xpla/xpla.js";
  *
  * const inputs: MsgMultiSend.Input[] = [
  *    new MsgMultiSend.Input(

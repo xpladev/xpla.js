@@ -4,9 +4,8 @@ import {
   Vote as Vote_pb,
   VoteOption,
   WeightedVoteOption as WeightedVoteOption_pb,
-} from '@terra-money/terra.proto/cosmos/gov/v1beta1/gov';
+} from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 import { Dec, Numeric } from '../numeric';
-import * as Long from 'long';
 /**
  * Stores vote information for a proposal
  */
@@ -86,7 +85,7 @@ export class Vote extends JSONSerializable<Vote.Amino, Vote.Data, Vote.Proto> {
     const { proposal_id, voter, options } = this;
     return Vote_pb.fromPartial({
       options: options.map(o => o.toProto()),
-      proposalId: Long.fromNumber(proposal_id),
+      proposalId: proposal_id,
       voter,
     });
   }

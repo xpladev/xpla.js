@@ -2,11 +2,11 @@ import { IbcTransferAPI } from './IbcTransferAPI';
 import { DenomTrace } from '../../../core/ibc/applications/transfer/v1/DenomTrace';
 import { LCDClient } from '../LCDClient';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev/',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev/',
 });
-const ibctx = new IbcTransferAPI(terra);
+const ibctx = new IbcTransferAPI(xpla);
 
 describe('IbcTransferAPI', () => {
   it('denomTraces', async () => {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Metadata } from '@xpla/xpla.proto/cosmos/bank/v1beta1/bank';
 import { RegisterCoinProposal as RegisterCoinProposal_pb } from '@xpla/xpla.proto/evmos/erc20/v1/erc20';
 

@@ -1,4 +1,4 @@
-import { MerkleRoot as MerkleRoot_pb } from '@terra-money/terra.proto/ibc/core/commitment/v1/commitment';
+import { MerkleRoot as MerkleRoot_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 import { JSONSerializable } from '../../../../util/json';
 
 // MerkleRoot defines a merkle root hash.

@@ -1,6 +1,6 @@
 import { JSONSerializable } from '../../../../../util/json';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgRegisterCounterpartyAddress as MsgRegisterCounterpartyAddress_pb } from '@terra-money/terra.proto/ibc/applications/fee/v1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgRegisterCounterpartyPayee as MsgRegisterCounterpartyAddress_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/tx';
 
 /**
  * MsgRegisterCounterpartyAddress defines the request type for the RegisterCounterpartyAddress rpc
@@ -10,15 +10,15 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
   MsgRegisterCounterpartyAddress.Data,
   MsgRegisterCounterpartyAddress.Proto
 > {
-  /**
-   * @param address the relayer address
-   * @param counterparty_adress the counterparty relayer address
-   * @param channel_id unique channel identifier
-   */
   constructor(
-    public address: string,
-    public counterparty_address: string,
-    public channel_id: string
+    /** unique port identifier */
+    public portId: string,
+    /** unique channel identifier */
+    public channelId: string,
+    /** the relayer address */
+    public relayer: string,
+    /** the counterparty payee address */
+    public counterpartyPayee: string
   ) {
     super();
   }
@@ -48,12 +48,13 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { address, counterparty_address, channel_id } = data;
+    const { portId, channelId, relayer, counterpartyPayee } = data;
 
     return new MsgRegisterCounterpartyAddress(
-      address,
-      counterparty_address,
-      channel_id
+      portId,
+      channelId,
+      relayer,
+      counterpartyPayee
     );
   }
 
@@ -61,12 +62,13 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { address, counterparty_address, channel_id } = this;
+    const { portId, channelId, relayer, counterpartyPayee } = this;
     return {
-      '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyAddress',
-      address,
-      counterparty_address,
-      channel_id,
+      '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee',
+      portId,
+      channelId,
+      relayer,
+      counterpartyPayee,
     };
   }
 
@@ -78,9 +80,10 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
       throw new Error('Not supported for the network');
     }
     return new MsgRegisterCounterpartyAddress(
-      proto.address,
-      proto.counterpartyAddress,
-      proto.channelId
+      proto.portId,
+      proto.channelId,
+      proto.relayer,
+      proto.counterpartyPayee
     );
   }
 
@@ -88,11 +91,12 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    const { address, counterparty_address, channel_id } = this;
+    const { portId, channelId, relayer, counterpartyPayee } = this;
     return MsgRegisterCounterpartyAddress_pb.fromPartial({
-      address,
-      counterpartyAddress: counterparty_address,
-      channelId: channel_id,
+      portId,
+      channelId,
+      relayer,
+      counterpartyPayee,
     });
   }
 
@@ -123,10 +127,11 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
 
 export namespace MsgRegisterCounterpartyAddress {
   export interface Data {
-    '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyAddress';
-    address: string;
-    counterparty_address: string;
-    channel_id: string;
+    '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee';
+    portId: string;
+    channelId: string;
+    relayer: string;
+    counterpartyPayee: string;
   }
 
   export type Proto = MsgRegisterCounterpartyAddress_pb;

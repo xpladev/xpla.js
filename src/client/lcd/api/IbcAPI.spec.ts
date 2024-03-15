@@ -2,11 +2,11 @@ import { Height } from '../../../core/ibc/core/client/Height';
 import { LCDClient } from '../LCDClient';
 import { IbcAPI } from './IbcAPI';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const ibc = new IbcAPI(terra);
+const ibc = new IbcAPI(xpla);
 
 describe('IbcClientAPI', () => {
   it('params', async () => {
@@ -44,14 +44,6 @@ describe('IbcClientAPI', () => {
     expect(res).not.toBeNull();
     expect(res).not.toBeUndefined();
   });
-
-  /*
-  it('ica controller paramaters', async () => {
-    const res = await ibc.interchainAccountControllerParameters();
-    expect(res).not.toBeNull();
-    expect(res).not.toBeUndefined();
-  });
-  */
 
   it('channels', async () => {
     const [res, _] = await ibc.channels();

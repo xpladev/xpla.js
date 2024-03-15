@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgSubmitMisbehaviour as MsgSubmitMisbehaviour_pb } from '@terra-money/terra.proto/ibc/core/client/v1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgSubmitMisbehaviour as MsgSubmitMisbehaviour_pb } from '@xpla/xpla.proto/ibc/core/client/v1/tx';
 /**
  *  MsgSubmitMisbehaviour defines an sdk.Msg type that submits Evidence for light client misbehaviour.
  */

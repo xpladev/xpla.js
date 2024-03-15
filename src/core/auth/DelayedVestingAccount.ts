@@ -6,7 +6,7 @@ import {
   BaseVestingAccount as BaseVestingAccount_pb,
   DelayedVestingAccount as DelayedVestingAccount_pb,
 } from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * DelayedVestingAccount implements the VestingAccount interface. It vests all

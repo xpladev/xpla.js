@@ -1,7 +1,6 @@
-import { Any } from '@terra-money/legacy.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { BaseAccount } from './BaseAccount';
 import { EvmAccount } from './EvmAccount';
-import { LazyGradedVestingAccount } from './LazyGradedVestingAccount';
 import { ContinuousVestingAccount } from './ContinuousVestingAccount';
 import { DelayedVestingAccount } from './DelayedVestingAccount';
 import { PeriodicVestingAccount } from './PeriodicVestingAccount';
@@ -10,7 +9,6 @@ import { BaseVestingAccount } from './BaseVestingAccount';
 export type Account =
   | BaseAccount
   | BaseVestingAccount
-  | LazyGradedVestingAccount
   | ContinuousVestingAccount
   | DelayedVestingAccount
   | PeriodicVestingAccount
@@ -22,14 +20,12 @@ export namespace Account {
   export type Amino =
     | BaseAccount.Amino
     | BaseVestingAccount.Amino
-    | LazyGradedVestingAccount.Amino
     | ContinuousVestingAccount.Amino
     | DelayedVestingAccount.Amino
     | PeriodicVestingAccount.Amino;
   export type Data =
     | BaseAccount.Data
     | BaseVestingAccount.Data
-    | LazyGradedVestingAccount.Data
     | ContinuousVestingAccount.Data
     | DelayedVestingAccount.Data
     | PeriodicVestingAccount.Data;
@@ -46,8 +42,6 @@ export namespace Account {
       case 'core/BaseVestingAccount':
       case 'cosmos-sdk/BaseVestingAccount':
         return BaseVestingAccount.fromAmino(amino, isClassic);
-      case 'core/LazyGradedVestingAccount':
-        return LazyGradedVestingAccount.fromAmino(amino, isClassic);
       case 'cosmos-sdk/ContinuousVestingAccount':
         return ContinuousVestingAccount.fromAmino(amino, isClassic);
       case 'cosmos-sdk/DelayedVestingAccount':
@@ -69,8 +63,6 @@ export namespace Account {
       }
       case '/cosmos.vesting.v1beta1.BaseVestingAccount':
         return BaseVestingAccount.fromData(data, isClassic);
-      case '/terra.vesting.v1beta1.LazyGradedVestingAccount':
-        return LazyGradedVestingAccount.fromData(data, isClassic);
       case '/cosmos.vesting.v1beta1.ContinuousVestingAccount':
         return ContinuousVestingAccount.fromData(data, isClassic);
       case '/cosmos.vesting.v1beta1.DelayedVestingAccount':
@@ -78,6 +70,7 @@ export namespace Account {
       case '/cosmos.vesting.v1beta1.PeriodicVestingAccount':
         return PeriodicVestingAccount.fromData(data, isClassic);
     }
+    return BaseAccount.fromData(data, isClassic);
   }
 
   export function fromProto(
@@ -87,8 +80,6 @@ export namespace Account {
     const typeUrl = accountAny.typeUrl;
     if (typeUrl === '/cosmos.auth.v1beta1.BaseAccount') {
       return BaseAccount.unpackAny(accountAny, isClassic);
-    } else if (typeUrl === '/terra.vesting.v1beta1.LazyGradedVestingAccount') {
-      return LazyGradedVestingAccount.unpackAny(accountAny, isClassic);
     } else if (typeUrl === '/cosmos.vesting.v1beta1.ContinuousVestingAccount') {
       return ContinuousVestingAccount.unpackAny(accountAny, isClassic);
     } else if (typeUrl === '/cosmos.vesting.v1beta1.DelayedVestingAccount') {

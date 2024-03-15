@@ -15,7 +15,6 @@ import {
 import { hashToHex } from '../../../util/hash';
 import { LCDClient } from '../LCDClient';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
-import { BroadcastMode as BroadcastModeV1 } from '@terra-money/legacy.proto/cosmos/tx/v1beta1/service';
 import { BroadcastMode as BroadcastModeV2 } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
 import { EvmMessage } from '../../../client/ecd/msgs';
 
@@ -347,8 +346,6 @@ export class TxAPI extends BaseAPI {
 
     const feeAmount = gasPricesCoins
       ? gasPricesCoins.mul(gas).toIntCeilCoins()
-      : this.lcd.config.isClassic
-      ? '0uusd'
       : '0axpla';
 
     return new Fee(Number.parseInt(gas), feeAmount, '', '');
@@ -420,7 +417,7 @@ export class TxAPI extends BaseAPI {
 
   private async _broadcast<T>(
     tx: Tx,
-    mode: keyof typeof BroadcastModeV1 | BroadcastModeV2
+    mode: keyof typeof BroadcastModeV2
   ): Promise<T> {
     return await this.c.post<any>(`/cosmos/tx/v1beta1/txs`, {
       tx_bytes: this.encode(tx),

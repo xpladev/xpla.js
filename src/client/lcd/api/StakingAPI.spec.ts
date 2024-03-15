@@ -5,15 +5,15 @@ import { ValConsPublicKey, Delegation } from '../../../core';
 import { LCDClient } from '../LCDClient';
 import { MnemonicKey } from '../../../key';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
 const test1 = new MnemonicKey({
   mnemonic:
     'notice oak worry limit wrap speak medal online prefer cluster roof addict wrist behave treat actual wasp year salad speed social layer crew genius',
 });
-const staking = new StakingAPI(terra);
+const staking = new StakingAPI(xpla);
 
 const checkDelegations = (delegations: Delegation[]) => {
   expect(delegations).toContainEqual({
@@ -24,23 +24,8 @@ const checkDelegations = (delegations: Delegation[]) => {
   });
 };
 
-// const checkUnbondings = (unbondings: UnbondingDelegation[]) => {
-//   expect(unbondings).toContainEqual({
-//     delegator_address: expect.any(String),
-//     validator_address: expect.any(String),
-//     entries: expect.arrayContaining([
-//       {
-//         initial_balance: expect.any(Int),
-//         balance: expect.any(Int),
-//         creation_height: expect.any(Number),
-//         completion_time: expect.any(Date),
-//       },
-//     ]),
-//   });
-// };
-
 const delegator = test1.accAddress;
-const validator = 'terravaloper1gtw2uxdkdt3tvq790ckjz8jm8qgwkdw3uptstn';
+const validator = 'xplavaloper1gtw2uxdkdt3tvq790ckjz8jm8qgwkdw3uptstn';
 
 describe('StakingAPI', () => {
   it('parameters', async () => {
@@ -80,59 +65,6 @@ describe('StakingAPI', () => {
   it('delegations without parameter should throw an error', async () => {
     await expect(staking.delegations()).rejects.toThrowError();
   });
-
-  // it('redelegations', async () => {
-  //   const redelegations = await staking
-  //     .redelegations(delegator) // manual faucet
-  //     .then(v => v[0]);
-
-  //   expect(redelegations).toContainEqual({
-  //     delegator_address: expect.any(String),
-  //     validator_src_address: expect.any(String),
-  //     validator_dst_address: expect.any(String),
-  //     entries: expect.arrayContaining([
-  //       {
-  //         initial_balance: expect.any(Int),
-  //         balance: expect.any(Int),
-  //         shares_dst: expect.any(Dec),
-  //         creation_height: expect.any(Number),
-  //         completion_time: expect.any(Date),
-  //       },
-  //     ]),
-  //   });
-  // });
-
-  // it('unbondingDelegations (delegator & validator)', async () => {
-  //   const unbondings = await staking
-  //     .unbondingDelegations(
-  //       delegator, // manual faucet
-  //       validator // node0
-  //     )
-  //     .then(v => v[0]);
-
-  //   checkUnbondings(unbondings);
-  // });
-
-  // it('unbondingDelegations (delegator)', async () => {
-  //   const unbondings = await staking
-  //     .unbondingDelegations(
-  //       delegator,
-  //       undefined
-  //     )
-  //     .then(v => v[0]);
-  //   checkUnbondings(unbondings);
-  // });
-
-  // it('unbondingDelegations (validator)', async () => {
-  //   const unbondings = await staking
-  //     .unbondingDelegations(
-  //       undefined,
-  //       validator // node0
-  //     )
-  //     .then(v => v[0]);
-
-  //   checkUnbondings(unbondings);
-  // });
 
   it('unbondingDelegations without parameter should throw an error', async () => {
     await expect(staking.unbondingDelegations()).rejects.toThrowError();

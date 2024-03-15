@@ -1,11 +1,11 @@
 import { LCDClient } from '../LCDClient';
 import { FeeGrantAPI } from './FeeGrantAPI';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const feeGrant = new FeeGrantAPI(terra);
+const feeGrant = new FeeGrantAPI(xpla);
 
 describe('FeeGrantAPI', () => {
   it('allowances', async () => {
