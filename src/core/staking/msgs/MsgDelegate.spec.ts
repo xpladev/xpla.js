@@ -19,8 +19,7 @@ describe('MsgDelegate', () => {
       type: 'cosmos-sdk/MsgDelegate',
       value: {
         delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-        validator_address:
-          'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
+        validator_address: 'xplavaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
         amount: {
           denom: 'uluna',
           amount: '8102024952',
@@ -30,7 +29,7 @@ describe('MsgDelegate', () => {
 
     expect(send).toMatchObject({
       delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-      validator_address: 'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
+      validator_address: 'xplavaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
       amount: new Coin('uluna', '8102024952'),
     });
 
@@ -38,8 +37,7 @@ describe('MsgDelegate', () => {
       type: 'cosmos-sdk/MsgDelegate',
       value: {
         delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-        validator_address:
-          'terravaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
+        validator_address: 'xplavaloper1guxk2q4wn92fw0mchx2rhsenjvq0hj9pzp0ngt',
         amount: {
           denom: 'uluna',
           amount: '8102024952',

@@ -1,11 +1,11 @@
-import { IdentifiedConnection as IdentifiedConnection_pb } from '@terra-money/terra.proto/ibc/core/connection/v1/connection';
+import { IdentifiedConnection as IdentifiedConnection_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 import { JSONSerializable } from '../../../../util/json';
 import { Version } from './Version';
 import {
   State,
   stateFromJSON,
   stateToJSON,
-} from '@terra-money/terra.proto/ibc/core/connection/v1/connection';
+} from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 import { Counterparty } from './Counterparty';
 import Long from 'long';
 

@@ -1,6 +1,5 @@
-import { Proof as Proof_pb } from '@terra-money/terra.proto/tendermint/crypto/proof';
-import { PublicKey as PublicKey_pb } from '@terra-money/terra.proto/tendermint/crypto/keys';
-import * as Long from 'long';
+import { Proof as Proof_pb } from '@xpla/xpla.proto/tendermint/crypto/proof';
+import { PublicKey as PublicKey_pb } from '@xpla/xpla.proto/tendermint/crypto/keys';
 import { JSONSerializable } from '../../../../../util/json';
 
 export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
@@ -61,8 +60,8 @@ export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
   public toProto(): Proof.Proto {
     const { total, index, leafHash, aunts } = this;
     return Proof_pb.fromPartial({
-      total: Long.fromNumber(total),
-      index: Long.fromNumber(index),
+      total,
+      index,
       leafHash: Buffer.from(leafHash, 'base64'),
       aunts: aunts.map(aunt => Buffer.from(aunt, 'base64')),
     });

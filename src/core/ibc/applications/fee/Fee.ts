@@ -1,4 +1,4 @@
-import { Fee as Fee_pb } from '@terra-money/terra.proto/ibc/applications/fee/v1/fee';
+import { Fee as Fee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 import { Coins } from '../../../Coins';
 import { JSONSerializable } from '../../../../util/json';
 

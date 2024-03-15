@@ -5,7 +5,7 @@ import { ValConsPublicKey } from '../PublicKey';
 describe('Validator', () => {
   it('deserializes', () => {
     const validator = Validator.fromAmino({
-      operator_address: 'terravaloper1ptyzewnns2kn37ewtmv6ppsvhdnmeapvgk6d65',
+      operator_address: 'xplavaloper1ptyzewnns2kn37ewtmv6ppsvhdnmeapvgk6d65',
       consensus_pubkey: {
         type: 'tendermint/PubKeyEd25519',
         value: '1v2BCLSLYe9tQ9JXMuYURf3UIQ/uE+RUVcYfTDVM1ec=',
@@ -36,7 +36,7 @@ describe('Validator', () => {
     });
 
     expect(validator).toMatchObject({
-      operator_address: 'terravaloper1ptyzewnns2kn37ewtmv6ppsvhdnmeapvgk6d65',
+      operator_address: 'xplavaloper1ptyzewnns2kn37ewtmv6ppsvhdnmeapvgk6d65',
       consensus_pubkey: new ValConsPublicKey(
         '1v2BCLSLYe9tQ9JXMuYURf3UIQ/uE+RUVcYfTDVM1ec='
       ),

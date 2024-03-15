@@ -18,22 +18,20 @@ describe('MsgWithdrawDelegatorReward', () => {
       type: 'cosmos-sdk/MsgWithdrawDelegationReward',
       value: {
         delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-        validator_address:
-          'terravaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
+        validator_address: 'xplavaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
       },
     });
 
     expect(fund).toMatchObject({
       delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-      validator_address: 'terravaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
+      validator_address: 'xplavaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
     });
 
     expect(fund.toAmino()).toMatchObject({
       type: 'cosmos-sdk/MsgWithdrawDelegationReward',
       value: {
         delegator_address: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
-        validator_address:
-          'terravaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
+        validator_address: 'xplavaloper1pc0gs3n6803x7jqe9m7etegmyx29xw38aaf3u7',
       },
     });
   });

@@ -1,4 +1,4 @@
-import { Metadata as Metadata_pb } from '@terra-money/terra.proto/ibc/applications/interchain_accounts/v1/metadata';
+import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/metadata';
 import { JSONSerializable } from '../../../../util/json';
 
 /**

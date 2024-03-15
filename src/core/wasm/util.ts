@@ -1,7 +1,7 @@
 import {
   AccessType,
   accessTypeFromJSON,
-} from '@terra-money/terra.proto/cosmwasm/wasm/v1/types';
+} from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 
 // core v2 returns human-friendly string like 'Everybody' by wasm/type/params.go
 // but accessTypeFromJSON requires "ACCESS_TYPE_EVERYBODY"

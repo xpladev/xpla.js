@@ -5,14 +5,11 @@ import {
   DistributionAPI,
   FeeGrantAPI,
   GovAPI,
-  MarketAPI,
   MintAPI,
   AuthzAPI,
-  OracleAPI,
   SlashingAPI,
   StakingAPI,
   TendermintAPI,
-  TreasuryAPI,
   TxAPI,
   WasmAPI,
   IbcTransferAPI,
@@ -101,14 +98,11 @@ export class LCDClient {
   public distribution: DistributionAPI;
   public feeGrant: FeeGrantAPI;
   public gov: GovAPI;
-  public market: MarketAPI;
   public mint: MintAPI;
   public authz: AuthzAPI;
-  public oracle: OracleAPI;
   public slashing: SlashingAPI;
   public staking: StakingAPI;
   public tendermint: TendermintAPI;
-  public treasury: TreasuryAPI;
   public wasm: WasmAPI;
   public tx: TxAPI;
   public ibc: IbcAPI;
@@ -140,14 +134,11 @@ export class LCDClient {
     this.distribution = new DistributionAPI(this);
     this.feeGrant = new FeeGrantAPI(this);
     this.gov = new GovAPI(this);
-    this.market = new MarketAPI(this);
     this.mint = new MintAPI(this);
     this.authz = new AuthzAPI(this);
-    this.oracle = new OracleAPI(this);
     this.slashing = new SlashingAPI(this);
     this.staking = new StakingAPI(this);
     this.tendermint = new TendermintAPI(this);
-    this.treasury = new TreasuryAPI(this);
     this.wasm = new WasmAPI(this);
     this.ibc = new IbcAPI(this);
     this.ibcTransfer = new IbcTransferAPI(this);

@@ -13,7 +13,7 @@ import {
 
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { TxSearchResult } from './TxAPI';
-import { ProposalStatus } from '@terra-money/legacy.proto/cosmos/gov/v1beta1/gov';
+import { ProposalStatus } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 import { LCDClient } from '../LCDClient';
 
 export interface GovParams {
@@ -308,7 +308,9 @@ export class GovAPI extends BaseAPI {
                 new Vote(
                   proposalId,
                   msg.voter,
-                  msg.options.map(o => WeightedVoteOption.fromData(o))
+                  msg.options.map((o: WeightedVoteOption.Data) =>
+                    WeightedVoteOption.fromData(o)
+                  )
                 )
               );
             }

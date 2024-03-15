@@ -17,8 +17,8 @@ interface CLIKeyParams {
 }
 
 /**
- * Key implementation that uses `terrad` to sign transactions. Keys should be registered
- * in `terrad`'s OS keyring.
+ * Key implementation that uses `xplad` to sign transactions. Keys should be registered
+ * in `xplad`'s OS keyring.
  *
  * NOTE: This Key implementation overrides `createSignature()` and only provide a shim
  * for `sign()`.
@@ -28,15 +28,15 @@ export class CLIKey extends Key {
 
   /**
    *
-   * @param keyName name of the key for terrad
+   * @param keyName name of the key for xplad
    * @param multisig (optional) address of multisig account on behalf of which transaction shall be signed
-   * @param cliPath (optional) path of terrad
-   * @param home (optional) home option for terrad
+   * @param cliPath (optional) path of xplad
+   * @param home (optional) home option for xplad
    */
   constructor(private params: CLIKeyParams) {
     super();
-    params.cliPath = params.cliPath || 'terrad';
-    params.home = params.home || resolve(homedir(), '.terrad', 'config');
+    params.cliPath = params.cliPath ?? 'xplad';
+    params.home = params.home ?? resolve(homedir(), '.xplad', 'config');
   }
 
   private generateCommand(args: string) {

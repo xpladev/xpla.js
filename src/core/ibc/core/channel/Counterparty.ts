@@ -1,4 +1,4 @@
-import { Counterparty as Counterparty_pb } from '@terra-money/terra.proto/ibc/core/channel/v1/channel';
+import { Counterparty as Counterparty_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 import { JSONSerializable } from '../../../../util/json';
 
 /** Counterparty defines a channel end counterparty */

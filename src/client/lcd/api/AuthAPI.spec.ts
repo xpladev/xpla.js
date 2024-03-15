@@ -3,12 +3,11 @@ import { BaseAccount } from '../../../core';
 import { MnemonicKey } from '../../../key';
 import { LCDClient } from '../LCDClient';
 
-// TODO - restore to https://lcd.terra.dev
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const auth = new AuthAPI(terra);
+const auth = new AuthAPI(xpla);
 
 describe('AuthAPI', () => {
   describe('accounts', () => {
@@ -19,15 +18,6 @@ describe('AuthAPI', () => {
 
       expect(acct instanceof BaseAccount).toBe(true);
     });
-
-    // TODO: - after merging CosmosSDK@v0.43.x restore vesting account test
-    // it('LazyGradedVestingAccount', async () => {
-    //   const acct = await auth.accountInfo(
-    //     'xpla1upg95nlwkfkrq4hhjrn3k9s6ud0aqx36gwnlsn'
-    //   );
-
-    //   expect(acct instanceof LazyGradedVestingAccount).toBe(true);
-    // });
 
     it('invalid account', async () => {
       await expect(auth.accountInfo('1234')).rejects.toThrow();

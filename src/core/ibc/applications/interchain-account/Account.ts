@@ -1,5 +1,5 @@
-import { InterchainAccount as InterchainAccount_pb } from '@terra-money/terra.proto/ibc/applications/interchain_accounts/v1/account';
-import { BaseAccountTerra } from '../../../..';
+import { InterchainAccount as InterchainAccount_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/account';
+import { BaseAccount } from '../../../..';
 import { JSONSerializable } from '../../../../util/json';
 
 /**
@@ -15,7 +15,7 @@ export class InterchainAccount extends JSONSerializable<
    * @param account_owner
    */
   constructor(
-    public base_account: BaseAccountTerra | undefined,
+    public base_account: BaseAccount | undefined,
     public account_owner: string
   ) {
     super();
@@ -24,7 +24,7 @@ export class InterchainAccount extends JSONSerializable<
   public static fromAmino(data: InterchainAccount.Amino): InterchainAccount {
     const { base_account, account_owner } = data;
     return new InterchainAccount(
-      base_account ? BaseAccountTerra.fromAmino(base_account) : undefined,
+      base_account ? BaseAccount.fromAmino(base_account) : undefined,
       account_owner
     );
   }
@@ -41,7 +41,7 @@ export class InterchainAccount extends JSONSerializable<
   public static fromData(data: InterchainAccount.Data): InterchainAccount {
     const { base_account, account_owner } = data;
     return new InterchainAccount(
-      base_account ? BaseAccountTerra.fromData(base_account) : undefined,
+      base_account ? BaseAccount.fromData(base_account) : undefined,
       account_owner
     );
   }
@@ -57,9 +57,7 @@ export class InterchainAccount extends JSONSerializable<
 
   public static fromProto(proto: InterchainAccount.Proto): InterchainAccount {
     return new InterchainAccount(
-      proto.baseAccount
-        ? BaseAccountTerra.fromProto(proto.baseAccount)
-        : undefined,
+      proto.baseAccount ? BaseAccount.fromProto(proto.baseAccount) : undefined,
       proto.accountOwner
     );
   }
@@ -75,12 +73,12 @@ export class InterchainAccount extends JSONSerializable<
 
 export namespace InterchainAccount {
   export interface Amino {
-    base_account?: BaseAccountTerra.Amino;
+    base_account?: BaseAccount.Amino;
     account_owner: string;
   }
 
   export interface Data {
-    base_account?: BaseAccountTerra.Data;
+    base_account?: BaseAccount.Data;
     account_owner: string;
   }
 

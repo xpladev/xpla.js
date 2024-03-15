@@ -1,8 +1,8 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Version } from '../../core/connection/Version';
-import { MsgConnectionOpenAck as MsgConnectionOpenAck_pb } from '@terra-money/terra.proto/ibc/core/connection/v1/tx';
+import { MsgConnectionOpenAck as MsgConnectionOpenAck_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
 import { Height } from '../../core/client/Height';
 
 /**

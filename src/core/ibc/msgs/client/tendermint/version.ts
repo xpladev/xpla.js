@@ -1,6 +1,5 @@
-import { Consensus as Consensus_pb } from '@terra-money/terra.proto/tendermint/version/types';
-import { App as App_pb } from '@terra-money/terra.proto/tendermint/version/types';
-import * as Long from 'long';
+import { Consensus as Consensus_pb } from '@xpla/xpla.proto/tendermint/version/types';
+import { App as App_pb } from '@xpla/xpla.proto/tendermint/version/types';
 import { JSONSerializable } from '../../../../../util/json';
 
 /**
@@ -51,8 +50,8 @@ export class Consensus extends JSONSerializable<
   public toProto(): Consensus.Proto {
     const { block, app } = this;
     return Consensus_pb.fromPartial({
-      block: Long.fromNumber(block),
-      app: Long.fromNumber(app),
+      block,
+      app,
     });
   }
 }
@@ -110,7 +109,7 @@ export class App extends JSONSerializable<any, App.Data, App.Proto> {
   public toProto(): App.Proto {
     const { protocol, software } = this;
     return App_pb.fromPartial({
-      protocol: Long.fromNumber(protocol),
+      protocol,
       software: software,
     });
   }

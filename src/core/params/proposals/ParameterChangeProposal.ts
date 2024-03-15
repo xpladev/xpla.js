@@ -16,7 +16,7 @@ import { ParameterChangeProposal as ParameterChangeProposal_pb } from '@xpla/xpl
  *    Dec,
  *    MsgSubmitProposal,
  *    ParameterChangeProposal
- * } from "@terra-money/terra.js";
+ * } from "@xpla/xpla.js";
  *
  * const proposal = new ParameterChangeProposal("title", "description", {
  *    market: {

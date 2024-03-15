@@ -1,5 +1,4 @@
-import { Packet as Packet_pb } from '@terra-money/terra.proto/ibc/core/channel/v1/channel';
-import Long from 'long';
+import { Packet as Packet_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 import { JSONSerializable } from '../../../../util/json';
 import { Height } from '../client/Height';
 
@@ -145,14 +144,14 @@ export class Packet extends JSONSerializable<
       timeout_timestamp,
     } = this;
     return Packet_pb.fromPartial({
-      sequence: Long.fromNumber(sequence),
+      sequence,
       sourcePort: source_port,
       sourceChannel: source_channel,
       destinationPort: destination_port,
       destinationChannel: destination_channel,
       data: Buffer.from(data, 'base64'),
       timeoutHeight: timeout_height ? timeout_height.toProto() : undefined,
-      timeoutTimestamp: Long.fromNumber(timeout_timestamp),
+      timeoutTimestamp: timeout_timestamp,
     });
   }
 }

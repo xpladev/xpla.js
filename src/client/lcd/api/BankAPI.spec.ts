@@ -1,11 +1,11 @@
 import { LCDClient } from '../LCDClient';
 import { BankAPI } from './BankAPI';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const bank = new BankAPI(terra);
+const bank = new BankAPI(xpla);
 
 describe('BankAPI', () => {
   describe('balance', () => {

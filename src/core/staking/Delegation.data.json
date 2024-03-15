@@ -2,7 +2,7 @@
   {
     "delegation": {
       "delegator_address": "xpla1rk6tvacasnnyssfnn00zl7wz43pjnpn7vayqv6",
-      "validator_address": "terravaloper1vze7n65ccq08auu2xwmptlymu3gdlx0z5j033m",
+      "validator_address": "xplavaloper1vze7n65ccq08auu2xwmptlymu3gdlx0z5j033m",
       "shares": "0.362811214041104489"
     },
     "balance": {
@@ -13,7 +13,7 @@
   {
     "delegation": {
       "delegator_address": "xpla1rk6tvacasnnyssfnn00zl7wz43pjnpn7vayqv6",
-      "validator_address": "terravaloper1062zkmnlqhcpwsryk5kjf345x6njzzksqk9ljl",
+      "validator_address": "xplavaloper1062zkmnlqhcpwsryk5kjf345x6njzzksqk9ljl",
       "shares": "1041435300584.646580892301867080"
     },
     "balance": {
@@ -24,7 +24,7 @@
   {
     "delegation": {
       "delegator_address": "xpla1rk6tvacasnnyssfnn00zl7wz43pjnpn7vayqv6",
-      "validator_address": "terravaloper14un92kpq0pvflyjd8sxmrsswglhn8mf5hkruc2",
+      "validator_address": "xplavaloper14un92kpq0pvflyjd8sxmrsswglhn8mf5hkruc2",
       "shares": "0.317889676069212335"
     },
     "balance": {
@@ -35,7 +35,7 @@
   {
     "delegation": {
       "delegator_address": "xpla1rk6tvacasnnyssfnn00zl7wz43pjnpn7vayqv6",
-      "validator_address": "terravaloper1kcux5ht2jslsyfzgs5wtfg4hx9dha8z4tes7xh",
+      "validator_address": "xplavaloper1kcux5ht2jslsyfzgs5wtfg4hx9dha8z4tes7xh",
       "shares": "937199434798.716278082038875955"
     },
     "balance": {

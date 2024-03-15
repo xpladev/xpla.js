@@ -20,19 +20,12 @@ import {
   MsgVote,
   MsgVoteWeighted,
 } from './gov/msgs';
-import { MarketMsg, MsgSwap, MsgSwapSend } from './market/msgs';
 import {
   MsgGrantAuthorization,
   MsgRevokeAuthorization,
   MsgExecAuthorized,
   MsgAuthMsg,
 } from './authz/msgs';
-import {
-  MsgDelegateFeedConsent,
-  MsgAggregateExchangeRatePrevote,
-  MsgAggregateExchangeRateVote,
-  OracleMsg,
-} from './oracle/msgs';
 import { MsgUnjail, SlashingMsg } from './slashing/msgs';
 import {
   MsgBeginRedelegate,
@@ -42,15 +35,9 @@ import {
   MsgUndelegate,
   StakingMsg,
 } from './staking/msgs';
-import {
-  MsgCreatePeriodicVestingAccount,
-  MsgCreateVestingAccount,
-  MsgDonateAllVestingTokens,
-  VestingMsg,
-} from './vesting/msgs';
+import { MsgCreateVestingAccount, VestingMsg } from './vesting/msgs';
 import {
   MsgStoreCode,
-  MsgMigrateCode,
   MsgInstantiateContract,
   MsgExecuteContract,
   MsgMigrateContract,
@@ -95,9 +82,7 @@ export type Msg =
   | DistributionMsg
   | FeeGrantMsg
   | GovMsg
-  | MarketMsg
   | MsgAuthMsg
-  | OracleMsg
   | SlashingMsg
   | StakingMsg
   | VestingMsg
@@ -117,9 +102,7 @@ export namespace Msg {
     | DistributionMsg.Amino
     | FeeGrantMsg.Amino
     | GovMsg.Amino
-    | MarketMsg.Amino
     | MsgAuthMsg.Amino
-    | OracleMsg.Amino
     | SlashingMsg.Amino
     | StakingMsg.Amino
     | VestingMsg.Amino
@@ -135,9 +118,7 @@ export namespace Msg {
     | DistributionMsg.Data
     | FeeGrantMsg.Data
     | GovMsg.Data
-    | MarketMsg.Data
     | MsgAuthMsg.Data
-    | OracleMsg.Data
     | SlashingMsg.Data
     | StakingMsg.Data
     | VestingMsg.Data
@@ -156,9 +137,7 @@ export namespace Msg {
     | DistributionMsg.Proto
     | FeeGrantMsg.Proto
     | GovMsg.Proto
-    | MarketMsg.Proto
     | MsgAuthMsg.Proto
-    | OracleMsg.Proto
     | SlashingMsg.Proto
     | StakingMsg.Proto
     | VestingMsg.Proto
@@ -218,12 +197,6 @@ export namespace Msg {
       case 'cosmos-sdk/MsgVoteWeighted':
         return MsgVoteWeighted.fromAmino(data, isClassic);
 
-      // market
-      case 'market/MsgSwap':
-        return MsgSwap.fromAmino(data, isClassic);
-      case 'market/MsgSwapSend':
-        return MsgSwapSend.fromAmino(data, isClassic);
-
       // msgauth
       case 'msgauth/MsgGrantAuthorization':
       case 'cosmos-sdk/MsgGrant':
@@ -234,14 +207,6 @@ export namespace Msg {
       case 'msgauth/MsgExecAuthorized':
       case 'cosmos-sdk/MsgExec':
         return MsgExecAuthorized.fromAmino(data, isClassic);
-
-      // oracle
-      case 'oracle/MsgDelegateFeedConsent':
-        return MsgDelegateFeedConsent.fromAmino(data, isClassic);
-      case 'oracle/MsgAggregateExchangeRatePrevote':
-        return MsgAggregateExchangeRatePrevote.fromAmino(data, isClassic);
-      case 'oracle/MsgAggregateExchangeRateVote':
-        return MsgAggregateExchangeRateVote.fromAmino(data, isClassic);
 
       // slashing
       case 'slashing/MsgUnjail':
@@ -266,18 +231,12 @@ export namespace Msg {
         return MsgEditValidator.fromAmino(data, isClassic);
 
       // vesting
-      case 'cosmos-sdk/MsgCreatePeriodicVestingAccount':
-        return MsgCreatePeriodicVestingAccount.fromAmino(data, isClassic);
       case 'cosmos-sdk/MsgCreateVestingAccount':
         return MsgCreateVestingAccount.fromAmino(data, isClassic);
-      case 'cosmos-sdk/MsgDonateAllVestingTokens':
-        return MsgDonateAllVestingTokens.fromAmino(data, isClassic);
 
       // wasm
       case 'wasm/MsgStoreCode':
         return MsgStoreCode.fromAmino(data, isClassic);
-      case 'wasm/MsgMigrateCode':
-        return MsgMigrateCode.fromAmino(data, isClassic);
       case 'wasm/MsgInstantiateContract':
         return MsgInstantiateContract.fromAmino(data, isClassic);
       case 'wasm/MsgExecuteContract':
@@ -351,12 +310,6 @@ export namespace Msg {
       case '/cosmos.gov.v1beta1.MsgVoteWeighted':
         return MsgVoteWeighted.fromData(data, isClassic);
 
-      // market
-      case '/terra.market.v1beta1.MsgSwap':
-        return MsgSwap.fromData(data, isClassic);
-      case '/terra.market.v1beta1.MsgSwapSend':
-        return MsgSwapSend.fromData(data, isClassic);
-
       // authz
       case '/cosmos.authz.v1beta1.MsgGrant':
         return MsgGrantAuthorization.fromData(data, isClassic);
@@ -364,14 +317,6 @@ export namespace Msg {
         return MsgRevokeAuthorization.fromData(data, isClassic);
       case '/cosmos.authz.v1beta1.MsgExec':
         return MsgExecAuthorized.fromData(data, isClassic);
-
-      // oracle
-      case '/terra.oracle.v1beta1.MsgDelegateFeedConsent':
-        return MsgDelegateFeedConsent.fromData(data, isClassic);
-      case '/terra.oracle.v1beta1.MsgAggregateExchangeRatePrevote':
-        return MsgAggregateExchangeRatePrevote.fromData(data, isClassic);
-      case '/terra.oracle.v1beta1.MsgAggregateExchangeRateVote':
-        return MsgAggregateExchangeRateVote.fromData(data, isClassic);
 
       // slashing
       case '/cosmos.slashing.v1beta1.MsgUnjail':
@@ -390,18 +335,12 @@ export namespace Msg {
         return MsgEditValidator.fromData(data, isClassic);
 
       // vesting
-      case '/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount':
-        return MsgCreatePeriodicVestingAccount.fromData(data, isClassic);
       case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
         return MsgCreateVestingAccount.fromData(data, isClassic);
-      case '/cosmos.vesting.v1beta1.MsgDonateAllVestingTokens':
-        return MsgDonateAllVestingTokens.fromData(data, isClassic);
 
       // wasm
       case '/cosmwasm.wasm.v1.MsgStoreCode':
         return MsgStoreCode.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgMigrateCode': // isClassic only
-        return MsgMigrateCode.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgInstantiateContract':
         return MsgInstantiateContract.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgExecuteContract':
@@ -410,7 +349,6 @@ export namespace Msg {
         return MsgMigrateContract.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgUpdateAdmin':
         return MsgUpdateContractAdmin.fromData(data, isClassic);
-      case '/terra.wasm.v1beta1.MsgClearContractAdmin':
       case '/cosmwasm.wasm.v1.MsgClearAdmin':
         return MsgClearContractAdmin.fromData(data, isClassic);
 
@@ -515,12 +453,6 @@ export namespace Msg {
       case '/cosmos.gov.v1beta1.MsgVote':
         return MsgVote.unpackAny(proto, isClassic);
 
-      // market
-      case '/terra.market.v1beta1.MsgSwap':
-        return MsgSwap.unpackAny(proto, isClassic);
-      case '/terra.market.v1beta1.MsgSwapSend':
-        return MsgSwapSend.unpackAny(proto, isClassic);
-
       // authz
       case '/cosmos.authz.v1beta1.MsgGrant':
         return MsgGrantAuthorization.unpackAny(proto, isClassic);
@@ -529,13 +461,6 @@ export namespace Msg {
       case '/cosmos.authz.v1beta1.MsgExec':
         return MsgExecAuthorized.unpackAny(proto, isClassic);
 
-      // oracle
-      case '/terra.oracle.v1beta1.MsgDelegateFeedConsent':
-        return MsgDelegateFeedConsent.unpackAny(proto, isClassic);
-      case '/terra.oracle.v1beta1.MsgAggregateExchangeRatePrevote':
-        return MsgAggregateExchangeRatePrevote.unpackAny(proto, isClassic);
-      case '/terra.oracle.v1beta1.MsgAggregateExchangeRateVote':
-        return MsgAggregateExchangeRateVote.unpackAny(proto, isClassic);
       // slashing
       case '/cosmos.slashing.v1beta1.MsgUnjail':
         return MsgUnjail.unpackAny(proto, isClassic);
@@ -553,32 +478,20 @@ export namespace Msg {
         return MsgEditValidator.unpackAny(proto, isClassic);
 
       // vesting
-      case '/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount':
-        return MsgCreatePeriodicVestingAccount.unpackAny(proto, isClassic);
       case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
         return MsgCreateVestingAccount.unpackAny(proto, isClassic);
-      case '/cosmos.vesting.v1beta1.MsgDonateAllVestingTokens':
-        return MsgDonateAllVestingTokens.unpackAny(proto, isClassic);
 
       // wasm
-      case '/terra.wasm.v1beta1.MsgStoreCode':
       case '/cosmwasm.wasm.v1.MsgStoreCode':
         return MsgStoreCode.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgMigrateCode': // isClassic only
-        return MsgMigrateCode.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgInstantiateContract':
       case '/cosmwasm.wasm.v1.MsgInstantiateContract':
         return MsgInstantiateContract.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgExecuteContract':
       case '/cosmwasm.wasm.v1.MsgExecuteContract':
         return MsgExecuteContract.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgMigrateContract':
       case '/cosmwasm.wasm.v1beta1.MsgMigrateContract':
         return MsgMigrateContract.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgUpdateContractAdmin':
       case '/cosmwasm.wasm.v1beta1.MsgUpdateAdmin':
         return MsgUpdateContractAdmin.unpackAny(proto, isClassic);
-      case '/terra.wasm.v1beta1.MsgClearContractAdmin':
       case '/cosmwasm.wasm.v1.MsgClearAdmin':
         return MsgClearContractAdmin.unpackAny(proto, isClassic);
 
