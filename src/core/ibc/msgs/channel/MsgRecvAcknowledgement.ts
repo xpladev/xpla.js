@@ -1,9 +1,9 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
 import { Packet } from '../../core/channel/Packet';
-import { MsgAcknowledgement as MsgAcknowledgement_pb } from '@terra-money/terra.proto/ibc/core/channel/v1/tx';
+import { MsgAcknowledgement as MsgAcknowledgement_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
  * MsgAcknowledgement receives incoming IBC acknowledgement

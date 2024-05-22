@@ -1,4 +1,4 @@
-import { FungibleTokenPacketData as FungibleTokenPacketData_pb } from '@terra-money/terra.proto/ibc/applications/transfer/v2/packet';
+import { FungibleTokenPacketData as FungibleTokenPacketData_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v2/packet';
 import { JSONSerializable } from '../../../../../util/json';
 
 /**

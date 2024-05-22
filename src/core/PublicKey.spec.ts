@@ -31,7 +31,7 @@ describe('PublicKey', () => {
       'zC1zhckGr/0ZjlXkRbD575N0KC+yhWKYcEFDueBTX5o='
     );
     expect(pubkey.address()).toEqual(
-      'terravalcons1mlhj044zpxqdeaajfxpnav59rp4ap38t5e7q46'
+      'xplavalcons1mlhj044zpxqdeaajfxpnav59rp4ap38t5e7q46'
     );
   });
 });

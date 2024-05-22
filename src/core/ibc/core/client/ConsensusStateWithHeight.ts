@@ -1,4 +1,4 @@
-import { ConsensusStateWithHeight as ConsensusStateWithHeight_pb } from '@terra-money/terra.proto/ibc/core/client/v1/client';
+import { ConsensusStateWithHeight as ConsensusStateWithHeight_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { Height } from './Height';
 import { JSONSerializable } from '../../../../util/json';
 

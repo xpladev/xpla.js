@@ -1,13 +1,13 @@
 import { TendermintAPI } from './TendermintAPI';
 import { Tx } from '../../../core/Tx';
-import { Tx as Tx_pb } from '@terra-money/legacy.proto/cosmos/tx/v1beta1/tx';
+import { Tx as Tx_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/tx';
 import { LCDClient } from '../LCDClient';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const tendermint = new TendermintAPI(terra);
+const tendermint = new TendermintAPI(xpla);
 
 describe('TendermintAPI', () => {
   it('load block and decode txs', async () => {

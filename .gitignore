@@ -1,13 +1,12 @@
 *.log
 .DS_Store
-node_modules
-dist
+node_modules/
+dist/
 coverage/
 .idea/
 .vscode/
-docs
+docs/
 .pytest_cache
 yarn.lock
-dist
 .github/
 integration-tests/

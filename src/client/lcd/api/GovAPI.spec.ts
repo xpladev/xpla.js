@@ -1,13 +1,13 @@
 import { GovAPI } from './GovAPI';
 import { Coins, Dec, Int, Proposal } from '../../../core';
-import { Deposit } from '@terra-money/terra.proto/cosmos/gov/v1beta1/gov';
+import { Deposit } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 import { LCDClient } from '../LCDClient';
 
-const terra = new LCDClient({
-  chainID: 'pisco-1',
-  URL: 'https://pisco-lcd.terra.dev',
+const xpla = new LCDClient({
+  chainID: 'cube_47-5',
+  URL: 'https://cube-lcd.xpla.dev',
 });
-const gov = new GovAPI(terra);
+const gov = new GovAPI(xpla);
 
 describe('GovAPI', () => {
   it('parameters', async () => {

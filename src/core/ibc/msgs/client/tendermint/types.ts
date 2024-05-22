@@ -8,13 +8,13 @@ import {
   BlockIDFlag,
   blockIDFlagFromJSON,
   blockIDFlagToJSON,
-} from '@terra-money/terra.proto/tendermint/types/types';
+} from '@xpla/xpla.proto/tendermint/types/types';
 import {
   Validator as Validator_pb,
   ValidatorSet as ValidatorSet_pb,
-} from '@terra-money/terra.proto/tendermint/types/validator';
+} from '@xpla/xpla.proto/tendermint/types/validator';
 
-import * as Long from 'long';
+import Long from 'long';
 import { JSONSerializable } from '../../../../../util/json';
 import { Consensus } from './version';
 import { PublicKey } from './crypto';

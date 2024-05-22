@@ -1,4 +1,4 @@
-import { MerklePrefix as MerklePrefix_pb } from '@terra-money/terra.proto/ibc/core/commitment/v1/commitment';
+import { MerklePrefix as MerklePrefix_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 import { JSONSerializable } from '../../../../util/json';
 
 /*

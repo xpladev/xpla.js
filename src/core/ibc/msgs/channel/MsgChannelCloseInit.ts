@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgChannelCloseInit as MsgChannelCloseInit_pb } from '@terra-money/terra.proto/ibc/core/channel/v1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgChannelCloseInit as MsgChannelCloseInit_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
  * MsgChannelCloseInit defines a msg sent by a Relayer to Chain A to close a channel with Chain B.

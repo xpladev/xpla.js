@@ -1,4 +1,4 @@
-import { IdentifiedPacketFees as IdentifiedPacketFees_pb } from '@terra-money/terra.proto/ibc/applications/fee/v1/fee';
+import { IdentifiedPacketFees as IdentifiedPacketFees_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 import { JSONSerializable } from '../../../../util/json';
 import { PacketFee } from './PacketFee';
 import { PacketId } from '../../core/channel/PacketId';

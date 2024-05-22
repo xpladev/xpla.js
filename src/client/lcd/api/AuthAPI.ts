@@ -1,7 +1,6 @@
 import {
   AccAddress,
   Account,
-  LazyGradedVestingAccount,
   DelayedVestingAccount,
   PeriodicVestingAccount,
   ContinuousVestingAccount,
@@ -46,7 +45,6 @@ export class AuthAPI extends BaseAPI {
     const { account } = await this.c.get<{
       account:
         | BaseAccount.Data
-        | LazyGradedVestingAccount.Data
         | DelayedVestingAccount.Data
         | PeriodicVestingAccount.Data
         | ContinuousVestingAccount.Data;

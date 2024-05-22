@@ -33,8 +33,7 @@ describe('MsgCreateValidator', () => {
         },
         min_self_delegation: '1',
         delegator_address: 'xpla1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
-        validator_address:
-          'terravaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
+        validator_address: 'xplavaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
         pubkey: {
           type: 'tendermint/PubKeyEd25519',
           value: 'b8RizVY2WHFTHLU/8HVaJApMAw5bhvdNuJtXPVAS5LA=',
@@ -57,8 +56,7 @@ describe('MsgCreateValidator', () => {
         },
         min_self_delegation: '1',
         delegator_address: 'xpla1r2kcrnsq8jfu5zyeyqygrj80x6chf82ae50ed5',
-        validator_address:
-          'terravaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
+        validator_address: 'xplavaloper1r2kcrnsq8jfu5zyeyqygrj80x6chf82aemrya8',
         pubkey: {
           type: 'tendermint/PubKeyEd25519',
           value: 'b8RizVY2WHFTHLU/8HVaJApMAw5bhvdNuJtXPVAS5LA=',

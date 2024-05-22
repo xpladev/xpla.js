@@ -1,26 +1,16 @@
 [{
     "type": "msgauth/MsgExecAuthorized",
     "value": {
-        "grantee": "terra...",
+        "grantee": "xpla...",
         "msgs": [{
             "type": "bank/MsgSend",
             "value": {
-                "from_address": "terra...",
-                "to_address": "terra...",
+                "from_address": "xpla...",
+                "to_address": "xpla...",
                 "amount": [{
                     "denom": "ukrw",
                     "amount": "999"
                 }]
-            }
-        }, {
-            "type": "market/MsgSwap",
-            "value": {
-                "trader": "terra...",
-                "offer_coin": {
-                    "denom": "uusd",
-                    "amount": "120391203"
-                },
-                "ask_denom": "ukrw"
             }
         }]
     }

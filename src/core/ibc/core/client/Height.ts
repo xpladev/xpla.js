@@ -1,5 +1,4 @@
-import { Height as Height_pb } from '@terra-money/terra.proto/ibc/core/client/v1/client';
-import * as Long from 'long';
+import { Height as Height_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { JSONSerializable } from '../../../../util/json';
 
 /**
@@ -30,8 +29,8 @@ export class Height extends JSONSerializable<
   public static fromAmino(data: Height.Amino): Height {
     const { revision_number, revision_height } = data;
     return new Height(
-      parseInt(revision_number || '0'),
-      parseInt(revision_height || '0')
+      parseInt(revision_number ?? '0'),
+      parseInt(revision_height ?? '0')
     );
   }
 
@@ -73,8 +72,8 @@ export class Height extends JSONSerializable<
   public toProto(): Height.Proto {
     const { revision_number, revision_height } = this;
     return Height_pb.fromPartial({
-      revisionNumber: Long.fromNumber(revision_number),
-      revisionHeight: Long.fromNumber(revision_height),
+      revisionNumber: revision_number,
+      revisionHeight: revision_height,
     });
   }
 }

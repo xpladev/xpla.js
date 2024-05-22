@@ -1,9 +1,8 @@
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Coin } from '../../../../../Coin';
-import * as Long from 'long';
-import { Any } from '@terra-money/terra.proto/google/protobuf/any';
-import { MsgTransfer as MsgTransfer_pb } from '@terra-money/terra.proto/ibc/applications/transfer/v1/tx';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgTransfer as MsgTransfer_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
 import { Height } from '../../../../core/client/Height';
 import { Numeric } from '../../../../../numeric';
 /**
@@ -197,7 +196,7 @@ export class MsgTransfer extends JSONSerializable<
       sender,
       receiver,
       timeoutHeight: timeout_height ? timeout_height.toProto() : undefined,
-      timeoutTimestamp: Long.fromString(timeout_timestamp?.toFixed() || '0'),
+      timeoutTimestamp: timeout_timestamp?.toFixed() ?? '0',
     });
   }
 
