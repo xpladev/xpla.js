@@ -1,12 +1,4 @@
-import {
-  StakingMsgV1B1,
-  MsgDelegateV1B1,
-  MsgUndelegateV1B1,
-  MsgBeginRedelegateV1B1,
-  MsgCreateValidatorV1B1,
-  MsgEditValidatorV1B1,
-  MsgCancelUnbondingDelegationV1B1,
-} from './v1beta1/msgs';
+import { StakingMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
 export * from './v1beta1/Delegation';
@@ -22,12 +14,14 @@ export namespace StakingMsg {
   export type Proto = StakingMsgV1B1.Proto;
 }
 
-export type MsgDelegate = MsgDelegateV1B1;
-export type MsgUndelegate = MsgUndelegateV1B1;
-export type MsgBeginRedelegate = MsgBeginRedelegateV1B1;
-export type MsgCreateValidator = MsgCreateValidatorV1B1;
-export type MsgEditValidator = MsgEditValidatorV1B1;
-export type MsgCancelUnbondingDelegation = MsgCancelUnbondingDelegationV1B1;
+export {
+  MsgDelegateV1B1 as MsgDelegate,
+  MsgUndelegateV1B1 as MsgUndelegate,
+  MsgBeginRedelegateV1B1 as MsgBeginRedelegate,
+  MsgCreateValidatorV1B1 as MsgCreateValidator,
+  MsgEditValidatorV1B1 as MsgEditValidator,
+  MsgCancelUnbondingDelegationV1B1 as MsgCancelUnbondingDelegation,
+} from './v1beta1/msgs';
 export { DelegationV1B1 as Delegation } from './v1beta1/Delegation';
 export { RedelegationV1B1 as Redelegation } from './v1beta1/Redelegation';
 export { UnbondingDelegationV1B1 as UnbondingDelegation } from './v1beta1/UnbondingDelegation';

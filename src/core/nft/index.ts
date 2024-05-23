@@ -1,4 +1,4 @@
-import { NftMsgV1B1, MsgNftSendV1B1 } from './v1beta1/msgs';
+import { NftMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
 
@@ -10,4 +10,4 @@ export namespace NftMsg {
   export type Proto = NftMsgV1B1.Proto;
 }
 
-export type MsgNftSend = MsgNftSendV1B1;
+export { MsgNftSendV1B1 as MsgNftSend } from './v1beta1/msgs';

@@ -1,8 +1,4 @@
-import {
-  UpgradeMsgV1B1,
-  MsgSoftwareUpgradeV1B1,
-  MsgCancelUpgradeV1B1,
-} from './v1beta1/msgs';
+import { UpgradeMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
 export * from './v1beta1/proposals';
@@ -16,8 +12,10 @@ export namespace UpgradeMsg {
   export type Proto = UpgradeMsgV1B1.Proto;
 }
 
-export type MsgSoftwareUpgrade = MsgSoftwareUpgradeV1B1;
-export type MsgCancelUpgrade = MsgCancelUpgradeV1B1;
+export {
+  MsgSoftwareUpgradeV1B1 as MsgSoftwareUpgrade,
+  MsgCancelUpgradeV1B1 as MsgCancelUpgrade,
+} from './v1beta1/msgs';
 export {
   SoftwareUpgradeProposalV1B1 as SoftwareUpgradeProposal,
   CancelSoftwareUpgradeProposalV1B1 as CancelSoftwareUpgradeProposal,
