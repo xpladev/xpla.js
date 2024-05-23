@@ -35,6 +35,8 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
     return {
       gas: new Int(this.gas_limit).toString(),
       amount: this.amount.toAmino(),
+      payer: this.payer,
+      granter: this.granter,
     };
   }
 
@@ -88,6 +90,8 @@ export namespace Fee {
   export interface Amino {
     gas: string;
     amount: Coins.Amino;
+    payer?: string;
+    granter?: string;
   }
 
   export interface Data {
