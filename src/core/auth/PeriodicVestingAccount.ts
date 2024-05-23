@@ -1,13 +1,13 @@
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { Coins } from '../Coins';
+import { PublicKey } from '../PublicKey';
 import {
   BaseVestingAccount as BaseVestingAccount_pb,
   PeriodicVestingAccount as PeriodicVestingAccount_pb,
   Period as Period_pb,
 } from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { PublicKey } from '../PublicKey';
 
 /**
  * PeriodicVestingAccount implements the VestingAccount interface. It

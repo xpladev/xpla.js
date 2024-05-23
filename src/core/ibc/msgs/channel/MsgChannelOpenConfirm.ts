@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgChannelOpenConfirm as MsgChannelOpenConfirm_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
@@ -29,14 +30,11 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgChannelOpenConfirm {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgChannelOpenConfirm {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -44,7 +42,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
     data: MsgChannelOpenConfirm.Data,
     _?: boolean
   ): MsgChannelOpenConfirm {
-    _;
     const { port_id, channel_id, proof_ack, proof_height, signer } = data;
     return new MsgChannelOpenConfirm(
       port_id,
@@ -56,7 +53,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgChannelOpenConfirm.Data {
-    _;
     const { port_id, channel_id, proof_ack, proof_height, signer } = this;
     return {
       '@type': '/ibc.core.channel.v1.MsgChannelOpenConfirm',
@@ -72,7 +68,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
     proto: MsgChannelOpenConfirm.Proto,
     _?: boolean
   ): MsgChannelOpenConfirm {
-    _;
     return new MsgChannelOpenConfirm(
       proto.portId,
       proto.channelId,
@@ -83,7 +78,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgChannelOpenConfirm.Proto {
-    _;
     const { port_id, channel_id, proof_ack, proof_height, signer } = this;
     return MsgChannelOpenConfirm_pb.fromPartial({
       portId: port_id,
@@ -95,7 +89,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgChannelOpenConfirm',
       value: MsgChannelOpenConfirm_pb.encode(this.toProto()).finish(),
@@ -103,7 +96,6 @@ export class MsgChannelOpenConfirm extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgChannelOpenConfirm {
-    _;
     return MsgChannelOpenConfirm.fromProto(
       MsgChannelOpenConfirm_pb.decode(msgAny.value)
     );

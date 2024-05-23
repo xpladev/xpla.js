@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
 import { Packet } from '../../core/channel/Packet';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgTimeout as MsgTimeout_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
-import Long from 'long';
 
 /**
  * MsgTimeout receives timed-out packet
@@ -31,19 +31,15 @@ export class MsgTimeout extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgTimeout {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgTimeout {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
   public static fromData(data: MsgTimeout.Data, _?: boolean): MsgTimeout {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -61,7 +57,6 @@ export class MsgTimeout extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgTimeout.Data {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -80,7 +75,6 @@ export class MsgTimeout extends JSONSerializable<
   }
 
   public static fromProto(proto: MsgTimeout.Proto, _?: boolean): MsgTimeout {
-    _;
     return new MsgTimeout(
       proto.packet ? Packet.fromProto(proto.packet) : undefined,
       Buffer.from(proto.proofUnreceived).toString('base64'),
@@ -91,7 +85,6 @@ export class MsgTimeout extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgTimeout.Proto {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -103,13 +96,12 @@ export class MsgTimeout extends JSONSerializable<
       packet: packet ? packet.toProto() : undefined,
       proofUnreceived: Buffer.from(proof_unreceived, 'base64'),
       proofHeight: proof_height ? proof_height.toProto() : undefined,
-      nextSequenceRecv: Long.fromNumber(next_sequence_recv),
+      nextSequenceRecv: next_sequence_recv,
       signer,
     });
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgTimeout',
       value: MsgTimeout_pb.encode(this.toProto()).finish(),
@@ -117,7 +109,6 @@ export class MsgTimeout extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgTimeout {
-    _;
     return MsgTimeout.fromProto(MsgTimeout_pb.decode(msgAny.value));
   }
 }

@@ -1,6 +1,6 @@
-import { ClientConsensusStates as ClientConsensusStates_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { JSONSerializable } from '../../../../util/json';
 import { ConsensusStateWithHeight } from './ConsensusStateWithHeight';
+import { ClientConsensusStates as ClientConsensusStates_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * ClientConsensusStates defines all the stored consensus states for a given client/

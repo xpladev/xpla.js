@@ -1,6 +1,6 @@
-import { InterchainAccount as InterchainAccount_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/account';
-import { BaseAccount } from '../../../..';
 import { JSONSerializable } from '../../../../util/json';
+import { BaseAccount } from '../../../..';
+import { InterchainAccount as InterchainAccount_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/account';
 
 /**
  * An InterchainAccount is defined as a BaseAccount & the address of the account owner on the controller chain

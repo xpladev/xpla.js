@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Coin } from '../../../../../Coin';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgTransfer as MsgTransfer_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
 import { Height } from '../../../../core/client/Height';
 import { Numeric } from '../../../../../numeric';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgTransfer as MsgTransfer_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
+
 /**
  * A basic message for transfer [[Coin]] via IBC.
  */
@@ -56,7 +58,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public static fromAmino(data: MsgTransfer.Amino, _?: boolean): MsgTransfer {
-    _;
     const {
       value: {
         source_port,
@@ -85,7 +86,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public toAmino(_?: boolean): MsgTransfer.Amino {
-    _;
     const {
       source_port,
       source_channel,
@@ -110,7 +110,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public static fromData(data: MsgTransfer.Data, _?: boolean): MsgTransfer {
-    _;
     const {
       source_port,
       source_channel,
@@ -137,7 +136,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgTransfer.Data {
-    _;
     const {
       source_port,
       source_channel,
@@ -162,7 +160,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public static fromProto(proto: MsgTransfer.Proto, _?: boolean): MsgTransfer {
-    _;
     if (!proto.timeoutHeight && proto.timeoutTimestamp.toNumber() == 0) {
       throw 'both of timeout_height and timeout_timestamp are empty';
     }
@@ -179,7 +176,6 @@ export class MsgTransfer extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgTransfer.Proto {
-    _;
     const {
       source_port,
       source_channel,

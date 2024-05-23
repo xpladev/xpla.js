@@ -9,7 +9,7 @@ describe('MsgFundCommunityPool', () => {
         depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],
@@ -29,7 +29,7 @@ describe('MsgFundCommunityPool', () => {
         depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],
@@ -43,7 +43,7 @@ describe('MsgFundCommunityPool', () => {
       depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
-          denom: 'uluna',
+          denom: 'axpla',
           amount: '8102024952',
         },
       ],
@@ -61,7 +61,7 @@ describe('MsgFundCommunityPool', () => {
       depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
-          denom: 'uluna',
+          denom: 'axpla',
           amount: '8102024952',
         },
       ],
@@ -75,7 +75,7 @@ describe('MsgFundCommunityPool', () => {
         depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],
@@ -95,7 +95,7 @@ describe('MsgFundCommunityPool', () => {
         depositor: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],

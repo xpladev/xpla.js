@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -24,14 +25,11 @@ export class MsgChannelCloseInit extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgChannelCloseInit {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgChannelCloseInit {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -39,13 +37,11 @@ export class MsgChannelCloseInit extends JSONSerializable<
     data: MsgChannelCloseInit.Data,
     _?: boolean
   ): MsgChannelCloseInit {
-    _;
     const { port_id, channel_id, signer } = data;
     return new MsgChannelCloseInit(port_id, channel_id, signer);
   }
 
   public toData(_?: boolean): MsgChannelCloseInit.Data {
-    _;
     const { port_id, channel_id, signer } = this;
     return {
       '@type': '/ibc.core.channel.v1.MsgChannelCloseInit',
@@ -59,12 +55,10 @@ export class MsgChannelCloseInit extends JSONSerializable<
     proto: MsgChannelCloseInit.Proto,
     _?: boolean
   ): MsgChannelCloseInit {
-    _;
     return new MsgChannelCloseInit(proto.portId, proto.channelId, proto.signer);
   }
 
   public toProto(_?: boolean): MsgChannelCloseInit.Proto {
-    _;
     const { port_id, channel_id, signer } = this;
     return MsgChannelCloseInit_pb.fromPartial({
       portId: port_id,
@@ -74,7 +68,6 @@ export class MsgChannelCloseInit extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgChannelCloseInit',
       value: MsgChannelCloseInit_pb.encode(this.toProto()).finish(),
@@ -82,7 +75,6 @@ export class MsgChannelCloseInit extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgChannelCloseInit {
-    _;
     return MsgChannelCloseInit.fromProto(
       MsgChannelCloseInit_pb.decode(msgAny.value)
     );

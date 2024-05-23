@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -29,14 +30,11 @@ export class MsgUpgradeClient extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgUpgradeClient {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgUpgradeClient {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -44,7 +42,6 @@ export class MsgUpgradeClient extends JSONSerializable<
     data: MsgUpgradeClient.Data,
     _?: boolean
   ): MsgUpgradeClient {
-    _;
     const {
       client_id,
       client_state,
@@ -64,7 +61,6 @@ export class MsgUpgradeClient extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgUpgradeClient.Data {
-    _;
     const {
       client_id,
       client_state,
@@ -88,7 +84,6 @@ export class MsgUpgradeClient extends JSONSerializable<
     proto: MsgUpgradeClient.Proto,
     _?: boolean
   ): MsgUpgradeClient {
-    _;
     return new MsgUpgradeClient(
       proto.clientId,
       proto.clientState,
@@ -100,7 +95,6 @@ export class MsgUpgradeClient extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgUpgradeClient.Proto {
-    _;
     const {
       client_id,
       client_state,
@@ -123,7 +117,6 @@ export class MsgUpgradeClient extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.client.v1.MsgUpgradeClient',
       value: MsgUpgradeClient_pb.encode(this.toProto()).finish(),
@@ -131,7 +124,6 @@ export class MsgUpgradeClient extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgUpgradeClient {
-    _;
     return MsgUpgradeClient.fromProto(MsgUpgradeClient_pb.decode(msgAny.value));
   }
 }

@@ -1,10 +1,10 @@
+import { JSONSerializable } from '../../../../util/json';
+import { Counterparty } from './Counterparty';
 import {
   State,
   Order,
   Channel as Channel_pb,
 } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
-import { JSONSerializable } from '../../../../util/json';
-import { Counterparty } from './Counterparty';
 
 /**
  * Channel is a monotonically increasing data type

@@ -1,7 +1,7 @@
-import { IdentifiedPacketFees as IdentifiedPacketFees_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 import { JSONSerializable } from '../../../../util/json';
-import { PacketFee } from './PacketFee';
 import { PacketId } from '../../core/channel/PacketId';
+import { PacketFee } from './PacketFee';
+import { IdentifiedPacketFees as IdentifiedPacketFees_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 
 /**
  *  IdentifiedPacketFees contains a list of type PacketFee and associated PacketId

@@ -7,6 +7,7 @@ export * from './numeric';
 export * from './PublicKey';
 export * from './Fee';
 export * from './SignDoc';
+export * from './SignDocDirectAux';
 export * from './Tx';
 export * from './TxInfo';
 export * from './ValidatorSet';
@@ -24,15 +25,17 @@ export * from './auth/PeriodicVestingAccount';
 export * from './auth/EvmAccount';
 
 // Bank
-export * from './bank/msgs';
+export * from './bank';
 
 // Distribution
 export * from './distribution/msgs';
 export * from './distribution/proposals';
 
+// Evidence
+export * from './evidence/msgs';
+
 // ERC20
-export * from './erc20/msgs';
-export * from './erc20/proposals';
+export * from './erc20';
 
 // EVM
 export * from './evm/msgs';
@@ -42,10 +45,13 @@ export * from './feegrant/msgs';
 export * from './feegrant/allowances';
 
 // Governance
-export * from './gov/msgs';
-export * from './gov/proposals';
-export * from './gov/Proposal';
-export * from './gov/Vote';
+export * from './gov';
+
+// Group
+export * from './group';
+
+// NFT
+export * from './nft';
 
 // MsgAuth
 export * from './authz/msgs';
@@ -59,11 +65,7 @@ export * from './params/ParamChange';
 export * from './slashing/msgs';
 
 // Staking
-export * from './staking/msgs';
-export * from './staking/Delegation';
-export * from './staking/Redelegation';
-export * from './staking/UnbondingDelegation';
-export * from './staking/Validator';
+export * from './staking';
 
 // Vesting
 export * from './vesting';
@@ -73,8 +75,6 @@ export * from './upgrade';
 
 // WASM
 export * from './wasm';
-export * from './wasm/msgs';
-export * from './wasm/proposals';
 
 // IBC
 export * from './ibc/msgs/channel';
@@ -85,8 +85,7 @@ export * from './ibc/msgs/connection';
 export * from './ibc/applications/transfer';
 
 // XPLA
-export * from './xpla/msgs';
-export * from './xpla/proposals';
+export * from './xpla';
 
 // bech32 types
 export * from './bech32';

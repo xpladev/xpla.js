@@ -1,9 +1,9 @@
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { AuthorizationGrant } from '../authorizations';
-import { MsgGrant as MsgGrant_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/tx';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Grant as Grant_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/authz';
+import { MsgGrant as MsgGrant_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/tx';
 
 export class MsgGrantAuthorization extends JSONSerializable<
   MsgGrantAuthorization.Amino,

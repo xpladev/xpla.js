@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export function prepareSignBytes(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(prepareSignBytes);
@@ -24,11 +25,9 @@ export abstract class JSONSerializable<A, D, P> {
   public abstract toData(isClassic?: boolean): D;
   public abstract toProto(isClassic?: boolean): P;
   public toJSON(_?: boolean): string {
-    _;
     return JSON.stringify(prepareSignBytes(this.toData(false)));
   }
   public toAminoJSON(_?: boolean): string {
-    _;
     return JSON.stringify(prepareSignBytes(this.toAmino(false)));
   }
 }

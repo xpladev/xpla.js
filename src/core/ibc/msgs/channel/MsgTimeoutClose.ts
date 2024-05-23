@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
 import { Packet } from '../../core/channel/Packet';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgTimeoutOnClose as MsgTimeoutOnClose_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
-import Long from 'long';
 
 /**
  * MsgTimeoutOnClose timed-out packet upon counterparty channel closure.
@@ -33,14 +33,11 @@ export class MsgTimeoutOnClose extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgTimeoutOnClose {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgTimeoutOnClose {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -48,7 +45,6 @@ export class MsgTimeoutOnClose extends JSONSerializable<
     data: MsgTimeoutOnClose.Data,
     _?: boolean
   ): MsgTimeoutOnClose {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -68,7 +64,6 @@ export class MsgTimeoutOnClose extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgTimeoutOnClose.Data {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -92,7 +87,6 @@ export class MsgTimeoutOnClose extends JSONSerializable<
     proto: MsgTimeoutOnClose.Proto,
     _?: boolean
   ): MsgTimeoutOnClose {
-    _;
     return new MsgTimeoutOnClose(
       proto.packet ? Packet.fromProto(proto.packet) : undefined,
       Buffer.from(proto.proofUnreceived).toString('base64'),
@@ -104,7 +98,6 @@ export class MsgTimeoutOnClose extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgTimeoutOnClose.Proto {
-    _;
     const {
       packet,
       proof_unreceived,
@@ -118,13 +111,12 @@ export class MsgTimeoutOnClose extends JSONSerializable<
       proofUnreceived: Buffer.from(proof_unreceived, 'base64'),
       proofClose: Buffer.from(proof_close, 'base64'),
       proofHeight: proof_height ? proof_height.toProto() : undefined,
-      nextSequenceRecv: Long.fromNumber(next_sequence_recv),
+      nextSequenceRecv: next_sequence_recv,
       signer,
     });
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgTimeoutOnClose',
       value: MsgTimeoutOnClose_pb.encode(this.toProto()).finish(),
@@ -132,7 +124,6 @@ export class MsgTimeoutOnClose extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgTimeoutOnClose {
-    _;
     return MsgTimeoutOnClose.fromProto(
       MsgTimeoutOnClose_pb.decode(msgAny.value)
     );

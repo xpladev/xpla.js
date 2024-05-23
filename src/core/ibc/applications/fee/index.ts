@@ -5,3 +5,4 @@ export * from './Fee';
 export * from './msgs/MsgPayPacketFee';
 export * from './msgs/MsgPayPacketFeeAsync';
 export * from './msgs/MsgRegisterCounterpartAddress';
+export * from './msgs/MsgRegisterPayee';

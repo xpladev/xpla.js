@@ -1,5 +1,5 @@
-import { FungibleTokenPacketData as FungibleTokenPacketData_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v2/packet';
 import { JSONSerializable } from '../../../../../util/json';
+import { FungibleTokenPacketData as FungibleTokenPacketData_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v2/packet';
 
 /**
  *  FungibleTokenPacketData defines a struct for the packet payload

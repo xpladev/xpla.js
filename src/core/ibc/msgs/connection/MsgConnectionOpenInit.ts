@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Counterparty } from '../../core/connection/Counterparty';
 import { Version } from '../../core/connection/Version';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgConnectionOpenInit as MsgConnectionOpenInit_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
-import Long from 'long';
 
 /**
  * MsgConnectionOpenInit defines the msg sent by an account on Chain A to initialize a connection with Chain B.
@@ -41,14 +41,11 @@ export class MsgConnectionOpenInit extends JSONSerializable<
     this.version = version;
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgConnectionOpenInit {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgConnectionOpenInit {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -56,7 +53,6 @@ export class MsgConnectionOpenInit extends JSONSerializable<
     data: MsgConnectionOpenInit.Data,
     _?: boolean
   ): MsgConnectionOpenInit {
-    _;
     const { client_id, counterparty, version, delay_period, signer } = data;
     return new MsgConnectionOpenInit(
       client_id,
@@ -68,7 +64,6 @@ export class MsgConnectionOpenInit extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgConnectionOpenInit.Data {
-    _;
     const { client_id, counterparty, version, delay_period, signer } = this;
     return {
       '@type': '/ibc.core.connection.v1.MsgConnectionOpenInit',
@@ -84,7 +79,6 @@ export class MsgConnectionOpenInit extends JSONSerializable<
     proto: MsgConnectionOpenInit.Proto,
     _?: boolean
   ): MsgConnectionOpenInit {
-    _;
     return new MsgConnectionOpenInit(
       proto.clientId,
       proto.delayPeriod.toNumber(),
@@ -97,11 +91,10 @@ export class MsgConnectionOpenInit extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgConnectionOpenInit.Proto {
-    _;
     const { client_id, counterparty, version, delay_period, signer } = this;
     return MsgConnectionOpenInit_pb.fromPartial({
       clientId: client_id,
-      delayPeriod: Long.fromNumber(delay_period),
+      delayPeriod: delay_period,
       signer,
       counterparty: counterparty ? counterparty.toProto() : undefined,
       version: version ? version.toProto() : undefined,
@@ -109,7 +102,6 @@ export class MsgConnectionOpenInit extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.connection.v1.MsgConnectionOpenInit',
       value: MsgConnectionOpenInit_pb.encode(this.toProto()).finish(),
@@ -117,7 +109,6 @@ export class MsgConnectionOpenInit extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgConnectionOpenInit {
-    _;
     return MsgConnectionOpenInit.fromProto(
       MsgConnectionOpenInit_pb.decode(msgAny.value)
     );

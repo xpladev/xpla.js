@@ -1,7 +1,7 @@
-import { PacketFee as PacketFee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 import { JSONSerializable } from '../../../../util/json';
-import { Fee } from './Fee';
 import { AccAddress } from '../../../..';
+import { Fee } from './Fee';
+import { PacketFee as PacketFee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 
 /**
  *  PacketFee contains ICS29 relayer fees, refund address and optional list of permitted relayers

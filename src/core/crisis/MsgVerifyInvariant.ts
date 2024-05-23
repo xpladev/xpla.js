@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../util/json';
+import { AccAddress } from '../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgVerifyInvariant as MsgVerifyInvariant_pb } from '@xpla/xpla.proto/cosmos/crisis/v1beta1/tx';
-import { AccAddress } from '../bech32';
 
 /**
  * MsgVerifyInvariant represents a message to verify a particular invariance.

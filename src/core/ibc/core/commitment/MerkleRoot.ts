@@ -1,5 +1,6 @@
-import { MerkleRoot as MerkleRoot_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
+import { MerkleRoot as MerkleRoot_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 
 // MerkleRoot defines a merkle root hash.
 // In the Cosmos SDK, the AppHash of a block header becomes the root.
@@ -16,7 +17,6 @@ export class MerkleRoot extends JSONSerializable<
   }
 
   public static fromAmino(_: any): MerkleRoot {
-    _;
     throw new Error('Amino not supported');
   }
 

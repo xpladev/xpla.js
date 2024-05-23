@@ -1,5 +1,5 @@
-import { IdentifiedClientState as IdentifiedClientState_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { JSONSerializable } from '../../../../util/json';
+import { IdentifiedClientState as IdentifiedClientState_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * IdentifiedClientState defines a client state with an additional client identifier field

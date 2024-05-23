@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
+import { Height } from '../../core/client/Height';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgConnectionOpenConfirm as MsgConnectionOpenConfirm_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
-import { Height } from '../../core/client/Height';
 
 /**
  * MsgConnectionOpenConfirm defines a msg sent by a Relayer to Chain B to
@@ -30,15 +31,12 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
 
   public static fromAmino(
     _: any,
-    isClassic?: boolean
+    _isClassic?: boolean
   ): MsgConnectionOpenConfirm {
-    _;
-    isClassic;
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -46,7 +44,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
     data: MsgConnectionOpenConfirm.Data,
     _?: boolean
   ): MsgConnectionOpenConfirm {
-    _;
     const { connection_id, proof_ack, proof_height, signer } = data;
     return new MsgConnectionOpenConfirm(
       connection_id,
@@ -57,7 +54,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgConnectionOpenConfirm.Data {
-    _;
     const { connection_id, proof_ack, proof_height, signer } = this;
     return {
       '@type': '/ibc.core.connection.v1.MsgConnectionOpenConfirm',
@@ -72,7 +68,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
     proto: MsgConnectionOpenConfirm.Proto,
     _?: boolean
   ): MsgConnectionOpenConfirm {
-    _;
     return new MsgConnectionOpenConfirm(
       proto.connectionId,
       Buffer.from(proto.proofAck).toString('base64'),
@@ -82,7 +77,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgConnectionOpenConfirm.Proto {
-    _;
     const { connection_id, proof_ack, proof_height, signer } = this;
     return MsgConnectionOpenConfirm_pb.fromPartial({
       connectionId: connection_id,
@@ -93,7 +87,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.connection.v1.MsgConnectionOpenConfirm',
       value: MsgConnectionOpenConfirm_pb.encode(this.toProto()).finish(),
@@ -101,7 +94,6 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgConnectionOpenConfirm {
-    _;
     return MsgConnectionOpenConfirm.fromProto(
       MsgConnectionOpenConfirm_pb.decode(msgAny.value)
     );

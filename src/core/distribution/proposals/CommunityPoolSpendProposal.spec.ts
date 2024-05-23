@@ -11,7 +11,7 @@ describe('CommunityPoolSpendProposal', () => {
         recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],
@@ -35,7 +35,7 @@ describe('CommunityPoolSpendProposal', () => {
         recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
         amount: [
           {
-            denom: 'uluna',
+            denom: 'axpla',
             amount: '8102024952',
           },
         ],
@@ -53,7 +53,7 @@ it('deserialize amino', () => {
       recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
-          denom: 'uluna',
+          denom: 'axpla',
           amount: '8102024952',
         },
       ],
@@ -77,7 +77,7 @@ it('deserialize amino', () => {
       recipient: 'xpla1y4umfuqfg76t8mfcff6zzx7elvy93jtp4xcdvw',
       amount: [
         {
-          denom: 'uluna',
+          denom: 'axpla',
           amount: '8102024952',
         },
       ],

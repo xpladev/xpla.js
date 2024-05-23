@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Counterparty } from '../../core/connection/Counterparty';
 import { Version } from '../../core/connection/Version';
-import { MsgConnectionOpenTry as MsgConnectionOpenTry_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
-import Long from 'long';
 import { Height } from '../../core/client/Height';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgConnectionOpenTry as MsgConnectionOpenTry_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
 
 /**
  *  MsgConnectionOpenTry defines a msg sent by a Relayer to try to open a connection on Chain B.
@@ -46,14 +46,11 @@ export class MsgConnectionOpenTry extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgConnectionOpenTry {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgConnectionOpenTry {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -61,7 +58,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
     data: MsgConnectionOpenTry.Data,
     _?: boolean
   ): MsgConnectionOpenTry {
-    _;
     const {
       client_id,
       previous_connection_id,
@@ -95,7 +91,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgConnectionOpenTry.Data {
-    _;
     const {
       client_id,
       previous_connection_id,
@@ -136,7 +131,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
     proto: MsgConnectionOpenTry.Proto,
     _?: boolean
   ): MsgConnectionOpenTry {
-    _;
     return new MsgConnectionOpenTry(
       proto.clientId,
       proto.previousConnectionId,
@@ -160,7 +154,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgConnectionOpenTry.Proto {
-    _;
     const {
       client_id,
       previous_connection_id,
@@ -180,7 +173,7 @@ export class MsgConnectionOpenTry extends JSONSerializable<
       previousConnectionId: previous_connection_id,
       clientState: client_state.toProto(),
       counterparty: counterparty ? counterparty.toProto() : undefined,
-      delayPeriod: Long.fromNumber(delay_period),
+      delayPeriod: delay_period,
       counterpartyVersions:
         counterparty_versions.length > 0
           ? counterparty_versions.map(cv => cv.toProto())
@@ -197,7 +190,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.connection.v1.MsgConnectionOpenTry',
       value: MsgConnectionOpenTry_pb.encode(this.toProto()).finish(),
@@ -205,7 +197,6 @@ export class MsgConnectionOpenTry extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgConnectionOpenTry {
-    _;
     return MsgConnectionOpenTry.fromProto(
       MsgConnectionOpenTry_pb.decode(msgAny.value)
     );

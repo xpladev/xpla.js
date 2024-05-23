@@ -2,9 +2,11 @@ import { BaseAPI } from './BaseAPI';
 import { AccAddress } from '../../../core/bech32';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
-import { HistoryEntry } from '../../../core/wasm/HistoryEntry';
-import { AbsoluteTxPosition } from '../../../core/wasm/AbsoluteTxPosition';
-import { AccessConfig } from '../../../core/wasm';
+import {
+  HistoryEntry,
+  AbsoluteTxPosition,
+  AccessConfig,
+} from '../../../core/wasm';
 
 export interface CodeInfo {
   code_id: number;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -23,14 +24,11 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgSubmitMisbehaviour {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgSubmitMisbehaviour {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -38,13 +36,11 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
     data: MsgSubmitMisbehaviour.Data,
     _?: boolean
   ): MsgSubmitMisbehaviour {
-    _;
     const { client_id, misbehaviour, signer } = data;
     return new MsgSubmitMisbehaviour(client_id, misbehaviour, signer);
   }
 
   public toData(_?: boolean): MsgSubmitMisbehaviour.Data {
-    _;
     const { client_id, misbehaviour, signer } = this;
     return {
       '@type': '/ibc.core.client.v1.MsgSubmitMisbehaviour',
@@ -58,7 +54,6 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
     proto: MsgSubmitMisbehaviour.Proto,
     _?: boolean
   ): MsgSubmitMisbehaviour {
-    _;
     return new MsgSubmitMisbehaviour(
       proto.clientId,
       proto.misbehaviour,
@@ -67,7 +62,6 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgSubmitMisbehaviour.Proto {
-    _;
     const { client_id, misbehaviour, signer } = this;
     return MsgSubmitMisbehaviour_pb.fromPartial({
       clientId: client_id,
@@ -77,7 +71,6 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.client.v1.MsgSubmitMisbehaviour',
       value: MsgSubmitMisbehaviour_pb.encode(this.toProto()).finish(),
@@ -85,7 +78,6 @@ export class MsgSubmitMisbehaviour extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgSubmitMisbehaviour {
-    _;
     return MsgSubmitMisbehaviour.fromProto(
       MsgSubmitMisbehaviour_pb.decode(msgAny.value)
     );

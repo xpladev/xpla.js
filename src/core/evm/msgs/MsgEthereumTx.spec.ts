@@ -1,5 +1,4 @@
 import { MsgEthereumTx } from './MsgEthereumTx';
-import { Any } from '@bufbuild/protobuf';
 
 describe('MsgEthereumTx', () => {
   it('deserialize correctly', () => {
@@ -9,6 +8,7 @@ describe('MsgEthereumTx', () => {
         size: 0,
         hash: '',
         from: '',
+        data: undefined,
       },
     });
 
@@ -16,6 +16,7 @@ describe('MsgEthereumTx', () => {
       size: 0,
       hash: '',
       from: '',
+      data: undefined,
     });
 
     expect(evmtx.toAmino(true)).toMatchObject({
@@ -24,6 +25,7 @@ describe('MsgEthereumTx', () => {
         size: 0,
         hash: '',
         from: '',
+        data: undefined,
       },
     });
   });
@@ -34,12 +36,14 @@ describe('MsgEthereumTx', () => {
       size: 0,
       hash: '',
       from: '',
+      data: undefined,
     });
 
     expect(evmtx).toMatchObject({
       size: 0,
       hash: '',
       from: '',
+      data: undefined,
     });
 
     expect(evmtx.toData()).toMatchObject({
@@ -47,6 +51,7 @@ describe('MsgEthereumTx', () => {
       size: 0,
       hash: '',
       from: '',
+      data: undefined,
     });
   });
 });

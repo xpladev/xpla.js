@@ -1,5 +1,5 @@
-import { DenomTrace as DenomTrace_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/transfer';
 import { JSONSerializable } from '../../../../../util/json';
+import { DenomTrace as DenomTrace_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/transfer';
 
 /**
  * DenomTrace is a monotonically increasing data type

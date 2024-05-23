@@ -14,7 +14,7 @@ describe('ContinuousVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '10000000000',
             },
           ],
@@ -38,7 +38,7 @@ describe('ContinuousVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '10000000000',
             },
           ],

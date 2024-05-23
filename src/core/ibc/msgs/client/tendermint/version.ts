@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { JSONSerializable } from '../../../../../util/json';
 import { Consensus as Consensus_pb } from '@xpla/xpla.proto/tendermint/version/types';
 import { App as App_pb } from '@xpla/xpla.proto/tendermint/version/types';
-import { JSONSerializable } from '../../../../../util/json';
 
 /**
  * Consensus captures the consensus rules for processing a block in the blockchain,
@@ -21,7 +22,6 @@ export class Consensus extends JSONSerializable<
   }
 
   public static fromAmino(_: any): Consensus {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -80,7 +80,6 @@ export class App extends JSONSerializable<any, App.Data, App.Proto> {
   }
 
   public static fromAmino(_: any): App {
-    _;
     throw new Error('Amino not supported');
   }
 

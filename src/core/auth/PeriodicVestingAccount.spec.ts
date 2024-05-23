@@ -14,14 +14,14 @@ describe('PeriodicVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '5000000000000',
             },
           ],
           delegated_free: [],
           delegated_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '1338029091449',
             },
           ],
@@ -33,7 +33,7 @@ describe('PeriodicVestingAccount', () => {
             length: '500000',
             amount: [
               {
-                denom: 'uluna',
+                denom: 'axpla',
                 amount: '5000000000',
               },
             ],
@@ -42,7 +42,7 @@ describe('PeriodicVestingAccount', () => {
             length: '500000',
             amount: [
               {
-                denom: 'uluna',
+                denom: 'axpla',
                 amount: '5000000000',
               },
             ],
@@ -63,14 +63,14 @@ describe('PeriodicVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '5000000000000',
             },
           ],
           delegated_free: [],
           delegated_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '1338029091449',
             },
           ],
@@ -82,7 +82,7 @@ describe('PeriodicVestingAccount', () => {
             length: '500000',
             amount: [
               {
-                denom: 'uluna',
+                denom: 'axpla',
                 amount: '5000000000',
               },
             ],
@@ -91,7 +91,7 @@ describe('PeriodicVestingAccount', () => {
             length: '500000',
             amount: [
               {
-                denom: 'uluna',
+                denom: 'axpla',
                 amount: '5000000000',
               },
             ],

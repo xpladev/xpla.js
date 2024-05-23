@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -25,14 +26,11 @@ export class MsgCreateClient extends JSONSerializable<
     this.signer = signer;
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgCreateClient {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgCreateClient {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -40,13 +38,11 @@ export class MsgCreateClient extends JSONSerializable<
     data: MsgCreateClient.Data,
     _?: boolean
   ): MsgCreateClient {
-    _;
     const { client_state, consensus_state, signer } = data;
     return new MsgCreateClient(client_state, consensus_state, signer);
   }
 
   public toData(_?: boolean): MsgCreateClient.Data {
-    _;
     const { client_state, consensus_state, signer } = this;
     return {
       '@type': '/ibc.core.client.v1.MsgCreateClient',
@@ -60,7 +56,6 @@ export class MsgCreateClient extends JSONSerializable<
     proto: MsgCreateClient.Proto,
     _?: boolean
   ): MsgCreateClient {
-    _;
     return new MsgCreateClient(
       proto.clientState,
       proto.consensusState,
@@ -69,7 +64,6 @@ export class MsgCreateClient extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgCreateClient.Proto {
-    _;
     const { client_state, consensus_state, signer } = this;
     return MsgCreateClient_pb.fromPartial({
       clientState: client_state,
@@ -79,7 +73,6 @@ export class MsgCreateClient extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.client.v1.MsgCreateClient',
       value: MsgCreateClient_pb.encode(this.toProto()).finish(),
@@ -87,7 +80,6 @@ export class MsgCreateClient extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgCreateClient {
-    _;
     return MsgCreateClient.fromProto(MsgCreateClient_pb.decode(msgAny.value));
   }
 }

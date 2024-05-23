@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../../../util/json';
+import { Fee } from '../Fee';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgPayPacketFee as MsgPayPacketFee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/tx';
-import { Fee } from '../Fee';
 
 /**
  * MsgPayPacketFee defines the request type for the PayPacketFee rpc
@@ -33,7 +33,6 @@ export class MsgPayPacketFee extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    _;
     throw new Error('Amino not supported');
   }
 

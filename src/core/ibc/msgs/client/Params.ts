@@ -1,5 +1,5 @@
-import { Params as Params_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { JSONSerializable } from '../../../../util/json';
+import { Params as Params_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * Params defines the set of IBC light client parameters.

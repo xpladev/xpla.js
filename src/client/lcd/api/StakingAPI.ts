@@ -5,9 +5,7 @@ import {
   Coin,
 } from '../../../core';
 import { BaseAPI } from './BaseAPI';
-import { Delegation } from '../../../core/staking/Delegation';
-import { Validator } from '../../../core/staking/Validator';
-import { Redelegation } from '../../../core/staking/Redelegation';
+import { Delegation, Validator, Redelegation } from '../../../core/staking';
 import { Denom } from '../../../core/Denom';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
