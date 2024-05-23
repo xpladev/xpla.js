@@ -1,6 +1,6 @@
 {
   "name": "@xpla/xpla.js",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "The JavaScript SDK for Xpla",
   "license": "MIT",
   "author": "XPLA",
@@ -83,7 +83,7 @@
     "@ethersproject/keccak256": "^5.6.1",
     "@ethersproject/signing-key": "^5.6.2",
     "@xpla/xpla.proto": "^1.5.0",
-    "axios": "^0.26.1",
+    "axios": "^1.7.2",
     "bech32": "^2.0.0",
     "bip32": "^2.0.6",
     "bip39": "3.0.3",
