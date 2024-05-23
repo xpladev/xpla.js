@@ -2,9 +2,9 @@
 import { JSONSerializable } from '../../util/json';
 import { Coins } from '../Coins';
 import { BaseAccount } from './BaseAccount';
+import { PublicKey } from '../PublicKey';
 import { BaseAccount as BaseAccount_pb } from '@xpla/xpla.proto/cosmos/auth/v1beta1/auth';
 import { BaseVestingAccount as BaseVestingAccount_pb } from '@xpla/xpla.proto/cosmos/vesting/v1beta1/vesting';
-import { PublicKey } from '../PublicKey';
 
 /**
  * Holds information about a Account which has vesting information.

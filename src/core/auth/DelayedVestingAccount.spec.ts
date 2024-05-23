@@ -14,7 +14,7 @@ describe('DelayedVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '10000000000',
             },
           ],
@@ -37,7 +37,7 @@ describe('DelayedVestingAccount', () => {
           },
           original_vesting: [
             {
-              denom: 'uluna',
+              denom: 'axpla',
               amount: '10000000000',
             },
           ],

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { ClientUpdateProposal as ClientUpdateProposal_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
@@ -34,7 +35,6 @@ export class ClientUpdateProposal extends JSONSerializable<
     data: ClientUpdateProposal.Amino,
     _?: boolean
   ): ClientUpdateProposal {
-    _;
     const {
       value: { title, description, subjectClientId, substituteClientId },
     } = data;
@@ -47,7 +47,6 @@ export class ClientUpdateProposal extends JSONSerializable<
   }
 
   public toAmino(_?: boolean): ClientUpdateProposal.Amino {
-    _;
     const { title, description, subjectClientId, substituteClientId } = this;
     return {
       type: 'ibc/ClientUpdateProposal',
@@ -64,7 +63,6 @@ export class ClientUpdateProposal extends JSONSerializable<
     data: ClientUpdateProposal.Data,
     _?: boolean
   ): ClientUpdateProposal {
-    _;
     const { title, description, subject_client_id, substitute_client_id } =
       data;
     return new ClientUpdateProposal(
@@ -76,7 +74,6 @@ export class ClientUpdateProposal extends JSONSerializable<
   }
 
   public toData(_?: boolean): ClientUpdateProposal.Data {
-    _;
     const { title, description, subjectClientId, substituteClientId } = this;
     return {
       '@type': '/ibc.core.client.v1.ClientUpdateProposal',
@@ -91,7 +88,6 @@ export class ClientUpdateProposal extends JSONSerializable<
     proto: ClientUpdateProposal.Proto,
     _?: boolean
   ): ClientUpdateProposal {
-    _;
     return new ClientUpdateProposal(
       proto.title,
       proto.description,
@@ -101,7 +97,6 @@ export class ClientUpdateProposal extends JSONSerializable<
   }
 
   public toProto(_?: boolean): ClientUpdateProposal.Proto {
-    _;
     const { title, description, subjectClientId, substituteClientId } = this;
     return ClientUpdateProposal_pb.fromPartial({
       subjectClientId,
@@ -112,7 +107,6 @@ export class ClientUpdateProposal extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.client.v1.ClientUpdateProposal',
       value: ClientUpdateProposal_pb.encode(this.toProto()).finish(),
@@ -120,7 +114,6 @@ export class ClientUpdateProposal extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): ClientUpdateProposal {
-    _;
     return ClientUpdateProposal.fromProto(
       ClientUpdateProposal_pb.decode(msgAny.value)
     );

@@ -5,12 +5,12 @@ describe('Coins', () => {
   it('clobbers coins of similar denom', () => {
     const coins1 = new Coins([
       new Coin('ukrw', 1000),
-      new Coin('uluna', 1000),
-      new Coin('uluna', 1000),
+      new Coin('axpla', 1000),
+      new Coin('axpla', 1000),
     ]);
 
     const coinKRW = coins1.get('ukrw');
-    const coinLUNA = coins1.get('uluna');
+    const coinLUNA = coins1.get('axpla');
 
     expect(coinKRW).toBeDefined();
     expect(coinLUNA).toBeDefined();
@@ -46,7 +46,7 @@ describe('Coins', () => {
     const coins1 = new Coins(ref);
 
     // input #2: Coin[]
-    const coins2 = new Coins([new Coin('ukrw', 1), new Coin('uluna', 2)]);
+    const coins2 = new Coins([new Coin('ukrw', 1), new Coin('axpla', 2)]);
 
     // input #3: Coins.AminoDict
     const coins3 = new Coins({

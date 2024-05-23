@@ -1,5 +1,5 @@
-import { PacketId as PacketId_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 import { JSONSerializable } from '../../../../util/json';
+import { PacketId as PacketId_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 
 /**
  * PacketId is an identifer for a unique Packet

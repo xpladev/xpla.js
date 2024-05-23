@@ -1,6 +1,3 @@
-//import { Account } from './Account';
-//import { LazyGradedVestingAccount } from './LazyGradedVestingAccount';
-
 export * from './Account';
 export * from './BaseAccount';
 export * from './BaseVestingAccount';

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
-import { Header as Header_pb } from '@xpla/xpla.proto/ibc/lightclients/tendermint/v1/tendermint';
 import { Height } from '../../core/client/Height';
 import { SignedHeader, ValidatorSet } from '../../msgs/client/tendermint/types';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { Header as Header_pb } from '@xpla/xpla.proto/ibc/lightclients/tendermint/v1/tendermint';
 
 /**
  * Header defines the Tendermint client consensus Header.
@@ -35,7 +36,6 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
   }
 
   public static fromAmino(_: any): Header {
-    _;
     throw new Error('Amino not supported');
   }
 

@@ -1,8 +1,8 @@
 import { JSONSerializable } from '../../../../../util/json';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgPayPacketFeeAsync as MsgPayPacketFeeAsync_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/tx';
 import { PacketId } from '../../../core/channel/PacketId';
 import { PacketFee } from '../PacketFee';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgPayPacketFeeAsync as MsgPayPacketFeeAsync_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/tx';
 
 /**
  * MsgPayPacketFeeAsync defines the request type for the PayPacketFeeAsync rpc
@@ -25,7 +25,6 @@ export class MsgPayPacketFeeAsync extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    _;
     throw new Error('Amino not supported');
   }
 

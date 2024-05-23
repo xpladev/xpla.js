@@ -1,5 +1,5 @@
-import { Params as Params_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/controller/v1/controller';
 import { JSONSerializable } from '../../../../../util/json';
+import { Params as Params_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/controller/v1/controller';
 
 /**
  *  Params defines the set of on-chain interchain accounts parameters.

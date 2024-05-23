@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { Version } from '../../core/connection/Version';
-import { MsgConnectionOpenAck as MsgConnectionOpenAck_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
 import { Height } from '../../core/client/Height';
+import { Version } from '../../core/connection/Version';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgConnectionOpenAck as MsgConnectionOpenAck_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
 
 /**
  * MsgConnectionOpenAck defines a msg sent by a Relayer to Chain A to
@@ -41,14 +42,11 @@ export class MsgConnectionOpenAck extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgConnectionOpenAck {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgConnectionOpenAck {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -56,7 +54,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
     data: MsgConnectionOpenAck.Data,
     _?: boolean
   ): MsgConnectionOpenAck {
-    _;
     const {
       connection_id,
       counterparty_connection_id,
@@ -84,7 +81,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgConnectionOpenAck.Data {
-    _;
     const {
       connection_id,
       counterparty_connection_id,
@@ -118,7 +114,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
     proto: MsgConnectionOpenAck.Proto,
     _?: boolean
   ): MsgConnectionOpenAck {
-    _;
     return new MsgConnectionOpenAck(
       proto.connectionId,
       proto.counterpartyConnectionId,
@@ -136,7 +131,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgConnectionOpenAck.Proto {
-    _;
     const {
       connection_id,
       counterparty_connection_id,
@@ -166,7 +160,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.connection.v1.MsgConnectionOpenAck',
       value: MsgConnectionOpenAck_pb.encode(this.toProto()).finish(),
@@ -174,7 +167,6 @@ export class MsgConnectionOpenAck extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgConnectionOpenAck {
-    _;
     return MsgConnectionOpenAck.fromProto(
       MsgConnectionOpenAck_pb.decode(msgAny.value)
     );

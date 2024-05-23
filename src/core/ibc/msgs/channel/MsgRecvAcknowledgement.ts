@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
 import { Packet } from '../../core/channel/Packet';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgAcknowledgement as MsgAcknowledgement_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
@@ -30,14 +31,11 @@ export class MsgAcknowledgement extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgAcknowledgement {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgAcknowledgement {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -45,7 +43,6 @@ export class MsgAcknowledgement extends JSONSerializable<
     data: MsgAcknowledgement.Data,
     _?: boolean
   ): MsgAcknowledgement {
-    _;
     const { packet, acknowledgement, proof_acked, proof_height, signer } = data;
     return new MsgAcknowledgement(
       packet ? Packet.fromData(packet) : undefined,
@@ -57,7 +54,6 @@ export class MsgAcknowledgement extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgAcknowledgement.Data {
-    _;
     const { packet, acknowledgement, proof_acked, proof_height, signer } = this;
     return {
       '@type': '/ibc.core.channel.v1.MsgAcknowledgement',
@@ -73,7 +69,6 @@ export class MsgAcknowledgement extends JSONSerializable<
     proto: MsgAcknowledgement.Proto,
     _?: boolean
   ): MsgAcknowledgement {
-    _;
     return new MsgAcknowledgement(
       proto.packet ? Packet.fromProto(proto.packet) : undefined,
       Buffer.from(proto.acknowledgement).toString('base64'),
@@ -84,7 +79,6 @@ export class MsgAcknowledgement extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgAcknowledgement.Proto {
-    _;
     const { packet, acknowledgement, proof_acked, proof_height, signer } = this;
     return MsgAcknowledgement_pb.fromPartial({
       packet: packet ? packet.toProto() : undefined,
@@ -96,7 +90,6 @@ export class MsgAcknowledgement extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgAcknowledgement',
       value: MsgAcknowledgement_pb.encode(this.toProto()).finish(),
@@ -104,7 +97,6 @@ export class MsgAcknowledgement extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgAcknowledgement {
-    _;
     return MsgAcknowledgement.fromProto(
       MsgAcknowledgement_pb.decode(msgAny.value)
     );

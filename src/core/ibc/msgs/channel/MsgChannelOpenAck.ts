@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Height } from '../../core/client/Height';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgChannelOpenAck as MsgChannelOpenAck_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
@@ -33,14 +34,11 @@ export class MsgChannelOpenAck extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgChannelOpenAck {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgChannelOpenAck {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -48,7 +46,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
     data: MsgChannelOpenAck.Data,
     _?: boolean
   ): MsgChannelOpenAck {
-    _;
     const {
       port_id,
       channel_id,
@@ -70,7 +67,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgChannelOpenAck.Data {
-    _;
     const {
       port_id,
       channel_id,
@@ -96,7 +92,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
     proto: MsgChannelOpenAck.Proto,
     _?: boolean
   ): MsgChannelOpenAck {
-    _;
     return new MsgChannelOpenAck(
       proto.portId,
       proto.channelId,
@@ -109,7 +104,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgChannelOpenAck.Proto {
-    _;
     const {
       port_id,
       channel_id,
@@ -131,7 +125,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgChannelOpenAck',
       value: MsgChannelOpenAck_pb.encode(this.toProto()).finish(),
@@ -139,7 +132,6 @@ export class MsgChannelOpenAck extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgChannelOpenAck {
-    _;
     return MsgChannelOpenAck.fromProto(
       MsgChannelOpenAck_pb.decode(msgAny.value)
     );

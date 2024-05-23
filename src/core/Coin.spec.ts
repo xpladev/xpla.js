@@ -3,24 +3,24 @@ import { Dec, Int } from './numeric';
 
 describe('Coin', () => {
   it('different types for amount', () => {
-    const ref = new Coin('uluna', 1000);
-    const coins = [new Coin('uluna', 1000.0), new Coin('uluna', '1000')];
+    const ref = new Coin('axpla', 1000);
+    const coins = [new Coin('axpla', 1000.0), new Coin('axpla', '1000')];
     coins.forEach(coin => expect(coin).toEqual(ref));
   });
 
   it('deserializes Coin value', () => {
     const coin = Coin.fromAmino({
-      denom: 'uluna',
+      denom: 'axpla',
       amount: '1000',
     });
 
-    expect(coin.denom).toEqual('uluna');
+    expect(coin.denom).toEqual('axpla');
     expect(coin.amount.toNumber()).toEqual(1000);
   });
 
   it('serializes', () => {
     const coinAmino: Coin.Amino = {
-      denom: 'uluna',
+      denom: 'axpla',
       amount: '1000',
     };
 
@@ -29,7 +29,7 @@ describe('Coin', () => {
     expect(coin.toAmino()).toEqual(coinAmino);
 
     const decCoinAmino = {
-      denom: 'uluna',
+      denom: 'axpla',
       amount: '1000.000000000000000000',
     };
     const decCoin = Coin.fromAmino(decCoinAmino);
@@ -38,9 +38,9 @@ describe('Coin', () => {
   });
 
   it('arithmetic', () => {
-    const zero = new Coin('uluna', 0);
-    const coin = new Coin('uluna', 1000);
-    const coin2 = new Coin('uluna', 2000);
+    const zero = new Coin('axpla', 0);
+    const coin = new Coin('axpla', 1000);
+    const coin2 = new Coin('axpla', 2000);
     const coin3 = new Coin('ukrw', 2000);
 
     // addition
@@ -48,8 +48,8 @@ describe('Coin', () => {
     const decSum = coin.add(0.1);
     expect(coin.add(zero).amount).toEqual(coin.amount);
     expect(sum.amount.toNumber()).toEqual(3000);
-    expect(sum.denom).toEqual('uluna');
-    expect(coin.add(1500)).toEqual(new Coin('uluna', 2500));
+    expect(sum.denom).toEqual('axpla');
+    expect(coin.add(1500)).toEqual(new Coin('axpla', 2500));
     expect(decSum.isDecCoin()).toBe(true);
     expect(decSum.isIntCoin()).toBe(false);
     expect(decSum.amount.toNumber()).toEqual(1000.1);
@@ -57,37 +57,37 @@ describe('Coin', () => {
 
     // subtraction
     const diff = coin2.sub(coin);
-    expect(diff.denom).toEqual('uluna');
+    expect(diff.denom).toEqual('axpla');
     expect(diff.amount.toNumber()).toEqual(1000);
     expect(() => coin2.sub(coin3)).toThrow(Coin.ArithmeticError);
 
     // multiplication
     const product = coin.mul(3.1233);
-    expect(product.denom).toEqual('uluna');
+    expect(product.denom).toEqual('axpla');
     expect(product.amount.toNumber()).toEqual(3123.3);
 
     // division
     const quotient = coin.div(5);
-    expect(quotient.denom).toEqual('uluna');
+    expect(quotient.denom).toEqual('axpla');
     expect(quotient.amount.toNumber()).toEqual(200);
 
     // modulo
     const rem = coin.mod(43);
-    expect(rem.denom).toEqual('uluna');
+    expect(rem.denom).toEqual('axpla');
     expect(rem.amount.toNumber()).toEqual(coin.amount.toNumber() % 43);
   });
 
   it('equality', () => {
-    const coin1 = new Coin('uluna', 1000);
-    const coin2 = new Coin('uluna', 1000);
-    const coin3 = new Coin('uluna', 1001);
+    const coin1 = new Coin('axpla', 1000);
+    const coin2 = new Coin('axpla', 1000);
+    const coin3 = new Coin('axpla', 1001);
     expect(coin1).toEqual(coin2);
     expect(coin1).not.toEqual(coin3);
   });
 
   it('toString', () => {
-    const coin1 = new Coin('uluna', 123456);
-    const coin2 = new Coin('uluna', 123456.789);
+    const coin1 = new Coin('axpla', 123456);
+    const coin2 = new Coin('axpla', 123456.789);
     expect(coin1.toString()).toEqual('123456uluna');
     expect(coin1.toDecCoin().toString()).toEqual('123456.0uluna');
     expect(coin2.toString()).toEqual('123456.789uluna');
@@ -95,11 +95,11 @@ describe('Coin', () => {
 
   describe('fromString', () => {
     it('parse IntCoin', () => {
-      const coin1 = new Coin('uluna', 1001);
+      const coin1 = new Coin('axpla', 1001);
       const coin2 = Coin.fromString('1001uluna');
       expect(coin1).toEqual(coin2);
 
-      const coin3 = new Coin('uluna', -1);
+      const coin3 = new Coin('axpla', -1);
       const coin4 = Coin.fromString('-1uluna');
       expect(coin3).toEqual(coin4);
     });
@@ -125,11 +125,11 @@ describe('Coin', () => {
     });
 
     it('parse DecCoin', () => {
-      const coin1 = new Coin('uluna', 1001.5);
+      const coin1 = new Coin('axpla', 1001.5);
       const coin2 = Coin.fromString('1001.500000000000000000uluna');
       expect(coin1).toEqual(coin2);
 
-      const coin3 = new Coin('uluna', '-1.0');
+      const coin3 = new Coin('axpla', '-1.0');
       const coin4 = Coin.fromString('-1.000000000000000000uluna');
       expect(coin3).toEqual(coin4);
     });

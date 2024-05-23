@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { JSONSerializable } from '../../../../../util/json';
 import { Proof as Proof_pb } from '@xpla/xpla.proto/tendermint/crypto/proof';
 import { PublicKey as PublicKey_pb } from '@xpla/xpla.proto/tendermint/crypto/keys';
-import { JSONSerializable } from '../../../../../util/json';
 
 export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
   /**
@@ -19,7 +20,6 @@ export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
   }
 
   public static fromAmino(_: any): Proof {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -94,7 +94,6 @@ export class PublicKey extends JSONSerializable<
   }
 
   public static fromAmino(_: any): PublicKey {
-    _;
     throw new Error('Amino not supported');
   }
 

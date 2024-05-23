@@ -30,7 +30,6 @@ export class MsgRegisterCounterpartyAddress extends JSONSerializable<
     if (isClassic) {
       throw new Error('Not supported for the network');
     }
-    _;
     throw new Error('Amino not supported');
   }
 

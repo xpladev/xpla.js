@@ -1,5 +1,5 @@
-import { Counterparty as Counterparty_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 import { JSONSerializable } from '../../../../util/json';
+import { Counterparty as Counterparty_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 
 /** Counterparty defines a channel end counterparty */
 export class Counterparty extends JSONSerializable<

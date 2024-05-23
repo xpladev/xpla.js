@@ -1,5 +1,5 @@
-import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/metadata';
 import { JSONSerializable } from '../../../../util/json';
+import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/metadata';
 
 /**
  * Metadata defines a set of protocol specific data encoded into the ICS27 channel version bytestring

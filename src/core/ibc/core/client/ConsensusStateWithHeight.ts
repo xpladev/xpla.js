@@ -1,6 +1,6 @@
-import { ConsensusStateWithHeight as ConsensusStateWithHeight_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { Height } from './Height';
 import { JSONSerializable } from '../../../../util/json';
+import { ConsensusStateWithHeight as ConsensusStateWithHeight_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * ConsensusStateWithHeight defines a consensus state with an additional height field.

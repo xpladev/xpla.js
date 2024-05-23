@@ -1,5 +1,6 @@
-import { PublicKey } from '../PublicKey';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../util/json';
+import { PublicKey } from '../PublicKey';
 import { EvmAddress } from '../eip55';
 
 /**
@@ -33,7 +34,6 @@ export class EvmAccount extends JSONSerializable<
   }
 
   public toAmino(_?: boolean): EvmAccount.Amino {
-    _;
     const { address, nonce } = this;
     return {
       type: 'core/Account',
@@ -45,7 +45,6 @@ export class EvmAccount extends JSONSerializable<
   }
 
   public static fromAmino(data: EvmAccount.Amino, _?: boolean): EvmAccount {
-    _;
     const {
       value: { address, nonce },
     } = data;
@@ -54,14 +53,12 @@ export class EvmAccount extends JSONSerializable<
   }
 
   public static fromData(data: EvmAccount.Data, _?: boolean): EvmAccount {
-    _;
     const { address, nonce } = data;
 
     return new EvmAccount(address || '', Number.parseInt(nonce) || 0);
   }
 
   public toData(_?: boolean): EvmAccount.Data {
-    _;
     const { address, nonce } = this;
     return {
       '@type': '/ethermint.types.v1.EthAccount',
@@ -71,7 +68,6 @@ export class EvmAccount extends JSONSerializable<
   }
 
   public toProto(_?: boolean): EvmAccount.Proto {
-    _;
     return {};
   }
 
@@ -79,17 +75,14 @@ export class EvmAccount extends JSONSerializable<
     _baseAccountProto: EvmAccount.Proto,
     _?: boolean
   ): EvmAccount {
-    _;
     return new EvmAccount('', 0);
   }
 
   public packAny(_?: boolean): any {
-    _;
     return {};
   }
 
   public static unpackAny(_pubkeyAny: any, _?: boolean): EvmAccount {
-    _;
     return new EvmAccount('', 0);
   }
 }

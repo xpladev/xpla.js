@@ -1,6 +1,6 @@
-import { Fee as Fee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
-import { Coins } from '../../../Coins';
 import { JSONSerializable } from '../../../../util/json';
+import { Coins } from '../../../Coins';
+import { Fee as Fee_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/fee';
 
 /**
  *  Fee defines the ICS29 receive, acknowledgement and timeout fees

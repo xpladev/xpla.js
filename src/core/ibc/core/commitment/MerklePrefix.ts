@@ -1,5 +1,5 @@
-import { MerklePrefix as MerklePrefix_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 import { JSONSerializable } from '../../../../util/json';
+import { MerklePrefix as MerklePrefix_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 
 /*
  * MerklePrefix is merkle path prefixed to the key.

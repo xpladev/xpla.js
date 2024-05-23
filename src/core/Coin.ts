@@ -65,7 +65,7 @@ export class Coin
   /**
    * Outputs `<amount><denom>`.
    *
-   * Eg: `Coin('uluna', 1500) -> 1500uluna`
+   * Eg: `Coin('axpla', 1500) -> 1500uluna`
    */
   public toString(): string {
     const amount = this.amount.toFixed();

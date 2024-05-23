@@ -1,6 +1,6 @@
-import { Packet as Packet_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 import { JSONSerializable } from '../../../../util/json';
 import { Height } from '../client/Height';
+import { Packet as Packet_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 
 /** Packet defines a type that carries data across different chains through IBC */
 export class Packet extends JSONSerializable<

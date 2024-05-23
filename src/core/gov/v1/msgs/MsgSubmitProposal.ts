@@ -1,0 +1,169 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { JSONSerializable } from '../../../../util/json';
+import { Coins } from '../../../Coins';
+import { AccAddress } from '../../../bech32';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
+import { MsgSubmitProposal as MsgSubmitProposalV1_pb } from '@xpla/xpla.proto/cosmos/gov/v1/tx';
+
+/**
+ * Submit a proposal alongside an initial deposit.
+ */
+export class MsgSubmitProposalV1 extends JSONSerializable<
+  MsgSubmitProposalV1.Amino,
+  MsgSubmitProposalV1.Data,
+  MsgSubmitProposalV1.Proto
+> {
+  public initial_deposit: Coins;
+
+  /**
+   * @param messages are the arbitrary messages to be executed if proposal passes
+   * @param initial_deposit is the deposit value that must be paid at proposal submission
+   * @param proposer is the account address of the proposer
+   * @param metadata is any arbitrary metadata attached to the proposal
+   * @param title is the title of the proposal
+   * @param summary is the summary of the proposal
+   */
+  constructor(
+    public messages: Any[],
+    initial_deposit: Coins.Input,
+    public proposer: AccAddress,
+    public metadata: string,
+    public title: string,
+    public summary: string
+  ) {
+    super();
+    this.initial_deposit = new Coins(initial_deposit);
+  }
+
+  public static fromAmino(
+    data: MsgSubmitProposalV1.Amino,
+    _isClassic?: boolean
+  ): MsgSubmitProposalV1 {
+    const {
+      value: { messages, initial_deposit, proposer, metadata, title, summary },
+    } = data;
+    return new MsgSubmitProposalV1(
+      messages,
+      Coins.fromAmino(initial_deposit),
+      proposer,
+      metadata,
+      title,
+      summary
+    );
+  }
+
+  public toAmino(isClassic?: boolean): MsgSubmitProposalV1.Amino {
+    const { messages, initial_deposit, proposer, metadata, title, summary } =
+      this;
+    return {
+      type: isClassic
+        ? 'gov/MsgSubmitProposal'
+        : 'cosmos-sdk/MsgSubmitProposal',
+      value: {
+        messages,
+        initial_deposit: initial_deposit.toAmino(),
+        proposer,
+        metadata,
+        title,
+        summary,
+      },
+    };
+  }
+
+  public static fromData(
+    data: MsgSubmitProposalV1.Data,
+    _isClassic?: boolean
+  ): MsgSubmitProposalV1 {
+    const { messages, initial_deposit, proposer, metadata, title, summary } =
+      data;
+    return new MsgSubmitProposalV1(
+      messages,
+      Coins.fromData(initial_deposit),
+      proposer,
+      metadata,
+      title,
+      summary
+    );
+  }
+
+  public toData(_isClassic?: boolean): MsgSubmitProposalV1.Data {
+    const { messages, initial_deposit, proposer, metadata, title, summary } =
+      this;
+    return {
+      '@type': '/cosmos.gov.v1.MsgSubmitProposal',
+      messages,
+      initial_deposit: initial_deposit.toData(),
+      proposer,
+      metadata,
+      title,
+      summary,
+    };
+  }
+
+  public static fromProto(
+    proto: MsgSubmitProposalV1.Proto,
+    _isClassic?: boolean
+  ): MsgSubmitProposalV1 {
+    return new MsgSubmitProposalV1(
+      proto.messages,
+      Coins.fromProto(proto.initialDeposit),
+      proto.proposer,
+      proto.metadata,
+      proto.title,
+      proto.summary
+    );
+  }
+
+  public toProto(_isClassic?: boolean): MsgSubmitProposalV1.Proto {
+    const { messages, initial_deposit, proposer, metadata, title, summary } =
+      this;
+    return MsgSubmitProposalV1_pb.fromPartial({
+      messages,
+      initialDeposit: initial_deposit.toProto(),
+      proposer,
+    });
+  }
+
+  public packAny(isClassic?: boolean): Any {
+    return Any.fromPartial({
+      typeUrl: '/cosmos.gov.v1.MsgSubmitProposal',
+      value: MsgSubmitProposalV1_pb.encode(this.toProto(isClassic)).finish(),
+    });
+  }
+
+  public static unpackAny(
+    msgAny: Any,
+    isClassic?: boolean
+  ): MsgSubmitProposalV1 {
+    return MsgSubmitProposalV1.fromProto(
+      MsgSubmitProposalV1_pb.decode(msgAny.value),
+      isClassic
+    );
+  }
+}
+
+export namespace MsgSubmitProposalV1 {
+  export interface Amino {
+    type: 'gov/MsgSubmitProposal' | 'cosmos-sdk/MsgSubmitProposal';
+    value: {
+      messages: Any[];
+      initial_deposit: Coins.Amino;
+      proposer: AccAddress;
+      metadata: string;
+      title: string;
+      summary: string;
+    };
+  }
+
+  export interface Data {
+    '@type': '/cosmos.gov.v1.MsgSubmitProposal';
+    messages: Any[];
+    initial_deposit: Coins.Amino;
+    proposer: AccAddress;
+    metadata: string;
+    title: string;
+    summary: string;
+  }
+
+  export type Proto = MsgSubmitProposalV1_pb;
+}

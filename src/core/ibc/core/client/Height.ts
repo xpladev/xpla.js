@@ -1,5 +1,5 @@
-import { Height as Height_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 import { JSONSerializable } from '../../../../util/json';
+import { Height as Height_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * Height is a monotonically increasing data type

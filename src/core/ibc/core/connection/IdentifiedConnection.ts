@@ -1,13 +1,12 @@
-import { IdentifiedConnection as IdentifiedConnection_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 import { JSONSerializable } from '../../../../util/json';
 import { Version } from './Version';
+import { Counterparty } from './Counterparty';
 import {
   State,
   stateFromJSON,
   stateToJSON,
 } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
-import { Counterparty } from './Counterparty';
-import Long from 'long';
+import { IdentifiedConnection as IdentifiedConnection_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 
 export { State, stateFromJSON, stateToJSON };
 
@@ -115,7 +114,7 @@ export class IdentifiedConnection extends JSONSerializable<
       versions: versions.map(v => v.toProto()),
       state,
       counterparty: counterparty?.toProto(),
-      delayPeriod: Long.fromNumber(delay_period),
+      delayPeriod: delay_period,
     });
   }
 }

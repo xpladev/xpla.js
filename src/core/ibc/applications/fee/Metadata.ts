@@ -1,5 +1,5 @@
-import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/metadata';
 import { JSONSerializable } from '../../../../util/json';
+import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/fee/v1/metadata';
 
 /**
  * Metadata defines the ICS29 channel specific metadata encoded into the channel version bytestring

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
-import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Channel } from '../../core/channel/Channel';
 import { Height } from '../../core/client/Height';
+import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgChannelOpenTry as MsgChannelOpenTry_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/tx';
 
 /**
@@ -34,14 +35,11 @@ export class MsgChannelOpenTry extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgChannelOpenTry {
-    _;
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgChannelOpenTry {
     throw new Error('Amino not supported');
   }
 
   public toAmino(_?: boolean): any {
-    _;
     throw new Error('Amino not supported');
   }
 
@@ -49,7 +47,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
     data: MsgChannelOpenTry.Data,
     _?: boolean
   ): MsgChannelOpenTry {
-    _;
     const {
       port_id,
       previous_channel_id,
@@ -71,7 +68,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgChannelOpenTry.Data {
-    _;
     const {
       port_id,
       previous_channel_id,
@@ -97,7 +93,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
     proto: MsgChannelOpenTry.Proto,
     _?: boolean
   ): MsgChannelOpenTry {
-    _;
     return new MsgChannelOpenTry(
       proto.portId,
       proto.previousChannelId,
@@ -110,7 +105,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
   }
 
   public toProto(_?: boolean): MsgChannelOpenTry.Proto {
-    _;
     const {
       port_id,
       previous_channel_id,
@@ -132,7 +126,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
   }
 
   public packAny(_?: boolean): Any {
-    _;
     return Any.fromPartial({
       typeUrl: '/ibc.core.channel.v1.MsgChannelOpenTry',
       value: MsgChannelOpenTry_pb.encode(this.toProto()).finish(),
@@ -140,7 +133,6 @@ export class MsgChannelOpenTry extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgChannelOpenTry {
-    _;
     return MsgChannelOpenTry.fromProto(
       MsgChannelOpenTry_pb.decode(msgAny.value)
     );
