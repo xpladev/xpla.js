@@ -1,5 +1,5 @@
 import { MnemonicKey } from './MnemonicKey';
-import { MsgSend, MsgMultiSend } from '../core/bank/msgs';
+import { MsgSend, MsgMultiSend } from '../core/bank';
 import { Coins } from '../core/Coins';
 import { Fee } from '../core/Fee';
 import { AuthInfo, TxBody } from '../core/Tx';

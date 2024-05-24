@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Height } from '../../../core/ibc/core/client/Height';
 import { LCDClient } from '../LCDClient';
 import { IbcAPI } from './IbcAPI';
