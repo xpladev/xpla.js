@@ -21,6 +21,7 @@ import {
 import { CompactBitArray } from './CompactBitArray';
 import { Msg } from './Msg';
 import { Fee } from './Fee';
+import { Tip } from './Tip';
 import { SignatureV2 } from './SignatureV2';
 import { SignerData } from '../client/lcd/api/TxAPI';
 
@@ -217,33 +218,43 @@ export namespace TxBody {
 }
 
 export class AuthInfo {
-  constructor(public signer_infos: SignerInfo[], public fee: Fee) {}
+  constructor(
+    public signer_infos: SignerInfo[],
+    public fee?: Fee,
+    public tip?: Tip
+  ) {}
 
   public static fromData(data: AuthInfo.Data): AuthInfo {
     return new AuthInfo(
       data.signer_infos.map(s => SignerInfo.fromData(s)),
-      Fee.fromData(data.fee)
+      data.fee ? Fee.fromData(data.fee) : undefined,
+      data.tip ? Tip.fromData(data.tip) : undefined
     );
   }
 
   public toData(): AuthInfo.Data {
+    const { signer_infos, fee, tip } = this;
     return {
-      fee: this.fee.toData(),
-      signer_infos: this.signer_infos.map(info => info.toData()),
+      signer_infos: signer_infos.map(info => info.toData()),
+      fee: fee ? fee.toData() : undefined,
+      tip: tip ? tip.toData() : undefined,
     };
   }
 
   public static fromProto(proto: AuthInfo.Proto): AuthInfo {
     return new AuthInfo(
       proto.signerInfos.map(s => SignerInfo.fromProto(s)),
-      Fee.fromProto(proto.fee as Fee.Proto)
+      proto.fee ? Fee.fromProto(proto.fee as Fee.Proto) : undefined,
+      proto.tip ? Tip.fromProto(proto.tip as Tip.Proto) : undefined
     );
   }
 
   public toProto(): AuthInfo.Proto {
+    const { signer_infos, fee, tip } = this;
     return AuthInfo_pb.fromPartial({
-      fee: this.fee.toProto(),
-      signerInfos: this.signer_infos.map(info => info.toProto()),
+      signerInfos: signer_infos.map(info => info.toProto()),
+      fee: fee ? fee.toProto() : undefined,
+      tip: tip ? tip.toProto() : undefined,
     });
   }
 
@@ -255,7 +266,8 @@ export class AuthInfo {
 export namespace AuthInfo {
   export interface Data {
     signer_infos: SignerInfo.Data[];
-    fee: Fee.Data;
+    fee: Fee.Data | undefined;
+    tip: Tip.Data | undefined;
   }
   export type Proto = AuthInfo_pb;
 }

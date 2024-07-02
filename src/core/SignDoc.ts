@@ -1,8 +1,10 @@
 import { JSONSerializable } from '../util/json';
-import { Fee } from './Fee';
 import { Msg } from './Msg';
+import { Fee } from './Fee';
+import { Tip } from './Tip';
 import { SignDoc as SignDoc_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/tx';
 import { TxBody, AuthInfo, Tx } from './Tx';
+
 /**
  * A sign message is a data structure that is used to create a [[StdSignature]] to be later
  * appended to the list of signatures in an [[StdTx]]. Essentially, it contains all the
@@ -42,7 +44,7 @@ export class SignDoc extends JSONSerializable<
       account_number,
       sequence,
       tx_body: { memo, messages, timeout_height },
-      auth_info: { fee },
+      auth_info: { fee, tip },
     } = this;
 
     return {
@@ -53,7 +55,8 @@ export class SignDoc extends JSONSerializable<
         timeout_height && timeout_height !== 0
           ? timeout_height.toString()
           : undefined,
-      fee: fee.toAmino(),
+      fee: fee ? fee.toAmino() : undefined,
+      tip: tip ? tip.toAmino() : undefined,
       msgs: messages.map(m => m.toAmino(isClassic)),
       memo: memo ?? '',
     };
@@ -94,7 +97,8 @@ export namespace SignDoc {
     account_number: string;
     sequence: string;
     timeout_height?: string;
-    fee: Fee.Amino;
+    fee: Fee.Amino | undefined;
+    tip: Tip.Amino | undefined;
     msgs: Msg.Amino[];
     memo: string;
   }

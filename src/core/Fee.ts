@@ -27,14 +27,22 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   }
 
   public static fromAmino(data: Fee.Amino): Fee {
-    const { gas, amount } = data;
-    return new Fee(Number.parseInt(gas), Coins.fromAmino(amount), '', '');
+    const { gas, amount, payer, granter } = data;
+    return new Fee(
+      Number.parseInt(gas),
+      Coins.fromAmino(amount),
+      payer,
+      granter
+    );
   }
 
   public toAmino(): Fee.Amino {
+    const { gas_limit, amount, payer, granter } = this;
     return {
-      gas: new Int(this.gas_limit).toString(),
-      amount: this.amount.toAmino(),
+      gas: new Int(gas_limit).toString(),
+      amount: amount.toAmino(),
+      payer,
+      granter,
     };
   }
 
@@ -48,12 +56,12 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   }
 
   public toData(): Fee.Data {
-    const { amount, gas_limit, payer, granter } = this;
+    const { gas_limit, amount, payer, granter } = this;
     return {
-      amount: amount.toData(),
       gas_limit: gas_limit.toFixed(),
-      granter: granter ?? '',
-      payer: payer ?? '',
+      amount: amount.toData(),
+      granter,
+      payer,
     };
   }
 
@@ -67,10 +75,10 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   }
 
   public toProto(): Fee.Proto {
-    const { amount, gas_limit, payer, granter } = this;
+    const { gas_limit, amount, payer, granter } = this;
     return Fee_pb.fromPartial({
-      amount: amount.toProto(),
       gasLimit: gas_limit,
+      amount: amount.toProto(),
       granter,
       payer,
     });
@@ -88,13 +96,15 @@ export namespace Fee {
   export interface Amino {
     gas: string;
     amount: Coins.Amino;
+    payer?: string;
+    granter?: string;
   }
 
   export interface Data {
     gas_limit: string;
-    payer: string;
-    granter: string;
     amount: Coins.Data;
+    payer?: string;
+    granter?: string;
   }
 
   export type Proto = Fee_pb;

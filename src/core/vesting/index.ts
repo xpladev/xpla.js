@@ -1,9 +1,4 @@
-import {
-  VestingMsgV1B1,
-  MsgCreateVestingAccountV1B1,
-  MsgCreatePermanentLockedAccountV1B1,
-  MsgCreatePeriodicVestingAccountV1B1,
-} from './v1beta1/msgs';
+import { VestingMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
 export * from './v1beta1/Period';
@@ -16,9 +11,9 @@ export namespace VestingMsg {
   export type Proto = VestingMsgV1B1.Proto;
 }
 
-export type MsgCreateVestingAccount = MsgCreateVestingAccountV1B1;
-export type MsgCreatePermanentLockedAccount =
-  MsgCreatePermanentLockedAccountV1B1;
-export type MsgCreatePeriodicVestingAccount =
-  MsgCreatePeriodicVestingAccountV1B1;
+export {
+  MsgCreateVestingAccountV1B1 as MsgCreateVestingAccount,
+  MsgCreatePermanentLockedAccountV1B1 as MsgCreatePermanentLockedAccount,
+  MsgCreatePeriodicVestingAccountV1B1 as MsgCreatePeriodicVestingAccount,
+} from './v1beta1/msgs';
 export { PeriodV1B1 as Period } from './v1beta1/Period';

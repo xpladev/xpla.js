@@ -1,5 +1,5 @@
 import { RawKey, MnemonicKey } from '.';
-import { MsgSend } from '../core/bank/msgs';
+import { MsgSend } from '../core/bank';
 import { Coins } from '../core/Coins';
 import { SignDoc } from '../core/SignDoc';
 import { Fee } from '../core/Fee';
