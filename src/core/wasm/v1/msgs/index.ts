@@ -14,6 +14,7 @@ import { MsgRemoveCodeUploadParamsAddressesV1 } from './MsgRemoveCodeUploadParam
 import { MsgStoreAndMigrateContractV1 } from './MsgStoreAndMigrateContract';
 import { MsgUpdateContractLabelV1 } from './MsgUpdateContractLabel';
 import { MsgUpdateWasmParamsV1 } from './MsgUpdateParams';
+import { MsgUpdateInstantiateConfigV1 } from './MsgUpdateInstantiateConfig';
 
 export * from './MsgStoreCode';
 export * from './MsgInstantiateContract';
@@ -31,6 +32,7 @@ export * from './MsgRemoveCodeUploadParamsAddresses';
 export * from './MsgStoreAndMigrateContract';
 export * from './MsgUpdateContractLabel';
 export * from './MsgUpdateParams';
+export * from './MsgUpdateInstantiateConfig';
 
 export type WasmMsgV1 =
   | MsgStoreCodeV1
@@ -48,7 +50,8 @@ export type WasmMsgV1 =
   | MsgRemoveCodeUploadParamsAddressesV1
   | MsgStoreAndMigrateContractV1
   | MsgUpdateContractLabelV1
-  | MsgUpdateWasmParamsV1;
+  | MsgUpdateWasmParamsV1
+  | MsgUpdateInstantiateConfigV1;
 
 export namespace WasmMsgV1 {
   export type Amino =
@@ -67,7 +70,8 @@ export namespace WasmMsgV1 {
     | MsgRemoveCodeUploadParamsAddressesV1.Amino
     | MsgStoreAndMigrateContractV1.Amino
     | MsgUpdateContractLabelV1.Amino
-    | MsgUpdateWasmParamsV1.Amino;
+    | MsgUpdateWasmParamsV1.Amino
+    | MsgUpdateInstantiateConfigV1.Amino;
   export type Data =
     | MsgStoreCodeV1.Data
     | MsgInstantiateContractV1.Data
@@ -84,7 +88,8 @@ export namespace WasmMsgV1 {
     | MsgRemoveCodeUploadParamsAddressesV1.Data
     | MsgStoreAndMigrateContractV1.Data
     | MsgUpdateContractLabelV1.Data
-    | MsgUpdateWasmParamsV1.Data;
+    | MsgUpdateWasmParamsV1.Data
+    | MsgUpdateInstantiateConfigV1.Data;
   export type Proto =
     | MsgStoreCodeV1.Proto
     | MsgInstantiateContractV1.Proto
@@ -101,5 +106,6 @@ export namespace WasmMsgV1 {
     | MsgRemoveCodeUploadParamsAddressesV1.Proto
     | MsgStoreAndMigrateContractV1.Proto
     | MsgUpdateContractLabelV1.Proto
-    | MsgUpdateWasmParamsV1.Proto;
+    | MsgUpdateWasmParamsV1.Proto
+    | MsgUpdateInstantiateConfigV1.Proto;
 }

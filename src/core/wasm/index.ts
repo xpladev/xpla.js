@@ -34,4 +34,5 @@ export {
   MsgStoreAndMigrateContractV1 as MsgStoreAndMigrateContract,
   MsgUpdateContractLabelV1 as MsgUpdateContractLabel,
   MsgUpdateWasmParamsV1 as MsgUpdateWasmParams,
+  MsgUpdateInstantiateConfigV1 as MsgUpdateInstantiateConfig,
 } from './v1/msgs';

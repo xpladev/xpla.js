@@ -97,6 +97,7 @@ import {
   MsgStoreAndMigrateContractV1,
   MsgUpdateContractLabelV1,
   MsgUpdateWasmParamsV1,
+  MsgUpdateInstantiateConfigV1,
 } from './wasm';
 import { MsgTransfer, IbcTransferMsg } from './ibc/applications/transfer';
 import {
@@ -454,6 +455,8 @@ export namespace Msg {
         return MsgUpdateContractLabelV1.fromAmino(data, isClassic);
       case 'wasm/MsgUpdateParamsV1':
         return MsgUpdateWasmParamsV1.fromAmino(data, isClassic);
+      case 'wasm/MsgUpdateInstantiateConfig':
+        return MsgUpdateInstantiateConfigV1.fromAmino(data, isClassic);
 
       // ibc-transfer
       case 'cosmos-sdk/MsgTransfer':
@@ -637,6 +640,8 @@ export namespace Msg {
         return MsgUpdateContractLabelV1.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgUpdateParams':
         return MsgUpdateWasmParamsV1.fromData(data, isClassic);
+      case '/cosmwasm.wasm.v1.MsgUpdateInstantiateConfig':
+        return MsgUpdateInstantiateConfigV1.fromData(data, isClassic);
 
       // ibc-transfer
       case '/ibc.applications.transfer.v1.MsgTransfer':
@@ -864,6 +869,8 @@ export namespace Msg {
         return MsgUpdateContractLabelV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgUpdateParams':
         return MsgUpdateWasmParamsV1.unpackAny(proto, isClassic);
+      case '/cosmwasm.wasm.v1.MsgUpdateInstantiateConfig':
+        return MsgUpdateInstantiateConfigV1.unpackAny(proto, isClassic);
 
       // ibc-transfer
       case '/ibc.applications.transfer.v1.MsgTransfer':
