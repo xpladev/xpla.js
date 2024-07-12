@@ -1,6 +1,6 @@
 import { GovAPI } from './GovAPI';
 import { Coins, Dec, Int, Proposal } from '../../../core';
-import { Deposit } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
+import { Deposit } from '@xpla/xpla.proto/cosmos/gov/v1/gov';
 import { LCDClient } from '../LCDClient';
 
 const xpla = new LCDClient({
