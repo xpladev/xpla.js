@@ -1,7 +1,7 @@
 import { Coins } from './Coins';
 import { JSONSerializable } from '../util/json';
 import { AccAddress } from './bech32';
-import { Deposit as Deposit_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
+import { Deposit as Deposit_pb } from '@xpla/xpla.proto/cosmos/gov/v1/gov';
 
 /**
  * Stores deposit information for a proposal

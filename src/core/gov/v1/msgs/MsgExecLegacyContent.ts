@@ -3,9 +3,11 @@ import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgExecLegacyContent as MsgExecLegacyContentV1_pb } from '@xpla/xpla.proto/cosmos/gov/v1/tx';
+import { ProposalV1B1 } from '../../v1beta1/Proposal';
 
 /**
- * Vote for a proposal
+ * MsgExecLegacyContent is used to wrap the legacy content field into a message.
+ * This ensures backwards compatibility with v1beta1.MsgSubmitProposal.
  */
 export class MsgExecLegacyContentV1 extends JSONSerializable<
   MsgExecLegacyContentV1.Amino,
@@ -17,7 +19,10 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
    * @param voter voter's account address
    * @param option one of voting options
    */
-  constructor(public authority: AccAddress, public content?: Any | undefined) {
+  constructor(
+    public authority: AccAddress,
+    public content?: ProposalV1B1.Content | undefined
+  ) {
     super();
   }
 
@@ -28,7 +33,10 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
     const {
       value: { content, authority },
     } = data;
-    return new MsgExecLegacyContentV1(authority, content);
+    return new MsgExecLegacyContentV1(
+      authority,
+      content ? ProposalV1B1.Content.fromAmino(content) : undefined
+    );
   }
 
   public toAmino(isClassic?: boolean): MsgExecLegacyContentV1.Amino {
@@ -38,7 +46,7 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
         ? 'gov/MsgExecLegacyContent'
         : 'cosmos-sdk/MsgExecLegacyContent',
       value: {
-        content,
+        content: content?.toAmino(),
         authority,
       },
     };
@@ -49,14 +57,17 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgExecLegacyContentV1 {
     const { content, authority } = data;
-    return new MsgExecLegacyContentV1(authority, content);
+    return new MsgExecLegacyContentV1(
+      authority,
+      content ? ProposalV1B1.Content.fromData(content) : undefined
+    );
   }
 
   public toData(_isClassic?: boolean): MsgExecLegacyContentV1.Data {
     const { content, authority } = this;
     return {
       '@type': '/cosmos.gov.v1.MsgExecLegacyContent',
-      content,
+      content: content?.toData(),
       authority,
     };
   }
@@ -65,13 +76,16 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
     proto: MsgExecLegacyContentV1.Proto,
     _isClassic?: boolean
   ): MsgExecLegacyContentV1 {
-    return new MsgExecLegacyContentV1(proto.authority, proto.content);
+    return new MsgExecLegacyContentV1(
+      proto.authority,
+      proto.content ? ProposalV1B1.Content.fromProto(proto.content) : undefined
+    );
   }
 
   public toProto(_isClassic?: boolean): MsgExecLegacyContentV1.Proto {
     const { content, authority } = this;
     return MsgExecLegacyContentV1_pb.fromPartial({
-      content,
+      content: content?.packAny(),
       authority,
     });
   }
@@ -97,14 +111,14 @@ export namespace MsgExecLegacyContentV1 {
   export interface Amino {
     type: 'gov/MsgExecLegacyContent' | 'cosmos-sdk/MsgExecLegacyContent';
     value: {
-      content: Any | undefined;
+      content: ProposalV1B1.Content.Amino | undefined;
       authority: AccAddress;
     };
   }
 
   export interface Data {
     '@type': '/cosmos.gov.v1.MsgExecLegacyContent';
-    content: Any | undefined;
+    content: ProposalV1B1.Content.Data | undefined;
     authority: AccAddress;
   }
 

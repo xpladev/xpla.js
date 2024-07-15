@@ -4,6 +4,7 @@ import { Coins } from '../../../Coins';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgSubmitProposal as MsgSubmitProposalV1_pb } from '@xpla/xpla.proto/cosmos/gov/v1/tx';
+import { Msg } from '../../../Msg';
 
 /**
  * Submit a proposal alongside an initial deposit.
@@ -24,7 +25,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
    * @param summary is the summary of the proposal
    */
   constructor(
-    public messages: Any[],
+    public messages: Msg[],
     initial_deposit: Coins.Input,
     public proposer: AccAddress,
     public metadata: string,
@@ -43,7 +44,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
       value: { messages, initial_deposit, proposer, metadata, title, summary },
     } = data;
     return new MsgSubmitProposalV1(
-      messages,
+      messages.map(a => Msg.fromAmino(a)),
       Coins.fromAmino(initial_deposit),
       proposer,
       metadata,
@@ -60,7 +61,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
         ? 'gov/MsgSubmitProposal'
         : 'cosmos-sdk/MsgSubmitProposal',
       value: {
-        messages,
+        messages: messages.map(a => a.toAmino()),
         initial_deposit: initial_deposit.toAmino(),
         proposer,
         metadata,
@@ -77,7 +78,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
     const { messages, initial_deposit, proposer, metadata, title, summary } =
       data;
     return new MsgSubmitProposalV1(
-      messages,
+      messages.map(a => Msg.fromData(a)),
       Coins.fromData(initial_deposit),
       proposer,
       metadata,
@@ -91,7 +92,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
       this;
     return {
       '@type': '/cosmos.gov.v1.MsgSubmitProposal',
-      messages,
+      messages: messages.map(a => a.toData()),
       initial_deposit: initial_deposit.toData(),
       proposer,
       metadata,
@@ -105,7 +106,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgSubmitProposalV1 {
     return new MsgSubmitProposalV1(
-      proto.messages,
+      proto.messages.map(m => Msg.fromProto(m)),
       Coins.fromProto(proto.initialDeposit),
       proto.proposer,
       proto.metadata,
@@ -118,9 +119,12 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
     const { messages, initial_deposit, proposer, metadata, title, summary } =
       this;
     return MsgSubmitProposalV1_pb.fromPartial({
-      messages,
+      messages: messages.map(m => m.packAny()),
       initialDeposit: initial_deposit.toProto(),
       proposer,
+      metadata,
+      title,
+      summary,
     });
   }
 
@@ -146,7 +150,7 @@ export namespace MsgSubmitProposalV1 {
   export interface Amino {
     type: 'gov/MsgSubmitProposal' | 'cosmos-sdk/MsgSubmitProposal';
     value: {
-      messages: Any[];
+      messages: Msg.Amino[];
       initial_deposit: Coins.Amino;
       proposer: AccAddress;
       metadata: string;
@@ -157,7 +161,7 @@ export namespace MsgSubmitProposalV1 {
 
   export interface Data {
     '@type': '/cosmos.gov.v1.MsgSubmitProposal';
-    messages: Any[];
+    messages: Msg.Data[];
     initial_deposit: Coins.Amino;
     proposer: AccAddress;
     metadata: string;
