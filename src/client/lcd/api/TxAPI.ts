@@ -348,7 +348,7 @@ export class TxAPI extends BaseAPI {
       ? gasPricesCoins.mul(gas).toIntCeilCoins()
       : '0axpla';
 
-    return new Fee(Number.parseInt(gas), feeAmount, '', '');
+    return new Fee(Number.parseInt(gas), feeAmount);
   }
 
   public async estimateGas(
@@ -373,7 +373,7 @@ export class TxAPI extends BaseAPI {
     }
 
     const simulateRes = await this.c
-      .post<SimulateResponse.Data>(`/cosmos/tx/v1beta1/simulate`, {
+      .post<SimulateResponse.Data>('/cosmos/tx/v1beta1/simulate', {
         tx_bytes: this.encode(simTx),
       })
       .then(d => SimulateResponse.fromData(d));

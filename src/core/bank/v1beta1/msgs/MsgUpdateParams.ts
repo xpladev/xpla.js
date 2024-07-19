@@ -4,16 +4,20 @@ import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { SendEnabled, Params } from '@xpla/xpla.proto/cosmos/bank/v1beta1/bank';
 import { MsgUpdateParams as MsgUpdateBankParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/bank/v1beta1/tx';
+import { BankParamsV1B1 } from '../Params';
 
 export class MsgUpdateBankParamsV1B1 extends JSONSerializable<
   MsgUpdateBankParamsV1B1.Amino,
   MsgUpdateBankParamsV1B1.Data,
   MsgUpdateBankParamsV1B1.Proto
 > {
+  /**
+   * @param authority is the address that controls the module
+   * @param params defines the x/bank parameters to update
+   */
   constructor(
     public authority: AccAddress,
-    public sendEnabled: SendEnabled[],
-    public defaultSendEnabled: boolean
+    public params: BankParamsV1B1 | undefined
   ) {
     super();
   }
@@ -23,25 +27,23 @@ export class MsgUpdateBankParamsV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgUpdateBankParamsV1B1 {
     const {
-      value: { authority, sendEnabled, defaultSendEnabled },
+      value: { authority, params },
     } = data;
     return new MsgUpdateBankParamsV1B1(
       authority,
-      sendEnabled,
-      defaultSendEnabled
+      params ? BankParamsV1B1.fromAmino(params) : undefined
     );
   }
 
   public toAmino(isClassic?: boolean): MsgUpdateBankParamsV1B1.Amino {
-    const { authority, sendEnabled, defaultSendEnabled } = this;
+    const { authority, params } = this;
     return {
       type: isClassic
-        ? 'bank/MsgUpdateParamsV1B1'
-        : 'cosmos-sdk/MsgUpdateBankParamsV1B1',
+        ? 'bank/MsgUpdateParams'
+        : 'cosmos-sdk/x/bank/MsgUpdateParams',
       value: {
         authority,
-        sendEnabled,
-        defaultSendEnabled,
+        params: params ? params.toAmino() : undefined,
       },
     };
   }
@@ -50,21 +52,19 @@ export class MsgUpdateBankParamsV1B1 extends JSONSerializable<
     data: MsgUpdateBankParamsV1B1.Data,
     _isClassic?: boolean
   ): MsgUpdateBankParamsV1B1 {
-    const { authority, sendEnabled, defaultSendEnabled } = data;
+    const { authority, params } = data;
     return new MsgUpdateBankParamsV1B1(
       authority,
-      sendEnabled,
-      defaultSendEnabled
+      params ? BankParamsV1B1.fromData(params) : undefined
     );
   }
 
   public toData(_isClassic?: boolean): MsgUpdateBankParamsV1B1.Data {
-    const { authority, sendEnabled, defaultSendEnabled } = this;
+    const { authority, params } = this;
     return {
       '@type': '/cosmos.bank.v1beta1.MsgUpdateParams',
       authority,
-      sendEnabled,
-      defaultSendEnabled,
+      params: params ? params.toData() : undefined,
     };
   }
 
@@ -74,19 +74,15 @@ export class MsgUpdateBankParamsV1B1 extends JSONSerializable<
   ): MsgUpdateBankParamsV1B1 {
     return new MsgUpdateBankParamsV1B1(
       proto.authority,
-      proto.params?.sendEnabled ?? [],
-      proto.params?.defaultSendEnabled ?? false
+      proto.params ? BankParamsV1B1.fromProto(proto.params) : undefined
     );
   }
 
   public toProto(_isClassic?: boolean): MsgUpdateBankParamsV1B1.Proto {
-    const { authority, sendEnabled, defaultSendEnabled } = this;
+    const { authority, params } = this;
     return MsgUpdateBankParamsV1B1_pb.fromPartial({
       authority,
-      params: Params.fromPartial({
-        sendEnabled,
-        defaultSendEnabled,
-      }),
+      params: params ? params.toProto() : undefined,
     });
   }
 
@@ -109,19 +105,17 @@ export class MsgUpdateBankParamsV1B1 extends JSONSerializable<
 
 export namespace MsgUpdateBankParamsV1B1 {
   export interface Amino {
-    type: 'bank/MsgUpdateParamsV1B1' | 'cosmos-sdk/MsgUpdateBankParamsV1B1';
+    type: 'bank/MsgUpdateParams' | 'cosmos-sdk/x/bank/MsgUpdateParams';
     value: {
       authority: AccAddress;
-      sendEnabled: SendEnabled[];
-      defaultSendEnabled: boolean;
+      params: BankParamsV1B1.Amino | undefined;
     };
   }
 
   export interface Data {
     '@type': '/cosmos.bank.v1beta1.MsgUpdateParams';
     authority: AccAddress;
-    sendEnabled: SendEnabled[];
-    defaultSendEnabled: boolean;
+    params: BankParamsV1B1.Data | undefined;
   }
 
   export type Proto = MsgUpdateBankParamsV1B1_pb;

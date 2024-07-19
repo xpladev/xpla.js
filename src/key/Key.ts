@@ -149,6 +149,43 @@ export abstract class Key {
   }
 
   /**
+   * Signs a [[SignDoc]] with the method supplied by the child class.
+   *
+   * @param tx sign-message of the transaction to sign
+   * @param isClassic target network is isClassic or not?
+   */
+  public async createSignatureWithSigners(
+    signDoc: SignDoc,
+    signers: SignerInfo[],
+    isClassic?: boolean
+  ): Promise<SignatureV2> {
+    if (!this.publicKey) {
+      throw new Error(
+        'Signature could not be created: Key instance missing publicKey'
+      );
+    }
+
+    // backup for restore
+    const signerInfos = signDoc.auth_info.signer_infos;
+    signDoc.auth_info.signer_infos = signers;
+
+    const sigBytes = (
+      await this.sign(Buffer.from(signDoc.toBytes(isClassic)))
+    ).toString('base64');
+
+    // restore signDoc to origin
+    signDoc.auth_info.signer_infos = signerInfos;
+
+    return new SignatureV2(
+      this.publicKey,
+      new SignatureV2.Descriptor(
+        new SignatureV2.Descriptor.Single(SignMode.SIGN_MODE_DIRECT, sigBytes)
+      ),
+      signDoc.sequence
+    );
+  }
+
+  /**
    * Signs a [[Tx]] and adds the signature to a generated StdTx that is ready to be broadcasted.
    * @param tx
    */
@@ -183,6 +220,74 @@ export abstract class Key {
         new ModeInfo(new ModeInfo.Single(sigData.mode))
       )
     );
+
+    return copyTx;
+  }
+
+  /**
+   * Signs a [[Tx]] and adds the signature to a generated StdTx that is ready to be broadcasted.
+   * @param tx
+   */
+  public async signTxWithSigners(
+    tx: Tx,
+    signers: SignerInfo[],
+    accountNumber: number,
+    chainID: string,
+    isClassic?: boolean
+  ): Promise<Tx> {
+    if (!this.publicKey) {
+      throw new Error(
+        'Signature could not be created: Key instance missing publicKey'
+      );
+    }
+
+    let this_signer = -1;
+    for (let i = 0; i < signers.length; ++i) {
+      if (signers[i].public_key.address() === this.publicKey.address()) {
+        this_signer = i;
+        break;
+      }
+    }
+    if (this_signer < 0) {
+      throw new Error(
+        'Signature could not be created: this key missing in signers'
+      );
+    }
+
+    const copyTx = new Tx(tx.body, new AuthInfo([], tx.auth_info.fee), []);
+    const sign_doc = new SignDoc(
+      chainID,
+      accountNumber,
+      signers[this_signer].sequence,
+      copyTx.auth_info,
+      copyTx.body
+    );
+
+    let signature: SignatureV2;
+    if (
+      signers[this_signer].mode_info.single &&
+      signers[this_signer].mode_info.single!.mode ===
+        SignMode.SIGN_MODE_LEGACY_AMINO_JSON
+    ) {
+      signature = await this.createSignatureAmino(sign_doc, isClassic);
+    } else {
+      signature = await this.createSignatureWithSigners(
+        sign_doc,
+        signers,
+        isClassic
+      );
+    }
+
+    const sigData = signature.data.single as SignatureV2.Descriptor.Single;
+    copyTx.signatures = [];
+    for (let i = 0; i < signers.length; ++i) {
+      if (i === this_signer) {
+        copyTx.signatures.push(sigData.signature);
+      } else {
+        copyTx.signatures.push(tx.signatures[i] ?? '');
+      }
+    }
+    copyTx.auth_info.signer_infos = signers;
 
     return copyTx;
   }

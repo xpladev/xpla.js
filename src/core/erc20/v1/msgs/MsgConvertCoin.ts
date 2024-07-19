@@ -42,7 +42,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgConvertCoinV1.Amino {
     const { coin, receiver, sender } = this;
     return {
-      type: 'erc20/MsgConvertCoin',
+      type: 'ethermint/MsgConvertCoin',
       value: {
         coin: coin ? coin.toAmino() : undefined,
         receiver,
@@ -102,7 +102,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
 
 export namespace MsgConvertCoinV1 {
   export interface Amino {
-    type: 'erc20/MsgConvertCoin';
+    type: 'ethermint/MsgConvertCoin';
     value: {
       coin: Coin.Amino | undefined;
       receiver: AccAddress;

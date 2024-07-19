@@ -1,30 +1,7 @@
 import { BaseAPI } from './BaseAPI';
-import { Coins, AccAddress } from '../../../core';
+import { Coins, AccAddress, BankParamsV1B1 } from '../../../core';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
-
-export interface SendEnabled {
-  denom: string;
-  enabled: boolean;
-}
-
-export namespace SendEnabled {
-  export interface Data {
-    denom: string;
-    enabled: boolean;
-  }
-}
-export interface BankParams {
-  send_enabled: SendEnabled[];
-  default_send_enabled: boolean;
-}
-
-export namespace BankParams {
-  export interface Data {
-    send_enabled: SendEnabled.Data[];
-    default_send_enabled: boolean;
-  }
-}
 
 export class BankAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
@@ -80,16 +57,13 @@ export class BankAPI extends BaseAPI {
       .then(d => [Coins.fromData(d.balances), d.pagination]);
   }
 
-  public async parameters(params: APIParams = {}): Promise<BankParams> {
+  public async parameters(params: APIParams = {}): Promise<BankParamsV1B1> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }
     return this.c
-      .get<{ params: BankParams.Data }>(`/cosmos/bank/v1beta1/params`, params)
-      .then(({ params: d }) => ({
-        send_enabled: d.send_enabled,
-        default_send_enabled: d.default_send_enabled,
-      }));
+      .get<{ params: any }>(`/cosmos/bank/v1beta1/params`, params)
+      .then(({ params: d }) => BankParamsV1B1.fromData(d));
   }
 
   // TODO: TBD: implement denoms_medata?

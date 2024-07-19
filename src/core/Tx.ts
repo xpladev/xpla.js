@@ -123,7 +123,7 @@ export class Tx {
       }
 
       this.auth_info.signer_infos.push(signerInfo);
-      this.signatures.push('');
+      this.signatures.push(' '.repeat(90));
     });
   }
 

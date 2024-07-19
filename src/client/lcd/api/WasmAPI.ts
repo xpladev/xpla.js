@@ -6,7 +6,9 @@ import {
   HistoryEntry,
   AbsoluteTxPosition,
   AccessConfig,
+  CodesParamsV1,
 } from '../../../core/wasm';
+import { Params as WasmCodesParams } from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 
 export interface CodeInfo {
   code_id: number;
@@ -57,20 +59,6 @@ export namespace ContractInfo {
     label?: string;
     created?: AbsoluteTxPosition.Data;
     ibc_port_id?: string;
-  }
-}
-
-export interface WasmParams {
-  max_contract_size: number;
-  max_contract_gas: number;
-  max_contract_msg_size: number;
-}
-
-export namespace WasmParams {
-  export interface Data {
-    max_contract_size: string;
-    max_contract_gas: string;
-    max_contract_msg_size: string;
   }
 }
 
@@ -160,20 +148,16 @@ export class WasmAPI extends BaseAPI {
       .then(d => d.data);
   }
 
-  public async parameters(params: APIParams = {}): Promise<WasmParams> {
-    if (!this.lcd.config.isClassic) {
-      throw new Error('Not supported for the network');
-    }
+  public async parameters(
+    module = 'codes',
+    params: APIParams = {}
+  ): Promise<CodesParamsV1 | any> {
     return this.c
-      .get<{ params: WasmParams.Data }>(
-        `/cosmwasm/wasm/v1/codes/params`,
-        params
-      )
-      .then(({ params: d }) => ({
-        max_contract_size: Number.parseInt(d.max_contract_size),
-        max_contract_gas: Number.parseInt(d.max_contract_gas),
-        max_contract_msg_size: Number.parseInt(d.max_contract_msg_size),
-      }));
+      .get<{ params: any }>(`/cosmwasm/wasm/v1/${module}/params`, params)
+      .then(({ params: d }) => {
+        if (module === 'codes') return CodesParamsV1.fromData(d);
+        return d;
+      });
   }
 
   public async pinnedCodes(params: APIParams = {}): Promise<PinnedCodes> {

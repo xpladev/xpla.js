@@ -5,6 +5,7 @@ export * from './v1beta1/Delegation';
 export * from './v1beta1/Redelegation';
 export * from './v1beta1/UnbondingDelegation';
 export * from './v1beta1/Validator';
+export * from './v1beta1/Params';
 
 export type StakingMsg = StakingMsgV1B1;
 
@@ -21,6 +22,7 @@ export {
   MsgCreateValidatorV1B1 as MsgCreateValidator,
   MsgEditValidatorV1B1 as MsgEditValidator,
   MsgCancelUnbondingDelegationV1B1 as MsgCancelUnbondingDelegation,
+  MsgUpdateStakingParamsV1B1 as MsgUpdateStakingParams,
 } from './v1beta1/msgs';
 export { DelegationV1B1 as Delegation } from './v1beta1/Delegation';
 export { RedelegationV1B1 as Redelegation } from './v1beta1/Redelegation';

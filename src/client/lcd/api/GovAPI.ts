@@ -1,14 +1,15 @@
 import { BaseAPI } from './BaseAPI';
 import {
-  Proposal,
+  ProposalV1,
   AccAddress,
   Coins,
   Dec,
   Int,
   Deposit,
-  Vote,
-  WeightedVoteOption,
+  VoteV1,
+  WeightedVoteOptionV1,
   Tx,
+  GovParamsV1,
 } from '../../../core';
 
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
@@ -17,73 +18,24 @@ import { ProposalStatus } from '@xpla/xpla.proto/cosmos/gov/v1/gov';
 import { LCDClient } from '../LCDClient';
 
 export interface GovParams {
-  /**
-   * Current deposit parameters
-   */
   deposit_params: DepositParams;
-
-  /**
-   * current voting parameters
-   */
   voting_params: VotingParams;
-
-  /**
-   * current tally paramaters
-   */
   tally_params: TallyParams;
 }
 
-export namespace GovParams {
-  export interface Data {
-    deposit_params: DepositParams.Data;
-    voting_params: VotingParams.Data;
-    tally_params: TallyParams.Data;
-  }
-}
-
 export interface DepositParams {
-  /** Minimum deposit to enter voting. */
   min_deposit: Coins;
-
-  /** Amount of time (in seconds) a proposal can take to acquire the necessary deposits to enter voting stage, after being submitted. */
   max_deposit_period: number;
 }
 
-export namespace DepositParams {
-  export interface Data {
-    min_deposit: Coins.Data;
-    max_deposit_period: string;
-  }
-}
-
 export interface VotingParams {
-  /** Amount of time (in seconds) a proposal can take to get votes once voting has begun. */
   voting_period: number;
 }
 
-export namespace VotingParams {
-  export interface Data {
-    voting_period: string;
-  }
-}
-
 export interface TallyParams {
-  /** Ratio of total staked tokens that need to have participated in the vote. */
   quorum: Dec;
-
-  /** Ratio of participating tokens that have voted in favor of the proposal. */
   threshold: Dec;
-
-  /** Ratio of participating votes with `NoWithVeto` (after excluding `Abstain` votes) to veto the proposal. */
   veto_threshold: Dec;
-}
-
-export namespace TallyParams {
-  export interface Data {
-    quorum: string;
-    threshold: string;
-    veto_threshold: string;
-  }
 }
 
 export interface Tally {
@@ -95,10 +47,10 @@ export interface Tally {
 
 export namespace Tally {
   export interface Data {
-    yes: string;
-    no: string;
-    abstain: string;
-    no_with_veto: string;
+    yes_count: string;
+    no_count: string;
+    abstain_count: string;
+    no_with_veto_count: string;
   }
 }
 
@@ -112,15 +64,15 @@ export class GovAPI extends BaseAPI {
    */
   public async proposals(
     params: Partial<PaginationOptions & APIParams> = {}
-  ): Promise<[Proposal[], Pagination]> {
+  ): Promise<[ProposalV1[], Pagination]> {
     return this.c
       .get<{
-        proposals: Proposal.Data[];
+        proposals: ProposalV1.Data[];
         pagination: Pagination;
       }>(`/cosmos/gov/v1/proposals`, params)
       .then(d => [
         d.proposals.map(prop =>
-          Proposal.fromData(prop, this.lcd.config.isClassic)
+          ProposalV1.fromData(prop, this.lcd.config.isClassic)
         ),
         d.pagination,
       ]);
@@ -133,13 +85,13 @@ export class GovAPI extends BaseAPI {
   public async proposal(
     proposalId: number,
     params: APIParams = {}
-  ): Promise<Proposal> {
+  ): Promise<ProposalV1> {
     return this.c
-      .get<{ proposal: Proposal.Data }>(
+      .get<{ proposal: ProposalV1.Data }>(
         `/cosmos/gov/v1/proposals/${proposalId}`,
         params
       )
-      .then(d => Proposal.fromData(d.proposal, this.lcd.config.isClassic));
+      .then(d => ProposalV1.fromData(d.proposal));
   }
 
   /**
@@ -263,17 +215,17 @@ export class GovAPI extends BaseAPI {
   public async votes(
     proposalId: number,
     _params: Partial<PaginationOptions & APIParams> = {}
-  ): Promise<[Vote[], Pagination]> {
+  ): Promise<[VoteV1[], Pagination]> {
     proposalId;
     _params;
     const proposal = await this.proposal(proposalId);
     if (proposal.status === ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD) {
       return this.c
-        .get<{ votes: Vote.Data[]; pagination: Pagination }>(
+        .get<{ votes: VoteV1.Data[]; pagination: Pagination }>(
           `/cosmos/gov/v1/proposals/${proposalId}/votes`,
           _params
         )
-        .then(d => [d.votes.map(v => Vote.fromData(v)), d.pagination]);
+        .then(d => [d.votes.map(v => VoteV1.fromData(v)), d.pagination]);
     }
 
     // build search params
@@ -288,7 +240,7 @@ export class GovAPI extends BaseAPI {
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, params)
       .then(d => {
-        const votes: Vote[] = [];
+        const votes: VoteV1[] = [];
         d.txs.map(tx =>
           tx.body.messages.forEach(msg => {
             if (
@@ -296,21 +248,25 @@ export class GovAPI extends BaseAPI {
               Number.parseInt(msg.proposal_id) == proposalId
             ) {
               votes.push(
-                new Vote(proposalId, msg.voter, [
-                  new WeightedVoteOption(msg.option, '1'),
-                ])
+                new VoteV1(
+                  proposalId,
+                  msg.voter,
+                  [new WeightedVoteOptionV1(msg.option, '1')],
+                  msg.metadata
+                )
               );
             } else if (
               msg['@type'] === '/cosmos.gov.v1.MsgVoteWeighted' &&
               Number.parseInt(msg.proposal_id) == proposalId
             ) {
               votes.push(
-                new Vote(
+                new VoteV1(
                   proposalId,
                   msg.voter,
-                  msg.options.map((o: WeightedVoteOption.Data) =>
-                    WeightedVoteOption.fromData(o)
-                  )
+                  msg.options.map((o: WeightedVoteOptionV1.Data) =>
+                    WeightedVoteOptionV1.fromData(o)
+                  ),
+                  msg.metadata
                 )
               );
             }
@@ -336,65 +292,46 @@ export class GovAPI extends BaseAPI {
         params
       )
       .then(({ tally: d }) => ({
-        yes: new Int(d.yes),
-        no: new Int(d.no),
-        no_with_veto: new Int(d.no_with_veto),
-        abstain: new Int(d.abstain),
+        yes: new Int(d.yes_count),
+        no: new Int(d.no_count),
+        no_with_veto: new Int(d.no_with_veto_count),
+        abstain: new Int(d.abstain_count),
       }));
+  }
+
+  /** Gets the Gov module's current parameters  */
+  public async parameters(params: APIParams = {}): Promise<GovParamsV1> {
+    return this.c
+      .get<{ params: any }>(`/cosmos/gov/v1/params/deposit`, params)
+      .then(({ params: d }) => GovParamsV1.fromData(d));
   }
 
   /** Gets the Gov module's deposit parameters */
   public async depositParameters(
     params: APIParams = {}
   ): Promise<DepositParams> {
-    return this.c
-      .get<{ deposit_params: DepositParams.Data }>(
-        `/cosmos/gov/v1/params/deposit`,
-        params
-      )
-      .then(({ deposit_params: d }) => ({
-        max_deposit_period: Number.parseInt(d.max_deposit_period),
-        min_deposit: Coins.fromData(d.min_deposit),
-      }));
+    const govparams = await this.parameters(params);
+    return {
+      max_deposit_period: govparams.max_deposit_period?.seconds.toNumber() ?? 0,
+      min_deposit: govparams.min_deposit,
+    };
   }
 
   /** Gets the Gov module's voting parameters */
   public async votingParameters(params: APIParams = {}): Promise<VotingParams> {
-    return this.c
-      .get<{ voting_params: VotingParams.Data }>(
-        `/cosmos/gov/v1/params/voting`,
-        params
-      )
-      .then(({ voting_params: d }) => ({
-        voting_period: Number.parseInt(d.voting_period),
-      }));
+    const govparams = await this.parameters(params);
+    return {
+      voting_period: govparams.voting_period?.seconds.toNumber() ?? 0,
+    };
   }
 
   /** Gets teh Gov module's tally parameters */
   public async tallyParameters(params: APIParams = {}): Promise<TallyParams> {
-    return this.c
-      .get<{ tally_params: TallyParams.Data }>(
-        `/cosmos/gov/v1/params/tallying`,
-        params
-      )
-      .then(({ tally_params: d }) => ({
-        quorum: new Dec(d.quorum),
-        veto_threshold: new Dec(d.veto_threshold),
-        threshold: new Dec(d.threshold),
-      }));
-  }
-
-  /** Gets the Gov module's current parameters  */
-  public async parameters(params: APIParams = {}): Promise<GovParams> {
-    const [deposit_params, voting_params, tally_params] = await Promise.all([
-      this.depositParameters(params),
-      this.votingParameters(params),
-      this.tallyParameters(params),
-    ]);
+    const govparams = await this.parameters(params);
     return {
-      deposit_params,
-      voting_params,
-      tally_params,
+      quorum: new Dec(govparams.quorum),
+      veto_threshold: new Dec(govparams.veto_threshold),
+      threshold: new Dec(govparams.threshold),
     };
   }
 }

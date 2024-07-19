@@ -40,7 +40,7 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgFundFeeCollectorV1B1.Amino {
     const { amount, depositor } = this;
     return {
-      type: 'xpla/MsgFundFeeCollector',
+      type: 'xpladev/MsgFundFeeCollector',
       value: {
         amount: amount.toAmino(),
         depositor,
@@ -106,7 +106,7 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
 
 export namespace MsgFundFeeCollectorV1B1 {
   export interface Amino {
-    type: 'xpla/MsgFundFeeCollector';
+    type: 'xpladev/MsgFundFeeCollector';
     value: {
       amount: Coins.Amino;
       depositor: AccAddress;

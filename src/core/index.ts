@@ -12,24 +12,21 @@ export * from './Tx';
 export * from './TxInfo';
 export * from './ValidatorSet';
 export * from './Deposit';
+export * from './Duration';
 export * from './SignatureV2';
 export * from './MultiSignature';
 
 // Auth
-export * from './auth/Account';
-export * from './auth/BaseAccount';
-export * from './auth/BaseVestingAccount';
-export * from './auth/DelayedVestingAccount';
-export * from './auth/ContinuousVestingAccount';
-export * from './auth/PeriodicVestingAccount';
-export * from './auth/EvmAccount';
+export * from './auth';
 
 // Bank
 export * from './bank';
 
+// Consensus
+export * from './consensus';
+
 // Distribution
-export * from './distribution/msgs';
-export * from './distribution/proposals';
+export * from './distribution';
 
 // Evidence
 export * from './evidence/msgs';
@@ -38,7 +35,7 @@ export * from './evidence/msgs';
 export * from './erc20';
 
 // EVM
-export * from './evm/msgs';
+export * from './evm';
 
 // FeeGrant
 export * from './feegrant/msgs';
@@ -49,6 +46,9 @@ export * from './gov';
 
 // Group
 export * from './group';
+
+// Mint
+export * from './mint';
 
 // NFT
 export * from './nft';
@@ -62,7 +62,7 @@ export * from './params/proposals';
 export * from './params/ParamChange';
 
 // Slashing
-export * from './slashing/msgs';
+export * from './slashing';
 
 // Staking
 export * from './staking';

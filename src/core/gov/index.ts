@@ -2,7 +2,9 @@ import { GovMsgV1 } from './v1/msgs';
 import { GovMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1/msgs';
+export * from './v1/Proposal';
 export * from './v1/Vote';
+export * from './v1/Params';
 export * from './v1beta1/msgs';
 export * from './v1beta1/proposals';
 export * from './v1beta1/Proposal';

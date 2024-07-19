@@ -1,97 +1,109 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
-import { Duration } from '@xpla/xpla.proto/google/protobuf/duration';
+import { Dec, Numeric } from '../../numeric';
+import { Duration } from '../../../core/Duration';
 import { Params as GovParamsV1_pb } from '@xpla/xpla.proto/cosmos/gov/v1/gov';
-
-export type Params = GovParamsV1;
-export namespace Params {
-  export type Amino = GovParamsV1.Amino;
-  export type Data = GovParamsV1.Data;
-  export type Proto = GovParamsV1.Proto;
-}
 
 export class GovParamsV1 extends JSONSerializable<
   GovParamsV1.Amino,
   GovParamsV1.Data,
   GovParamsV1.Proto
 > {
-  public minDeposit: Coins;
+  public min_deposit: Coins;
+  public quorum: Dec;
+  public threshold: Dec;
+  public veto_threshold: Dec;
+  public min_initial_deposit_ratio: Dec;
 
   /**
-   * @param proposal_id defines the unique id of the proposal
-   * @param voter is the voter address of the proposal
-   * @param options is the weighted vote options
-   * @param metadata is any  arbitrary metadata to attached to the vote
+   * @param min_deposit Minimum deposit for a proposal to enter voting period
+   * @param max_deposit_period Maximum period for Atom holders to deposit on a proposal. Initial value: 2 months
+   * @param voting_period Duration of the voting period
+   * @param quorum Minimum percentage of total stake needed to vote for a result to be considered valid
+   * @param threshold Minimum proportion of Yes votes for proposal to pass. Default value: 0.5
+   * @param veto_threshold Minimum value of Veto votes to Total votes ratio for proposal to be vetoed. Default value: 1/3
+   * @param min_initial_deposit_ratio The ratio representing the proportion of the deposit value that must be paid at proposal submission
+   * @param burn_vote_quorum burn deposits if a proposal does not meet quorum
+   * @param burn_proposal_deposit_prevote burn deposits if the proposal does not enter voting period
+   * @param burn_vote_veto burn deposits if quorum with vote type no_veto is met
    */
   constructor(
-    minDeposit: Coins.Input,
-    public maxDepositPeriod: object | undefined,
-    public votingPeriod: object | undefined,
-    public quorum: string,
-    public threshold: string,
-    public vetoThreshold: string,
-    public minInitialDepositRatio: string,
-    public burnVoteQuorum: boolean,
-    public burnProposalDepositPrevote: boolean,
-    public burnVoteVeto: boolean
+    min_deposit: Coins.Input,
+    public max_deposit_period: Duration | undefined,
+    public voting_period: Duration | undefined,
+    quorum: Numeric.Input,
+    threshold: Numeric.Input,
+    veto_threshold: Numeric.Input,
+    min_initial_deposit_ratio: Numeric.Input,
+    public burn_vote_quorum: boolean,
+    public burn_proposal_deposit_prevote: boolean,
+    public burn_vote_veto: boolean
   ) {
     super();
-    this.minDeposit = new Coins(minDeposit);
+    this.min_deposit = new Coins(min_deposit);
+    this.quorum = new Dec(quorum);
+    this.threshold = new Dec(threshold);
+    this.veto_threshold = new Dec(veto_threshold);
+    this.min_initial_deposit_ratio = new Dec(min_initial_deposit_ratio);
   }
 
   public static fromAmino(data: GovParamsV1.Amino, _?: boolean): GovParamsV1 {
     const {
-      minDeposit,
-      maxDepositPeriod,
-      votingPeriod,
+      min_deposit,
+      max_deposit_period,
+      voting_period,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     } = data;
     return new GovParamsV1(
-      Coins.fromAmino(minDeposit),
-      maxDepositPeriod,
-      votingPeriod,
-      quorum,
-      threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto
+      Coins.fromAmino(min_deposit),
+      max_deposit_period ? Duration.fromAmino(max_deposit_period) : undefined,
+      voting_period ? Duration.fromAmino(voting_period) : undefined,
+      quorum ?? '',
+      threshold ?? '',
+      veto_threshold ?? '',
+      min_initial_deposit_ratio ?? '',
+      burn_vote_quorum ?? false,
+      burn_proposal_deposit_prevote ?? false,
+      burn_vote_veto ?? false
     );
   }
 
   public toAmino(_?: boolean): GovParamsV1.Amino {
     const {
-      minDeposit,
-      maxDepositPeriod,
-      votingPeriod,
+      min_deposit,
+      max_deposit_period,
+      voting_period,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     } = this;
 
     const res: GovParamsV1.Amino = {
-      minDeposit: minDeposit.toAmino(),
-      maxDepositPeriod,
-      votingPeriod,
-      quorum,
-      threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      min_deposit: min_deposit.toAmino(),
+      max_deposit_period: max_deposit_period
+        ? max_deposit_period.toAmino()
+        : undefined,
+      voting_period: voting_period ? voting_period.toAmino() : undefined,
+      quorum: quorum.toFixed(),
+      threshold: threshold.toFixed(),
+      veto_threshold: veto_threshold.toFixed(),
+      min_initial_deposit_ratio: min_initial_deposit_ratio.toFixed(),
+      burn_vote_quorum: burn_vote_quorum ? burn_vote_quorum : undefined,
+      burn_proposal_deposit_prevote: burn_proposal_deposit_prevote
+        ? burn_proposal_deposit_prevote
+        : undefined,
+      burn_vote_veto: burn_vote_veto ? burn_vote_veto : undefined,
     };
 
     return res;
@@ -99,57 +111,59 @@ export class GovParamsV1 extends JSONSerializable<
 
   public static fromData(data: GovParamsV1.Data, _?: boolean): GovParamsV1 {
     const {
-      minDeposit,
-      maxDepositPeriod,
-      votingPeriod,
+      min_deposit,
+      max_deposit_period,
+      voting_period,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     } = data;
     return new GovParamsV1(
-      Coins.fromData(minDeposit),
-      maxDepositPeriod,
-      votingPeriod,
+      Coins.fromData(min_deposit),
+      max_deposit_period ? Duration.fromData(max_deposit_period) : undefined,
+      voting_period ? Duration.fromData(voting_period) : undefined,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto
     );
   }
 
   public toData(_?: boolean): GovParamsV1.Data {
     const {
-      minDeposit,
-      maxDepositPeriod,
-      votingPeriod,
+      min_deposit,
+      max_deposit_period,
+      voting_period,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     } = this;
 
     const res: GovParamsV1.Data = {
       '@type': '/cosmos.gov.v1.Params',
-      minDeposit: minDeposit.toData(),
-      maxDepositPeriod,
-      votingPeriod,
-      quorum,
-      threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      min_deposit: min_deposit.toData(),
+      max_deposit_period: max_deposit_period
+        ? max_deposit_period.toData()
+        : undefined,
+      voting_period: voting_period ? voting_period.toData() : undefined,
+      quorum: quorum.toFixed(),
+      threshold: threshold.toFixed(),
+      veto_threshold: veto_threshold.toFixed(),
+      min_initial_deposit_ratio: min_initial_deposit_ratio.toFixed(),
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     };
 
     return res;
@@ -159,11 +173,9 @@ export class GovParamsV1 extends JSONSerializable<
     return new GovParamsV1(
       Coins.fromProto(proto.minDeposit),
       proto.maxDepositPeriod
-        ? (Duration.toJSON(proto.maxDepositPeriod) as object)
+        ? Duration.fromProto(proto.maxDepositPeriod)
         : undefined,
-      proto.votingPeriod
-        ? (Duration.toJSON(proto.votingPeriod) as object)
-        : undefined,
+      proto.votingPeriod ? Duration.fromProto(proto.votingPeriod) : undefined,
       proto.quorum,
       proto.threshold,
       proto.vetoThreshold,
@@ -176,60 +188,60 @@ export class GovParamsV1 extends JSONSerializable<
 
   public toProto(_?: boolean): GovParamsV1.Proto {
     const {
-      minDeposit,
-      maxDepositPeriod,
-      votingPeriod,
+      min_deposit,
+      max_deposit_period,
+      voting_period,
       quorum,
       threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      veto_threshold,
+      min_initial_deposit_ratio,
+      burn_vote_quorum,
+      burn_proposal_deposit_prevote,
+      burn_vote_veto,
     } = this;
     return GovParamsV1_pb.fromPartial({
-      minDeposit: minDeposit.toProto(),
-      maxDepositPeriod: maxDepositPeriod
-        ? Duration.fromJSON(maxDepositPeriod)
+      minDeposit: min_deposit.toProto(),
+      maxDepositPeriod: max_deposit_period
+        ? max_deposit_period.toProto()
         : undefined,
-      votingPeriod: votingPeriod ? Duration.fromJSON(votingPeriod) : undefined,
-      quorum,
-      threshold,
-      vetoThreshold,
-      minInitialDepositRatio,
-      burnVoteQuorum,
-      burnProposalDepositPrevote,
-      burnVoteVeto,
+      votingPeriod: voting_period ? voting_period.toProto() : undefined,
+      quorum: quorum.toFixed(),
+      threshold: threshold.toFixed(),
+      vetoThreshold: veto_threshold.toFixed(),
+      minInitialDepositRatio: min_initial_deposit_ratio.toFixed(),
+      burnVoteQuorum: burn_vote_quorum,
+      burnProposalDepositPrevote: burn_proposal_deposit_prevote,
+      burnVoteVeto: burn_vote_veto,
     });
   }
 }
 
 export namespace GovParamsV1 {
   export interface Amino {
-    minDeposit: Coins.Amino;
-    maxDepositPeriod: object | undefined;
-    votingPeriod: object | undefined;
-    quorum: string;
-    threshold: string;
-    vetoThreshold: string;
-    minInitialDepositRatio: string;
-    burnVoteQuorum: boolean;
-    burnProposalDepositPrevote: boolean;
-    burnVoteVeto: boolean;
+    min_deposit: Coins.Amino;
+    max_deposit_period: string | undefined;
+    voting_period: string | undefined;
+    quorum: string | undefined;
+    threshold: string | undefined;
+    veto_threshold: string | undefined;
+    min_initial_deposit_ratio: string | undefined;
+    burn_vote_quorum: boolean | undefined;
+    burn_proposal_deposit_prevote: boolean | undefined;
+    burn_vote_veto: boolean | undefined;
   }
 
   export interface Data {
     '@type': '/cosmos.gov.v1.Params';
-    minDeposit: Coins.Data;
-    maxDepositPeriod: object | undefined;
-    votingPeriod: object | undefined;
+    min_deposit: Coins.Data;
+    max_deposit_period: object | undefined;
+    voting_period: object | undefined;
     quorum: string;
     threshold: string;
-    vetoThreshold: string;
-    minInitialDepositRatio: string;
-    burnVoteQuorum: boolean;
-    burnProposalDepositPrevote: boolean;
-    burnVoteVeto: boolean;
+    veto_threshold: string;
+    min_initial_deposit_ratio: string;
+    burn_vote_quorum: boolean;
+    burn_proposal_deposit_prevote: boolean;
+    burn_vote_veto: boolean;
   }
 
   export type Proto = GovParamsV1_pb;

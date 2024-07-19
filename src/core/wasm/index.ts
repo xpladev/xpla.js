@@ -7,6 +7,7 @@ export * from './v1/AccessConfig';
 export * from './v1/AccessConfigUpdate';
 export * from './v1/AccessTypeParam';
 export * from './v1/HistoryEntry';
+export * from './v1/Params';
 export * from './util';
 
 export type WasmMsg = WasmMsgV1;
