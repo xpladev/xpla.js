@@ -2,7 +2,10 @@ import { APIRequester } from './APIRequester';
 import {
   AuthAPI,
   BankAPI,
+  ConsensusAPI,
   DistributionAPI,
+  ERC20API,
+  EvmAPI,
   FeeGrantAPI,
   GovAPI,
   MintAPI,
@@ -10,8 +13,9 @@ import {
   SlashingAPI,
   StakingAPI,
   TendermintAPI,
-  TxAPI,
   WasmAPI,
+  XplaAPI,
+  TxAPI,
   IbcTransferAPI,
   IbcAPI,
 } from './api';
@@ -95,7 +99,10 @@ export class LCDClient {
   // API access
   public auth: AuthAPI;
   public bank: BankAPI;
+  public consensus: ConsensusAPI;
   public distribution: DistributionAPI;
+  public erc20: ERC20API;
+  public evm: EvmAPI;
   public feeGrant: FeeGrantAPI;
   public gov: GovAPI;
   public mint: MintAPI;
@@ -104,6 +111,7 @@ export class LCDClient {
   public staking: StakingAPI;
   public tendermint: TendermintAPI;
   public wasm: WasmAPI;
+  public xpla: XplaAPI;
   public tx: TxAPI;
   public ibc: IbcAPI;
   public ibcTransfer: IbcTransferAPI;
@@ -130,19 +138,23 @@ export class LCDClient {
 
     // instantiate APIs
     this.auth = new AuthAPI(this);
+    this.authz = new AuthzAPI(this);
     this.bank = new BankAPI(this);
+    this.consensus = new ConsensusAPI(this);
     this.distribution = new DistributionAPI(this);
+    this.erc20 = new ERC20API(this);
+    this.evm = new EvmAPI(this);
     this.feeGrant = new FeeGrantAPI(this);
     this.gov = new GovAPI(this);
     this.mint = new MintAPI(this);
-    this.authz = new AuthzAPI(this);
     this.slashing = new SlashingAPI(this);
     this.staking = new StakingAPI(this);
     this.tendermint = new TendermintAPI(this);
     this.wasm = new WasmAPI(this);
+    this.xpla = new XplaAPI(this);
+    this.tx = new TxAPI(this);
     this.ibc = new IbcAPI(this);
     this.ibcTransfer = new IbcTransferAPI(this);
-    this.tx = new TxAPI(this);
     this.utils = new LCDUtils(this);
   }
 
@@ -153,7 +165,25 @@ export class LCDClient {
   }
 
   public async info(): Promise<any> {
-    return this.apiRequester.get<any>('/node_info', {});
+    return this.tendermint.nodeInfo();
+  }
+
+  public async baseConfig(): Promise<any> {
+    return this.apiRequester.get<any>('/cosmos/base/node/v1beta1/config', {});
+  }
+
+  public async parameterKeys(): Promise<any> {
+    return this.apiRequester
+      .get<{ subspaces: any }>('/cosmos/params/v1beta1/subspaces', {})
+      .then(d => d.subspaces);
+  }
+  public async parameter(subspace: string, key: string): Promise<any> {
+    return this.apiRequester
+      .get<{ param: any }>('/cosmos/params/v1beta1/params', {
+        subspace,
+        key,
+      })
+      .then(d => d.param);
   }
 
   public async getGasPrices(): Promise<Coins> {

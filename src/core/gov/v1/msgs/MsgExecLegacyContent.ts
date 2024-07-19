@@ -39,12 +39,10 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgExecLegacyContentV1.Amino {
+  public toAmino(_isClassic?: boolean): MsgExecLegacyContentV1.Amino {
     const { content, authority } = this;
     return {
-      type: isClassic
-        ? 'gov/MsgExecLegacyContent'
-        : 'cosmos-sdk/MsgExecLegacyContent',
+      type: 'cosmos-sdk/v1/MsgExecLegacyContent',
       value: {
         content: content?.toAmino(),
         authority,
@@ -109,7 +107,7 @@ export class MsgExecLegacyContentV1 extends JSONSerializable<
 
 export namespace MsgExecLegacyContentV1 {
   export interface Amino {
-    type: 'gov/MsgExecLegacyContent' | 'cosmos-sdk/MsgExecLegacyContent';
+    type: 'cosmos-sdk/v1/MsgExecLegacyContent';
     value: {
       content: ProposalV1B1.Content.Amino | undefined;
       authority: AccAddress;

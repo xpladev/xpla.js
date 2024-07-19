@@ -1,3 +1,4 @@
+import { AuthMsgV1B1, MsgUpdateAuthParamsV1B1 } from './auth';
 import {
   BankMsgV1B1,
   MsgMultiSendV1B1,
@@ -5,16 +6,23 @@ import {
   MsgSetSendEnabledV1B1,
   MsgUpdateBankParamsV1B1,
 } from './bank';
+import { ConsensusMsgV1B1, MsgUpdateConsensusParamsV1B1 } from './consensus';
 import {
-  DistributionMsg,
-  MsgSetWithdrawAddress,
-  MsgWithdrawDelegatorReward,
-  MsgWithdrawValidatorCommission,
-  MsgFundCommunityPool,
-  MsgCommunityPoolSpend,
-} from './distribution/msgs';
-import { Erc20MsgV1, MsgConvertCoinV1, MsgConvertERC20V1 } from './erc20';
-import { EvmMsg, MsgEthereumTx } from './evm/msgs';
+  DistributionMsgV1B1,
+  MsgSetWithdrawAddressV1B1,
+  MsgWithdrawDelegatorRewardV1B1,
+  MsgWithdrawValidatorCommissionV1B1,
+  MsgFundCommunityPoolV1B1,
+  MsgCommunityPoolSpendV1B1,
+  MsgUpdateDistributionParamsV1B1,
+} from './distribution/v1beta1/msgs';
+import {
+  Erc20MsgV1,
+  MsgConvertCoinV1,
+  MsgConvertERC20V1,
+  MsgUpdateERC20ParamsV1,
+} from './erc20';
+import { EvmMsgV1, MsgEthereumTxV1, MsgUpdateEvmParamsV1 } from './evm';
 import {
   FeeGrantMsg,
   MsgGrantAllowance,
@@ -51,14 +59,19 @@ import {
   MsgGroupExecV1,
   MsgLeaveGroupV1,
 } from './group';
+import { MintMsgV1B1, MsgUpdateMintParamsV1B1 } from './mint';
 import { NftMsgV1B1, MsgNftSendV1B1 } from './nft';
 import {
-  MsgAuthMsg,
+  AuthzMsg,
   MsgGrantAuthorization,
   MsgRevokeAuthorization,
   MsgExecAuthorized,
 } from './authz/msgs';
-import { SlashingMsg, MsgUnjail } from './slashing/msgs';
+import {
+  SlashingMsgV1B1,
+  MsgUnjailV1B1,
+  MsgUpdateSlashingParamsV1B1,
+} from './slashing';
 import {
   StakingMsgV1B1,
   MsgBeginRedelegateV1B1,
@@ -67,6 +80,7 @@ import {
   MsgEditValidatorV1B1,
   MsgUndelegateV1B1,
   MsgCancelUnbondingDelegationV1B1,
+  MsgUpdateStakingParamsV1B1,
 } from './staking';
 import {
   VestingMsgV1B1,
@@ -128,19 +142,26 @@ import {
   MsgTimeoutOnClose,
 } from './ibc/msgs/channel';
 import { CrisisMsg, MsgVerifyInvariant } from './crisis';
-import { XplaMsgV1B1, MsgFundFeeCollectorV1B1 } from './xpla';
+import {
+  XplaMsgV1B1,
+  MsgFundFeeCollectorV1B1,
+  MsgUpdateRewardParamsV1B1,
+} from './xpla';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
+  | AuthMsgV1B1
   | BankMsgV1B1
-  | DistributionMsg
+  | ConsensusMsgV1B1
+  | DistributionMsgV1B1
   | FeeGrantMsg
   | GovMsgV1B1
   | GovMsgV1
   | GroupMsgV1
+  | MintMsgV1B1
   | NftMsgV1B1
-  | MsgAuthMsg
-  | SlashingMsg
+  | AuthzMsg
+  | SlashingMsgV1B1
   | StakingMsgV1B1
   | VestingMsgV1B1
   | UpgradeMsgV1B1
@@ -151,20 +172,23 @@ export type Msg =
   | IbcChannelMsg
   | CrisisMsg
   | Erc20MsgV1
-  | EvmMsg
+  | EvmMsgV1
   | XplaMsgV1B1;
 
 export namespace Msg {
   export type Amino =
+    | AuthMsgV1B1.Amino
     | BankMsgV1B1.Amino
-    | DistributionMsg.Amino
+    | ConsensusMsgV1B1.Amino
+    | DistributionMsgV1B1.Amino
     | FeeGrantMsg.Amino
     | GovMsgV1B1.Amino
     | GovMsgV1.Amino
     | GroupMsgV1.Amino
+    | MintMsgV1B1.Amino
     | NftMsgV1B1.Amino
-    | MsgAuthMsg.Amino
-    | SlashingMsg.Amino
+    | AuthzMsg.Amino
+    | SlashingMsgV1B1.Amino
     | StakingMsgV1B1.Amino
     | VestingMsgV1B1.Amino
     | UpgradeMsgV1B1.Amino
@@ -172,19 +196,22 @@ export namespace Msg {
     | IbcTransferMsg.Amino
     | CrisisMsg.Amino
     | Erc20MsgV1.Amino
-    | EvmMsg.Amino
+    | EvmMsgV1.Amino
     | XplaMsgV1B1.Amino;
 
   export type Data =
+    | AuthMsgV1B1.Data
     | BankMsgV1B1.Data
-    | DistributionMsg.Data
+    | ConsensusMsgV1B1.Data
+    | DistributionMsgV1B1.Data
     | FeeGrantMsg.Data
     | GovMsgV1B1.Data
     | GovMsgV1.Data
     | GroupMsgV1.Data
+    | MintMsgV1B1.Data
     | NftMsgV1B1.Data
-    | MsgAuthMsg.Data
-    | SlashingMsg.Data
+    | AuthzMsg.Data
+    | SlashingMsgV1B1.Data
     | StakingMsgV1B1.Data
     | VestingMsgV1B1.Data
     | UpgradeMsgV1B1.Data
@@ -195,19 +222,22 @@ export namespace Msg {
     | IbcChannelMsg.Data
     | CrisisMsg.Data
     | Erc20MsgV1.Data
-    | EvmMsg.Data
+    | EvmMsgV1.Data
     | XplaMsgV1B1.Data;
 
   export type Proto =
+    | AuthMsgV1B1.Proto
     | BankMsgV1B1.Proto
-    | DistributionMsg.Proto
+    | ConsensusMsgV1B1.Proto
+    | DistributionMsgV1B1.Proto
     | FeeGrantMsg.Proto
     | GovMsgV1B1.Proto
     | GovMsgV1.Proto
     | GroupMsgV1.Proto
+    | MintMsgV1B1.Proto
     | NftMsgV1B1.Proto
-    | MsgAuthMsg.Proto
-    | SlashingMsg.Proto
+    | AuthzMsg.Proto
+    | SlashingMsgV1B1.Proto
     | StakingMsgV1B1.Proto
     | VestingMsgV1B1.Proto
     | UpgradeMsgV1B1.Proto
@@ -218,11 +248,15 @@ export namespace Msg {
     | IbcChannelMsg.Proto
     | CrisisMsg.Proto
     | Erc20MsgV1.Proto
-    | EvmMsg.Proto
+    | EvmMsgV1.Proto
     | XplaMsgV1B1.Proto;
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
+      // auth
+      case 'cosmos-sdk/x/auth/MsgUpdateParams':
+        return MsgUpdateAuthParamsV1B1.fromAmino(data, isClassic);
+
       // bank
       case 'bank/MsgSend':
       case 'cosmos-sdk/MsgSend':
@@ -239,26 +273,33 @@ export namespace Msg {
       case 'bank/MsgSetSendEnabled':
       case 'cosmos-sdk/MsgSetSendEnabled':
         return MsgSetSendEnabledV1B1.fromAmino(data, isClassic);
-      case 'bank/MsgUpdateParamsV1B1':
-      case 'cosmos-sdk/MsgUpdateBankParamsV1B1':
+      case 'bank/MsgUpdateParams':
+      case 'cosmos-sdk/x/bank/MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.fromAmino(data, isClassic);
+
+      // consensus
+      case 'cosmos-sdk/x/consensus/MsgUpdateParams':
+        return MsgUpdateConsensusParamsV1B1.fromAmino(data, isClassic);
 
       // distribution
       case 'distribution/MsgModifyWithdrawAddress':
       case 'cosmos-sdk/MsgModifyWithdrawAddress':
-        return MsgSetWithdrawAddress.fromAmino(data, isClassic);
+        return MsgSetWithdrawAddressV1B1.fromAmino(data, isClassic);
       case 'distribution/MsgWithdrawDelegationReward':
       case 'cosmos-sdk/MsgWithdrawDelegationReward':
-        return MsgWithdrawDelegatorReward.fromAmino(data, isClassic);
+        return MsgWithdrawDelegatorRewardV1B1.fromAmino(data, isClassic);
       case 'distribution/MsgWithdrawValidatorCommission':
       case 'cosmos-sdk/MsgWithdrawValCommission':
-        return MsgWithdrawValidatorCommission.fromAmino(data, isClassic);
+        return MsgWithdrawValidatorCommissionV1B1.fromAmino(data, isClassic);
       case 'distribution/MsgFundCommunityPool':
       case 'cosmos-sdk/MsgFundCommunityPool':
-        return MsgFundCommunityPool.fromAmino(data, isClassic);
+        return MsgFundCommunityPoolV1B1.fromAmino(data, isClassic);
       case 'distribution/MsgCommunityPoolSpend':
-      case 'cosmos-sdk/MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpend.fromAmino(data, isClassic);
+      case 'cosmos-sdk/distr/MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1B1.fromAmino(data, isClassic);
+      case 'distribution/MsgUpdateParams':
+      case 'cosmos-sdk/distribution/MsgUpdateParams':
+        return MsgUpdateDistributionParamsV1B1.fromAmino(data, isClassic);
 
       // feegrant
       case 'feegrant/MsgGrantAllowance':
@@ -274,24 +315,12 @@ export namespace Msg {
         return MsgDepositV1B1.fromAmino(data, isClassic);
       case 'gov/MsgSubmitProposal':
       case 'cosmos-sdk/MsgSubmitProposal':
-        if (
-          (<MsgGroupSubmitProposalV1.Amino>data).value.group_policy_address !==
-          undefined
-        )
-          // group/MsgSubmitProposal
-          return MsgGroupSubmitProposalV1.fromAmino(
-            <MsgGroupSubmitProposalV1.Amino>data,
-            isClassic
-          );
-        if ((<MsgSubmitProposalV1.Amino>data).value.messages !== undefined)
-          return MsgSubmitProposalV1.fromAmino(
-            <MsgSubmitProposalV1.Amino>data,
-            isClassic
-          );
         return MsgSubmitProposalV1B1.fromAmino(
           <MsgSubmitProposalV1B1.Amino>data,
           isClassic
         );
+      case 'cosmos-sdk/v1/MsgSubmitProposal':
+        return MsgSubmitProposalV1.fromAmino(<MsgSubmitProposalV1.Amino>data);
       case 'gov/MsgVote':
       case 'cosmos-sdk/MsgVote':
         if ((<MsgGroupVoteV1.Amino>data).value.metadata !== undefined)
@@ -304,8 +333,9 @@ export namespace Msg {
       case 'gov/MsgVoteWeighted':
       case 'cosmos-sdk/MsgVoteWeighted':
         return MsgVoteWeightedV1B1.fromAmino(data, isClassic);
-      case 'gov/MsgUpdateParamsV1':
-      case 'cosmos-sdk/MsgUpdateGovParamsV1':
+      case 'cosmos-sdk/v1/MsgExecLegacyContent':
+        return MsgExecLegacyContentV1.fromAmino(data, isClassic);
+      case 'cosmos-sdk/x/gov/v1/MsgUpdateParams':
         return MsgUpdateGovParamsV1.fromAmino(data, isClassic);
 
       // group
@@ -337,24 +367,24 @@ export namespace Msg {
       case 'cosmos-sdk/MsgUpdateGroupPolicyMetadata':
         return MsgUpdateGroupPolicyMetadataV1.fromAmino(data, isClassic);
       case 'group/MsgSubmitProposal':
-        //case 'cosmos-sdk/MsgSubmitProposal':
         return MsgGroupSubmitProposalV1.fromAmino(data, isClassic);
       case 'group/MsgWithdrawProposal':
       case 'cosmos-sdk/MsgWithdrawProposal':
         return MsgGroupWithdrawProposalV1.fromAmino(data, isClassic);
       case 'group/MsgVote':
-        //case 'cosmos-sdk/MsgVote':
         return MsgGroupVoteV1.fromAmino(data, isClassic);
       case 'group/MsgExec':
-        //case 'cosmos-sdk/MsgExec':
         return MsgGroupExecV1.fromAmino(data, isClassic);
       case 'group/MsgLeaveGroup':
       case 'cosmos-sdk/MsgLeaveGroup':
         return MsgLeaveGroupV1.fromAmino(data, isClassic);
 
+      // mint
+      case 'cosmos-sdk/x/mint/MsgUpdateParams':
+        return MsgUpdateMintParamsV1B1.fromAmino(data, isClassic);
+
       // nft
       case 'nft/MsgSend':
-        //case 'cosmos-sdk/MsgSend':
         return MsgNftSendV1B1.fromAmino(data, isClassic);
 
       // msgauth
@@ -380,7 +410,9 @@ export namespace Msg {
       // slashing
       case 'slashing/MsgUnjail':
       case 'cosmos-sdk/MsgUnjail':
-        return MsgUnjail.fromAmino(data, isClassic);
+        return MsgUnjailV1B1.fromAmino(data, isClassic);
+      case 'cosmos-sdk/x/slashing/MsgUpdateParams':
+        return MsgUpdateSlashingParamsV1B1.fromAmino(data, isClassic);
 
       // staking
       case 'staking/MsgDelegate':
@@ -401,6 +433,8 @@ export namespace Msg {
       case 'staking/MsgCancelUnbondingDelegation':
       case 'cosmos-sdk/MsgCancelUnbondingDelegation':
         return MsgCancelUnbondingDelegationV1B1.fromAmino(data, isClassic);
+      case 'cosmos-sdk/MsgUpdateStakingParams':
+        return MsgUpdateStakingParamsV1B1.fromAmino(data, isClassic);
 
       // vesting
       case 'vesting/MsgCreateVestingAccount':
@@ -468,18 +502,24 @@ export namespace Msg {
         return MsgVerifyInvariant.fromAmino(data, isClassic);
 
       // erc20
-      case 'erc20/MsgConvertCoin':
+      case 'ethermint/MsgConvertCoin':
         return MsgConvertCoinV1.fromAmino(data);
-      case 'erc20/MsgConvertERC20':
+      case 'ethermint/MsgConvertERC20':
         return MsgConvertERC20V1.fromAmino(data);
+      case 'ethermint/erc20/MsgUpdateParams':
+        return MsgUpdateERC20ParamsV1.fromAmino(data);
 
       // evm
-      case 'evm/MsgEthereumTx':
-        return MsgEthereumTx.fromAmino(data);
+      case 'ethermint/MsgEthereumTx':
+        return MsgEthereumTxV1.fromAmino(data);
+      case 'ethermint/MsgUpdateParams':
+        return MsgUpdateEvmParamsV1.fromAmino(data);
 
       // xpla
-      case 'xpla/MsgFundFeeCollector':
+      case 'xpladev/MsgFundFeeCollector':
         return MsgFundFeeCollectorV1B1.fromAmino(data);
+      case 'xpladev/reward/MsgUpdateParams':
+        return MsgUpdateRewardParamsV1B1.fromAmino(data);
 
       default:
         throw Error(`not supported msg ${data['type']}`);
@@ -487,6 +527,10 @@ export namespace Msg {
   }
   export function fromData(data: Msg.Data, isClassic?: boolean): Msg {
     switch (data['@type']) {
+      // auth
+      case '/cosmos.auth.v1beta1.MsgUpdateParams':
+        return MsgUpdateAuthParamsV1B1.fromData(data, isClassic);
+
       // bank
       case '/cosmos.bank.v1beta1.MsgSend':
         return MsgSendV1B1.fromData(data, isClassic);
@@ -497,15 +541,23 @@ export namespace Msg {
       case '/cosmos.bank.v1beta1.MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.fromData(data, isClassic);
 
+      // consensus
+      case '/cosmos.consensus.v1.MsgUpdateParams':
+        return MsgUpdateConsensusParamsV1B1.fromData(data, isClassic);
+
       // distribution
       case '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress':
-        return MsgSetWithdrawAddress.fromData(data, isClassic);
+        return MsgSetWithdrawAddressV1B1.fromData(data, isClassic);
       case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
-        return MsgWithdrawDelegatorReward.fromData(data, isClassic);
+        return MsgWithdrawDelegatorRewardV1B1.fromData(data, isClassic);
       case '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission':
-        return MsgWithdrawValidatorCommission.fromData(data, isClassic);
+        return MsgWithdrawValidatorCommissionV1B1.fromData(data, isClassic);
       case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
-        return MsgFundCommunityPool.fromData(data, isClassic);
+        return MsgFundCommunityPoolV1B1.fromData(data, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1B1.fromData(data, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgUpdateParams':
+        return MsgUpdateDistributionParamsV1B1.fromData(data, isClassic);
 
       // feegrant
       case '/cosmos.feegrant.v1beta1.MsgGrantAllowance':
@@ -565,6 +617,10 @@ export namespace Msg {
       case '/cosmos.group.v1.MsgLeaveGroup':
         return MsgLeaveGroupV1.fromData(data, isClassic);
 
+      // mint
+      case '/cosmos.mint.v1beta1.MsgUpdateParams':
+        return MsgUpdateMintParamsV1B1.fromData(data, isClassic);
+
       // nft
       case '/cosmos.nft.v1beta1.MsgSend':
         return MsgNftSendV1B1.fromData(data, isClassic);
@@ -579,7 +635,9 @@ export namespace Msg {
 
       // slashing
       case '/cosmos.slashing.v1beta1.MsgUnjail':
-        return MsgUnjail.fromData(data, isClassic);
+        return MsgUnjailV1B1.fromData(data, isClassic);
+      case '/cosmos.slashing.v1beta1.MsgUpdateParams':
+        return MsgUpdateSlashingParamsV1B1.fromData(data, isClassic);
 
       // staking
       case '/cosmos.staking.v1beta1.MsgDelegate':
@@ -594,6 +652,8 @@ export namespace Msg {
         return MsgEditValidatorV1B1.fromData(data, isClassic);
       case '/cosmos.staking.v1beta1.MsgCancelUnbondingDelegation':
         return MsgCancelUnbondingDelegationV1B1.fromData(data, isClassic);
+      case '/cosmos.staking.v1beta1.MsgUpdateParams':
+        return MsgUpdateStakingParamsV1B1.fromData(data, isClassic);
 
       // vesting
       case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
@@ -703,11 +763,13 @@ export namespace Msg {
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
-        return MsgEthereumTx.fromData(data);
+        return MsgEthereumTxV1.fromData(data);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
         return MsgFundFeeCollectorV1B1.fromData(data);
+      case '/xpla.reward.v1beta1.MsgUpdateParams':
+        return MsgUpdateRewardParamsV1B1.fromData(data);
 
       default:
         throw Error(`not supported msg ${data['@type']}`);
@@ -716,6 +778,10 @@ export namespace Msg {
 
   export function fromProto(proto: Any, isClassic?: boolean): Msg {
     switch (proto.typeUrl) {
+      // auth
+      case '/cosmos.auth.v1beta1.MsgUpdateParams':
+        return MsgUpdateAuthParamsV1B1.unpackAny(proto, isClassic);
+
       // bank
       case '/cosmos.bank.v1beta1.MsgSend':
         return MsgSendV1B1.unpackAny(proto, isClassic);
@@ -726,15 +792,23 @@ export namespace Msg {
       case '/cosmos.bank.v1beta1.MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.unpackAny(proto, isClassic);
 
+      // consensus
+      case '/cosmos.consensus.v1.MsgUpdateParams':
+        return MsgUpdateConsensusParamsV1B1.unpackAny(proto, isClassic);
+
       // distribution
       case '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress':
-        return MsgSetWithdrawAddress.unpackAny(proto, isClassic);
+        return MsgSetWithdrawAddressV1B1.unpackAny(proto, isClassic);
       case '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward':
-        return MsgWithdrawDelegatorReward.unpackAny(proto, isClassic);
+        return MsgWithdrawDelegatorRewardV1B1.unpackAny(proto, isClassic);
       case '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission':
-        return MsgWithdrawValidatorCommission.unpackAny(proto, isClassic);
+        return MsgWithdrawValidatorCommissionV1B1.unpackAny(proto, isClassic);
       case '/cosmos.distribution.v1beta1.MsgFundCommunityPool':
-        return MsgFundCommunityPool.unpackAny(proto, isClassic);
+        return MsgFundCommunityPoolV1B1.unpackAny(proto, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1B1.unpackAny(proto, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgUpdateParams':
+        return MsgUpdateDistributionParamsV1B1.unpackAny(proto, isClassic);
 
       // feegrant
       case '/cosmos.feegrant.v1beta1.MsgGrantAllowance':
@@ -794,6 +868,10 @@ export namespace Msg {
       case '/cosmos.group.v1.MsgLeaveGroup':
         return MsgLeaveGroupV1.unpackAny(proto, isClassic);
 
+      // mint
+      case '/cosmos.mint.v1beta1.MsgUpdateParams':
+        return MsgUpdateMintParamsV1B1.unpackAny(proto, isClassic);
+
       // nft
       case '/cosmos.nft.v1beta1.MsgSend':
         return MsgNftSendV1B1.unpackAny(proto, isClassic);
@@ -808,7 +886,9 @@ export namespace Msg {
 
       // slashing
       case '/cosmos.slashing.v1beta1.MsgUnjail':
-        return MsgUnjail.unpackAny(proto, isClassic);
+        return MsgUnjailV1B1.unpackAny(proto, isClassic);
+      case '/cosmos.slashing.v1beta1.MsgUpdateParams':
+        return MsgUpdateSlashingParamsV1B1.unpackAny(proto, isClassic);
 
       // staking
       case '/cosmos.staking.v1beta1.MsgDelegate':
@@ -823,6 +903,8 @@ export namespace Msg {
         return MsgEditValidatorV1B1.unpackAny(proto, isClassic);
       case '/cosmos.staking.v1beta1.MsgCancelUnbondingDelegation':
         return MsgCancelUnbondingDelegationV1B1.unpackAny(proto, isClassic);
+      case '/cosmos.staking.v1beta1.MsgUpdateParams':
+        return MsgUpdateStakingParamsV1B1.unpackAny(proto, isClassic);
 
       // vesting
       case '/cosmos.vesting.v1beta1.MsgCreateVestingAccount':
@@ -923,18 +1005,22 @@ export namespace Msg {
         return MsgVerifyInvariant.unpackAny(proto, isClassic);
 
       // erc20
-      case 'erc20/MsgConvertCoin':
+      case '/ethermint.erc20.v1.MsgConvertCoin':
+      case '/evmos.erc20.v1.MsgConvertCoin':
         return MsgConvertCoinV1.unpackAny(proto);
-      case 'erc20/MsgConvertERC20':
+      case '/ethermint.erc20.v1.MsgConvertERC20':
+      case '/evmos.erc20.v1.MsgConvertERC20':
         return MsgConvertERC20V1.unpackAny(proto);
 
       // evm
-      case 'evm/MsgEthereumTx':
-        return MsgEthereumTx.unpackAny(proto);
+      case '/ethermint.evm.v1.MsgEthereumTx':
+        return MsgEthereumTxV1.unpackAny(proto);
 
       // xpla
-      case 'xpla/MsgFundFeeCollector':
+      case '/xpla.reward.v1beta1.MsgFundFeeCollector':
         return MsgFundFeeCollectorV1B1.unpackAny(proto);
+      case '/xpla.reward.v1beta1.MsgUpdateParams':
+        return MsgUpdateRewardParamsV1B1.unpackAny(proto);
 
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);

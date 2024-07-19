@@ -1,27 +1,7 @@
-import { Dec, Numeric, Denom } from '../../../core';
+import { Dec, Numeric, MintParamsV1B1 } from '../../../core';
 import { APIParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
-
-export interface MintingParams {
-  mint_denom: Denom;
-  inflation_rate_change: Dec;
-  inflation_max: Dec;
-  inflation_min: Dec;
-  goal_bonded: Dec;
-  blocks_per_year: number;
-}
-
-export namespace MintingParams {
-  export interface Data {
-    mint_denom: string;
-    inflation_rate_change: string;
-    inflation_max: string;
-    inflation_min: string;
-    goal_bonded: string;
-    blocks_per_year: string;
-  }
-}
 
 export class MintAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
@@ -55,19 +35,9 @@ export class MintAPI extends BaseAPI {
   /**
    * Gets the current minting module's parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<MintingParams> {
+  public async parameters(params: APIParams = {}): Promise<MintParamsV1B1> {
     return this.c
-      .get<{ params: MintingParams.Data }>(
-        `/cosmos/mint/v1beta1/params`,
-        params
-      )
-      .then(({ params: d }) => ({
-        mint_denom: d.mint_denom,
-        inflation_rate_change: new Dec(d.inflation_rate_change),
-        inflation_max: new Dec(d.inflation_max),
-        inflation_min: new Dec(d.inflation_min),
-        goal_bonded: new Dec(d.goal_bonded),
-        blocks_per_year: Number.parseInt(d.blocks_per_year),
-      }));
+      .get<{ params: any }>('/cosmos/mint/v1beta1/params', params)
+      .then(({ params: d }) => MintParamsV1B1.fromData(d));
   }
 }

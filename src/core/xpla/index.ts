@@ -2,6 +2,7 @@ import { XplaMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
 export * from './v1beta1/proposals';
+export * from './v1beta1/Params';
 
 export type XplaMsg = XplaMsgV1B1;
 

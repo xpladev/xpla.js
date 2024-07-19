@@ -1,35 +1,45 @@
 import { JSONSerializable } from '../../../util/json';
+import { AccAddress } from '../../bech32';
 import { GenericAuthorization } from './GenericAuthorization';
 import { SendAuthorization } from './SendAuthorization';
 import { StakeAuthorization } from './StakeAuthorization';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { Grant as Grant_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/authz';
+import { GrantAuthorization as Grant_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/authz';
 
 export class AuthorizationGrant extends JSONSerializable<
   AuthorizationGrant.Amino,
   AuthorizationGrant.Data,
   AuthorizationGrant.Proto
 > {
-  constructor(public authorization: Authorization, public expiration: Date) {
+  constructor(
+    public authorization: Authorization,
+    public expiration: Date,
+    public granter: AccAddress | undefined,
+    public grantee: AccAddress | undefined
+  ) {
     super();
   }
 
   public static fromAmino(
-    amino: AuthorizationGrant.Amino,
+    data: AuthorizationGrant.Amino,
     isClassic?: boolean
   ): AuthorizationGrant {
-    const { authorization, expiration } = amino;
+    const { authorization, expiration, granter, grantee } = data;
     return new AuthorizationGrant(
       Authorization.fromAmino(authorization, isClassic),
-      new Date(expiration)
+      new Date(expiration),
+      granter,
+      grantee
     );
   }
 
   public toAmino(isClassic?: boolean): AuthorizationGrant.Amino {
-    const { authorization, expiration } = this;
+    const { authorization, expiration, granter, grantee } = this;
     return {
       authorization: authorization.toAmino(isClassic),
       expiration: expiration.toISOString().replace(/\.000Z$/, 'Z'),
+      granter,
+      grantee,
     };
   }
 
@@ -37,18 +47,22 @@ export class AuthorizationGrant extends JSONSerializable<
     data: AuthorizationGrant.Data,
     isClassic?: boolean
   ): AuthorizationGrant {
-    const { authorization, expiration } = data;
+    const { authorization, expiration, granter, grantee } = data;
     return new AuthorizationGrant(
       Authorization.fromData(authorization, isClassic),
-      new Date(expiration)
+      new Date(expiration),
+      granter,
+      grantee
     );
   }
 
   public toData(isClassic?: boolean): AuthorizationGrant.Data {
-    const { authorization, expiration } = this;
+    const { authorization, expiration, granter, grantee } = this;
     return {
       authorization: authorization.toData(isClassic),
       expiration: expiration.toISOString().replace(/\.000Z$/, 'Z'),
+      granter,
+      grantee,
     };
   }
 
@@ -58,15 +72,19 @@ export class AuthorizationGrant extends JSONSerializable<
   ): AuthorizationGrant {
     return new AuthorizationGrant(
       Authorization.fromProto(proto.authorization as Any, isClassic),
-      proto.expiration as Date
+      proto.expiration as Date,
+      proto.granter,
+      proto.grantee
     );
   }
 
   public toProto(isClassic?: boolean): AuthorizationGrant.Proto {
-    const { authorization, expiration } = this;
+    const { authorization, expiration, granter, grantee } = this;
     return Grant_pb.fromPartial({
       authorization: authorization.packAny(isClassic),
       expiration,
+      granter,
+      grantee,
     });
   }
 }
@@ -75,11 +93,15 @@ export namespace AuthorizationGrant {
   export interface Amino {
     authorization: Authorization.Amino;
     expiration: string;
+    granter: string | undefined;
+    grantee: string | undefined;
   }
 
   export interface Data {
     authorization: Authorization.Data;
     expiration: string;
+    granter: string | undefined;
+    grantee: string | undefined;
   }
 
   export type Proto = Grant_pb;

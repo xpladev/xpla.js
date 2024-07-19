@@ -12,7 +12,7 @@ export class TendermintAPI extends BaseAPI {
    * Gets the node's information.
    */
   public async nodeInfo(params: APIParams = {}): Promise<object> {
-    return this.c.getRaw(`/cosmos/base/tendermint/v1beta1/node_info`, params);
+    return this.c.getRaw('/cosmos/base/tendermint/v1beta1/node_info', params);
   }
 
   /**

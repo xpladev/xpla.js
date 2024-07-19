@@ -1,38 +1,13 @@
 import { BaseAPI } from './BaseAPI';
-import { Coins, AccAddress, Dec, ValAddress } from '../../../core';
+import {
+  Coins,
+  AccAddress,
+  Dec,
+  ValAddress,
+  DistributionParamsV1B1,
+} from '../../../core';
 import { APIParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
-
-export interface DistributionParams {
-  /**
-   * Community tax rate.
-   */
-  community_tax: Dec;
-
-  /**
-   * Base reward for proposer of block.
-   */
-  base_proposer_reward: Dec;
-
-  /**
-   * Bonus reward for proposer of block.
-   */
-  bonus_proposer_reward: Dec;
-
-  /**
-   * Whether withdrawals are currently enabled.
-   */
-  withdraw_addr_enabled: boolean;
-}
-
-export namespace DistributionParams {
-  export interface Data {
-    community_tax: string;
-    base_proposer_reward: string;
-    bonus_proposer_reward: string;
-    withdraw_addr_enabled: boolean;
-  }
-}
 
 /**
  * Holds the resonse of delegator rewards query
@@ -143,17 +118,11 @@ export class DistributionAPI extends BaseAPI {
   /**
    * Gets the current distribution parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<DistributionParams> {
+  public async parameters(
+    params: APIParams = {}
+  ): Promise<DistributionParamsV1B1> {
     return this.c
-      .get<{ params: DistributionParams.Data }>(
-        `/cosmos/distribution/v1beta1/params`,
-        params
-      )
-      .then(({ params: d }) => ({
-        base_proposer_reward: new Dec(d.base_proposer_reward),
-        community_tax: new Dec(d.community_tax),
-        bonus_proposer_reward: new Dec(d.bonus_proposer_reward),
-        withdraw_addr_enabled: d.withdraw_addr_enabled,
-      }));
+      .get<{ params: any }>('/cosmos/distribution/v1beta1/params', params)
+      .then(({ params: d }) => DistributionParamsV1B1.fromData(d));
   }
 }

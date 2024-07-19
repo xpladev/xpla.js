@@ -24,6 +24,8 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   ) {
     super();
     this.amount = new Coins(amount);
+    if (payer && payer.length < 1) payer = undefined;
+    if (granter && granter.length < 1) granter = undefined;
   }
 
   public static fromAmino(data: Fee.Amino): Fee {
@@ -69,8 +71,8 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
     return new Fee(
       proto.gasLimit.toNumber(),
       Coins.fromProto(proto.amount),
-      proto.payer,
-      proto.granter
+      proto.payer.length > 0 ? proto.payer : undefined,
+      proto.granter.length > 0 ? proto.granter : undefined
     );
   }
 

@@ -1,6 +1,7 @@
 import { BankMsgV1B1 } from './v1beta1/msgs';
 
 export * from './v1beta1/msgs';
+export * from './v1beta1/Params';
 
 export type BankMsg = BankMsgV1B1;
 

@@ -47,24 +47,22 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
       messages.map(a => Msg.fromAmino(a)),
       Coins.fromAmino(initial_deposit),
       proposer,
-      metadata,
+      metadata ?? '',
       title,
       summary
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgSubmitProposalV1.Amino {
+  public toAmino(_isClassic?: boolean): MsgSubmitProposalV1.Amino {
     const { messages, initial_deposit, proposer, metadata, title, summary } =
       this;
     return {
-      type: isClassic
-        ? 'gov/MsgSubmitProposal'
-        : 'cosmos-sdk/MsgSubmitProposal',
+      type: 'cosmos-sdk/v1/MsgSubmitProposal',
       value: {
         messages: messages.map(a => a.toAmino()),
         initial_deposit: initial_deposit.toAmino(),
         proposer,
-        metadata,
+        metadata: metadata ? metadata : undefined,
         title,
         summary,
       },
@@ -81,7 +79,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
       messages.map(a => Msg.fromData(a)),
       Coins.fromData(initial_deposit),
       proposer,
-      metadata,
+      metadata ?? '',
       title,
       summary
     );
@@ -95,7 +93,7 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
       messages: messages.map(a => a.toData()),
       initial_deposit: initial_deposit.toData(),
       proposer,
-      metadata,
+      metadata: metadata ? metadata : undefined,
       title,
       summary,
     };
@@ -148,12 +146,12 @@ export class MsgSubmitProposalV1 extends JSONSerializable<
 
 export namespace MsgSubmitProposalV1 {
   export interface Amino {
-    type: 'gov/MsgSubmitProposal' | 'cosmos-sdk/MsgSubmitProposal';
+    type: 'cosmos-sdk/v1/MsgSubmitProposal';
     value: {
       messages: Msg.Amino[];
       initial_deposit: Coins.Amino;
       proposer: AccAddress;
-      metadata: string;
+      metadata?: string;
       title: string;
       summary: string;
     };
@@ -164,7 +162,7 @@ export namespace MsgSubmitProposalV1 {
     messages: Msg.Data[];
     initial_deposit: Coins.Amino;
     proposer: AccAddress;
-    metadata: string;
+    metadata?: string;
     title: string;
     summary: string;
   }

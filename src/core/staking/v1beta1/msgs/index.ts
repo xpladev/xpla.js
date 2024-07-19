@@ -4,6 +4,7 @@ import { MsgBeginRedelegateV1B1 } from './MsgBeginRedelegate';
 import { MsgCreateValidatorV1B1 } from './MsgCreateValidator';
 import { MsgEditValidatorV1B1 } from './MsgEditValidator';
 import { MsgCancelUnbondingDelegationV1B1 } from './MsgCancelUnbondingDelegation';
+import { MsgUpdateStakingParamsV1B1 } from './MsgUpdateParams';
 
 export * from './MsgDelegate';
 export * from './MsgUndelegate';
@@ -11,6 +12,7 @@ export * from './MsgBeginRedelegate';
 export * from './MsgCreateValidator';
 export * from './MsgEditValidator';
 export * from './MsgCancelUnbondingDelegation';
+export * from './MsgUpdateParams';
 
 export type StakingMsgV1B1 =
   | MsgDelegateV1B1
@@ -18,7 +20,8 @@ export type StakingMsgV1B1 =
   | MsgBeginRedelegateV1B1
   | MsgCreateValidatorV1B1
   | MsgEditValidatorV1B1
-  | MsgCancelUnbondingDelegationV1B1;
+  | MsgCancelUnbondingDelegationV1B1
+  | MsgUpdateStakingParamsV1B1;
 
 export namespace StakingMsgV1B1 {
   export type Amino =
@@ -27,19 +30,22 @@ export namespace StakingMsgV1B1 {
     | MsgBeginRedelegateV1B1.Amino
     | MsgCreateValidatorV1B1.Amino
     | MsgEditValidatorV1B1.Amino
-    | MsgCancelUnbondingDelegationV1B1.Amino;
+    | MsgCancelUnbondingDelegationV1B1.Amino
+    | MsgUpdateStakingParamsV1B1.Amino;
   export type Data =
     | MsgDelegateV1B1.Data
     | MsgUndelegateV1B1.Data
     | MsgBeginRedelegateV1B1.Data
     | MsgCreateValidatorV1B1.Data
     | MsgEditValidatorV1B1.Data
-    | MsgCancelUnbondingDelegationV1B1.Data;
+    | MsgCancelUnbondingDelegationV1B1.Data
+    | MsgUpdateStakingParamsV1B1.Data;
   export type Proto =
     | MsgDelegateV1B1.Proto
     | MsgUndelegateV1B1.Proto
     | MsgBeginRedelegateV1B1.Proto
     | MsgCreateValidatorV1B1.Proto
     | MsgEditValidatorV1B1.Proto
-    | MsgCancelUnbondingDelegationV1B1.Proto;
+    | MsgCancelUnbondingDelegationV1B1.Proto
+    | MsgUpdateStakingParamsV1B1.Proto;
 }

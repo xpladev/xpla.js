@@ -1,7 +1,7 @@
 import { Coins } from '../../Coins';
 import { Int } from '../../numeric';
 import { JSONSerializable } from '../../../util/json';
-import { CommunityPoolSpendProposal } from '../../distribution/proposals';
+import { CommunityPoolSpendProposal } from '../../distribution/v1beta1/proposals';
 import {
   RegisterCoinProposal,
   RegisterERC20Proposal,
