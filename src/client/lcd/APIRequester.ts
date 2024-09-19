@@ -20,6 +20,14 @@ export interface PaginationOptions {
   order_by: keyof typeof OrderBy;
 }
 
+export class ApiResponseError extends Error {
+  data: any;
+  constructor(message?: string, data?: any) {
+    super(message);
+    this.data = data;
+  }
+}
+
 export class APIRequester {
   private axios: AxiosInstance;
   private readonly baseURL: string;
@@ -51,12 +59,23 @@ export class APIRequester {
     return url.toString();
   }
 
-  public async getRaw<T>(
+  public async getRaw(
     endpoint: string,
     params: URLSearchParams | APIParams = {}
-  ): Promise<T> {
+  ): Promise<any> {
     const url = this.computeEndpoint(endpoint);
-    return this.axios.get(url, { params }).then(d => d.data);
+    return this.axios.get(
+      url, { params },
+    ).then(d => {
+      d.data.http_status = d.status;
+      return d.data;
+    }).catch(error => {
+      if (error.response?.data) {
+        error.response.data.http_status = error.response.status;
+        return error.response.data;
+      }
+      throw error;
+    });
   }
 
   public async get<T>(
@@ -67,9 +86,20 @@ export class APIRequester {
     return this.axios.get(url, { params }).then(d => d.data);
   }
 
-  public async postRaw<T>(endpoint: string, data?: any): Promise<T> {
+  public async postRaw(endpoint: string, data?: any): Promise<any> {
     const url = this.computeEndpoint(endpoint);
-    return this.axios.post(url, data).then(d => d.data);
+    return this.axios.post(
+      url, data,
+    ).then(d => {
+      d.data.http_status = d.status;
+      return d.data;
+    }).catch(error => {
+      if (error.response?.data) {
+        error.response.data.http_status = error.response.status;
+        return error.response.data;
+      }
+      throw error;
+    });
   }
 
   public async post<T>(endpoint: string, data?: any): Promise<T> {
@@ -86,6 +116,12 @@ export class APIRequester {
       fcdURL ?? this.baseURL.replace('lcd', 'fcd'),
       endpoint
     );
-    return this.axios.get(url, { params }).then(d => d.data);
+    return this.axios.get(url, { params }).then(d => d.data).catch(error => {
+      if (error.response?.data) {
+        error.response.data.http_status = error.response.status;
+        return error.response.data;
+      }
+      throw error;
+    });
   }
 }

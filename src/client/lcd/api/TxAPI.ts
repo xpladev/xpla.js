@@ -14,9 +14,11 @@ import {
 } from '../../../core';
 import { hashToHex } from '../../../util/hash';
 import { LCDClient } from '../LCDClient';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, ApiResponseError, Pagination, PaginationOptions } from '../APIRequester';
 import { BroadcastMode as BroadcastModeV2 } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
 import { EvmMessage } from '../../../client/ecd/msgs';
+
+const POLL_INTERVAL = 500;
 
 interface Wait {
   height: number;
@@ -55,6 +57,7 @@ export interface TxSuccess {
 
 export interface TxError {
   code: number | string;
+  message?: string;
   codespace?: string;
 }
 
@@ -70,7 +73,7 @@ export type SyncTxBroadcastResult = TxBroadcastResult<Sync, TxError | {}>;
 export type AsyncTxBroadcastResult = TxBroadcastResult<Async, {}>;
 
 export function isTxError<
-  T extends TxBroadcastResult<B, C>,
+  T extends TxBroadcastResult<B, C> | TxError,
   B extends Wait | Block | Sync,
   C extends TxSuccess | TxError | {}
 >(x: T): x is T & TxBroadcastResult<B, TxError> {
@@ -202,10 +205,18 @@ export class TxAPI extends BaseAPI {
    * Looks up a transaction on the blockchain, addressed by its hash
    * @param txHash transaction's hash
    */
-  public async txInfo(txHash: string, params: APIParams = {}): Promise<TxInfo> {
+  public async txInfo(txHash: string, params: APIParams = {}): Promise<TxInfo | TxError> {
     return this.c
-      .getRaw<TxResult.Data>(`/cosmos/tx/v1beta1/txs/${txHash}`, params)
-      .then(v => TxInfo.fromData(v.tx_response, this.lcd.config.isClassic));
+      .getRaw(`/cosmos/tx/v1beta1/txs/${txHash}`, params)
+      .then(v => {
+        if ('tx_response' in v) {
+          return TxInfo.fromData(v.tx_response, this.lcd.config.isClassic);
+        }
+        if ('code' in v) {
+          return v as TxError;
+        }
+        throw v;
+      });
   }
 
   /**
@@ -270,25 +281,82 @@ export class TxAPI extends BaseAPI {
   }
 
   /**
-   * Looks up transactions on the blockchain for the block height. If height is undefined,
-   * gets the transactions for the latest block.
+   * Looks up transaction hashes on the blockchain for the block height. If height is undefined,
+   * gets the transaction hashes for the latest block.
    * @param height block height
    */
-  public async txInfosByHeight(height: number | undefined): Promise<TxInfo[]> {
+  public async txHashesByHeight(height: number | undefined): Promise<string[]> {
     const blockInfo = await this.lcd.tendermint.blockInfo(height);
     const { txs } = blockInfo.block.data;
     if (!txs) {
       return [];
-    } else {
-      const txhashes = txs.map(txdata => hashToHex(txdata));
-      const txInfos: TxInfo[] = [];
+    }
+    return txs.map(txdata => hashToHex(txdata));
+  }
 
-      for (const txhash of txhashes) {
-        txInfos.push(await this.txInfo(txhash));
-      }
+  /**
+   * Looks up transactions on the blockchain for the block height. If height is undefined,
+   * gets the transactions for the latest block.
+   * @param height  block height
+   * @param timeout time in milliseconds to wait for transactions to get. defaults to 30000 (30sec)
+   */
+  public async txInfosByHeight(
+    height: number | undefined,
+    timeout = 30000,
+  ): Promise<TxInfo[]> {
+    const txhashes = await this.txHashesByHeight(height);
+    const txInfos: TxInfo[] = [];
 
+    if (txhashes.length === 0) {
       return txInfos;
     }
+
+    // Wait until the block is processed and the first txinfo is available to get
+    {
+      let txInfo: undefined | TxInfo | TxError;
+      for (let i = 0; i <= timeout / POLL_INTERVAL; i++) {
+        try {
+          txInfo = await this.txInfo(txhashes[0]);
+        } catch (error) {
+          // Errors when transaction is not found.
+        }
+
+        if (txInfo instanceof TxInfo) {
+          break;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+      }
+
+      if (!txInfo) {
+        throw new Error(
+          `Transaction was not included in a block before timeout of ${timeout}ms`
+        );
+      }
+
+      if (!(txInfo instanceof TxInfo)) {
+        throw new ApiResponseError(
+          `Unable to get the TxInfo of ${txhashes[0]}`,
+          txInfo,
+        );
+      }
+    }
+  
+    // Read all txinfo and push to array
+    for (const txhash of txhashes) {
+      const info = await this.txInfo(txhash);
+      if (info instanceof TxInfo) {
+        txInfos.push(info);
+      }
+      else {
+        throw new ApiResponseError(
+          `Unable to get the TxInfo of ${txhash}`,
+          info,
+        );
+      }
+    }
+
+    return txInfos;
   }
 
   /**
@@ -431,14 +499,12 @@ export class TxAPI extends BaseAPI {
    * This method polls txInfo using the txHash to confirm the transaction's execution.
    *
    * @param tx      transaction to broadcast
-   * @param timeout time in milliseconds to wait for transaction to be included in a block. defaults to 30000
+   * @param timeout time in milliseconds to wait for transaction to be included in a block. defaults to 60000 (60sec)
    */
   public async broadcast(
     tx: Tx,
-    timeout = 30000
+    timeout = 60000
   ): Promise<WaitTxBroadcastResult> {
-    const POLL_INTERVAL = 500;
-
     const { tx_response: txResponse } = await this._broadcast<{
       tx_response: SyncTxBroadcastResult.Data;
     }>(tx, 'BROADCAST_MODE_SYNC');
@@ -458,7 +524,7 @@ export class TxAPI extends BaseAPI {
       return result;
     }
 
-    let txInfo: undefined | TxInfo;
+    let txInfo: undefined | TxInfo | TxError;
     for (let i = 0; i <= timeout / POLL_INTERVAL; i++) {
       try {
         txInfo = await this.txInfo(txResponse.txhash);
@@ -466,7 +532,7 @@ export class TxAPI extends BaseAPI {
         // Errors when transaction is not found.
       }
 
-      if (txInfo) {
+      if (txInfo instanceof TxInfo) {
         break;
       }
 
@@ -476,6 +542,13 @@ export class TxAPI extends BaseAPI {
     if (!txInfo) {
       throw new Error(
         `Transaction was not included in a block before timeout of ${timeout}ms`
+      );
+    }
+
+    if (!(txInfo instanceof TxInfo)) {
+      throw new ApiResponseError(
+        `Unable to get the TxInfo of ${txResponse.txhash}`,
+        txInfo,
       );
     }
 
@@ -537,11 +610,11 @@ export class TxAPI extends BaseAPI {
         raw_log: d.raw_log,
       };
 
-      if (d.code) {
+      if (d.code !== undefined) {
         blockResult.code = d.code;
       }
 
-      if (d.codespace) {
+      if (d.codespace !== undefined) {
         blockResult.codespace = d.codespace;
       }
 
@@ -587,7 +660,7 @@ export class TxAPI extends BaseAPI {
     });
 
     return this.c
-      .getRaw<TxSearchResult.Data>(`cosmos/tx/v1beta1/txs`, params)
+      .get<TxSearchResult.Data>(`cosmos/tx/v1beta1/txs`, params)
       .then(d => {
         return {
           txs: d.tx_responses.map(tx_response =>

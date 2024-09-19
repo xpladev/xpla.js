@@ -6,8 +6,8 @@ import { ECDClient } from '../ECDClient';
 import { EvmWallet } from '../EvmWallet';
 import { Key, RawKey } from '../../../key';
 import RLP from 'rlp';
-import { keccak256 } from '@ethersproject/keccak256';
-import * as secp256k1 from 'secp256k1';
+import * as secp256k1 from '@noble/secp256k1';
+import { keccak_256 } from '@noble/hashes/sha3';
 
 export interface CreateEvmTxOptions {
   msgs: EvmMessage[];
@@ -313,19 +313,26 @@ export class EvmTxAPI extends EvmAPI {
     ];
 
     const rlp = RLP.encode(values);
-    const msgHash = keccak256(rlp);
+    console.debug(rlp);
+    console.debug(Buffer.from(rlp).toString('hex'));
+    const msgHash = keccak_256(rlp);
 
-    const sig = secp256k1.ecdsaSign(
-      Buffer.from(msgHash.substring(2), 'hex'),
-      privateKey
+    const [ sig, recid ] = await secp256k1.sign(
+      msgHash,
+      privateKey,
+      {
+        recovered: true,
+        der: false,
+      },
     );
-    const r = sig.signature.slice(0, 32);
-    const s = sig.signature.slice(32, 64);
-    const v = sig.recid ? 0x1c : 0x1b;
+    const r = sig.slice(0, 32);
+    const s = sig.slice(32, 64);
+    const v = recid ? 0x1c : 0x1b;
 
     tx.v = v;
     tx.r = Buffer.from(r);
     tx.s = Buffer.from(s);
+
     return tx;
   }
 }

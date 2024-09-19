@@ -12,4 +12,4 @@ export namespace XplaMsg {
   export type Proto = XplaMsgV1B1.Proto;
 }
 
-export { MsgFundFeeCollectorV1B1 as MsgFundFeeCollector } from './v1beta1/msgs';
+export { MsgFundRewardPoolV1B1 as MsgFundRewardPool } from './v1beta1/msgs';

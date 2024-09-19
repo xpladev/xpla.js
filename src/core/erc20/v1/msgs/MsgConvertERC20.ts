@@ -2,7 +2,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgConvertERC20 as MsgConvertERC20V1_pb } from '@xpla/xpla.proto/ethermint/erc20/v1/tx';
+import { MsgConvertERC20 as MsgConvertERC20V1_pb } from '@xpla/xpla.proto/evmos/erc20/v1/tx';
 
 /**
  * erc20 MsgConvertERC20
@@ -40,7 +40,7 @@ export class MsgConvertERC20V1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgConvertERC20V1.Amino {
     const { contract_address, amount, receiver, sender } = this;
     return {
-      type: 'ethermint/MsgConvertERC20',
+      type: 'evmos/MsgConvertERC20',
       value: {
         contract_address,
         amount,
@@ -61,7 +61,7 @@ export class MsgConvertERC20V1 extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgConvertERC20V1.Data {
     const { contract_address, amount, receiver, sender } = this;
     return {
-      '@type': '/ethermint.erc20.v1.MsgConvertERC20',
+      '@type': '/evmos.erc20.v1.MsgConvertERC20',
       contract_address,
       amount,
       receiver,
@@ -93,7 +93,7 @@ export class MsgConvertERC20V1 extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.erc20.v1.MsgConvertERC20',
+      typeUrl: '/evmos.erc20.v1.MsgConvertERC20',
       value: MsgConvertERC20V1_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -108,7 +108,7 @@ export class MsgConvertERC20V1 extends JSONSerializable<
 
 export namespace MsgConvertERC20V1 {
   export interface Amino {
-    type: 'ethermint/MsgConvertERC20';
+    type: 'ethermint/MsgConvertERC20' | 'evmos/MsgConvertERC20';
     value: {
       contract_address: AccAddress;
       amount: string;
