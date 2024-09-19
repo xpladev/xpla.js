@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { RegisterERC20Proposal as RegisterERC20Proposal_pb } from '@xpla/xpla.proto/ethermint/erc20/v1/erc20';
+import { RegisterERC20Proposal as RegisterERC20Proposal_pb } from '@xpla/xpla.proto/evmos/erc20/v1/erc20';
 
 /**
  * erc20 RegisterERC20Proposal
@@ -58,7 +58,7 @@ export class RegisterERC20Proposal extends JSONSerializable<
   public toData(_isClassic?: boolean): RegisterERC20Proposal.Data {
     const { title, description, erc20addresses } = this;
     return {
-      '@type': '/ethermint.erc20.v1.RegisterERC20Proposal',
+      '@type': '/evmos.erc20.v1.RegisterERC20Proposal',
       title,
       description,
       erc20addresses,
@@ -87,7 +87,7 @@ export class RegisterERC20Proposal extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.erc20.v1.RegisterERC20Proposal',
+      typeUrl: '/evmos.erc20.v1.RegisterERC20Proposal',
       value: RegisterERC20Proposal_pb.encode(this.toProto(isClassic)).finish(),
     });
   }

@@ -3,15 +3,15 @@ import { JSONSerializable } from '../../../../util/json';
 import { Coins } from '../../../Coins';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgFundFeeCollector as MsgFundFeeCollectorV1B1_pb } from '@xpla/xpla.proto/xpla/reward/v1beta1/tx';
+import { MsgFundRewardPool as MsgFundRewardPoolV1B1_pb } from '@xpla/xpla.proto/xpla/reward/v1beta1/tx';
 
 /**
  * A basic message for sending [[Coins]] between Xpla accounts.
  */
-export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
-  MsgFundFeeCollectorV1B1.Amino,
-  MsgFundFeeCollectorV1B1.Data,
-  MsgFundFeeCollectorV1B1.Proto
+export class MsgFundRewardPoolV1B1 extends JSONSerializable<
+  MsgFundRewardPoolV1B1.Amino,
+  MsgFundRewardPoolV1B1.Data,
+  MsgFundRewardPoolV1B1.Proto
 > {
   /**
    * value of the transaction
@@ -28,19 +28,19 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
   }
 
   public static fromAmino(
-    data: MsgFundFeeCollectorV1B1.Amino,
+    data: MsgFundRewardPoolV1B1.Amino,
     _isClassic?: boolean
-  ): MsgFundFeeCollectorV1B1 {
+  ): MsgFundRewardPoolV1B1 {
     const {
       value: { amount, depositor },
     } = data;
-    return new MsgFundFeeCollectorV1B1(Coins.fromAmino(amount), depositor);
+    return new MsgFundRewardPoolV1B1(Coins.fromAmino(amount), depositor);
   }
 
-  public toAmino(_isClassic?: boolean): MsgFundFeeCollectorV1B1.Amino {
+  public toAmino(_isClassic?: boolean): MsgFundRewardPoolV1B1.Amino {
     const { amount, depositor } = this;
     return {
-      type: 'xpladev/MsgFundFeeCollector',
+      type: 'xpladev/MsgFundRewardPool',
       value: {
         amount: amount.toAmino(),
         depositor,
@@ -49,36 +49,36 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
   }
 
   public static fromData(
-    data: MsgFundFeeCollectorV1B1.Data,
+    data: MsgFundRewardPoolV1B1.Data,
     _isClassic?: boolean
-  ): MsgFundFeeCollectorV1B1 {
+  ): MsgFundRewardPoolV1B1 {
     const { amount, depositor } = data;
 
-    return new MsgFundFeeCollectorV1B1(Coins.fromData(amount), depositor);
+    return new MsgFundRewardPoolV1B1(Coins.fromData(amount), depositor);
   }
 
-  public toData(_isClassic?: boolean): MsgFundFeeCollectorV1B1.Data {
+  public toData(_isClassic?: boolean): MsgFundRewardPoolV1B1.Data {
     const { amount, depositor } = this;
     return {
-      '@type': '/xpla.reward.v1beta1.MsgFundFeeCollector',
+      '@type': '/xpla.reward.v1beta1.MsgFundRewardPool',
       amount: amount.toData(),
       depositor,
     };
   }
 
   public static fromProto(
-    proto: MsgFundFeeCollectorV1B1.Proto,
+    proto: MsgFundRewardPoolV1B1.Proto,
     _isClassic?: boolean
-  ): MsgFundFeeCollectorV1B1 {
-    return new MsgFundFeeCollectorV1B1(
+  ): MsgFundRewardPoolV1B1 {
+    return new MsgFundRewardPoolV1B1(
       Coins.fromProto(proto.amount),
       proto.depositor
     );
   }
 
-  public toProto(_isClassic?: boolean): MsgFundFeeCollectorV1B1.Proto {
+  public toProto(_isClassic?: boolean): MsgFundRewardPoolV1B1.Proto {
     const { amount, depositor } = this;
-    return MsgFundFeeCollectorV1B1_pb.fromPartial({
+    return MsgFundRewardPoolV1B1_pb.fromPartial({
       amount: amount.toProto(),
       depositor,
     });
@@ -86,8 +86,8 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/xpla.reward.v1beta1.MsgFundFeeCollector',
-      value: MsgFundFeeCollectorV1B1_pb.encode(
+      typeUrl: '/xpla.reward.v1beta1.MsgFundRewardPool',
+      value: MsgFundRewardPoolV1B1_pb.encode(
         this.toProto(isClassic)
       ).finish(),
     });
@@ -96,17 +96,17 @@ export class MsgFundFeeCollectorV1B1 extends JSONSerializable<
   public static unpackAny(
     msgAny: Any,
     isClassic?: boolean
-  ): MsgFundFeeCollectorV1B1 {
-    return MsgFundFeeCollectorV1B1.fromProto(
-      MsgFundFeeCollectorV1B1_pb.decode(msgAny.value),
+  ): MsgFundRewardPoolV1B1 {
+    return MsgFundRewardPoolV1B1.fromProto(
+      MsgFundRewardPoolV1B1_pb.decode(msgAny.value),
       isClassic
     );
   }
 }
 
-export namespace MsgFundFeeCollectorV1B1 {
+export namespace MsgFundRewardPoolV1B1 {
   export interface Amino {
-    type: 'xpladev/MsgFundFeeCollector';
+    type: 'xpladev/MsgFundRewardPool' | 'xpladev/MsgFundFeeCollector';
     value: {
       amount: Coins.Amino;
       depositor: AccAddress;
@@ -114,10 +114,10 @@ export namespace MsgFundFeeCollectorV1B1 {
   }
 
   export interface Data {
-    '@type': '/xpla.reward.v1beta1.MsgFundFeeCollector';
+    '@type': '/xpla.reward.v1beta1.MsgFundRewardPool' | '/xpla.reward.v1beta1.MsgFundFeeCollector';
     amount: Coins.Data;
     depositor: AccAddress;
   }
 
-  export type Proto = MsgFundFeeCollectorV1B1_pb;
+  export type Proto = MsgFundRewardPoolV1B1_pb;
 }

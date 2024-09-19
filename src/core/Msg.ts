@@ -144,7 +144,7 @@ import {
 import { CrisisMsg, MsgVerifyInvariant } from './crisis';
 import {
   XplaMsgV1B1,
-  MsgFundFeeCollectorV1B1,
+  MsgFundRewardPoolV1B1,
   MsgUpdateRewardParamsV1B1,
 } from './xpla';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -503,10 +503,13 @@ export namespace Msg {
 
       // erc20
       case 'ethermint/MsgConvertCoin':
+      case 'evmos/MsgConvertCoin':
         return MsgConvertCoinV1.fromAmino(data);
       case 'ethermint/MsgConvertERC20':
+      case 'evmos/MsgConvertERC20':
         return MsgConvertERC20V1.fromAmino(data);
       case 'ethermint/erc20/MsgUpdateParams':
+      case 'evmos/erc20/MsgUpdateParams':
         return MsgUpdateERC20ParamsV1.fromAmino(data);
 
       // evm
@@ -517,7 +520,8 @@ export namespace Msg {
 
       // xpla
       case 'xpladev/MsgFundFeeCollector':
-        return MsgFundFeeCollectorV1B1.fromAmino(data);
+      case 'xpladev/MsgFundRewardPool':
+        return MsgFundRewardPoolV1B1.fromAmino(data);
       case 'xpladev/reward/MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.fromAmino(data);
 
@@ -767,7 +771,8 @@ export namespace Msg {
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
-        return MsgFundFeeCollectorV1B1.fromData(data);
+      case '/xpla.reward.v1beta1.MsgFundRewardPool':
+        return MsgFundRewardPoolV1B1.fromData(data);
       case '/xpla.reward.v1beta1.MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.fromData(data);
 
@@ -1018,7 +1023,8 @@ export namespace Msg {
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
-        return MsgFundFeeCollectorV1B1.unpackAny(proto);
+      case '/xpla.reward.v1beta1.MsgFundRewardPool':
+        return MsgFundRewardPoolV1B1.unpackAny(proto);
       case '/xpla.reward.v1beta1.MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.unpackAny(proto);
 

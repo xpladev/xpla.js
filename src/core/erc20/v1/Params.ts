@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
-import { Params as ERC20ParamsV1_pb } from '@xpla/xpla.proto/ethermint/erc20/v1/genesis';
+import { Params as ERC20ParamsV1_pb } from '@xpla/xpla.proto/evmos/erc20/v1/genesis';
 
 export class ERC20ParamsV1 extends JSONSerializable<
   ERC20ParamsV1.Amino,

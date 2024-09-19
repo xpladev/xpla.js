@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { ToggleTokenConversionProposal as ToggleTokenConversionProposal_pb } from '@xpla/xpla.proto/ethermint/erc20/v1/erc20';
+import { ToggleTokenConversionProposal as ToggleTokenConversionProposal_pb } from '@xpla/xpla.proto/evmos/erc20/v1/erc20';
 
 /**
  * erc20 ToggleTokenConversionProposal
@@ -58,7 +58,7 @@ export class ToggleTokenConversionProposal extends JSONSerializable<
   public toData(_isClassic?: boolean): ToggleTokenConversionProposal.Data {
     const { title, description, token } = this;
     return {
-      '@type': '/ethermint.erc20.v1.ToggleTokenConversionProposal',
+      '@type': '/evmos.erc20.v1.ToggleTokenConversionProposal',
       title,
       description,
       token,
@@ -87,7 +87,7 @@ export class ToggleTokenConversionProposal extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.erc20.v1.ToggleTokenConversionProposal',
+      typeUrl: '/evmos.erc20.v1.ToggleTokenConversionProposal',
       value: ToggleTokenConversionProposal_pb.encode(
         this.toProto(isClassic)
       ).finish(),

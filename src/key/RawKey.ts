@@ -1,16 +1,10 @@
-import * as secp256k1 from 'secp256k1';
 import { Key } from './Key';
 import { SimplePublicKey } from '../core/PublicKey';
 
-import { SigningKey } from '@ethersproject/signing-key';
-import { keccak256 } from '@ethersproject/keccak256';
+import * as secp256k1 from '@noble/secp256k1';
+import { keccak_256 } from '@noble/hashes/sha3';
+import * as forge from 'node-forge';
 
-import {
-  Signature,
-  splitSignature,
-  arrayify,
-  concat,
-} from '@ethersproject/bytes';
 /**
  * An implementation of the Key interfaces that uses a raw private key.
  */
@@ -21,7 +15,7 @@ export class RawKey extends Key {
   public privateKey: Buffer;
 
   constructor(privateKey: Buffer) {
-    const publicKey = secp256k1.publicKeyCreate(
+    const publicKey = secp256k1.getPublicKey(
       new Uint8Array(privateKey),
       true
     );
@@ -29,18 +23,27 @@ export class RawKey extends Key {
     this.privateKey = privateKey;
   }
 
-  public ecdsaSign(payload: Buffer): Signature {
-    const signingKey = new SigningKey(this.privateKey);
-    const signature = signingKey.signDigest(keccak256(payload));
-
-    return signature;
+  public static isValidPrivateKey(privateKey: Buffer): boolean {
+    return secp256k1.utils.isValidPrivateKey(privateKey);
   }
 
   public async sign(payload: Buffer): Promise<Buffer> {
-    const signature = this.ecdsaSign(payload);
+    return secp256k1.sign(keccak_256(payload), this.privateKey, { der: false }).then(value => Buffer.from(value));
+  }
 
-    const splite = splitSignature(signature);
+  public generateRSAKeyPair(rsabits: number = 2048): { privateKeyPem: string, publicKeyPem: string } {
+    const bytes = this.privateKey.toString('hex');
+  
+    // Initialize the random byte generator with the seed
+    const prng = forge.random.createInstance();
+    prng.seedFileSync = () => bytes;
 
-    return Buffer.from(arrayify(concat([splite.r, splite.s])));
+    // Generate the key pair
+    const keypair = forge.pki.rsa.generateKeyPair({ bits: rsabits, e: 0x10001, prng });
+
+    return {
+      privateKeyPem: forge.pki.privateKeyToPem(keypair.privateKey),
+      publicKeyPem:  forge.pki.publicKeyToPem(keypair.publicKey),
+    };
   }
 }
