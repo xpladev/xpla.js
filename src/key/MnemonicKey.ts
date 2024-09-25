@@ -1,10 +1,12 @@
 // Adapted from https://github.com/xpla/xpla-js/blob/master/src/utils/keyUtils.ts
 
-import * as bip32 from 'bip32';
+import ecc from '@bitcoinerlab/secp256k1';
+import BIP32Factory from 'bip32';
 import * as bip39 from 'bip39';
 import { RawKey } from './RawKey';
 
 export const COIN_TYPE = 60;
+const bip32 = BIP32Factory(ecc);
 
 interface MnemonicKeyOptions {
   /**
@@ -88,5 +90,9 @@ export class MnemonicKey extends RawKey {
 
     super(privateKey);
     this.mnemonic = mnemonic;
+  }
+
+  public static isValidMnemonic(mnemonic: string): boolean {
+    return bip39.validateMnemonic(mnemonic);
   }
 }

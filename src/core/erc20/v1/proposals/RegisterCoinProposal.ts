@@ -2,7 +2,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Metadata } from '@xpla/xpla.proto/cosmos/bank/v1beta1/bank';
-import { RegisterCoinProposal as RegisterCoinProposal_pb } from '@xpla/xpla.proto/ethermint/erc20/v1/erc20';
+import { RegisterCoinProposal as RegisterCoinProposal_pb } from '@xpla/xpla.proto/evmos/erc20/v1/erc20';
 
 /**
  * erc20 RegisterCoinProposal
@@ -59,7 +59,7 @@ export class RegisterCoinProposal extends JSONSerializable<
   public toData(_isClassic?: boolean): RegisterCoinProposal.Data {
     const { title, description, metadata } = this;
     return {
-      '@type': '/ethermint.erc20.v1.RegisterCoinProposal',
+      '@type': '/evmos.erc20.v1.RegisterCoinProposal',
       title,
       description,
       metadata,
@@ -88,7 +88,7 @@ export class RegisterCoinProposal extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.erc20.v1.RegisterCoinProposal',
+      typeUrl: '/evmos.erc20.v1.RegisterCoinProposal',
       value: RegisterCoinProposal_pb.encode(this.toProto(isClassic)).finish(),
     });
   }

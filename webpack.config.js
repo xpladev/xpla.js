@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const commonConfig = {
   mode: 'production',
@@ -56,7 +55,6 @@ const webConfig = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
-    // new BundleAnalyzerPlugin(),
   ],
 };
 

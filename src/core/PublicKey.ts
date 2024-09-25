@@ -1,14 +1,13 @@
 import { JSONSerializable } from '../util/json';
-import { sha256 } from '../util/hash';
 import { LegacyAminoPubKey as LegacyAminoPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/multisig/keys';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/secp256k1/keys';
 import { PubKey as ValConsPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/ed25519/keys';
 import { bech32 } from 'bech32';
 import { encode as eip55 } from 'eip55';
-import { ec } from 'elliptic';
-import { keccak256 } from '@ethersproject/keccak256';
-import { hexDataSlice } from '@ethersproject/bytes';
+import * as secp256k1 from '@noble/secp256k1';
+import { keccak_256 } from '@noble/hashes/sha3';
+import { sha256 } from '@noble/hashes/sha256';
 
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
@@ -170,13 +169,12 @@ export class SimplePublicKey extends JSONSerializable<
 
   public rawAddress(): Uint8Array {
     const pubkeyData = Buffer.from(this.key, 'base64');
-    const curve = new ec('secp256k1');
-    const x0 = '0x' + curve.keyFromPublic(pubkeyData).getPublic(false, 'hex');
+		const x0 = secp256k1.Point.fromHex(pubkeyData).toRawBytes(false);
 
-    const x1 = keccak256(hexDataSlice(x0, 1));
-    const x2 = hexDataSlice(x1, 12);
+		const x1 = keccak_256(x0.slice(1));
+		const x2 = x1.slice(12);
 
-    return Buffer.from(stripHexPrefix(x2), 'hex');
+    return Buffer.from(x2);
   }
 
   public address(): string {

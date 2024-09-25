@@ -164,8 +164,31 @@ export class LCDClient {
     return new Wallet(this, key);
   }
 
+  /** Get the LCD node info. */
   public async info(): Promise<any> {
     return this.tendermint.nodeInfo();
+  }
+
+  /** Get the latest block height. */
+  public async latestHeight(): Promise<number> {
+    const latestBlock = await this.tendermint.blockInfo();
+    return parseInt(latestBlock.block.header.height);
+  }
+
+  /**
+   * Wait for new block.
+   * If the interval is too short and call api frequently, the LCD may reject the connection.
+   * @param interval wait interval in milliseconds. default is 500ms.
+   * @returns latest block height
+   */
+  public async waitForNewHeight(interval: number = 500): Promise<number> {
+    const curHeight = await this.latestHeight();
+    let newHeight = curHeight;
+    while (curHeight === newHeight) {
+      await new Promise(resolve => setTimeout(resolve, interval));
+      newHeight = await this.latestHeight();
+    }
+    return newHeight;
   }
 
   public async baseConfig(): Promise<any> {
