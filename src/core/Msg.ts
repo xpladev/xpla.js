@@ -934,7 +934,7 @@ export namespace Msg {
         return MsgExecuteContractV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1beta1.MsgMigrateContract':
         return MsgMigrateContractV1.unpackAny(proto, isClassic);
-      case '/cosmwasm.wasm.v1beta1.MsgUpdateAdmin':
+      case '/cosmwasm.wasm.v1.MsgUpdateAdmin':
         return MsgUpdateContractAdminV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgClearAdmin':
         return MsgClearContractAdminV1.unpackAny(proto, isClassic);
