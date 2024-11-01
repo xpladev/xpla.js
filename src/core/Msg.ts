@@ -28,6 +28,7 @@ import {
   MsgGrantAllowance,
   MsgRevokeAllowance,
 } from './feegrant/msgs';
+import { FeemarketMsgV1, MsgUpdateFeemarketParamsV1 } from './feemarket';
 import {
   GovMsgV1,
   MsgDepositV1B1,
@@ -155,6 +156,7 @@ export type Msg =
   | ConsensusMsgV1B1
   | DistributionMsgV1B1
   | FeeGrantMsg
+  | FeemarketMsgV1
   | GovMsgV1B1
   | GovMsgV1
   | GroupMsgV1
@@ -182,6 +184,7 @@ export namespace Msg {
     | ConsensusMsgV1B1.Amino
     | DistributionMsgV1B1.Amino
     | FeeGrantMsg.Amino
+    | FeemarketMsgV1.Amino
     | GovMsgV1B1.Amino
     | GovMsgV1.Amino
     | GroupMsgV1.Amino
@@ -205,6 +208,7 @@ export namespace Msg {
     | ConsensusMsgV1B1.Data
     | DistributionMsgV1B1.Data
     | FeeGrantMsg.Data
+    | FeemarketMsgV1.Data
     | GovMsgV1B1.Data
     | GovMsgV1.Data
     | GroupMsgV1.Data
@@ -231,6 +235,7 @@ export namespace Msg {
     | ConsensusMsgV1B1.Proto
     | DistributionMsgV1B1.Proto
     | FeeGrantMsg.Proto
+    | FeemarketMsgV1.Proto
     | GovMsgV1B1.Proto
     | GovMsgV1.Proto
     | GroupMsgV1.Proto
@@ -308,6 +313,10 @@ export namespace Msg {
       case 'feegrant/MsgRevokeAllowance':
       case 'cosmos-sdk/MsgRevokeAllowance':
         return MsgRevokeAllowance.fromAmino(data, isClassic);
+
+      // feemarket
+      case 'feemarket/MsgUpdateParams':
+        return MsgUpdateFeemarketParamsV1.fromAmino(data, isClassic);
 
       // gov
       case 'gov/MsgDeposit':
@@ -569,6 +578,10 @@ export namespace Msg {
       case '/cosmos.feegrant.v1beta1.MsgRevokeAllowance':
         return MsgRevokeAllowance.fromData(data, isClassic);
 
+      // feemarket
+      case '/ethermint.feemarket.v1.MsgUpdateParams':
+        return MsgUpdateFeemarketParamsV1.fromData(data, isClassic);
+
       // gov
       case '/cosmos.gov.v1beta1.MsgDeposit':
         return MsgDepositV1B1.fromData(data, isClassic);
@@ -820,6 +833,10 @@ export namespace Msg {
         return MsgGrantAllowance.unpackAny(proto, isClassic);
       case '/cosmos.feegrant.v1beta1.MsgRevokeAllowance':
         return MsgRevokeAllowance.unpackAny(proto, isClassic);
+
+      // feemarket
+      case '/ethermint.feemarket.v1.MsgUpdateParams':
+        return MsgUpdateFeemarketParamsV1.unpackAny(proto, isClassic);
 
       // gov
       case '/cosmos.gov.v1beta1.MsgDeposit':

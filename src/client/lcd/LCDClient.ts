@@ -7,6 +7,7 @@ import {
   ERC20API,
   EvmAPI,
   FeeGrantAPI,
+  FeemarketAPI,
   GovAPI,
   MintAPI,
   AuthzAPI,
@@ -21,7 +22,8 @@ import {
 } from './api';
 import { LCDUtils } from './LCDUtils';
 import { Wallet } from './Wallet';
-import { Numeric } from '../../core/numeric';
+import { Dec, Numeric } from '../../core/numeric';
+import { Coin } from '../../core/Coin';
 import { Coins } from '../../core/Coins';
 import { Key } from '../../key';
 
@@ -104,6 +106,7 @@ export class LCDClient {
   public erc20: ERC20API;
   public evm: EvmAPI;
   public feeGrant: FeeGrantAPI;
+  public feemarket: FeemarketAPI;
   public gov: GovAPI;
   public mint: MintAPI;
   public authz: AuthzAPI;
@@ -145,6 +148,7 @@ export class LCDClient {
     this.erc20 = new ERC20API(this);
     this.evm = new EvmAPI(this);
     this.feeGrant = new FeeGrantAPI(this);
+    this.feemarket = new FeemarketAPI(this);
     this.gov = new GovAPI(this);
     this.mint = new MintAPI(this);
     this.slashing = new SlashingAPI(this);
@@ -209,10 +213,61 @@ export class LCDClient {
       .then(d => d.param);
   }
 
+  public static async getGasPricesFromURL(URL: string): Promise<Coins> {
+    const apiReq = new APIRequester(URL);
+    const staking_params = await apiReq
+      .get<{ params: any }>('/cosmos/staking/v1beta1/params')
+      .then(({ params: d }) => ({ bond_denom: d.bond_denom, }));
+    const feemarket_params = await apiReq
+      .get<{ params: any }>('/ethermint/feemarket/v1/params')
+      .then(({ params: d }) => ({ min_gas_price: d.min_gas_price, }));
+    const coins: any = {};
+    coins[staking_params.bond_denom] = feemarket_params.min_gas_price;
+    return Promise.resolve(new Coins(coins));
+  }
+
   public async getGasPrices(): Promise<Coins> {
-    if (!this.config.gasPrices) {
-      return Promise.reject(this.config.gasPrices);
+    const staking_params = await this.staking.parameters();
+    const feemarket_params = await this.feemarket.parameters();
+    const coins: any = {};
+    coins[staking_params.bond_denom] = feemarket_params.min_gas_price;
+    return Promise.resolve(new Coins(coins));
+  }
+  public gasPrices(coins?: Coins.Input | Numeric.Input): Coins {
+    if (coins !== undefined) {
+      this.config.gasPrices = undefined;
+      if (Dec.isValidInput(coins as Numeric.Input)) {
+        const amount = new Dec(coins as Numeric.Input);
+        const def = DEFAULT_GAS_PRICES_BY_CHAIN_ID[this.config.chainID] ||
+                    DEFAULT_GAS_PRICES_BY_CHAIN_ID['default'];
+        if (def !== undefined) {
+          const denom = Object.keys(def)[0];
+          this.config.gasPrices = [
+            new Coin(denom, amount),
+          ];
+        }
+      }
+      if (this.config.gasPrices === undefined) {
+        this.config.gasPrices = coins as Coins.Input;
+      }
     }
-    return Promise.resolve(this.config.gasPrices as Coins);
+    if (this.config.gasPrices !== undefined) {
+      return new Coins(this.config.gasPrices);
+    }
+    return new Coins();
+  }
+
+  public gasAdjustment(adjustment?: Numeric.Input): number {
+    if (adjustment !== undefined) {
+      this.config.gasAdjustment = adjustment;
+    }
+    if (this.config.gasAdjustment !== undefined) {
+      return new Dec(this.config.gasAdjustment).toNumber();
+    }
+    return (
+      DEFAULT_LCD_OPTIONS.gasAdjustment
+        ? new Dec(DEFAULT_LCD_OPTIONS.gasAdjustment).toNumber()
+        : 5
+      );
   }
 }

@@ -132,13 +132,14 @@ export class MintParamsV1B1 extends JSONSerializable<
     proto: MintParamsV1B1.Proto,
     _?: boolean
   ): MintParamsV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new MintParamsV1B1(
       proto.mintDenom,
-      proto.inflationRateChange,
-      proto.inflationMax,
-      proto.inflationMin,
-      proto.goalBonded,
-      proto.blocksPerYear.toString()
+      new Dec(proto.inflationRateChange).div(dec18),
+      new Dec(proto.inflationMax).div(dec18),
+      new Dec(proto.inflationMin).div(dec18),
+      new Dec(proto.goalBonded).div(dec18),
+      proto.blocksPerYear.toString(),
     );
   }
 
@@ -151,13 +152,14 @@ export class MintParamsV1B1 extends JSONSerializable<
       goal_bonded,
       blocks_per_year,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return MintParamsV1B1_pb.fromPartial({
       mintDenom: mint_denom,
-      inflationRateChange: inflation_rate_change.toString(),
-      inflationMax: inflation_max.toString(),
-      inflationMin: inflation_min.toString(),
-      goalBonded: goal_bonded.toString(),
-      blocksPerYear: blocks_per_year.toString(),
+      inflationRateChange: inflation_rate_change.mul(dec18).toFixed(0),
+      inflationMax: inflation_max.mul(dec18).toFixed(0),
+      inflationMin: inflation_min.mul(dec18).toFixed(0),
+      goalBonded: goal_bonded.mul(dec18).toFixed(0),
+      blocksPerYear: blocks_per_year.toFixed(0),
     });
   }
 }

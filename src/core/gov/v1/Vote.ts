@@ -140,7 +140,7 @@ export class WeightedVoteOptionV1 extends JSONSerializable<
     const { option, weight } = this;
     return {
       option,
-      weight: weight.toString(),
+      weight: weight.toFixed(),
     };
   }
 
@@ -156,7 +156,7 @@ export class WeightedVoteOptionV1 extends JSONSerializable<
     const { option, weight } = this;
     return {
       option,
-      weight: weight.toString(),
+      weight: weight.toFixed(),
     };
   }
 
@@ -164,14 +164,16 @@ export class WeightedVoteOptionV1 extends JSONSerializable<
     proto: WeightedVoteOptionV1.Proto,
     _?: boolean
   ): WeightedVoteOptionV1 {
-    return new WeightedVoteOptionV1(proto.option, proto.weight);
+    const dec18 = new Dec(10).pow(18);
+    return new WeightedVoteOptionV1(proto.option, new Dec(proto.weight).div(dec18));
   }
 
   public toProto(_?: boolean): WeightedVoteOptionV1.Proto {
     const { option, weight } = this;
+    const dec18 = new Dec(10).pow(18);
     return WeightedVoteOptionV1_pb.fromPartial({
       option,
-      weight: weight.toString(),
+      weight: weight.mul(dec18).toFixed(0),
     });
   }
 }

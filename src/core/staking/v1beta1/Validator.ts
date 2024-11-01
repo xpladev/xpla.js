@@ -1,5 +1,5 @@
 import { JSONSerializable } from '../../../util/json';
-import { Dec, Int } from '../../numeric';
+import { Dec, Int, Numeric } from '../../numeric';
 import { ValAddress } from '../../bech32';
 import { ValConsPublicKey } from '../../PublicKey';
 import {
@@ -22,6 +22,10 @@ export class ValidatorV1B1 extends JSONSerializable<
   ValidatorV1B1.Data,
   ValidatorV1B1.Proto
 > {
+  public tokens: Int;
+  public delegator_shares: Dec;
+  public min_self_delegation: Int;
+
   /**
    *
    * @param operator_address validator's operator address
@@ -41,15 +45,18 @@ export class ValidatorV1B1 extends JSONSerializable<
     public consensus_pubkey: ValConsPublicKey,
     public jailed: boolean,
     public status: BondStatus,
-    public tokens: Int,
-    public delegator_shares: Dec,
+    tokens: Numeric.Input,
+    delegator_shares: Numeric.Input,
     public description: ValidatorV1B1.Description,
     public unbonding_height: number,
     public unbonding_time: Date,
     public commission: ValidatorV1B1.Commission,
-    public min_self_delegation: Int
+    min_self_delegation: Numeric.Input,
   ) {
     super();
+    this.tokens = new Int(tokens);
+    this.delegator_shares = new Dec(delegator_shares);
+    this.min_self_delegation = new Int(min_self_delegation);
   }
 
   public toAmino(): ValidatorV1B1.Amino {
@@ -58,13 +65,13 @@ export class ValidatorV1B1 extends JSONSerializable<
       consensus_pubkey: this.consensus_pubkey.toAmino(),
       jailed: this.jailed,
       status: this.status,
-      tokens: this.tokens.toString(),
-      delegator_shares: this.delegator_shares.toString(),
+      tokens: this.tokens.toFixed(),
+      delegator_shares: this.delegator_shares.toFixed(),
       description: this.description,
       unbonding_height: this.unbonding_height.toFixed(),
       unbonding_time: this.unbonding_time.toISOString(),
       commission: this.commission.toAmino(),
-      min_self_delegation: this.min_self_delegation.toString(),
+      min_self_delegation: this.min_self_delegation.toFixed(),
     };
   }
 
@@ -74,13 +81,13 @@ export class ValidatorV1B1 extends JSONSerializable<
       ValConsPublicKey.fromAmino(data.consensus_pubkey),
       data.jailed || false,
       data.status || 0,
-      new Int(data.tokens),
-      new Dec(data.delegator_shares),
+      data.tokens,
+      data.delegator_shares,
       ValidatorV1B1.Description.fromAmino(data.description),
       Number.parseInt(data.unbonding_height),
       new Date(data.unbonding_time),
       ValidatorV1B1.Commission.fromAmino(data.commission),
-      new Int(data.min_self_delegation)
+      data.min_self_delegation,
     );
   }
 
@@ -90,13 +97,13 @@ export class ValidatorV1B1 extends JSONSerializable<
       consensus_pubkey: this.consensus_pubkey.toData(),
       jailed: this.jailed,
       status: this.status,
-      tokens: this.tokens.toString(),
-      delegator_shares: this.delegator_shares.toString(),
+      tokens: this.tokens.toFixed(),
+      delegator_shares: this.delegator_shares.toFixed(),
       description: this.description,
       unbonding_height: this.unbonding_height.toFixed(),
       unbonding_time: this.unbonding_time.toISOString(),
       commission: this.commission.toData(),
-      min_self_delegation: this.min_self_delegation.toString(),
+      min_self_delegation: this.min_self_delegation.toFixed(),
     };
   }
 
@@ -106,13 +113,13 @@ export class ValidatorV1B1 extends JSONSerializable<
       ValConsPublicKey.fromData(data.consensus_pubkey),
       data.jailed || false,
       data.status || 0,
-      new Int(data.tokens),
-      new Dec(data.delegator_shares),
+      data.tokens,
+      data.delegator_shares,
       ValidatorV1B1.Description.fromData(data.description),
       Number.parseInt(data.unbonding_height),
       new Date(data.unbonding_time),
       ValidatorV1B1.Commission.fromData(data.commission),
-      new Int(data.min_self_delegation)
+      data.min_self_delegation,
     );
   }
 
@@ -130,29 +137,31 @@ export class ValidatorV1B1 extends JSONSerializable<
       commission,
       min_self_delegation,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return ValidatorV1B1_pb.fromPartial({
       commission: commission.toProto(),
       consensusPubkey: consensus_pubkey.packAny(),
-      delegatorShares: delegator_shares.toString(),
+      delegatorShares: delegator_shares.mul(dec18).toFixed(0),
       description: description.toProto(),
       jailed,
-      minSelfDelegation: min_self_delegation.toString(),
+      minSelfDelegation: min_self_delegation.toFixed(0),
       operatorAddress: operator_address,
       status,
-      tokens: tokens.toString(),
+      tokens: tokens.toFixed(0),
       unbondingHeight: unbonding_height,
       unbondingTime: unbonding_time,
     });
   }
 
   public static fromProto(data: ValidatorV1B1.Proto): ValidatorV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new ValidatorV1B1(
       data.operatorAddress,
       ValConsPublicKey.unpackAny(data.consensusPubkey as Any),
       data.jailed,
       data.status,
-      new Int(data.tokens),
-      new Dec(data.delegatorShares),
+      data.tokens,
+      new Dec(data.delegatorShares).div(dec18),
       ValidatorV1B1.Description.fromProto(
         data.description as ValidatorV1B1.Description.Proto
       ),
@@ -161,7 +170,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       ValidatorV1B1.Commission.fromProto(
         data.commission as ValidatorV1B1.Commission.Proto
       ),
-      new Int(data.minSelfDelegation)
+      data.minSelfDelegation,
     );
   }
 }
@@ -359,19 +368,21 @@ export namespace ValidatorV1B1 {
     }
 
     public static fromProto(proto: CommissionRates.Proto): CommissionRates {
+      const dec18 = new Dec(10).pow(18);
       return new CommissionRates(
-        new Dec(proto.rate),
-        new Dec(proto.maxRate),
-        new Dec(proto.maxChangeRate)
+        new Dec(proto.rate).div(dec18),
+        new Dec(proto.maxRate).div(dec18),
+        new Dec(proto.maxChangeRate).div(dec18),
       );
     }
 
     public toProto(): ValidatorV1B1.CommissionRates.Proto {
       const { rate, max_rate, max_change_rate } = this;
+      const dec18 = new Dec(10).pow(18);
       return CommissionRatesV1B1_pb.fromPartial({
-        maxChangeRate: max_change_rate.toString(),
-        maxRate: max_rate.toString(),
-        rate: rate.toString(),
+        maxChangeRate: max_change_rate.mul(dec18).toFixed(0),
+        maxRate: max_rate.mul(dec18).toFixed(0),
+        rate: rate.mul(dec18).toFixed(0),
       });
     }
   }
