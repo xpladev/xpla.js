@@ -371,7 +371,7 @@ export class TxAPI extends BaseAPI {
   ): Promise<Fee> {
     const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
     const gasAdjustment =
-      options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 5;
+      options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
     const feeDenoms = options.feeDenoms ?? [
       this.lcd.config.isClassic ? 'uusd' : 'axpla',
     ];
@@ -427,7 +427,7 @@ export class TxAPI extends BaseAPI {
     }
   ): Promise<number> {
     const gasAdjustment =
-      options?.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 5;
+      options?.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
 
     // append empty signatures if there's no signatures in tx
     let simTx: Tx = tx;
@@ -446,7 +446,7 @@ export class TxAPI extends BaseAPI {
       })
       .then(d => SimulateResponse.fromData(d));
 
-    return new Dec(gasAdjustment).mul(simulateRes.gas_info.gas_used).toDecimalPlaces(0, Dec.ROUND_UP).toNumber();
+    return Math.ceil(parseFloat(gasAdjustment.toString()) * simulateRes.gas_info.gas_used);
   }
 
   public async computeTax(): Promise<Coins> {

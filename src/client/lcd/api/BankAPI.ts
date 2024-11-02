@@ -42,7 +42,7 @@ export class BankAPI extends BaseAPI {
       .get<{
         balances: Coins.Data;
         pagination: Pagination;
-      }>(`/cosmos/bank/v1beta1/balances/${address}/`, params)
+      }>(`/cosmos/bank/v1beta1/balances/${address}`, params)
       .then(d => [Coins.fromData(d.balances), d.pagination]);
   }
 
