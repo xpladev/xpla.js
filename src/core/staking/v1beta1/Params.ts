@@ -24,7 +24,7 @@ export class StakingParamsV1B1 extends JSONSerializable<
     public max_entries: number,
     public historical_entries: number,
     public bond_denom: Denom,
-    min_commission_rate: Numeric.Input
+    min_commission_rate: Numeric.Input,
   ) {
     super();
     this.min_commission_rate = new Dec(min_commission_rate);
@@ -123,13 +123,14 @@ export class StakingParamsV1B1 extends JSONSerializable<
     proto: StakingParamsV1B1.Proto,
     _?: boolean
   ): StakingParamsV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new StakingParamsV1B1(
       proto.unbondingTime ? Duration.fromProto(proto.unbondingTime) : undefined,
       proto.maxValidators,
       proto.maxEntries,
       proto.historicalEntries,
       proto.bondDenom,
-      proto.minCommissionRate
+      new Dec(proto.minCommissionRate).div(dec18),
     );
   }
 
@@ -142,13 +143,14 @@ export class StakingParamsV1B1 extends JSONSerializable<
       bond_denom,
       min_commission_rate,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return StakingParamsV1B1_pb.fromPartial({
       unbondingTime: unbonding_time ? unbonding_time.toProto() : undefined,
       maxValidators: max_validators,
       maxEntries: max_entries,
       historicalEntries: historical_entries,
       bondDenom: bond_denom,
-      minCommissionRate: min_commission_rate.toFixed(),
+      minCommissionRate: min_commission_rate.mul(dec18).toFixed(0),
     });
   }
 }

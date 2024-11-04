@@ -1,7 +1,29 @@
 import { BaseAPI } from './BaseAPI';
-import { Coins, AccAddress, BankParamsV1B1 } from '../../../core';
+import { Coin, Coins, AccAddress, BankParamsV1B1 } from '../../../core';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
+
+export interface DenomOwner {
+  address: AccAddress;
+  balance: Coin;
+}
+
+export interface DenomUnit {
+  denom: string;
+  exponent: number;
+  aliases: string[];
+}
+
+export interface DenomMetadata {
+  description: string;
+  denom_units: DenomUnit[];
+  base: string;
+  display: string;
+  name: string;
+  symbol: string;
+  uri: string | undefined;
+  uri_hash: string | undefined;
+}
 
 export class BankAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
@@ -22,6 +44,54 @@ export class BankAPI extends BaseAPI {
         pagination: Pagination;
       }>(`/cosmos/bank/v1beta1/balances/${address}`, params)
       .then(d => [Coins.fromData(d.balances), d.pagination]);
+  }
+
+  /**
+   * Look up the balance of an account by its address.
+   * @param address address of account to look up.
+   * @param denom denom to look up.
+   */
+  public async balanceByDenom(
+    address: AccAddress,
+    denom: string,
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<Coin> {
+    return this.c
+      .get<{
+        balance: Coin.Data;
+      }>(`/cosmos/bank/v1beta1/balances/${address}/by_denom`, {denom, ...params})
+      .then(d => Coin.fromData(d.balance));
+  }
+
+  /**
+   * Look up the balance of an account by its address.
+   * @param denom denom to look up.
+   */
+  public async denomOwners(
+    denom: string,
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[DenomOwner[], Pagination]> {
+    return this.c
+      .get<{
+        denom_owners: DenomOwner[];
+        pagination: Pagination;
+      }>(`/cosmos/bank/v1beta1/denom_owners/${denom}`, params)
+      .then(d => [d.denom_owners, d.pagination]);
+  }
+
+  /**
+   * Look up the balance of an account by its address.
+   * @param denom denom to look up.
+   */
+  public async denomsMetadata(
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[DenomMetadata[], Pagination]> {
+    return this.c
+      .get<{
+        metadatas: DenomMetadata[];
+        pagination: Pagination;
+      }>(`/cosmos/bank/v1beta1/denoms_metadata`, params)
+      .then(d => [d.metadatas, d.pagination]);
   }
 
   /**

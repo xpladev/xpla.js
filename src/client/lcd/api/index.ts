@@ -6,6 +6,7 @@ export * from './DistributionAPI';
 export * from './ERC20API';
 export * from './EvmAPI';
 export * from './FeeGrantAPI';
+export * from './FeemarketAPI';
 export * from './GovAPI';
 export * from './MintAPI';
 export * from './SlashingAPI';

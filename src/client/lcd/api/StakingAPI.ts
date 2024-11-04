@@ -284,7 +284,7 @@ export class StakingAPI extends BaseAPI {
   public async parameters(params: APIParams = {}): Promise<StakingParams> {
     return this.c
       .get<{ params: StakingParams.Data }>(
-        `/cosmos/staking/v1beta1/params`,
+        '/cosmos/staking/v1beta1/params',
         params
       )
       .then(({ params: d }) => ({

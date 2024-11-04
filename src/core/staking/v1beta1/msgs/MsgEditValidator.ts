@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
-import { Dec, Int } from '../../../numeric';
+import { Dec, Int, Numeric } from '../../../numeric';
 import { ValAddress } from '../../../bech32';
 import { ValidatorV1B1 } from '../Validator';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -19,6 +19,9 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
   MsgEditValidatorV1B1.Data,
   MsgEditValidatorV1B1.Proto
 > {
+  public commission_rate: Dec | undefined;
+  public min_self_delegation: Int | undefined;
+
   /**
    * @param Description new description to apply
    * @param address new address to apply
@@ -28,10 +31,16 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
   constructor(
     public description: ValidatorV1B1.Description,
     public validator_address: ValAddress,
-    public commission_rate?: Dec,
-    public min_self_delegation?: Int
+    commission_rate?: Numeric.Input,
+    min_self_delegation?: Numeric.Input,
   ) {
     super();
+    this.commission_rate = commission_rate
+      ? new Dec(commission_rate)
+      : undefined;
+    this.min_self_delegation = min_self_delegation
+      ? new Int(min_self_delegation)
+      : undefined;
   }
 
   public static fromAmino(
@@ -69,10 +78,10 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
         description,
         validator_address,
         commission_rate: commission_rate
-          ? commission_rate.toString()
+          ? commission_rate.toFixed()
           : undefined,
         min_self_delegation: min_self_delegation
-          ? min_self_delegation.toString()
+          ? min_self_delegation.toFixed()
           : undefined,
       },
     };
@@ -82,15 +91,18 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
     data: MsgEditValidatorV1B1.Proto,
     _isClassic?: boolean
   ): MsgEditValidatorV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new MsgEditValidatorV1B1(
       ValidatorV1B1.Description.fromProto(
         data.description as ValidatorV1B1.Description.Proto
       ),
       data.validatorAddress,
-      data.commissionRate !== '' ? new Dec(data.commissionRate) : undefined,
+      data.commissionRate !== ''
+        ? new Dec(data.commissionRate).div(dec18)
+        : undefined,
       data.minSelfDelegation !== ''
         ? new Int(data.minSelfDelegation)
-        : undefined
+        : undefined,
     );
   }
 
@@ -101,10 +113,11 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
       commission_rate,
       min_self_delegation,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return MsgEditValidatorV1B1_pb.fromPartial({
       description: description.toProto(),
-      commissionRate: commission_rate?.toString() ?? '',
-      minSelfDelegation: min_self_delegation?.toString() ?? '',
+      commissionRate: commission_rate?.mul(dec18).toFixed(0) ?? '',
+      minSelfDelegation: min_self_delegation?.toFixed(0) ?? '',
       validatorAddress: validator_address,
     });
   }

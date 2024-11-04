@@ -118,12 +118,13 @@ export class RewardParamsV1B1 extends JSONSerializable<
     proto: RewardParamsV1B1.Proto,
     _?: boolean
   ): RewardParamsV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new RewardParamsV1B1(
-      proto.feePoolRate,
-      proto.communityPoolRate,
-      proto.reserveRate,
+      new Dec(proto.feePoolRate).div(dec18),
+      new Dec(proto.communityPoolRate).div(dec18),
+      new Dec(proto.reserveRate).div(dec18),
       proto.reserveAccount,
-      proto.rewardDistributeAccount
+      proto.rewardDistributeAccount,
     );
   }
 
@@ -135,10 +136,11 @@ export class RewardParamsV1B1 extends JSONSerializable<
       reserve_account,
       reward_distribute_account,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return RewardParamsV1B1_pb.fromPartial({
-      feePoolRate: fee_pool_rate.toFixed(),
-      communityPoolRate: community_pool_rate.toFixed(),
-      reserveRate: reserve_rate.toFixed(),
+      feePoolRate: fee_pool_rate.mul(dec18).toFixed(0),
+      communityPoolRate: community_pool_rate.mul(dec18).toFixed(0),
+      reserveRate: reserve_rate.mul(dec18).toFixed(0),
       reserveAccount: reserve_account,
       rewardDistributeAccount: reward_distribute_account,
     });

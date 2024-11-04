@@ -107,10 +107,11 @@ export class DistributionParamsV1B1 extends JSONSerializable<
     proto: DistributionParamsV1B1.Proto,
     _?: boolean
   ): DistributionParamsV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new DistributionParamsV1B1(
-      proto.communityTax,
-      proto.baseProposerReward,
-      proto.bonusProposerReward,
+      new Dec(proto.communityTax).div(dec18),
+      new Dec(proto.baseProposerReward).div(dec18),
+      new Dec(proto.bonusProposerReward).div(dec18),
       proto.withdrawAddrEnabled
     );
   }
@@ -122,10 +123,11 @@ export class DistributionParamsV1B1 extends JSONSerializable<
       bonus_proposer_reward,
       withdraw_addr_enabled,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return DistributionParamsV1B1_pb.fromPartial({
-      communityTax: community_tax.toFixed(),
-      baseProposerReward: base_proposer_reward.toFixed(),
-      bonusProposerReward: bonus_proposer_reward.toFixed(),
+      communityTax: community_tax.mul(dec18).toFixed(0),
+      baseProposerReward: base_proposer_reward.mul(dec18).toFixed(0),
+      bonusProposerReward: bonus_proposer_reward.mul(dec18).toFixed(0),
       withdrawAddrEnabled: withdraw_addr_enabled,
     });
   }

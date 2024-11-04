@@ -23,6 +23,9 @@ export namespace Numeric {
     if (value instanceof Dec) {
       return value;
     } else if (typeof value === 'string') {
+      if (value.includes(',')) {
+        value = value.replace(/,/g, '');
+      }
       if (value.includes('.')) {
         return new Dec(value);
       } else {
@@ -36,6 +39,27 @@ export namespace Numeric {
         return new Dec(_value.toString());
       }
     }
+  }
+
+  export function isValidInput(value: Input): boolean {
+    let _value = value.toString();
+    if (_value.startsWith('-') || _value.startsWith('+'))
+      _value = _value.slice(1);
+    if (/^[0-9\,]+(\.[0-9\,]*)?(e[\-\+]?[0-9]+)?$/.test(_value))
+      return true;
+    if (_value.startsWith('0x')) {
+      _value = _value.slice(2);
+      return /^[0-9a-fA-F\,]+(\.[0-9a-fA-F\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+    }
+    if (_value.startsWith('0o')) {
+      _value = _value.slice(2);
+      return /^[0-7\,]+(\.[0-7\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+    }
+    if (_value.startsWith('0b')) {
+      _value = _value.slice(2);
+      return /^[01\,]+(\.[01\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+    }
+    return false;
   }
 }
 
@@ -57,7 +81,15 @@ export namespace Numeric {
 
 export class Dec extends Decimal implements Numeric<Dec> {
   constructor(arg?: Numeric.Input) {
-    super((arg ?? 0).toString());
+    let _arg = (arg ?? 0).toString();
+    if (_arg.includes(',')) {
+      _arg = _arg.replace(/,/g, '');
+    }
+    super(_arg);
+  }
+
+  public static isValidInput(arg: Numeric.Input): boolean {
+    return Numeric.isValidInput(arg);
   }
 
   public toString(): string {
@@ -123,8 +155,19 @@ const _Int = Decimal.clone();
  */
 export class Int extends _Int implements Numeric<Numeric.Output> {
   constructor(arg?: Numeric.Input) {
-    const _arg = new Decimal((arg ?? 0).toString());
-    super(_arg.divToInt(1));
+    let _arg = (arg ?? 0).toString();
+    if (_arg.includes(',')) {
+      _arg = _arg.replace(/,/g, '');
+    }
+    super((new Decimal(_arg)).divToInt(1));
+  }
+
+  public static isValidInput(arg: Numeric.Input): boolean {
+    if (Numeric.isValidInput(arg)) {
+      const _dec = Numeric.parse(arg);
+      return _dec.isInteger();
+    }
+    return false;
   }
 
   public toString(): string {

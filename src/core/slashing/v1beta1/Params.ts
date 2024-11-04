@@ -126,14 +126,15 @@ export class SlashingParamsV1B1 extends JSONSerializable<
     proto: SlashingParamsV1B1.Proto,
     _?: boolean
   ): SlashingParamsV1B1 {
+    const dec18 = new Dec(10).pow(18);
     return new SlashingParamsV1B1(
       proto.signedBlocksWindow.toString(),
-      Buffer.from(proto.minSignedPerWindow).toString('ascii'),
+      new Dec(Buffer.from(proto.minSignedPerWindow).toString('ascii')).div(dec18),
       proto.downtimeJailDuration
         ? Duration.fromProto(proto.downtimeJailDuration)
         : undefined,
-      Buffer.from(proto.slashFractionDoubleSign).toString('ascii'),
-      Buffer.from(proto.slashFractionDowntime).toString('ascii')
+      new Dec(Buffer.from(proto.slashFractionDoubleSign).toString('ascii')).div(dec18),
+      new Dec(Buffer.from(proto.slashFractionDowntime).toString('ascii')).div(dec18),
     );
   }
 
@@ -145,18 +146,19 @@ export class SlashingParamsV1B1 extends JSONSerializable<
       slash_fraction_double_sign,
       slash_fraction_downtime,
     } = this;
+    const dec18 = new Dec(10).pow(18);
     return SlashingParamsV1B1_pb.fromPartial({
       signedBlocksWindow: signed_blocks_window.toFixed(),
-      minSignedPerWindow: Buffer.from(min_signed_per_window.toFixed(), 'ascii'),
+      minSignedPerWindow: Buffer.from(min_signed_per_window.mul(dec18).toFixed(0), 'ascii'),
       downtimeJailDuration: downtime_jail_duration
         ? downtime_jail_duration.toProto()
         : undefined,
       slashFractionDoubleSign: Buffer.from(
-        slash_fraction_double_sign.toFixed(),
+        slash_fraction_double_sign.mul(dec18).toFixed(0),
         'ascii'
       ),
       slashFractionDowntime: Buffer.from(
-        slash_fraction_downtime.toFixed(),
+        slash_fraction_downtime.mul(dec18).toFixed(0),
         'ascii'
       ),
     });

@@ -41,6 +41,9 @@ export * from './evm';
 export * from './feegrant/msgs';
 export * from './feegrant/allowances';
 
+// Feemarket
+export * from './feemarket';
+
 // Governance
 export * from './gov';
 
