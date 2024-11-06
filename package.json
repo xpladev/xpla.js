@@ -86,15 +86,12 @@
     "bech32": "^2.0.0",
     "bip32": "^4.0.0",
     "bip39": "3.1.0",
-    "bufferutil": "^4.0.8",
-    "crypto-addr-codec": "^0.1.8",
     "decimal.js": "^10.4.3",
     "eip55": "^2.1.1",
     "node-forge": "^1.3.1",
     "readable-stream": "^4.5.2",
     "rlp": "^3.0.0",
     "tmp": "^0.2.3",
-    "utf-8-validate": "^6.0.4",
     "ws": "^8.18.0"
   }
 }
