@@ -84,7 +84,8 @@ export abstract class Key {
    */
   public async createSignatureAmino(
     tx: SignDoc,
-    isClassic?: boolean
+    isClassic?: boolean,
+    signMode?: SignMode,
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -96,7 +97,7 @@ export abstract class Key {
       this.publicKey,
       new SignatureV2.Descriptor(
         new SignatureV2.Descriptor.Single(
-          SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
+          signMode ?? SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
           (await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))).toString(
             'base64'
           )
@@ -114,7 +115,8 @@ export abstract class Key {
    */
   public async createSignature(
     signDoc: SignDoc,
-    isClassic?: boolean
+    isClassic?: boolean,
+    signMode?: SignMode,
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -128,7 +130,7 @@ export abstract class Key {
       new SignerInfo(
         this.publicKey,
         signDoc.sequence,
-        new ModeInfo(new ModeInfo.Single(SignMode.SIGN_MODE_DIRECT))
+        new ModeInfo(new ModeInfo.Single(signMode ?? SignMode.SIGN_MODE_DIRECT))
       ),
     ];
 
@@ -142,7 +144,7 @@ export abstract class Key {
     return new SignatureV2(
       this.publicKey,
       new SignatureV2.Descriptor(
-        new SignatureV2.Descriptor.Single(SignMode.SIGN_MODE_DIRECT, sigBytes)
+        new SignatureV2.Descriptor.Single(signMode ?? SignMode.SIGN_MODE_DIRECT, sigBytes)
       ),
       signDoc.sequence
     );
@@ -157,7 +159,8 @@ export abstract class Key {
   public async createSignatureWithSigners(
     signDoc: SignDoc,
     signers: SignerInfo[],
-    isClassic?: boolean
+    isClassic?: boolean,
+    signMode?: SignMode,
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -179,7 +182,7 @@ export abstract class Key {
     return new SignatureV2(
       this.publicKey,
       new SignatureV2.Descriptor(
-        new SignatureV2.Descriptor.Single(SignMode.SIGN_MODE_DIRECT, sigBytes)
+        new SignatureV2.Descriptor.Single(signMode ?? SignMode.SIGN_MODE_DIRECT, sigBytes)
       ),
       signDoc.sequence
     );
@@ -205,9 +208,11 @@ export abstract class Key {
 
     let signature: SignatureV2;
     if (options.signMode === SignMode.SIGN_MODE_LEGACY_AMINO_JSON) {
-      signature = await this.createSignatureAmino(sign_doc, isClassic);
+      signature = await this.createSignatureAmino(sign_doc, isClassic, options.signMode);
+    } else if (options.signMode === SignMode.SIGN_MODE_TEXTUAL) {
+      signature = await this.createSignature(sign_doc, isClassic, options.signMode);
     } else {
-      signature = await this.createSignature(sign_doc, isClassic);
+      signature = await this.createSignature(sign_doc, isClassic, options.signMode);
     }
 
     const sigData = signature.data.single as SignatureV2.Descriptor.Single;
@@ -269,12 +274,28 @@ export abstract class Key {
       signers[this_signer].mode_info.single!.mode ===
         SignMode.SIGN_MODE_LEGACY_AMINO_JSON
     ) {
-      signature = await this.createSignatureAmino(sign_doc, isClassic);
+      signature = await this.createSignatureAmino(
+        sign_doc,
+        isClassic,
+        signers[this_signer].mode_info.single!.mode,
+      );
+    } else if (
+      signers[this_signer].mode_info.single &&
+      signers[this_signer].mode_info.single!.mode ===
+        SignMode.SIGN_MODE_TEXTUAL
+    ) {
+      signature = await this.createSignatureWithSigners(
+        sign_doc,
+        signers,
+        isClassic,
+        signers[this_signer].mode_info.single!.mode,
+      );
     } else {
       signature = await this.createSignatureWithSigners(
         sign_doc,
         signers,
-        isClassic
+        isClassic,
+        signers[this_signer].mode_info.single!.mode,
       );
     }
 

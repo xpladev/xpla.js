@@ -11,7 +11,7 @@ export class TendermintAPI extends BaseAPI {
   /**
    * Gets the node's information.
    */
-  public async nodeInfo(params: APIParams = {}): Promise<object> {
+  public async nodeInfo(params: APIParams = {}): Promise<any> {
     return this.c.get('/cosmos/base/tendermint/v1beta1/node_info', params);
   }
 
@@ -61,5 +61,15 @@ export class TendermintAPI extends BaseAPI {
         ? `/cosmos/base/tendermint/v1beta1/blocks/${height}`
         : `/cosmos/base/tendermint/v1beta1/blocks/latest`;
     return this.c.get<BlockInfo>(url, params);
+  }
+
+  public async abciQuery(
+    data?: string, path?: string, height?: number, prove?: boolean,
+    params: APIParams = {}
+  ): Promise<any> {
+    return this.c.get(
+      '/cosmos/base/tendermint/v1beta1/abci_query',
+      { data, path, height, prove: prove?.toString(), ...params }
+    );
   }
 }

@@ -8,6 +8,18 @@ export class FeemarketAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
+  public async baseFee(params: APIParams = {}): Promise<string> {
+    return this.c
+      .get<{ base_fee: string }>('/ethermint/feemarket/v1/base_fee', params)
+      .then(d => d.base_fee ?? '');
+  }
+
+  public async blockGas(params: APIParams = {}): Promise<string> {
+    return this.c
+      .get<{ gas: string }>('/ethermint/feemarket/v1/block_gas', params)
+      .then(d => d.gas ?? '');
+  }
+
   /**
    * Gets the current ethermint feemarket module's parameters.
    */

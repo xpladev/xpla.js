@@ -37,6 +37,15 @@ export class AuthAPI extends BaseAPI {
     return Account.fromData(account, this.lcd.config.isClassic);
   }
 
+  public async bech32Prefix(
+    params: APIParams = {}
+  ): Promise<string> {
+    const { bech32_prefix } = await this.c.get<{
+      bech32_prefix: string;
+    }>('/cosmos/auth/v1beta1/bech32', params);
+    return bech32_prefix;
+  }
+
   public async moduleAccount(
     name: string,
     params: APIParams = {}

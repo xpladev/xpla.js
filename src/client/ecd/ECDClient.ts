@@ -8,7 +8,7 @@ import {
 } from './api';
 import { EvmWallet } from './EvmWallet';
 import { Key } from '../../key';
-import { EvmAddress } from '../../core';
+import { Coins, EvmAddress } from '../../core';
 import { Numeric } from '../../core/numeric';
 import { encode as eip55 } from 'eip55';
 
@@ -49,6 +49,35 @@ export class ECDClient {
   public static getIDfromChainID(chainID: string): number {
     const tok = chainID.split(/[_-]/g);
     return parseInt(tok[1]);
+  }
+
+  public static decimalFromHex(hex: string): string {
+    if (hex.startsWith('0x')) {
+      hex = hex.substring(2);
+    }
+    const add = (x: string, y: string): string => {
+        let c = 0;
+        let r = [];
+        let lx = x.split('').map(Number);
+        let ly = y.split('').map(Number);
+        while(lx.length || ly.length) {
+            const s = (lx.pop() || 0) + (ly.pop() || 0) + c;
+            r.unshift(s < 10 ? s : s - 10); 
+            c = s < 10 ? 0 : 1;
+        }
+        if(c) r.unshift(c);
+        return r.join('');
+    }
+
+    let dec = '0';
+    hex.split('').forEach(chr => {
+        const n = parseInt(chr, 16);
+        for(let t = 8; t > 0; t >>= 1) {
+            dec = add(dec, dec);
+            if(n & t) dec = add(dec, '1');
+        }
+    });
+    return dec;
   }
 
   public static bufferFromHex(hex: string): Buffer {
@@ -283,7 +312,7 @@ export class ECDClient {
     const params: any[] = [];
     let idx = 0;
     for (const type of types) {
-      const buff = data.slice(idx, idx + 32);
+      const buff = data.subarray(idx, idx + 32);
       try {
         switch (type) {
           case 'number':
@@ -318,10 +347,10 @@ export class ECDClient {
             {
               const pos = parseInt(buff.toString('hex'), 16);
               const len = parseInt(
-                data.slice(pos, pos + 32).toString('hex'),
+                data.subarray(pos, pos + 32).toString('hex'),
                 16
               );
-              const str = data.slice(pos + 32, pos + 32 + len).toString('utf8');
+              const str = data.subarray(pos + 32, pos + 32 + len).toString('utf8');
               params.push(str);
             }
             break;
@@ -330,10 +359,10 @@ export class ECDClient {
             {
               const pos = parseInt(buff.toString('hex'), 16);
               const len = parseInt(
-                data.slice(pos, pos + 32).toString('hex'),
+                data.subarray(pos, pos + 32).toString('hex'),
                 16
               );
-              const buf = Buffer.from(data.slice(pos + 32, pos + 32 + len));
+              const buf = Buffer.from(data.subarray(pos + 32, pos + 32 + len));
               params.push(buf);
             }
             break;
@@ -480,6 +509,65 @@ export class ECDClient {
           }
           info.blockNumber = parseInt(response.result, 16);
           resolve(info);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  /** Get the latest block height. */
+  public async latestHeight(): Promise<number> {
+    return await this.apiRequester
+      .post(this.config.id, 'eth_blockNumber', [])
+      .then(response => {
+        if (this.apiRequester.isError(response)) {
+          throw this.apiRequester.getError(response);
+        }
+        if (response.result.startsWith('0x')) {
+          response.result = response.result.substring(2);
+        }
+        return parseInt(response.result, 16);
+      });
+  }
+
+  public static async getGasPricesFromURL(URL: string): Promise<Coins> {
+    const apiReq = new EVMRequester(URL);
+    const chain_id: number = await apiReq
+      .post(0, 'eth_chainId', [])
+      .then(response => {
+        if (apiReq.isError(response)) {
+          throw apiReq.getError(response);
+        }
+        if (response.result.startsWith('0x')) {
+          response.result = response.result.substring(2);
+        }
+        return parseInt(response.result, 16);
+      });
+    const gas_price: string = await apiReq
+      .post(chain_id, 'eth_gasPrice', [])
+      .then(response => {
+        if (apiReq.isError(response)) {
+          throw apiReq.getError(response);
+        }
+        return ECDClient.decimalFromHex(response.result);
+      });
+    const coins: any = {};
+    coins['axpla'] = gas_price;
+    return new Coins(coins);
+  }
+
+  public async getGasPrices(): Promise<Coins> {
+    return new Promise<Coins>((resolve, reject) => {
+      this.apiRequester
+        .post(this.config.id, 'eth_gasPrice', [])
+        .then(response => {
+          if (this.apiRequester.isError(response)) {
+            throw this.apiRequester.getError(response);
+          }
+          const coins: any = {};
+          coins['axpla'] = ECDClient.decimalFromHex(response.result);
+          resolve(new Coins(coins));
         })
         .catch(error => {
           reject(error);

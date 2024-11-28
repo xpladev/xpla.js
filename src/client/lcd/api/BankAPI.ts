@@ -98,8 +98,17 @@ export class BankAPI extends BaseAPI {
    * Get the total supply of tokens in circulation for all denominations.
    */
   public async total(
+    denom?: string,
     params: Partial<PaginationOptions & APIParams> = {}
   ): Promise<[Coins, Pagination]> {
+    if (denom !== undefined) {
+      return this.c
+      .get<{ amount: Coin.Data }>(
+        `/cosmos/bank/v1beta1/supply/by_denom`,
+        { denom, ...params }
+      )
+      .then(d => [Coins.fromData([d.amount]), { next_key: null, total: 1 }]);
+    }
     return this.c
       .get<{ supply: Coins.Data; pagination: Pagination }>(
         `/cosmos/bank/v1beta1/supply`,
@@ -135,6 +144,4 @@ export class BankAPI extends BaseAPI {
       .get<{ params: any }>(`/cosmos/bank/v1beta1/params`, params)
       .then(({ params: d }) => BankParamsV1B1.fromData(d));
   }
-
-  // TODO: TBD: implement denoms_medata?
 }

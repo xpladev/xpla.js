@@ -1,6 +1,6 @@
 {
   "name": "@xpla/xpla.js",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "The JavaScript SDK for Xpla",
   "license": "MIT",
   "author": "XPLA",
@@ -81,7 +81,7 @@
     "@bitcoinerlab/secp256k1": "^1.1.1",
     "@noble/hashes": "^1.4.0",
     "@noble/secp256k1": "1.7.1",
-    "@xpla/xpla.proto": "^1.6.0",
+    "@xpla/xpla.proto": "^1.7.0",
     "axios": "^1.7.3",
     "bech32": "^2.0.0",
     "bip32": "^4.0.0",

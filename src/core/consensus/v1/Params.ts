@@ -9,6 +9,7 @@ import {
   VersionParams as VersionParams_pb,
   HashedParams as HashedParams_pb,
   ConsensusParams as ConsensusParams_pb,
+  ABCIParams as ABCIParams_pb,
 } from '@xpla/xpla.proto/tendermint/types/params';
 
 export class BlockParams extends JSONSerializable<
@@ -428,6 +429,78 @@ export namespace HashedParams {
   export type Proto = HashedParams_pb;
 }
 
+export class ABCIParams extends JSONSerializable<
+  ABCIParams.Amino,
+  ABCIParams.Data,
+  ABCIParams.Proto
+> {
+  public voteExtensionsEnableHeight: Int;
+
+  constructor(voteExtensionsEnableHeight: Numeric.Input) {
+    super();
+    this.voteExtensionsEnableHeight = new Int(voteExtensionsEnableHeight);
+  }
+
+  public static fromAmino(
+    data: ABCIParams.Amino,
+    _?: boolean
+  ): ABCIParams {
+    const { vote_extensions_enable_height } = data;
+    return new ABCIParams(vote_extensions_enable_height ?? 0);
+  }
+
+  public toAmino(_?: boolean): ABCIParams.Amino {
+    const { voteExtensionsEnableHeight } = this;
+    const res: ABCIParams.Amino = {
+      vote_extensions_enable_height: voteExtensionsEnableHeight.toFixed(),
+    };
+
+    return res;
+  }
+
+  public static fromData(data: ABCIParams.Data, _?: boolean): ABCIParams {
+    const { vote_extensions_enable_height } = data;
+    return new ABCIParams(vote_extensions_enable_height);
+  }
+
+  public toData(_?: boolean): ABCIParams.Data {
+    const { voteExtensionsEnableHeight } = this;
+    const res: ABCIParams.Data = {
+      '@type': '/tendermint.types.ABCIParams',
+      vote_extensions_enable_height: voteExtensionsEnableHeight.toFixed(),
+    };
+
+    return res;
+  }
+
+  public static fromProto(
+    proto: ABCIParams.Proto,
+    _?: boolean
+  ): ABCIParams {
+    return new ABCIParams(proto.voteExtensionsEnableHeight.toString());
+  }
+
+  public toProto(_?: boolean): ABCIParams.Proto {
+    const { voteExtensionsEnableHeight } = this;
+    return ABCIParams_pb.fromPartial({
+      voteExtensionsEnableHeight: voteExtensionsEnableHeight.toFixed(),
+    });
+  }
+}
+
+export namespace ABCIParams {
+  export interface Amino {
+    vote_extensions_enable_height: string | undefined;
+  }
+
+  export interface Data {
+    '@type': '/tendermint.types.ABCIParams';
+    vote_extensions_enable_height: string;
+  }
+
+  export type Proto = ABCIParams_pb;
+}
+
 export class ConsensusParams extends JSONSerializable<
   ConsensusParams.Amino,
   ConsensusParams.Data,
@@ -437,7 +510,8 @@ export class ConsensusParams extends JSONSerializable<
     public block: BlockParams | undefined,
     public evidence: EvidenceParams | undefined,
     public validator: ValidatorParams | undefined,
-    public version: VersionParams | undefined
+    public version: VersionParams | undefined,
+    public abci: ABCIParams | undefined
   ) {
     super();
   }
@@ -446,22 +520,24 @@ export class ConsensusParams extends JSONSerializable<
     data: ConsensusParams.Amino,
     _?: boolean
   ): ConsensusParams {
-    const { block, evidence, validator, version } = data;
+    const { block, evidence, validator, version, abci } = data;
     return new ConsensusParams(
       block ? BlockParams.fromAmino(block) : undefined,
       evidence ? EvidenceParams.fromAmino(evidence) : undefined,
       validator ? ValidatorParams.fromAmino(validator) : undefined,
-      version ? VersionParams.fromAmino(version) : undefined
+      version ? VersionParams.fromAmino(version) : undefined,
+      abci ? ABCIParams.fromAmino(abci) : undefined,
     );
   }
 
   public toAmino(_?: boolean): ConsensusParams.Amino {
-    const { block, evidence, validator, version } = this;
+    const { block, evidence, validator, version, abci } = this;
     const res: ConsensusParams.Amino = {
       block: block?.toAmino(),
       evidence: evidence?.toAmino(),
       validator: validator?.toAmino(),
       version: version?.toAmino(),
+      abci: abci?.toAmino(),
     };
     return res;
   }
@@ -470,23 +546,25 @@ export class ConsensusParams extends JSONSerializable<
     data: ConsensusParams.Data,
     _?: boolean
   ): ConsensusParams {
-    const { block, evidence, validator, version } = data;
+    const { block, evidence, validator, version, abci } = data;
     return new ConsensusParams(
       block ? BlockParams.fromData(block) : undefined,
       evidence ? EvidenceParams.fromData(evidence) : undefined,
       validator ? ValidatorParams.fromData(validator) : undefined,
-      version ? VersionParams.fromData(version) : undefined
+      version ? VersionParams.fromData(version) : undefined,
+      abci ? ABCIParams.fromData(abci) : undefined,
     );
   }
 
   public toData(_?: boolean): ConsensusParams.Data {
-    const { block, evidence, validator, version } = this;
+    const { block, evidence, validator, version, abci } = this;
     const res: ConsensusParams.Data = {
       '@type': '/tendermint.types.ConsensusParams',
       block: block?.toData(),
       evidence: evidence?.toData(),
       validator: validator?.toData(),
       version: version?.toData(),
+      abci: abci?.toData(),
     };
 
     return res;
@@ -500,17 +578,19 @@ export class ConsensusParams extends JSONSerializable<
       proto.block ? BlockParams.fromProto(proto.block) : undefined,
       proto.evidence ? EvidenceParams.fromProto(proto.evidence) : undefined,
       proto.validator ? ValidatorParams.fromProto(proto.validator) : undefined,
-      proto.version ? VersionParams.fromProto(proto.version) : undefined
+      proto.version ? VersionParams.fromProto(proto.version) : undefined,
+      proto.abci ? ABCIParams.fromProto(proto.abci) : undefined,
     );
   }
 
   public toProto(_?: boolean): ConsensusParams.Proto {
-    const { block, evidence, validator, version } = this;
+    const { block, evidence, validator, version, abci } = this;
     return ConsensusParams_pb.fromPartial({
       block: block?.toProto(),
       evidence: evidence?.toProto(),
       validator: validator?.toProto(),
       version: version?.toProto(),
+      abci: abci?.toProto(),
     });
   }
 }
@@ -521,6 +601,7 @@ export namespace ConsensusParams {
     evidence: EvidenceParams.Amino | undefined;
     validator: ValidatorParams.Amino | undefined;
     version: VersionParams.Amino | undefined;
+    abci: ABCIParams.Amino | undefined;
   }
 
   export interface Data {
@@ -529,6 +610,7 @@ export namespace ConsensusParams {
     evidence: EvidenceParams.Data | undefined;
     validator: ValidatorParams.Data | undefined;
     version: VersionParams.Data | undefined;
+    abci: ABCIParams.Data | undefined;
   }
 
   export type Proto = ConsensusParams_pb;

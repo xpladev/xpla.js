@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Coins } from '../../../Coins';
-import { ValAddress } from '../../../bech32';
+import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgCommunityPoolSpend as MsgCommunityPoolSpendV1B1_pb } from '@xpla/xpla.proto/cosmos/distribution/v1beta1/tx';
 
@@ -19,8 +19,8 @@ export class MsgCommunityPoolSpendV1B1 extends JSONSerializable<
    * @param validator_address validator's operator address
    */
   constructor(
-    public authority: ValAddress,
-    public recipient: ValAddress,
+    public authority: AccAddress,
+    public recipient: AccAddress,
     amount: Coins.Input
   ) {
     super();
@@ -123,16 +123,16 @@ export namespace MsgCommunityPoolSpendV1B1 {
       | 'distribution/MsgCommunityPoolSpend'
       | 'cosmos-sdk/distr/MsgCommunityPoolSpend';
     value: {
-      authority: ValAddress;
-      recipient: ValAddress;
+      authority: AccAddress;
+      recipient: AccAddress;
       amount: Coins.Amino;
     };
   }
 
   export interface Data {
     '@type': '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend';
-    authority: ValAddress;
-    recipient: ValAddress;
+    authority: AccAddress;
+    recipient: AccAddress;
     amount: Coins.Data;
   }
 

@@ -17,7 +17,11 @@ export class EvmAccount extends JSONSerializable<
    * @param address account address
    * @param nonce nonce number, or number of transactions that have been posted
    */
-  constructor(public address: EvmAddress, public nonce: number) {
+  constructor(
+    public address: EvmAddress,
+    public nonce: number,
+    public code_hash?: string,
+  ) {
     super();
   }
 
@@ -33,37 +37,43 @@ export class EvmAccount extends JSONSerializable<
     return null;
   }
 
+  public getCodeHash(): string {
+    return this.code_hash ?? '';
+  }
+
   public toAmino(_?: boolean): EvmAccount.Amino {
-    const { address, nonce } = this;
+    const { address, nonce, code_hash } = this;
     return {
       type: 'core/Account',
       value: {
         address,
         nonce: nonce.toFixed(),
+        code_hash,
       },
     };
   }
 
   public static fromAmino(data: EvmAccount.Amino, _?: boolean): EvmAccount {
     const {
-      value: { address, nonce },
+      value: { address, nonce, code_hash },
     } = data;
 
-    return new EvmAccount(address || '', Number.parseInt(nonce) || 0);
+    return new EvmAccount(address || '', Number.parseInt(nonce) || 0, code_hash);
   }
 
   public static fromData(data: EvmAccount.Data, _?: boolean): EvmAccount {
-    const { address, nonce } = data;
+    const { address, nonce, code_hash } = data;
 
-    return new EvmAccount(address || '', Number.parseInt(nonce) || 0);
+    return new EvmAccount(address || '', Number.parseInt(nonce) || 0, code_hash);
   }
 
   public toData(_?: boolean): EvmAccount.Data {
-    const { address, nonce } = this;
+    const { address, nonce, code_hash } = this;
     return {
       '@type': '/ethermint.types.v1.EthAccount',
       address,
       nonce: nonce.toFixed(),
+      code_hash,
     };
   }
 
@@ -91,6 +101,7 @@ export namespace EvmAccount {
   export interface AminoValue {
     address: EvmAddress;
     nonce: string;
+    code_hash?: string;
   }
 
   export interface Amino {
@@ -101,6 +112,7 @@ export namespace EvmAccount {
   export interface DataValue {
     address: EvmAddress;
     nonce: string;
+    code_hash?: string;
   }
 
   export interface Data extends DataValue {
