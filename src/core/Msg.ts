@@ -14,6 +14,7 @@ import {
   MsgWithdrawValidatorCommissionV1B1,
   MsgFundCommunityPoolV1B1,
   MsgCommunityPoolSpendV1B1,
+  MsgDepositValidatorRewardsPoolV1B1,
   MsgUpdateDistributionParamsV1B1,
 } from './distribution/v1beta1/msgs';
 import {
@@ -27,6 +28,7 @@ import {
   FeeGrantMsg,
   MsgGrantAllowance,
   MsgRevokeAllowance,
+  MsgPruneAllowances,
 } from './feegrant/msgs';
 import { FeemarketMsgV1, MsgUpdateFeemarketParamsV1 } from './feemarket';
 import {
@@ -42,6 +44,7 @@ import {
   MsgVoteWeightedV1,
   MsgExecLegacyContentV1,
   MsgUpdateGovParamsV1,
+  MsgCancelProposalV1,
 } from './gov';
 import {
   GroupMsgV1,
@@ -302,6 +305,9 @@ export namespace Msg {
       case 'distribution/MsgCommunityPoolSpend':
       case 'cosmos-sdk/distr/MsgCommunityPoolSpend':
         return MsgCommunityPoolSpendV1B1.fromAmino(data, isClassic);
+      case 'distribution/MsgDepositValidatorRewardsPool':
+      case 'cosmos-sdk/distr/MsgDepositValidatorRewardsPool':
+        return MsgDepositValidatorRewardsPoolV1B1.fromAmino(data, isClassic);
       case 'distribution/MsgUpdateParams':
       case 'cosmos-sdk/distribution/MsgUpdateParams':
         return MsgUpdateDistributionParamsV1B1.fromAmino(data, isClassic);
@@ -313,6 +319,9 @@ export namespace Msg {
       case 'feegrant/MsgRevokeAllowance':
       case 'cosmos-sdk/MsgRevokeAllowance':
         return MsgRevokeAllowance.fromAmino(data, isClassic);
+      case 'feegrant/MsgPruneAllowances':
+      case 'cosmos-sdk/MsgPruneAllowances':
+        return MsgPruneAllowances.fromAmino(data, isClassic);
 
       // feemarket
       case 'feemarket/MsgUpdateParams':
@@ -346,6 +355,8 @@ export namespace Msg {
         return MsgExecLegacyContentV1.fromAmino(data, isClassic);
       case 'cosmos-sdk/x/gov/v1/MsgUpdateParams':
         return MsgUpdateGovParamsV1.fromAmino(data, isClassic);
+      case 'cosmos-sdk/x/gov/v1/MsgCancelProposal':
+        return MsgCancelProposalV1.fromAmino(data, isClassic);
 
       // group
       case 'group/MsgCreateGroup':
@@ -569,6 +580,8 @@ export namespace Msg {
         return MsgFundCommunityPoolV1B1.fromData(data, isClassic);
       case '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend':
         return MsgCommunityPoolSpendV1B1.fromData(data, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPool':
+        return MsgDepositValidatorRewardsPoolV1B1.fromData(data, isClassic);
       case '/cosmos.distribution.v1beta1.MsgUpdateParams':
         return MsgUpdateDistributionParamsV1B1.fromData(data, isClassic);
 
@@ -577,6 +590,8 @@ export namespace Msg {
         return MsgGrantAllowance.fromData(data, isClassic);
       case '/cosmos.feegrant.v1beta1.MsgRevokeAllowance':
         return MsgRevokeAllowance.fromData(data, isClassic);
+      case '/cosmos.feegrant.v1beta1.MsgPruneAllowances':
+        return MsgPruneAllowances.fromData(data, isClassic);
 
       // feemarket
       case '/ethermint.feemarket.v1.MsgUpdateParams':
@@ -603,6 +618,8 @@ export namespace Msg {
         return MsgExecLegacyContentV1.fromData(data, isClassic);
       case '/cosmos.gov.v1.MsgUpdateParams':
         return MsgUpdateGovParamsV1.fromData(data, isClassic);
+      case '/cosmos.gov.v1.MsgCancelProposal':
+        return MsgCancelProposalV1.fromData(data, isClassic);
 
       // group
       case '/cosmos.group.v1.MsgCreateGroup':
@@ -825,6 +842,8 @@ export namespace Msg {
         return MsgFundCommunityPoolV1B1.unpackAny(proto, isClassic);
       case '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend':
         return MsgCommunityPoolSpendV1B1.unpackAny(proto, isClassic);
+      case '/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPool':
+        return MsgDepositValidatorRewardsPoolV1B1.unpackAny(proto, isClassic);
       case '/cosmos.distribution.v1beta1.MsgUpdateParams':
         return MsgUpdateDistributionParamsV1B1.unpackAny(proto, isClassic);
 
@@ -833,6 +852,8 @@ export namespace Msg {
         return MsgGrantAllowance.unpackAny(proto, isClassic);
       case '/cosmos.feegrant.v1beta1.MsgRevokeAllowance':
         return MsgRevokeAllowance.unpackAny(proto, isClassic);
+      case '/cosmos.feegrant.v1beta1.MsgPruneAllowances':
+        return MsgPruneAllowances.unpackAny(proto, isClassic);
 
       // feemarket
       case '/ethermint.feemarket.v1.MsgUpdateParams':
@@ -859,6 +880,8 @@ export namespace Msg {
         return MsgExecLegacyContentV1.unpackAny(proto, isClassic);
       case '/cosmos.gov.v1.MsgUpdateParams':
         return MsgUpdateGovParamsV1.unpackAny(proto, isClassic);
+      case '/cosmos.gov.v1.MsgCancelProposal':
+        return MsgCancelProposalV1.unpackAny(proto, isClassic);
 
       // group
       case '/cosmos.group.v1.MsgCreateGroup':

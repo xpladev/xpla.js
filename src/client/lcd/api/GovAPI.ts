@@ -160,6 +160,9 @@ export class GovAPI extends BaseAPI {
     const params = new URLSearchParams();
     params.append('events', `message.action='/cosmos.gov.v1.MsgDeposit'`);
     params.append('events', `proposal_deposit.proposal_id=${proposalId}`);
+    // post v0.47.x
+    params.append('query', `message.action='/cosmos.gov.v1.MsgDeposit'`);
+    params.append('query', `proposal_deposit.proposal_id=${proposalId}`);
 
     Object.entries(_params).forEach(v => {
       params.append(v[0], v[1] as string);
@@ -197,6 +200,12 @@ export class GovAPI extends BaseAPI {
       `message.action='/cosmos.gov.v1.MsgSubmitProposal'`
     );
     params.append('events', `submit_proposal.proposal_id=${proposalId}`);
+    // post v0.47.x
+    params.append(
+      'query',
+      `message.action='/cosmos.gov.v1.MsgSubmitProposal'`
+    );
+    params.append('query', `submit_proposal.proposal_id=${proposalId}`);
 
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, params)
@@ -214,31 +223,48 @@ export class GovAPI extends BaseAPI {
    */
   public async votes(
     proposalId: number,
-    _params: Partial<PaginationOptions & APIParams> = {}
+    voter?: AccAddress,
+    params: Partial<PaginationOptions & APIParams> = {}
   ): Promise<[VoteV1[], Pagination]> {
     proposalId;
-    _params;
     const proposal = await this.proposal(proposalId);
     if (proposal.status === ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD) {
+      if (voter !== undefined) {
+        return this.c
+          .get<{ vote: VoteV1.Data }>(
+            `/cosmos/gov/v1/proposals/${proposalId}/votes/${voter}`,
+            params
+          )
+          .then(d => [ [VoteV1.fromData(d.vote)], { next_key: null, total: 1 }]);
+      }
       return this.c
         .get<{ votes: VoteV1.Data[]; pagination: Pagination }>(
           `/cosmos/gov/v1/proposals/${proposalId}/votes`,
-          _params
+          params
         )
         .then(d => [d.votes.map(v => VoteV1.fromData(v)), d.pagination]);
     }
 
     // build search params
-    const params = new URLSearchParams();
-    params.append('events', `message.action='/cosmos.gov.v1.MsgVote'`);
-    params.append('events', `proposal_vote.proposal_id=${proposalId}`);
+    const txparams = new URLSearchParams();
+    txparams.append('events', `message.action='/cosmos.gov.v1.MsgVote'`);
+    txparams.append('events', `proposal_vote.proposal_id=${proposalId}`);
+    if (voter !== undefined) {
+      txparams.append('events', `proposal_vote.voter=${voter}`);
+    }
+    // post v0.47.x
+    txparams.append('query', `message.action='/cosmos.gov.v1.MsgVote'`);
+    txparams.append('query', `proposal_vote.proposal_id=${proposalId}`);
+    if (voter !== undefined) {
+      txparams.append('query', `proposal_vote.voter=${voter}`);
+    }
 
-    Object.entries(_params).forEach(v => {
-      params.append(v[0], v[1] as string);
+    Object.entries(params).forEach(v => {
+      txparams.append(v[0], v[1] as string);
     });
 
     return this.c
-      .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, params)
+      .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, txparams)
       .then(d => {
         const votes: VoteV1[] = [];
         d.txs.map(tx =>
@@ -275,7 +301,6 @@ export class GovAPI extends BaseAPI {
 
         return [votes, d.pagination];
       });
-    throw Error('temp error: remove me');
   }
 
   /**

@@ -2,11 +2,10 @@ import { BaseAPI } from './BaseAPI';
 import {
   Coins,
   AccAddress,
-  Dec,
   ValAddress,
   DistributionParamsV1B1,
 } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 /**
@@ -36,6 +35,11 @@ export namespace Rewards {
   }
 }
 
+export interface Slash {
+  fraction: string;
+  validator_period: string;
+}
+
 export class DistributionAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
@@ -47,8 +51,25 @@ export class DistributionAPI extends BaseAPI {
    */
   public async rewards(
     delegator: AccAddress,
+    validator?: AccAddress,
     params: APIParams = {}
   ): Promise<Rewards> {
+    if (validator !== undefined) {
+      const rewardsData = await this.c
+      .get<{ rewards: Coins.Data }>(
+        `/cosmos/distribution/v1beta1/delegators/${delegator}/rewards/${validator}`,
+        params
+      )
+      .then(d => d);
+
+      const rewards: Rewards['rewards'] = {};
+      rewards[validator] = Coins.fromData(rewardsData.rewards);
+      return {
+        rewards,
+        total: rewards[validator],
+      };
+    }
+
     const rewardsData = await this.c
       .get<Rewards.Data>(
         `/cosmos/distribution/v1beta1/delegators/${delegator}/rewards`,
@@ -64,6 +85,34 @@ export class DistributionAPI extends BaseAPI {
       rewards,
       total: Coins.fromData(rewardsData.total),
     };
+  }
+
+  public async validators(
+    delegator: AccAddress,
+    params: APIParams = {}
+  ): Promise<string[]> {
+    return this.c
+      .get<{ validators: string[] }>(
+        `/cosmos/distribution/v1beta1/delegators/${delegator}/validators`,
+        params
+      )
+      .then(d => d.validators);
+  }
+
+  /**
+   * Gets the withdraw address of a delegator, the address to which rewards are withdrawn.
+   * @param delegator
+   */
+  public async withdrawAddress(
+    delegator: AccAddress,
+    params: APIParams = {}
+  ): Promise<AccAddress> {
+    return this.c
+      .get<{ withdraw_address: AccAddress }>(
+        `/cosmos/distribution/v1beta1/delegators/${delegator}/withdraw_address`,
+        params
+      )
+      .then(d => d.withdraw_address);
   }
 
   /**
@@ -87,20 +136,36 @@ export class DistributionAPI extends BaseAPI {
       .then(d => Coins.fromData(d.commission));
   }
 
-  /**
-   * Gets the withdraw address of a delegator, the address to which rewards are withdrawn.
-   * @param delegator
-   */
-  public async withdrawAddress(
-    delegator: AccAddress,
+  public async validatorOutstandingRewards(
+    validator: ValAddress,
     params: APIParams = {}
-  ): Promise<AccAddress> {
+  ): Promise<Coins> {
     return this.c
-      .get<{ withdraw_address: AccAddress }>(
-        `/cosmos/distribution/v1beta1/delegators/${delegator}/withdraw_address`,
+      .get<{
+        rewards: {
+          rewards: Coins.Data;
+        };
+      }>(
+        `/cosmos/distribution/v1beta1/validators/${validator}/outstanding_rewards`,
         params
       )
-      .then(d => d.withdraw_address);
+      .then(d => d.rewards)
+      .then(d => Coins.fromData(d.rewards));
+  }
+
+  public async validatorSlashes(
+    validator: ValAddress,
+    params: APIParams = {}
+  ): Promise<[Slash[], Pagination]> {
+    return this.c
+      .get<{
+        slashes: Slash[];
+        pagination: Pagination;
+      }>(
+        `/cosmos/distribution/v1beta1/validators/${validator}/slashes`,
+        params
+      )
+      .then(d => [ d.slashes, d.pagination ]);
   }
 
   /**

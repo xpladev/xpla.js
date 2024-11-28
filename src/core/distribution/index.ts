@@ -18,5 +18,6 @@ export {
   MsgWithdrawValidatorCommissionV1B1 as MsgWithdrawValidatorCommission,
   MsgFundCommunityPoolV1B1 as MsgFundCommunityPool,
   MsgCommunityPoolSpendV1B1 as MsgCommunityPoolSpend,
+  MsgDepositValidatorRewardsPoolV1B1 as MsgDepositValidatorRewardsPool,
   MsgUpdateDistributionParamsV1B1 as MsgUpdateDistributionParams,
 } from './v1beta1/msgs';

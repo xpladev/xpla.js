@@ -3,7 +3,7 @@ import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgUpdateParams as MsgUpdateConsensusParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/consensus/v1/tx';
-import { BlockParams, EvidenceParams, ValidatorParams } from '../Params';
+import { BlockParams, EvidenceParams, ValidatorParams, ABCIParams } from '../Params';
 
 export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
   MsgUpdateConsensusParamsV1B1.Amino,
@@ -17,7 +17,8 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     public authority: AccAddress,
     public block: BlockParams | undefined,
     public evidence: EvidenceParams | undefined,
-    public validator: ValidatorParams | undefined
+    public validator: ValidatorParams | undefined,
+    public abci: ABCIParams | undefined,
   ) {
     super();
   }
@@ -27,18 +28,19 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgUpdateConsensusParamsV1B1 {
     const {
-      value: { authority, block, evidence, validator },
+      value: { authority, block, evidence, validator, abci },
     } = data;
     return new MsgUpdateConsensusParamsV1B1(
       authority,
       block ? BlockParams.fromAmino(block) : undefined,
       evidence ? EvidenceParams.fromAmino(evidence) : undefined,
-      validator ? ValidatorParams.fromAmino(validator) : undefined
+      validator ? ValidatorParams.fromAmino(validator) : undefined,
+      abci ? ABCIParams.fromAmino(abci) : undefined,
     );
   }
 
   public toAmino(isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Amino {
-    const { authority, block, evidence, validator } = this;
+    const { authority, block, evidence, validator, abci } = this;
     return {
       type: isClassic
         ? 'consensus/MsgUpdateParams'
@@ -48,6 +50,7 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
         block: block ? block.toAmino() : undefined,
         evidence: evidence ? evidence.toAmino() : undefined,
         validator: validator ? validator.toAmino() : undefined,
+        abci: abci ? abci.toAmino() : undefined,
       },
     };
   }
@@ -56,23 +59,25 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     data: MsgUpdateConsensusParamsV1B1.Data,
     _isClassic?: boolean
   ): MsgUpdateConsensusParamsV1B1 {
-    const { authority, block, evidence, validator } = data;
+    const { authority, block, evidence, validator, abci } = data;
     return new MsgUpdateConsensusParamsV1B1(
       authority,
       block ? BlockParams.fromData(block) : undefined,
       evidence ? EvidenceParams.fromData(evidence) : undefined,
-      validator ? ValidatorParams.fromData(validator) : undefined
+      validator ? ValidatorParams.fromData(validator) : undefined,
+      abci ? ABCIParams.fromData(abci) : undefined,
     );
   }
 
   public toData(_isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Data {
-    const { authority, block, evidence, validator } = this;
+    const { authority, block, evidence, validator, abci } = this;
     return {
       '@type': '/cosmos.consensus.v1.MsgUpdateParams',
       authority,
       block: block ? block.toData() : undefined,
       evidence: evidence ? evidence.toData() : undefined,
       validator: validator ? validator.toData() : undefined,
+      abci: abci ? abci.toData() : undefined,
     };
   }
 
@@ -84,17 +89,19 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
       proto.authority,
       proto.block ? BlockParams.fromProto(proto.block) : undefined,
       proto.evidence ? EvidenceParams.fromProto(proto.evidence) : undefined,
-      proto.validator ? ValidatorParams.fromProto(proto.validator) : undefined
+      proto.validator ? ValidatorParams.fromProto(proto.validator) : undefined,
+      proto.abci ? ABCIParams.fromProto(proto.abci) : undefined,
     );
   }
 
   public toProto(_isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Proto {
-    const { authority, block, evidence, validator } = this;
+    const { authority, block, evidence, validator, abci } = this;
     return MsgUpdateConsensusParamsV1B1_pb.fromPartial({
       authority,
       block: block ? block.toProto() : undefined,
       evidence: evidence ? evidence.toProto() : undefined,
       validator: validator ? validator.toProto() : undefined,
+      abci: abci ? abci.toProto() : undefined,
     });
   }
 
@@ -125,6 +132,7 @@ export namespace MsgUpdateConsensusParamsV1B1 {
       block: BlockParams.Amino | undefined;
       evidence: EvidenceParams.Amino | undefined;
       validator: ValidatorParams.Amino | undefined;
+      abci: ABCIParams.Amino | undefined;
     };
   }
 
@@ -134,6 +142,7 @@ export namespace MsgUpdateConsensusParamsV1B1 {
     block: BlockParams.Data | undefined;
     evidence: EvidenceParams.Data | undefined;
     validator: ValidatorParams.Data | undefined;
+    abci: ABCIParams.Data | undefined;
   }
 
   export type Proto = MsgUpdateConsensusParamsV1B1_pb;

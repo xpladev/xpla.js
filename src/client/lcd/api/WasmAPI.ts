@@ -12,7 +12,8 @@ import { Params as WasmCodesParams } from '@xpla/xpla.proto/cosmwasm/wasm/v1/typ
 
 export interface CodeInfo {
   code_id: number;
-  code_hash: string; // TODO: rename it to data_hash when bumping to v4
+  code_hash: string;
+  data_hash: string;
   creator: AccAddress;
   instantiate_config?: AccessConfig;
 }
@@ -37,7 +38,6 @@ export interface ContractInfo {
   creator: AccAddress;
   admin?: AccAddress;
   init_msg?: any; // object
-  // new properties
   label?: string;
   created?: AbsoluteTxPosition;
   ibc_port_id?: string;
@@ -103,6 +103,7 @@ export class WasmAPI extends BaseAPI {
       .then(({ code_info: d }) => ({
         code_id: +d.code_id,
         code_hash: d.data_hash,
+        data_hash: d.data_hash,
         creator: d.creator,
         instantiate_permission: d.instantiate_permission
           ? AccessConfig.fromData(d.instantiate_permission)
@@ -257,28 +258,20 @@ export class WasmAPI extends BaseAPI {
       ]);
   }
 
-  public async allCodes(
+  public async contractsByCreator(
+    creator: AccAddress,
     params: Partial<PaginationOptions & APIParams> = {}
-  ): Promise<[CodeInfo[], Pagination]> {
+  ): Promise<[string[], Pagination]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }
     return this.c
       .get<{
-        code_infos: CodeInfo.DataV2[];
+        contract_addresses: string[];
         pagination: Pagination;
-      }>(`/cosmwasm/wasm/v1/code`, params)
+      }>(`/cosmwasm/wasm/v1/contracts/creator/${creator}`, params)
       .then(d => [
-        d.code_infos.map(codeInfo => {
-          return {
-            code_id: +codeInfo.code_id,
-            code_hash: codeInfo.data_hash,
-            creator: codeInfo.creator,
-            instantiate_permission: codeInfo.instantiate_permission
-              ? AccessConfig.fromData(codeInfo.instantiate_permission)
-              : undefined,
-          };
-        }),
+        d.contract_addresses,
         d.pagination,
       ]);
   }

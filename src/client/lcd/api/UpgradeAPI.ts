@@ -69,4 +69,12 @@ export class UpgradeAPI extends BaseAPI {
         })
       );
   }
+
+  public async authority(params: APIParams = {}): Promise<any> {
+    return this.c.get('/cosmos/upgrade/v1beta1/authority', params);
+  }
+
+  public async upgradedConsensusState(height: number, params: APIParams = {}): Promise<any> {
+    return this.c.get(`/cosmos/upgrade/v1beta1/upgraded_consensus_state/${height}`, params);
+  }
 }

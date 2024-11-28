@@ -3,13 +3,20 @@ import {
   ABCIMessageLog as ABCIMessageLog_pb,
   TxResponse as TxResponse_pb,
 } from '@xpla/xpla.proto/cosmos/base/abci/v1beta1/abci';
+import {
+  Event as Event_pb,
+  EventAttribute as EventAttribute_pb,
+} from '@xpla/xpla.proto/tendermint/abci/types';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 /**
  * A TxInfo data structure is used to capture information from a transaction lookup for
  * a transaction already included in a block
+ * TxResponse
  */
 export class TxInfo {
+  public eventsByType: TxEventsByType;
+
   /**
    *
    * @param height height of the block in which the transaction was included.
@@ -20,6 +27,7 @@ export class TxInfo {
    * @param gas_used actual gas consumption
    * @param tx transaction content
    * @param timestamp time of inclusion
+   * @param events list of events
    * @param code error code
    */
   constructor(
@@ -31,9 +39,14 @@ export class TxInfo {
     public gas_used: number,
     public tx: Tx,
     public timestamp: string,
+    public events: TxEvent[] | undefined,
     public code?: number,
-    public codespace?: string
-  ) {}
+    public codespace?: string,
+    public data?: string,
+    public info?: string,
+  ) {
+    this.eventsByType = TxEventsByType.parse(this.events);
+  }
 
   public static fromProto(proto: TxInfo.Proto): TxInfo {
     return new TxInfo(
@@ -45,8 +58,11 @@ export class TxInfo {
       proto.gasUsed.toNumber(),
       Tx.unpackAny(proto.tx as Any),
       proto.timestamp,
+      proto.events.map(evt => TxEvent.fromProto(evt)),
       proto.code,
-      proto.codespace
+      proto.codespace,
+      proto.data,
+      proto.info,
     );
   }
 
@@ -60,9 +76,58 @@ export class TxInfo {
       Number.parseInt(data.gas_used),
       Tx.fromData(data.tx, isClassic),
       data.timestamp,
+      data.events.map(evt => TxEvent.fromData(evt)),
       data.code,
-      data.codespace
+      data.codespace,
+      data.data,
+      data.info,
     );
+  }
+
+  public toData(): TxInfo.Data {
+    const { height, txhash, codespace, code, data, raw_log, logs, info, gas_wanted, gas_used, tx, timestamp, events } = this;
+    return {
+      height: height.toFixed(),
+      txhash,
+      codespace,
+      code,
+      data,
+      raw_log,
+      logs: logs?.map(log => log.toData()) ?? [],
+      info,
+      gas_wanted: gas_wanted.toFixed(),
+      gas_used: gas_used.toFixed(),
+      tx: tx.toData(),
+      timestamp,
+      events: events?.map(evt => evt.toData()) ?? [],
+    };
+  }
+
+  public getEventAttributeValues(type: string, key: string, msg_index?: string | number): string[] {
+    const values: string[] = [];
+    if (msg_index !== undefined) {
+      msg_index = '' + msg_index;
+      if (msg_index in this.eventsByType) {
+        if (type in this.eventsByType[msg_index]) {
+          this.eventsByType[msg_index][type].forEach(ev => {
+            if (key in ev) {
+              values.push(...ev[key]);
+            }
+          })
+        }
+      }
+    } else {
+      this.events?.forEach(ev => {
+        if (ev.type === type) {
+          ev.attributes.forEach(attr => {
+            if (attr.key === key) {
+              values.push(attr.value);
+            }
+          })
+        }
+      })
+    }
+    return values;
   }
 }
 
@@ -177,20 +242,157 @@ export namespace TxLog {
   export type Proto = ABCIMessageLog_pb;
 }
 
+export class EventAttribute {
+  constructor(
+    public key: string,
+    public value: string,
+    public index: boolean,
+  ) {}
+
+  public static fromData(data: EventAttribute.Data): EventAttribute {
+    return new EventAttribute(
+      data.key,
+      data.value,
+      data.index,
+    );
+  }
+
+  public toData(): EventAttribute.Data {
+    const { key, value, index } = this;
+    return {
+      key, value, index,
+    };
+  }
+
+  public static fromProto(proto: EventAttribute.Proto): EventAttribute {
+    return new EventAttribute(
+      proto.key,
+      proto.value,
+      proto.index,
+    );
+  }
+
+  public toProto(): EventAttribute.Proto {
+    const { key, value, index } = this;
+    return EventAttribute_pb.fromPartial({
+      key, value, index,
+    });
+  }
+}
+
+export namespace EventAttribute {
+  export interface Data {
+    key: string;
+    value: string;
+    index: boolean;
+  }
+  export type Proto = EventAttribute_pb;
+}
+
+export class TxEvent {
+  constructor(
+    public type: string,
+    public attributes: EventAttribute[]
+  ) {}
+
+  public static fromData(data: TxEvent.Data): TxEvent {
+    return new TxEvent(
+      data.type,
+      data.attributes.map(attr => EventAttribute.fromData(attr))
+    );
+  }
+
+  public toData(): TxEvent.Data {
+    const { type, attributes } = this;
+    return {
+      type, attributes,
+    };
+  }
+
+  public static fromProto(proto: TxEvent.Proto): TxEvent {
+    return new TxEvent(
+      proto.type,
+      proto.attributes.map(attr => EventAttribute.fromProto(attr))
+    );
+  }
+
+  public toProto(): TxEvent.Proto {
+    const { type, attributes } = this;
+    return Event_pb.fromPartial({
+      type,
+      attributes,
+    });
+  }
+}
+
+export namespace TxEvent {
+  export interface Data {
+    type: string;
+    attributes: EventAttribute[];
+  }
+  export type Proto = Event_pb;
+}
+
+export interface TxEventsByType {
+  [msg_index: string]: {
+    [type: string]: {
+      [key: string]: string[];
+    }[];
+  };
+}
+
+export namespace TxEventsByType {
+  export function parse(events: TxEvent[] | undefined): TxEventsByType {
+    const byTypes: TxEventsByType = {};
+    if (events === undefined) {
+      return byTypes;
+    }
+    events.forEach(ev => {
+      let msg_index: string = '';
+      for (const attr of ev.attributes) {
+        if (attr.key === 'msg_index') {
+          msg_index = attr.value;
+          break;
+        }
+      }
+
+      if (!(msg_index in byTypes)) {
+        byTypes[msg_index] = {};
+      }
+
+      if (!(ev.type in byTypes[msg_index])) {
+        byTypes[msg_index][ev.type] = [];
+      }
+
+      const type_index = byTypes[msg_index][ev.type].length;
+      byTypes[msg_index][ev.type].push({});
+
+      ev.attributes.forEach(attr => {
+        if (!(attr.key in byTypes[msg_index][ev.type])) {
+          byTypes[msg_index][ev.type][type_index][attr.key] = [];
+        }
+        byTypes[msg_index][ev.type][type_index][attr.key].push(attr.value);
+      });
+    });
+    return byTypes;
+  }
+}
+
 export namespace TxInfo {
   export interface Data {
     height: string;
     txhash: string;
-    codespace: string;
-    code: number;
-    data: string;
+    codespace: string | undefined;
+    code: number | undefined;
+    data: string | undefined;
     raw_log: string;
     logs: TxLog.Data[];
-    info: string;
+    info: string | undefined;
     gas_wanted: string;
     gas_used: string;
     tx: Tx.Data;
     timestamp: string;
+    events: TxEvent.Data[];
   }
   export type Proto = TxResponse_pb;
 }

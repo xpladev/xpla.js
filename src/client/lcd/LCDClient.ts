@@ -199,6 +199,10 @@ export class LCDClient {
     return this.apiRequester.get<any>('/cosmos/base/node/v1beta1/config', {});
   }
 
+  public async baseStatus(): Promise<any> {
+    return this.apiRequester.get<any>('/cosmos/base/node/v1beta1/status', {});
+  }
+
   public async parameterKeys(): Promise<any> {
     return this.apiRequester
       .get<{ subspaces: any }>('/cosmos/params/v1beta1/subspaces', {})

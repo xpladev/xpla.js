@@ -1,4 +1,4 @@
-import { Dec, Numeric, RewardParamsV1B1 } from '../../../core';
+import { Coins, RewardParamsV1B1 } from '../../../core';
 import { APIParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
@@ -6,6 +6,16 @@ import { BaseAPI } from './BaseAPI';
 export class XplaAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
+  }
+
+  public async rewardPool(params: APIParams = {}): Promise<Coins> {
+    return this.c.get<{ pool: any[] }>('/xpla/reward/v1beta1/pool', params)
+      .then(d => Coins.fromData(d.pool));
+  }
+
+  public async volunteerValidators(params: APIParams = {}): Promise<string[]> {
+    return this.c.get<{ volunteer_validators: string[] }>('/xpla/volunteer/v1beta1/validators', params)
+      .then(d => d.volunteer_validators);
   }
 
   /**
