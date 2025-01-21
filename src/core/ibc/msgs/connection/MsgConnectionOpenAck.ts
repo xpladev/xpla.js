@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
+import { Convert } from '../../../../util/convert';
 import { Height } from '../../core/client/Height';
 import { Version } from '../../core/connection/Version';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -15,6 +16,11 @@ export class MsgConnectionOpenAck extends JSONSerializable<
   MsgConnectionOpenAck.Data,
   MsgConnectionOpenAck.Proto
 > {
+  public proof_try: Buffer;
+  public proof_client: Buffer;
+  public proof_consensus: Buffer;
+  public host_consensus_state_proof: Buffer | undefined;
+
   /**
    * @param connection_id
    * @param counterparty_connection_id
@@ -26,20 +32,27 @@ export class MsgConnectionOpenAck extends JSONSerializable<
    * @param proof_consensus
    * @param consenesus_height
    * @param signer signer address
+   * @param host_consensus_state_proof optional
    */
   constructor(
     public connection_id: string,
     public counterparty_connection_id: string,
     public version: Version | undefined,
-    public client_state: any,
+    public client_state: Any | undefined,
     public proof_height: Height | undefined,
-    public proof_try: string,
-    public proof_client: string,
-    public proof_consensus: string,
+    proof_try: Buffer | Uint8Array | number[] | string,
+    proof_client: Buffer | Uint8Array | number[] | string,
+    proof_consensus: Buffer | Uint8Array | number[] | string,
     public consensus_height: Height | undefined,
-    public signer: AccAddress
+    public signer: AccAddress,
+    host_consensus_state_proof: Buffer | Uint8Array | number[] | string | undefined,
   ) {
     super();
+    this.proof_try = Convert.toBuffer(proof_try);
+    this.proof_client = Convert.toBuffer(proof_client);
+    this.proof_consensus = Convert.toBuffer(proof_consensus);
+    if (host_consensus_state_proof)
+      this.host_consensus_state_proof = Convert.toBuffer(host_consensus_state_proof);
   }
 
   public static fromAmino(_: any, _isClassic?: boolean): MsgConnectionOpenAck {
@@ -65,18 +78,20 @@ export class MsgConnectionOpenAck extends JSONSerializable<
       proof_consensus,
       consensus_height,
       signer,
+      host_consensus_state_proof,
     } = data;
     return new MsgConnectionOpenAck(
       connection_id,
       counterparty_connection_id,
       version ? Version.fromData(version) : undefined,
-      client_state,
+      Any.fromJSON(client_state),
       proof_height ? Height.fromData(proof_height) : undefined,
       proof_try,
       proof_client,
       proof_consensus,
       consensus_height ? Height.fromData(consensus_height) : undefined,
-      signer
+      signer,
+      host_consensus_state_proof,
     );
   }
 
@@ -98,11 +113,11 @@ export class MsgConnectionOpenAck extends JSONSerializable<
       connection_id,
       counterparty_connection_id,
       version: version ? version.toData() : undefined,
-      client_state,
+      client_state: client_state ? Any.toJSON(client_state) : undefined,
       proof_height: proof_height ? proof_height.toData() : undefined,
-      proof_try,
-      proof_client,
-      proof_consensus,
+      proof_try: proof_try.toString('base64'),
+      proof_client: proof_client.toString('base64'),
+      proof_consensus: proof_consensus.toString('base64'),
       consensus_height: consensus_height
         ? consensus_height.toData()
         : undefined,
@@ -120,13 +135,14 @@ export class MsgConnectionOpenAck extends JSONSerializable<
       proto.version ? Version.fromProto(proto.version) : undefined,
       proto.clientState,
       proto.proofHeight ? Height.fromProto(proto.proofHeight) : undefined,
-      Buffer.from(proto.proofTry).toString('base64'),
-      Buffer.from(proto.proofClient).toString('base64'),
-      Buffer.from(proto.proofConsensus).toString('base64'),
+      proto.proofTry,
+      proto.proofClient,
+      proto.proofConsensus,
       proto.consensusHeight
         ? Height.fromProto(proto.consensusHeight)
         : undefined,
-      proto.signer
+      proto.signer,
+      proto.hostConsensusStateProof,
     );
   }
 
@@ -142,6 +158,7 @@ export class MsgConnectionOpenAck extends JSONSerializable<
       proof_consensus,
       consensus_height,
       signer,
+      host_consensus_state_proof,
     } = this;
     return MsgConnectionOpenAck_pb.fromPartial({
       connectionId: connection_id,
@@ -149,13 +166,14 @@ export class MsgConnectionOpenAck extends JSONSerializable<
       version: version ? version.toProto() : undefined,
       clientState: client_state,
       proofHeight: proof_height ? proof_height.toProto() : undefined,
-      proofTry: Buffer.from(proof_try, 'base64'),
-      proofClient: Buffer.from(proof_client, 'base64'),
-      proofConsensus: Buffer.from(proof_consensus, 'base64'),
+      proofTry: proof_try,
+      proofClient: proof_client,
+      proofConsensus: proof_consensus,
       consensusHeight: consensus_height
         ? consensus_height.toProto()
         : undefined,
       signer,
+      hostConsensusStateProof: host_consensus_state_proof,
     });
   }
 
@@ -179,13 +197,14 @@ export namespace MsgConnectionOpenAck {
     connection_id: string;
     counterparty_connection_id: string;
     version?: Version.Data;
-    client_state: Any;
+    client_state: any;
     proof_height?: Height.Data;
     proof_try: string;
     proof_client: string;
     proof_consensus: string;
     consensus_height?: Height.Data;
     signer: AccAddress;
+    host_consensus_state_proof?: string;
   }
   export type Proto = MsgConnectionOpenAck_pb;
 }

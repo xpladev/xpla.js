@@ -6,7 +6,13 @@ import {
   MsgSetSendEnabledV1B1,
   MsgUpdateBankParamsV1B1,
 } from './bank';
-import { ConsensusMsgV1B1, MsgUpdateConsensusParamsV1B1 } from './consensus';
+import {
+  CircuitMsgV1,
+  MsgAuthorizeCircuitBreakerV1,
+  MsgResetCircuitBreakerV1,
+  MsgTripCircuitBreakerV1,
+} from './circuit';
+import { ConsensusMsgV1, MsgUpdateConsensusParamsV1 } from './consensus';
 import {
   DistributionMsgV1B1,
   MsgSetWithdrawAddressV1B1,
@@ -116,14 +122,38 @@ import {
   MsgUpdateContractLabelV1,
   MsgUpdateWasmParamsV1,
   MsgUpdateInstantiateConfigV1,
+  MsgIBCSendV1,
+  MsgIBCCloseChannelV1,
 } from './wasm';
-import { MsgTransfer, IbcTransferMsg } from './ibc/applications/transfer';
+import {
+  IbcFeeMsg,
+  MsgPayPacketFee,
+  MsgPayPacketFeeAsync,
+  MsgRegisterCounterpartyAddress,
+  MsgRegisterPayee,
+} from './ibc/applications/fee';
+import {
+  IcaMsgV1,
+  MsgRegisterInterchainAccountV1,
+  MsgSendTxV1,
+  MsgUpdateIcaControllerParamsV1,
+  MsgModuleQuerySafeV1,
+  MsgUpdateIcaHostParamsV1,
+} from './ibc/applications/interchain-account';
+import {
+  IbcTransferMsgV1,
+  MsgTransferV1,
+  MsgUpdateIbcTransferParamsV1,
+} from './ibc/applications/transfer';
 import {
   IbcClientMsg,
   MsgCreateClient,
   MsgUpdateClient,
   MsgUpgradeClient,
   MsgSubmitMisbehaviour,
+  MsgRecoverClient,
+  MsgIbcSoftwareUpgradeV1,
+  MsgUpdateIbcClientParamsV1,
 } from './ibc/msgs/client';
 import {
   IbcConnectionMsg,
@@ -131,6 +161,7 @@ import {
   MsgConnectionOpenTry,
   MsgConnectionOpenConfirm,
   MsgConnectionOpenAck,
+  MsgUpdateIbcConnectionParamsV1,
 } from './ibc/msgs/connection';
 import {
   IbcChannelMsg,
@@ -144,19 +175,30 @@ import {
   MsgAcknowledgement,
   MsgTimeout,
   MsgTimeoutOnClose,
+  MsgChannelUpgradeInit,
+  MsgChannelUpgradeTry,
+  MsgChannelUpgradeAck,
+  MsgChannelUpgradeConfirm,
+  MsgChannelUpgradeOpen,
+  MsgChannelUpgradeTimeout,
+  MsgChannelUpgradeCancel,
+  MsgUpdateIbcChannelParamsV1,
 } from './ibc/msgs/channel';
 import { CrisisMsg, MsgVerifyInvariant } from './crisis';
 import {
   XplaMsgV1B1,
   MsgFundRewardPoolV1B1,
   MsgUpdateRewardParamsV1B1,
+  MsgRegisterVolunteerValidatorV1B1,
+  MsgUnregisterVolunteerValidatorV1B1,
 } from './xpla';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
   | AuthMsgV1B1
   | BankMsgV1B1
-  | ConsensusMsgV1B1
+  | CircuitMsgV1
+  | ConsensusMsgV1
   | DistributionMsgV1B1
   | FeeGrantMsg
   | FeemarketMsgV1
@@ -171,7 +213,9 @@ export type Msg =
   | VestingMsgV1B1
   | UpgradeMsgV1B1
   | WasmMsgV1
-  | IbcTransferMsg
+  | IbcFeeMsg
+  | IcaMsgV1
+  | IbcTransferMsgV1
   | IbcClientMsg
   | IbcConnectionMsg
   | IbcChannelMsg
@@ -184,7 +228,8 @@ export namespace Msg {
   export type Amino =
     | AuthMsgV1B1.Amino
     | BankMsgV1B1.Amino
-    | ConsensusMsgV1B1.Amino
+    | CircuitMsgV1.Amino
+    | ConsensusMsgV1.Amino
     | DistributionMsgV1B1.Amino
     | FeeGrantMsg.Amino
     | FeemarketMsgV1.Amino
@@ -192,14 +237,13 @@ export namespace Msg {
     | GovMsgV1.Amino
     | GroupMsgV1.Amino
     | MintMsgV1B1.Amino
-    | NftMsgV1B1.Amino
     | AuthzMsg.Amino
     | SlashingMsgV1B1.Amino
     | StakingMsgV1B1.Amino
     | VestingMsgV1B1.Amino
     | UpgradeMsgV1B1.Amino
     | WasmMsgV1.Amino
-    | IbcTransferMsg.Amino
+    | IbcTransferMsgV1.Amino
     | CrisisMsg.Amino
     | Erc20MsgV1.Amino
     | EvmMsgV1.Amino
@@ -208,7 +252,8 @@ export namespace Msg {
   export type Data =
     | AuthMsgV1B1.Data
     | BankMsgV1B1.Data
-    | ConsensusMsgV1B1.Data
+    | CircuitMsgV1.Data
+    | ConsensusMsgV1.Data
     | DistributionMsgV1B1.Data
     | FeeGrantMsg.Data
     | FeemarketMsgV1.Data
@@ -223,7 +268,9 @@ export namespace Msg {
     | VestingMsgV1B1.Data
     | UpgradeMsgV1B1.Data
     | WasmMsgV1.Data
-    | IbcTransferMsg.Data
+    | IbcFeeMsg.Data
+    | IcaMsgV1.Data
+    | IbcTransferMsgV1.Data
     | IbcClientMsg.Data
     | IbcConnectionMsg.Data
     | IbcChannelMsg.Data
@@ -235,7 +282,8 @@ export namespace Msg {
   export type Proto =
     | AuthMsgV1B1.Proto
     | BankMsgV1B1.Proto
-    | ConsensusMsgV1B1.Proto
+    | CircuitMsgV1.Proto
+    | ConsensusMsgV1.Proto
     | DistributionMsgV1B1.Proto
     | FeeGrantMsg.Proto
     | FeemarketMsgV1.Proto
@@ -250,7 +298,9 @@ export namespace Msg {
     | VestingMsgV1B1.Proto
     | UpgradeMsgV1B1.Proto
     | WasmMsgV1.Proto
-    | IbcTransferMsg.Proto
+    | IbcFeeMsg.Proto
+    | IcaMsgV1.Proto
+    | IbcTransferMsgV1.Proto
     | IbcClientMsg.Proto
     | IbcConnectionMsg.Proto
     | IbcChannelMsg.Proto
@@ -268,12 +318,6 @@ export namespace Msg {
       // bank
       case 'bank/MsgSend':
       case 'cosmos-sdk/MsgSend':
-        if ((<MsgNftSendV1B1.Amino>data).value.class_id !== undefined)
-          // nft/MsgSend
-          return MsgNftSendV1B1.fromAmino(
-            <MsgNftSendV1B1.Amino>data,
-            isClassic
-          );
         return MsgSendV1B1.fromAmino(<MsgSendV1B1.Amino>data, isClassic);
       case 'bank/MsgMultiSend':
       case 'cosmos-sdk/MsgMultiSend':
@@ -285,9 +329,21 @@ export namespace Msg {
       case 'cosmos-sdk/x/bank/MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.fromAmino(data, isClassic);
 
+      // circuit
+      case 'circuit/MsgAuthorizeCircuitBreaker':
+      case 'cosmos-sdk/x/circuit/MsgAuthorizeCircuitBreaker':
+        return MsgAuthorizeCircuitBreakerV1.fromAmino(data, isClassic);
+      case 'circuit/MsgResetCircuitBreaker':
+      case 'cosmos-sdk/x/circuit/MsgResetCircuitBreaker':
+        return MsgResetCircuitBreakerV1.fromAmino(data, isClassic);
+      case 'circuit/MsgTripCircuitBreaker':
+      case 'cosmos-sdk/x/circuit/MsgTripCircuitBreaker':
+        return MsgTripCircuitBreakerV1.fromAmino(data, isClassic);
+      
       // consensus
+      case 'consensus/MsgUpdateParams':
       case 'cosmos-sdk/x/consensus/MsgUpdateParams':
-        return MsgUpdateConsensusParamsV1B1.fromAmino(data, isClassic);
+        return MsgUpdateConsensusParamsV1.fromAmino(data, isClassic);
 
       // distribution
       case 'distribution/MsgModifyWithdrawAddress':
@@ -324,13 +380,15 @@ export namespace Msg {
         return MsgPruneAllowances.fromAmino(data, isClassic);
 
       // feemarket
-      case 'feemarket/MsgUpdateParams':
+      case 'ethermint/x/feemarket/MsgUpdateParams':
         return MsgUpdateFeemarketParamsV1.fromAmino(data, isClassic);
 
       // gov
       case 'gov/MsgDeposit':
       case 'cosmos-sdk/MsgDeposit':
-        return MsgDepositV1B1.fromAmino(data, isClassic);
+        return MsgDepositV1B1.fromAmino(<MsgDepositV1B1.Amino>data, isClassic);
+      case 'cosmos-sdk/v1/MsgDeposit':
+        return MsgDepositV1.fromAmino(<MsgDepositV1.Amino>data, isClassic);
       case 'gov/MsgSubmitProposal':
       case 'cosmos-sdk/MsgSubmitProposal':
         return MsgSubmitProposalV1B1.fromAmino(
@@ -341,21 +399,19 @@ export namespace Msg {
         return MsgSubmitProposalV1.fromAmino(<MsgSubmitProposalV1.Amino>data);
       case 'gov/MsgVote':
       case 'cosmos-sdk/MsgVote':
-        if ((<MsgGroupVoteV1.Amino>data).value.metadata !== undefined)
-          // group/MsgVote
-          return MsgGroupVoteV1.fromAmino(
-            <MsgGroupVoteV1.Amino>data,
-            isClassic
-          );
         return MsgVoteV1B1.fromAmino(<MsgVoteV1B1.Amino>data, isClassic);
+      case 'cosmos-sdk/v1/MsgVote':
+        return MsgVoteV1.fromAmino(<MsgVoteV1.Amino>data, isClassic);
       case 'gov/MsgVoteWeighted':
       case 'cosmos-sdk/MsgVoteWeighted':
-        return MsgVoteWeightedV1B1.fromAmino(data, isClassic);
+        return MsgVoteWeightedV1B1.fromAmino(<MsgVoteWeightedV1B1.Amino>data, isClassic);
+      case 'cosmos-sdk/v1/MsgVoteWeighted':
+        return MsgVoteWeightedV1.fromAmino(<MsgVoteWeightedV1.Amino>data, isClassic);
       case 'cosmos-sdk/v1/MsgExecLegacyContent':
         return MsgExecLegacyContentV1.fromAmino(data, isClassic);
       case 'cosmos-sdk/x/gov/v1/MsgUpdateParams':
         return MsgUpdateGovParamsV1.fromAmino(data, isClassic);
-      case 'cosmos-sdk/x/gov/v1/MsgCancelProposal':
+      case 'cosmos-sdk/v1/MsgCancelProposal':
         return MsgCancelProposalV1.fromAmino(data, isClassic);
 
       // group
@@ -380,32 +436,31 @@ export namespace Msg {
       case 'group/MsgCreateGroupWithPolicy':
       case 'cosmos-sdk/MsgCreateGroupWithPolicy':
         return MsgCreateGroupWithPolicyV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupPolicyDecisionPolicy':
-      case 'cosmos-sdk/MsgUpdateGroupPolicyDecisionPolicy':
+      case 'group/MsgUpdateGroupDecisionPolicy':
+      case 'cosmos-sdk/MsgUpdateGroupDecisionPolicy':
         return MsgUpdateGroupPolicyDecisionPolicyV1.fromAmino(data, isClassic);
       case 'group/MsgUpdateGroupPolicyMetadata':
       case 'cosmos-sdk/MsgUpdateGroupPolicyMetadata':
         return MsgUpdateGroupPolicyMetadataV1.fromAmino(data, isClassic);
       case 'group/MsgSubmitProposal':
+      case 'cosmos-sdk/group/MsgSubmitProposal':
         return MsgGroupSubmitProposalV1.fromAmino(data, isClassic);
       case 'group/MsgWithdrawProposal':
-      case 'cosmos-sdk/MsgWithdrawProposal':
+      case 'cosmos-sdk/group/MsgWithdrawProposal':
         return MsgGroupWithdrawProposalV1.fromAmino(data, isClassic);
       case 'group/MsgVote':
+      case 'cosmos-sdk/group/MsgVote':
         return MsgGroupVoteV1.fromAmino(data, isClassic);
       case 'group/MsgExec':
+      case 'cosmos-sdk/group/MsgExec':
         return MsgGroupExecV1.fromAmino(data, isClassic);
       case 'group/MsgLeaveGroup':
-      case 'cosmos-sdk/MsgLeaveGroup':
+      case 'cosmos-sdk/group/MsgLeaveGroup':
         return MsgLeaveGroupV1.fromAmino(data, isClassic);
 
       // mint
       case 'cosmos-sdk/x/mint/MsgUpdateParams':
         return MsgUpdateMintParamsV1B1.fromAmino(data, isClassic);
-
-      // nft
-      case 'nft/MsgSend':
-        return MsgNftSendV1B1.fromAmino(data, isClassic);
 
       // msgauth
       case 'msgauth/MsgGrantAuthorization':
@@ -416,16 +471,7 @@ export namespace Msg {
         return MsgRevokeAuthorization.fromAmino(data, isClassic);
       case 'msgauth/MsgExecAuthorized':
       case 'cosmos-sdk/MsgExec':
-        if ((<MsgGroupExecV1.Amino>data).value.executor !== undefined)
-          // group/MsgExec
-          return MsgGroupExecV1.fromAmino(
-            <MsgGroupExecV1.Amino>data,
-            isClassic
-          );
-        return MsgExecAuthorized.fromAmino(
-          <MsgExecAuthorized.Amino>data,
-          isClassic
-        );
+        return MsgExecAuthorized.fromAmino(data, isClassic);
 
       // slashing
       case 'slashing/MsgUnjail':
@@ -453,7 +499,7 @@ export namespace Msg {
       case 'staking/MsgCancelUnbondingDelegation':
       case 'cosmos-sdk/MsgCancelUnbondingDelegation':
         return MsgCancelUnbondingDelegationV1B1.fromAmino(data, isClassic);
-      case 'cosmos-sdk/MsgUpdateStakingParams':
+      case 'cosmos-sdk/x/staking/MsgUpdateParams':
         return MsgUpdateStakingParamsV1B1.fromAmino(data, isClassic);
 
       // vesting
@@ -507,14 +553,14 @@ export namespace Msg {
         return MsgStoreAndMigrateContractV1.fromAmino(data, isClassic);
       case 'wasm/MsgUpdateContractLabel':
         return MsgUpdateContractLabelV1.fromAmino(data, isClassic);
-      case 'wasm/MsgUpdateParamsV1':
-        return MsgUpdateWasmParamsV1.fromAmino(data, isClassic);
       case 'wasm/MsgUpdateInstantiateConfig':
         return MsgUpdateInstantiateConfigV1.fromAmino(data, isClassic);
+      case 'wasm/MsgUpdateParams':
+        return MsgUpdateWasmParamsV1.fromAmino(data, isClassic);
 
       // ibc-transfer
       case 'cosmos-sdk/MsgTransfer':
-        return MsgTransfer.fromAmino(data, isClassic);
+        return MsgTransferV1.fromAmino(data, isClassic);
 
       // crisis
       case 'crisis/MsgVerifyInvariant':
@@ -535,15 +581,19 @@ export namespace Msg {
       // evm
       case 'ethermint/MsgEthereumTx':
         return MsgEthereumTxV1.fromAmino(data);
-      case 'ethermint/MsgUpdateParams':
+      case 'ethermint/x/evm/MsgUpdateParams':
         return MsgUpdateEvmParamsV1.fromAmino(data);
 
       // xpla
       case 'xpladev/MsgFundFeeCollector':
       case 'xpladev/MsgFundRewardPool':
         return MsgFundRewardPoolV1B1.fromAmino(data);
-      case 'xpladev/reward/MsgUpdateParams':
+      case 'xpladev/x/reward/MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.fromAmino(data);
+      case 'xpladev/MsgRegisterVolunteerValidator':
+        return MsgRegisterVolunteerValidatorV1B1.fromAmino(data);
+      case 'xpladev/MsgUnregisterVolunteerValidator':
+        return MsgUnregisterVolunteerValidatorV1B1.fromAmino(data);
 
       default:
         throw Error(`not supported msg ${data['type']}`);
@@ -565,9 +615,17 @@ export namespace Msg {
       case '/cosmos.bank.v1beta1.MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.fromData(data, isClassic);
 
+      // circuit
+      case '/cosmos.circuit.v1.MsgAuthorizeCircuitBreaker':
+        return MsgAuthorizeCircuitBreakerV1.fromData(data, isClassic);
+      case '/cosmos.circuit.v1.MsgResetCircuitBreaker':
+        return MsgResetCircuitBreakerV1.fromData(data, isClassic);
+      case '/cosmos.circuit.v1.MsgTripCircuitBreaker':
+        return MsgTripCircuitBreakerV1.fromData(data, isClassic);
+      
       // consensus
       case '/cosmos.consensus.v1.MsgUpdateParams':
-        return MsgUpdateConsensusParamsV1B1.fromData(data, isClassic);
+        return MsgUpdateConsensusParamsV1.fromData(data, isClassic);
 
       // distribution
       case '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress':
@@ -736,10 +794,38 @@ export namespace Msg {
         return MsgUpdateWasmParamsV1.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgUpdateInstantiateConfig':
         return MsgUpdateInstantiateConfigV1.fromData(data, isClassic);
+      case '/cosmwasm.wasm.v1.MsgIBCSend':
+        return MsgIBCSendV1.fromData(data, isClassic);
+      case '/cosmwasm.wasm.v1.MsgIBCCloseChannel':
+        return MsgIBCCloseChannelV1.fromData(data, isClassic);
+
+      // ibc-fee
+      case '/ibc.applications.fee.v1.MsgPayPacketFee':
+        return MsgPayPacketFee.fromData(data, isClassic);
+      case '/ibc.applications.fee.v1.MsgPayPacketFeeAsync':
+        return MsgPayPacketFeeAsync.fromData(data, isClassic);
+      case '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee':
+        return MsgRegisterCounterpartyAddress.fromData(data, isClassic);
+      case '/ibc.applications.fee.v1.MsgRegisterPayee':
+        return MsgRegisterPayee.fromData(data, isClassic);
+
+      // ibc-ica
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount':
+        return MsgRegisterInterchainAccountV1.fromData(data);
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgSendTx':
+        return MsgSendTxV1.fromData(data);
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParams':
+        return MsgUpdateIcaControllerParamsV1.fromData(data);
+      case '/ibc.applications.interchain_accounts.host.v1.MsgModuleQuerySafe':
+        return MsgModuleQuerySafeV1.fromData(data, isClassic);
+      case '/ibc.applications.interchain_accounts.host.v1.MsgUpdateParams':
+        return MsgUpdateIcaHostParamsV1.fromData(data);
 
       // ibc-transfer
       case '/ibc.applications.transfer.v1.MsgTransfer':
-        return MsgTransfer.fromData(data, isClassic);
+        return MsgTransferV1.fromData(data, isClassic);
+      case '/ibc.applications.transfer.v1.MsgUpdateParams':
+        return MsgUpdateIbcTransferParamsV1.fromData(data);
 
       // ibc-client
       case '/ibc.core.client.v1.MsgCreateClient':
@@ -750,6 +836,12 @@ export namespace Msg {
         return MsgUpgradeClient.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgSubmitMisbehaviour':
         return MsgSubmitMisbehaviour.fromData(data, isClassic);
+      case '/ibc.core.client.v1.MsgRecoverClient':
+        return MsgRecoverClient.fromData(data, isClassic);
+      case '/ibc.core.client.v1.MsgIBCSoftwareUpgrade':
+        return MsgIbcSoftwareUpgradeV1.fromData(data, isClassic);
+      case '/ibc.core.client.v1.MsgUpdateParams':
+        return MsgUpdateIbcClientParamsV1.fromData(data, isClassic);
 
       // ibc-connection
       case '/ibc.core.connection.v1.MsgConnectionOpenInit':
@@ -760,6 +852,8 @@ export namespace Msg {
         return MsgConnectionOpenConfirm.fromData(data, isClassic);
       case '/ibc.core.connection.v1.MsgConnectionOpenAck':
         return MsgConnectionOpenAck.fromData(data, isClassic);
+      case '/ibc.core.connection.v1.MsgUpdateParams':
+        return MsgUpdateIbcConnectionParamsV1.fromData(data, isClassic);
 
       // ibc-channel
       case '/ibc.core.channel.v1.MsgChannelOpenInit':
@@ -782,6 +876,22 @@ export namespace Msg {
         return MsgTimeout.fromData(data, isClassic);
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
         return MsgTimeoutOnClose.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeInit':
+        return MsgChannelUpgradeInit.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeTry':
+        return MsgChannelUpgradeTry.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeAck':
+        return MsgChannelUpgradeAck.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeConfirm':
+        return MsgChannelUpgradeConfirm.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeOpen':
+        return MsgChannelUpgradeOpen.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeTimeout':
+        return MsgChannelUpgradeTimeout.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeCancel':
+        return MsgChannelUpgradeCancel.fromData(data, isClassic);
+      case '/ibc.core.channel.v1.MsgUpdateParams':
+        return MsgUpdateIbcChannelParamsV1.fromData(data, isClassic);
 
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
@@ -805,6 +915,10 @@ export namespace Msg {
         return MsgFundRewardPoolV1B1.fromData(data);
       case '/xpla.reward.v1beta1.MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.fromData(data);
+      case '/xpla.volunteer.v1beta1.MsgRegisterVolunteerValidator':
+        return MsgRegisterVolunteerValidatorV1B1.fromData(data);
+      case '/xpla.volunteer.v1beta1.MsgUnregisterVolunteerValidator':
+        return MsgUnregisterVolunteerValidatorV1B1.fromData(data);
 
       default:
         throw Error(`not supported msg ${data['@type']}`);
@@ -827,9 +941,17 @@ export namespace Msg {
       case '/cosmos.bank.v1beta1.MsgUpdateParams':
         return MsgUpdateBankParamsV1B1.unpackAny(proto, isClassic);
 
+      // circuit
+      case '/cosmos.circuit.v1.MsgAuthorizeCircuitBreaker':
+        return MsgAuthorizeCircuitBreakerV1.unpackAny(proto, isClassic);
+      case '/cosmos.circuit.v1.MsgResetCircuitBreaker':
+        return MsgResetCircuitBreakerV1.unpackAny(proto, isClassic);
+      case '/cosmos.circuit.v1.MsgTripCircuitBreaker':
+        return MsgTripCircuitBreakerV1.unpackAny(proto, isClassic);
+
       // consensus
       case '/cosmos.consensus.v1.MsgUpdateParams':
-        return MsgUpdateConsensusParamsV1B1.unpackAny(proto, isClassic);
+        return MsgUpdateConsensusParamsV1.unpackAny(proto, isClassic);
 
       // distribution
       case '/cosmos.distribution.v1beta1.MsgSetWithdrawAddress':
@@ -998,10 +1120,38 @@ export namespace Msg {
         return MsgUpdateWasmParamsV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgUpdateInstantiateConfig':
         return MsgUpdateInstantiateConfigV1.unpackAny(proto, isClassic);
+      case '/cosmwasm.wasm.v1.MsgIBCSend':
+        return MsgIBCSendV1.unpackAny(proto, isClassic);
+      case '/cosmwasm.wasm.v1.MsgIBCCloseChannel':
+        return MsgIBCCloseChannelV1.unpackAny(proto, isClassic);
+
+      // ibc-fee
+      case '/ibc.applications.fee.v1.MsgPayPacketFee':
+        return MsgPayPacketFee.unpackAny(proto, isClassic);
+      case '/ibc.applications.fee.v1.MsgPayPacketFeeAsync':
+        return MsgPayPacketFeeAsync.unpackAny(proto, isClassic);
+      case '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee':
+        return MsgRegisterCounterpartyAddress.unpackAny(proto, isClassic);
+      case '/ibc.applications.fee.v1.MsgRegisterPayee':
+        return MsgRegisterPayee.unpackAny(proto, isClassic);
+
+      // ibc-ica
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount':
+        return MsgRegisterInterchainAccountV1.unpackAny(proto);
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgSendTx':
+        return MsgSendTxV1.unpackAny(proto);
+      case '/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParams':
+        return MsgUpdateIcaControllerParamsV1.unpackAny(proto);
+      case '/ibc.applications.interchain_accounts.host.v1.MsgModuleQuerySafe':
+        return MsgModuleQuerySafeV1.unpackAny(proto, isClassic);
+      case '/ibc.applications.interchain_accounts.host.v1.MsgUpdateParams':
+        return MsgUpdateIcaHostParamsV1.unpackAny(proto);
 
       // ibc-transfer
       case '/ibc.applications.transfer.v1.MsgTransfer':
-        return MsgTransfer.unpackAny(proto, isClassic);
+        return MsgTransferV1.unpackAny(proto, isClassic);
+      case '/ibc.applications.transfer.v1.MsgUpdateParams':
+        return MsgUpdateIbcTransferParamsV1.unpackAny(proto);
 
       // ibc-client
       case '/ibc.core.client.v1.MsgCreateClient':
@@ -1012,6 +1162,12 @@ export namespace Msg {
         return MsgUpgradeClient.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgSubmitMisbehaviour':
         return MsgSubmitMisbehaviour.unpackAny(proto, isClassic);
+      case '/ibc.core.client.v1.MsgRecoverClient':
+        return MsgRecoverClient.unpackAny(proto, isClassic);
+      case '/ibc.core.client.v1.MsgIBCSoftwareUpgrade':
+        return MsgIbcSoftwareUpgradeV1.unpackAny(proto, isClassic);
+      case '/ibc.core.client.v1.MsgUpdateParams':
+        return MsgUpdateIbcClientParamsV1.unpackAny(proto, isClassic);
 
       // ibc-connection
       case '/ibc.core.connection.v1.MsgConnectionOpenInit':
@@ -1022,6 +1178,8 @@ export namespace Msg {
         return MsgConnectionOpenConfirm.unpackAny(proto, isClassic);
       case '/ibc.core.connection.v1.MsgConnectionOpenAck':
         return MsgConnectionOpenAck.unpackAny(proto, isClassic);
+      case '/ibc.core.connection.v1.MsgUpdateParams':
+        return MsgUpdateIbcConnectionParamsV1.unpackAny(proto, isClassic);
 
       // ibc-channel
       case '/ibc.core.channel.v1.MsgChannelOpenInit':
@@ -1044,6 +1202,22 @@ export namespace Msg {
         return MsgTimeout.unpackAny(proto, isClassic);
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
         return MsgTimeoutOnClose.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeInit':
+        return MsgChannelUpgradeInit.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeTry':
+        return MsgChannelUpgradeTry.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeAck':
+        return MsgChannelUpgradeAck.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeConfirm':
+        return MsgChannelUpgradeConfirm.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeOpen':
+        return MsgChannelUpgradeOpen.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeTimeout':
+        return MsgChannelUpgradeTimeout.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgChannelUpgradeCancel':
+        return MsgChannelUpgradeCancel.unpackAny(proto, isClassic);
+      case '/ibc.core.channel.v1.MsgUpdateParams':
+        return MsgUpdateIbcChannelParamsV1.unpackAny(proto, isClassic);
 
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
@@ -1067,6 +1241,10 @@ export namespace Msg {
         return MsgFundRewardPoolV1B1.unpackAny(proto);
       case '/xpla.reward.v1beta1.MsgUpdateParams':
         return MsgUpdateRewardParamsV1B1.unpackAny(proto);
+      case '/xpla.volunteer.v1beta1.MsgRegisterVolunteerValidator':
+        return MsgRegisterVolunteerValidatorV1B1.unpackAny(proto);
+      case '/xpla.volunteer.v1beta1.MsgUnregisterVolunteerValidator':
+        return MsgUnregisterVolunteerValidatorV1B1.unpackAny(proto);
 
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);

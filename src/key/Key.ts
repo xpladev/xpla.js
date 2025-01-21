@@ -9,6 +9,7 @@ import {
   ModeInfo,
   AuthInfo,
   PublicKey,
+  SimplePublicKey,
 } from '../core';
 import { SignatureV2 } from '../core/SignatureV2';
 import { SignMode } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
@@ -28,6 +29,13 @@ export abstract class Key {
    * @param payload the data to be signed
    */
   public abstract sign(payload: Buffer): Promise<Buffer>;
+
+  public async verify(payload: Buffer, signature: Buffer): Promise<boolean> {
+    if (!this.publicKey) {
+      throw new Error('Could not compute accAddress: missing rawAddress');
+    }
+    return PublicKey.verify(this.publicKey, payload, signature);
+  }
 
   /**
    * Xpla account address. `xpla-` prefixed.
@@ -98,9 +106,41 @@ export abstract class Key {
       new SignatureV2.Descriptor(
         new SignatureV2.Descriptor.Single(
           signMode ?? SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
-          (await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))).toString(
-            'base64'
-          )
+          (
+            await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))
+          ).toString('base64')
+        )
+      ),
+      tx.sequence
+    );
+  }
+
+  /**
+   * Signs a [[StdSignMsg]] with the method supplied by the child class.
+   * only used Amino sign
+   *
+   * @param tx sign-message of the transaction to sign
+   * @param isClassic target network is isClassic or not?
+   */
+  public async createSignatureText(
+    tx: SignDoc,
+    isClassic?: boolean,
+    signMode?: SignMode,
+  ): Promise<SignatureV2> {
+    if (!this.publicKey) {
+      throw new Error(
+        'Signature could not be created: Key instance missing publicKey'
+      );
+    }
+
+    return new SignatureV2(
+      this.publicKey,
+      new SignatureV2.Descriptor(
+        new SignatureV2.Descriptor.Single(
+          signMode ?? SignMode.SIGN_MODE_TEXTUAL,
+          (
+            await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))
+          ).toString('base64')
         )
       ),
       tx.sequence

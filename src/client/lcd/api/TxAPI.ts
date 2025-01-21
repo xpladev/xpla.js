@@ -233,7 +233,7 @@ export class TxAPI extends BaseAPI {
    */
   public async create(
     signers: SignerOptions[],
-    options: CreateTxOptions
+    options: CreateTxOptions,
   ): Promise<Tx> {
     let { fee } = options;
     const { msgs, memo, timeoutHeight } = options;
@@ -374,9 +374,7 @@ export class TxAPI extends BaseAPI {
     const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
     const gasAdjustment =
       options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
-    const feeDenoms = options.feeDenoms ?? [
-      this.lcd.config.isClassic ? 'uusd' : 'axpla',
-    ];
+    const feeDenoms = options.feeDenoms ?? [ 'axpla' ];
     const msgs = options.msgs;
     let gas = options.gas;
     let gasPricesCoins: Coins | undefined;
@@ -664,11 +662,12 @@ export class TxAPI extends BaseAPI {
     if (options.query !== undefined) {
       params.append('query', options.query);
     }
-    else {
+    else if (query.length > 0) {
       params.append('query', query);
     }
 
     delete options['events'];
+    delete options['query'];
 
     Object.entries(options).forEach(v => {
       params.append(v[0], v[1] as string);

@@ -1,6 +1,7 @@
 export * from './AuthAPI';
 export * from './AuthzAPI';
 export * from './BankAPI';
+export * from './CircuitAPI';
 export * from './ConsensusAPI';
 export * from './DistributionAPI';
 export * from './ERC20API';
@@ -16,4 +17,8 @@ export * from './WasmAPI';
 export * from './XplaAPI';
 export * from './TxAPI';
 export * from './IbcAPI';
+export * from './IbcFeeAPI';
+export * from './IbcIcaAPI';
+export * from './IbcPacketAPI';
 export * from './IbcTransferAPI';
+export * from './IbcWasmAPI';

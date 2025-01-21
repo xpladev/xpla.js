@@ -42,10 +42,10 @@ export class MsgDepositV1 extends JSONSerializable<
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgDepositV1.Amino {
+  public toAmino(_?: boolean): MsgDepositV1.Amino {
     const { proposal_id, depositor, amount } = this;
     return {
-      type: isClassic ? 'gov/MsgDeposit' : 'cosmos-sdk/MsgDeposit',
+      type: 'cosmos-sdk/v1/MsgDeposit',
       value: {
         proposal_id: proposal_id.toString(),
         depositor,
@@ -113,7 +113,7 @@ export class MsgDepositV1 extends JSONSerializable<
 
 export namespace MsgDepositV1 {
   export interface Amino {
-    type: 'gov/MsgDeposit' | 'cosmos-sdk/MsgDeposit';
+    type: 'cosmos-sdk/v1/MsgDeposit';
     value: {
       proposal_id: string;
       depositor: AccAddress;

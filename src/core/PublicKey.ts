@@ -109,6 +109,10 @@ export namespace PublicKey {
 
     throw new Error(`Pubkey type ${typeUrl} not recognized`);
   }
+
+  export async function verify(pubkey: PublicKey, payload: Buffer, signature: Buffer): Promise<boolean> {
+    return pubkey.verify(payload, signature);
+  }
 }
 
 export class SimplePublicKey extends JSONSerializable<
@@ -187,6 +191,14 @@ export class SimplePublicKey extends JSONSerializable<
 
   public evmAddress(): string {
     return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+  }
+
+  public async verify(payload: Buffer, signature: Buffer): Promise<boolean> {
+    return secp256k1.verify(
+      signature,
+      keccak_256(payload),
+      Buffer.from(this.key, 'base64'),
+    );
   }
 }
 
@@ -310,6 +322,10 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
       LegacyAminoPubKey_pb.decode(pubkeyAny.value)
     );
   }
+
+  public async verify(_payload: Buffer, _signature: Buffer): Promise<boolean> {
+    throw new Error('Could not verify: LegacyAminoMultisigPublicKey cannot be used to verify');
+  }
 }
 
 export namespace LegacyAminoMultisigPublicKey {
@@ -411,6 +427,10 @@ export class ValConsPublicKey extends JSONSerializable<
 
   public evmAddress(): string {
     return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+  }
+
+  public async verify(_payload: Buffer, _signature: Buffer): Promise<boolean> {
+    throw new Error('Could not verify: ValConsPublicKey cannot be used to verify');
   }
 }
 

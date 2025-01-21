@@ -1,4 +1,5 @@
 import { JSONSerializable } from '../../../../util/json';
+import { Int, Numeric } from '../../../../core/numeric';
 import { PacketId as PacketId_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 
 /**
@@ -11,6 +12,8 @@ export class PacketId extends JSONSerializable<
   PacketId.Data,
   PacketId.Proto
 > {
+  public sequence: Int;
+
   /**
    * @param port_id  channel port identifier
    * @param channel_id channel unique identifier
@@ -19,14 +22,15 @@ export class PacketId extends JSONSerializable<
   constructor(
     public port_id: string,
     public channel_id: string,
-    public sequence: number
+    sequence: Numeric.Input,
   ) {
     super();
+    this.sequence = new Int(sequence);
   }
 
   public static fromAmino(data: PacketId.Amino): PacketId {
     const { port_id, channel_id, sequence } = data;
-    return new PacketId(port_id, channel_id, Number.parseInt(sequence));
+    return new PacketId(port_id, channel_id, sequence);
   }
 
   public toAmino(): PacketId.Amino {
@@ -41,7 +45,7 @@ export class PacketId extends JSONSerializable<
 
   public static fromData(data: PacketId.Data): PacketId {
     const { port_id, channel_id, sequence } = data;
-    return new PacketId(port_id, channel_id, Number.parseInt(sequence));
+    return new PacketId(port_id, channel_id, sequence);
   }
 
   public toData(): PacketId.Data {
@@ -58,7 +62,7 @@ export class PacketId extends JSONSerializable<
     return new PacketId(
       proto.portId,
       proto.channelId,
-      proto.sequence.toNumber()
+      proto.sequence.toString(),
     );
   }
 
@@ -67,7 +71,7 @@ export class PacketId extends JSONSerializable<
     return PacketId_pb.fromPartial({
       portId: port_id,
       channelId: channel_id,
-      sequence,
+      sequence: sequence.toFixed(),
     });
   }
 }

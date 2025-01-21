@@ -38,10 +38,10 @@ export class MsgVoteV1 extends JSONSerializable<
     return new MsgVoteV1(Number.parseInt(proposal_id), voter, option, metadata);
   }
 
-  public toAmino(isClassic?: boolean): MsgVoteV1.Amino {
+  public toAmino(_?: boolean): MsgVoteV1.Amino {
     const { proposal_id, voter, option, metadata } = this;
     return {
-      type: isClassic ? 'gov/MsgVote' : 'cosmos-sdk/MsgVote',
+      type: 'cosmos-sdk/v1/MsgVote',
       value: {
         proposal_id: proposal_id.toFixed(),
         voter,
@@ -106,7 +106,7 @@ export class MsgVoteV1 extends JSONSerializable<
 
 export namespace MsgVoteV1 {
   export interface Amino {
-    type: 'gov/MsgVote' | 'cosmos-sdk/MsgVote';
+    type: 'cosmos-sdk/v1/MsgVote';
     value: {
       proposal_id: string;
       voter: AccAddress;

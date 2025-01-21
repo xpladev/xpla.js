@@ -1,4 +1,4 @@
-import { JSONSerializable } from '../../../../util/json';
+import { JSONSerializable } from '../../../../../util/json';
 import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/metadata';
 
 /**
@@ -6,7 +6,7 @@ import { Metadata as Metadata_pb } from '@xpla/xpla.proto/ibc/applications/inter
  * See ICS004: https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#Versioning
  */
 export class Metadata extends JSONSerializable<
-  Metadata.Amino,
+  any,
   Metadata.Data,
   Metadata.Proto
 > {
@@ -29,43 +29,12 @@ export class Metadata extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: Metadata.Amino): Metadata {
-    const {
-      version,
-      controller_connection_id,
-      host_connection_id,
-      address,
-      encoding,
-      tx_type,
-    } = data;
-    return new Metadata(
-      version,
-      controller_connection_id,
-      host_connection_id,
-      address,
-      encoding,
-      tx_type
-    );
+  public static fromAmino(_: any): Metadata {
+    throw new Error('Amino not supported');
   }
 
-  public toAmino(): Metadata.Amino {
-    const {
-      version,
-      controller_connection_id,
-      host_connection_id,
-      address,
-      encoding,
-      tx_type,
-    } = this;
-    const res: Metadata.Amino = {
-      version,
-      controller_connection_id,
-      host_connection_id,
-      address,
-      encoding,
-      tx_type,
-    };
-    return res;
+  public toAmino(): any {
+    throw new Error('Amino not supported');
   }
 
   public static fromData(data: Metadata.Data): Metadata {
@@ -139,15 +108,6 @@ export class Metadata extends JSONSerializable<
 }
 
 export namespace Metadata {
-  export interface Amino {
-    version: string;
-    controller_connection_id: string;
-    host_connection_id: string;
-    address: string;
-    encoding: string;
-    tx_type: string;
-  }
-
   export interface Data {
     version: string;
     controller_connection_id: string;

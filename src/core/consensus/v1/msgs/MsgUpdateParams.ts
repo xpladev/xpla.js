@@ -2,13 +2,13 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgUpdateParams as MsgUpdateConsensusParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/consensus/v1/tx';
+import { MsgUpdateParams as MsgUpdateConsensusParamsV1_pb } from '@xpla/xpla.proto/cosmos/consensus/v1/tx';
 import { BlockParams, EvidenceParams, ValidatorParams, ABCIParams } from '../Params';
 
-export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
-  MsgUpdateConsensusParamsV1B1.Amino,
-  MsgUpdateConsensusParamsV1B1.Data,
-  MsgUpdateConsensusParamsV1B1.Proto
+export class MsgUpdateConsensusParamsV1 extends JSONSerializable<
+  MsgUpdateConsensusParamsV1.Amino,
+  MsgUpdateConsensusParamsV1.Data,
+  MsgUpdateConsensusParamsV1.Proto
 > {
   /**
    * @param authority is the address that controls the module
@@ -24,13 +24,13 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
   }
 
   public static fromAmino(
-    data: MsgUpdateConsensusParamsV1B1.Amino,
+    data: MsgUpdateConsensusParamsV1.Amino,
     _isClassic?: boolean
-  ): MsgUpdateConsensusParamsV1B1 {
+  ): MsgUpdateConsensusParamsV1 {
     const {
       value: { authority, block, evidence, validator, abci },
     } = data;
-    return new MsgUpdateConsensusParamsV1B1(
+    return new MsgUpdateConsensusParamsV1(
       authority,
       block ? BlockParams.fromAmino(block) : undefined,
       evidence ? EvidenceParams.fromAmino(evidence) : undefined,
@@ -39,7 +39,7 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Amino {
+  public toAmino(isClassic?: boolean): MsgUpdateConsensusParamsV1.Amino {
     const { authority, block, evidence, validator, abci } = this;
     return {
       type: isClassic
@@ -56,11 +56,11 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
   }
 
   public static fromData(
-    data: MsgUpdateConsensusParamsV1B1.Data,
+    data: MsgUpdateConsensusParamsV1.Data,
     _isClassic?: boolean
-  ): MsgUpdateConsensusParamsV1B1 {
+  ): MsgUpdateConsensusParamsV1 {
     const { authority, block, evidence, validator, abci } = data;
-    return new MsgUpdateConsensusParamsV1B1(
+    return new MsgUpdateConsensusParamsV1(
       authority,
       block ? BlockParams.fromData(block) : undefined,
       evidence ? EvidenceParams.fromData(evidence) : undefined,
@@ -69,7 +69,7 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     );
   }
 
-  public toData(_isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Data {
+  public toData(_isClassic?: boolean): MsgUpdateConsensusParamsV1.Data {
     const { authority, block, evidence, validator, abci } = this;
     return {
       '@type': '/cosmos.consensus.v1.MsgUpdateParams',
@@ -82,10 +82,10 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
   }
 
   public static fromProto(
-    proto: MsgUpdateConsensusParamsV1B1.Proto,
+    proto: MsgUpdateConsensusParamsV1.Proto,
     _isClassic?: boolean
-  ): MsgUpdateConsensusParamsV1B1 {
-    return new MsgUpdateConsensusParamsV1B1(
+  ): MsgUpdateConsensusParamsV1 {
+    return new MsgUpdateConsensusParamsV1(
       proto.authority,
       proto.block ? BlockParams.fromProto(proto.block) : undefined,
       proto.evidence ? EvidenceParams.fromProto(proto.evidence) : undefined,
@@ -94,9 +94,9 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
     );
   }
 
-  public toProto(_isClassic?: boolean): MsgUpdateConsensusParamsV1B1.Proto {
+  public toProto(_isClassic?: boolean): MsgUpdateConsensusParamsV1.Proto {
     const { authority, block, evidence, validator, abci } = this;
-    return MsgUpdateConsensusParamsV1B1_pb.fromPartial({
+    return MsgUpdateConsensusParamsV1_pb.fromPartial({
       authority,
       block: block ? block.toProto() : undefined,
       evidence: evidence ? evidence.toProto() : undefined,
@@ -107,22 +107,22 @@ export class MsgUpdateConsensusParamsV1B1 extends JSONSerializable<
 
   public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/cosmos.bank.v1beta1.MsgUpdateParams',
-      value: MsgUpdateConsensusParamsV1B1_pb.encode(this.toProto()).finish(),
+      typeUrl: '/cosmos.consensus.v1.MsgUpdateParams',
+      value: MsgUpdateConsensusParamsV1_pb.encode(this.toProto()).finish(),
     });
   }
 
   public static unpackAny(
     msgAny: Any,
     _isClassic?: boolean
-  ): MsgUpdateConsensusParamsV1B1 {
-    return MsgUpdateConsensusParamsV1B1.fromProto(
-      MsgUpdateConsensusParamsV1B1_pb.decode(msgAny.value)
+  ): MsgUpdateConsensusParamsV1 {
+    return MsgUpdateConsensusParamsV1.fromProto(
+      MsgUpdateConsensusParamsV1_pb.decode(msgAny.value)
     );
   }
 }
 
-export namespace MsgUpdateConsensusParamsV1B1 {
+export namespace MsgUpdateConsensusParamsV1 {
   export interface Amino {
     type:
       | 'consensus/MsgUpdateParams'
@@ -145,5 +145,5 @@ export namespace MsgUpdateConsensusParamsV1B1 {
     abci: ABCIParams.Data | undefined;
   }
 
-  export type Proto = MsgUpdateConsensusParamsV1B1_pb;
+  export type Proto = MsgUpdateConsensusParamsV1_pb;
 }

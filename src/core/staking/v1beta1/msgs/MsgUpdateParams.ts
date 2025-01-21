@@ -40,7 +40,7 @@ export class MsgUpdateStakingParamsV1B1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateStakingParamsV1B1.Amino {
     const { authority, params } = this;
     return {
-      type: 'cosmos-sdk/MsgUpdateStakingParams',
+      type: 'cosmos-sdk/x/staking/MsgUpdateParams',
       authority,
       params: params ? params.toAmino() : undefined,
     };
@@ -105,7 +105,7 @@ export namespace MsgUpdateStakingParamsV1B1 {
   export type Params = StakingParamsV1B1;
 
   export interface Amino {
-    type: 'cosmos-sdk/MsgUpdateStakingParams';
+    type: 'cosmos-sdk/x/staking/MsgUpdateParams';
     authority: AccAddress;
     params: StakingParamsV1B1.Amino | undefined;
   }

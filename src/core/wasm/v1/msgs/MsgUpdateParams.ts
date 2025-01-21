@@ -36,7 +36,7 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateWasmParamsV1.Amino {
     const { authority, codeUploadAccess, instantiateDefaultPermission } = this;
     return {
-      type: 'wasm/MsgUpdateParamsV1',
+      type: 'wasm/MsgUpdateParams',
       value: {
         authority,
         codeUploadAccess,
@@ -111,7 +111,7 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateWasmParamsV1 {
   export interface Amino {
-    type: 'wasm/MsgUpdateParamsV1';
+    type: 'wasm/MsgUpdateParams';
     value: {
       authority: AccAddress;
       codeUploadAccess: AccessConfig | undefined;

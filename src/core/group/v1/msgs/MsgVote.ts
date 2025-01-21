@@ -49,7 +49,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
   public toAmino(isClassic?: boolean): MsgGroupVoteV1.Amino {
     const { proposal_id, voter, option, metadata, exec } = this;
     return {
-      type: isClassic ? 'group/MsgVote' : 'cosmos-sdk/MsgVote',
+      type: isClassic ? 'group/MsgVote' : 'cosmos-sdk/group/MsgVote',
       value: {
         proposal_id: proposal_id.toFixed(),
         voter,
@@ -127,7 +127,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
 
 export namespace MsgGroupVoteV1 {
   export interface Amino {
-    type: 'group/MsgVote' | 'cosmos-sdk/MsgVote';
+    type: 'group/MsgVote' | 'cosmos-sdk/group/MsgVote';
     value: {
       proposal_id: string;
       voter: AccAddress;

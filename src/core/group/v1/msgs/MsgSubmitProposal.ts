@@ -72,7 +72,7 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
     return {
       type: isClassic
         ? 'group/MsgSubmitProposal'
-        : 'cosmos-sdk/MsgSubmitProposal',
+        : 'cosmos-sdk/group/MsgSubmitProposal',
       value: {
         group_policy_address,
         proposers,
@@ -189,7 +189,7 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
 
 export namespace MsgGroupSubmitProposalV1 {
   export interface Amino {
-    type: 'group/MsgSubmitProposal' | 'cosmos-sdk/MsgSubmitProposal';
+    type: 'group/MsgSubmitProposal' | 'cosmos-sdk/group/MsgSubmitProposal';
     value: {
       group_policy_address: AccAddress;
       proposers: AccAddress[];

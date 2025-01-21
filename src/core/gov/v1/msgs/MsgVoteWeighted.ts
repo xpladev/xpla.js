@@ -43,10 +43,10 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgVoteWeightedV1.Amino {
+  public toAmino(_?: boolean): MsgVoteWeightedV1.Amino {
     const { proposal_id, voter, options, metadata } = this;
     return {
-      type: isClassic ? 'gov/MsgVoteWeighted' : 'cosmos-sdk/MsgVoteWeighted',
+      type: 'cosmos-sdk/v1/MsgVoteWeighted',
       value: {
         proposal_id: proposal_id.toFixed(),
         voter,
@@ -121,7 +121,7 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
 
 export namespace MsgVoteWeightedV1 {
   export interface Amino {
-    type: 'gov/MsgVoteWeighted' | 'cosmos-sdk/MsgVoteWeighted';
+    type: 'cosmos-sdk/v1/MsgVoteWeighted';
     value: {
       proposal_id: string;
       voter: AccAddress;

@@ -15,6 +15,8 @@ import { MsgStoreAndMigrateContractV1 } from './MsgStoreAndMigrateContract';
 import { MsgUpdateContractLabelV1 } from './MsgUpdateContractLabel';
 import { MsgUpdateWasmParamsV1 } from './MsgUpdateParams';
 import { MsgUpdateInstantiateConfigV1 } from './MsgUpdateInstantiateConfig';
+import { MsgIBCSendV1 } from './MsgIBCSend';
+import { MsgIBCCloseChannelV1 } from './MsgIBCCloseChannel';
 
 export * from './MsgStoreCode';
 export * from './MsgInstantiateContract';
@@ -33,6 +35,8 @@ export * from './MsgStoreAndMigrateContract';
 export * from './MsgUpdateContractLabel';
 export * from './MsgUpdateParams';
 export * from './MsgUpdateInstantiateConfig';
+export * from './MsgIBCSend';
+export * from './MsgIBCCloseChannel';
 
 export type WasmMsgV1 =
   | MsgStoreCodeV1
@@ -51,7 +55,9 @@ export type WasmMsgV1 =
   | MsgStoreAndMigrateContractV1
   | MsgUpdateContractLabelV1
   | MsgUpdateWasmParamsV1
-  | MsgUpdateInstantiateConfigV1;
+  | MsgUpdateInstantiateConfigV1
+  | MsgIBCSendV1
+  | MsgIBCCloseChannelV1;
 
 export namespace WasmMsgV1 {
   export type Amino =
@@ -71,7 +77,9 @@ export namespace WasmMsgV1 {
     | MsgStoreAndMigrateContractV1.Amino
     | MsgUpdateContractLabelV1.Amino
     | MsgUpdateWasmParamsV1.Amino
-    | MsgUpdateInstantiateConfigV1.Amino;
+    | MsgUpdateInstantiateConfigV1.Amino
+    | MsgIBCSendV1.Amino
+    | MsgIBCCloseChannelV1.Amino;
   export type Data =
     | MsgStoreCodeV1.Data
     | MsgInstantiateContractV1.Data
@@ -89,7 +97,9 @@ export namespace WasmMsgV1 {
     | MsgStoreAndMigrateContractV1.Data
     | MsgUpdateContractLabelV1.Data
     | MsgUpdateWasmParamsV1.Data
-    | MsgUpdateInstantiateConfigV1.Data;
+    | MsgUpdateInstantiateConfigV1.Data
+    | MsgIBCSendV1.Data
+    | MsgIBCCloseChannelV1.Data;
   export type Proto =
     | MsgStoreCodeV1.Proto
     | MsgInstantiateContractV1.Proto
@@ -107,5 +117,7 @@ export namespace WasmMsgV1 {
     | MsgStoreAndMigrateContractV1.Proto
     | MsgUpdateContractLabelV1.Proto
     | MsgUpdateWasmParamsV1.Proto
-    | MsgUpdateInstantiateConfigV1.Proto;
+    | MsgUpdateInstantiateConfigV1.Proto
+    | MsgIBCSendV1.Proto
+    | MsgIBCCloseChannelV1.Proto;
 }

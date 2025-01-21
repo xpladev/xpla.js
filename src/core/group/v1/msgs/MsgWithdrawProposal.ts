@@ -35,7 +35,7 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
     return {
       type: isClassic
         ? 'group/MsgWithdrawProposal'
-        : 'cosmos-sdk/MsgWithdrawProposal',
+        : 'cosmos-sdk/group/MsgWithdrawProposal',
       value: {
         proposal_id: proposal_id.toFixed(),
         address,
@@ -103,7 +103,7 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
 
 export namespace MsgGroupWithdrawProposalV1 {
   export interface Amino {
-    type: 'group/MsgWithdrawProposal' | 'cosmos-sdk/MsgWithdrawProposal';
+    type: 'group/MsgWithdrawProposal' | 'cosmos-sdk/group/MsgWithdrawProposal';
     value: {
       proposal_id: string;
       address: AccAddress;

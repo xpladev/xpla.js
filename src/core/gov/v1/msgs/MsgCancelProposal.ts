@@ -36,10 +36,10 @@ export class MsgCancelProposalV1 extends JSONSerializable<
     );
   }
 
-  public toAmino(isClassic?: boolean): MsgCancelProposalV1.Amino {
+  public toAmino(_isClassic?: boolean): MsgCancelProposalV1.Amino {
     const { proposal_id, proposer } = this;
     return {
-      type: isClassic ? 'gov/MsgCancelProposal' : 'cosmos-sdk/x/gov/v1/MsgCancelProposal',
+      type: 'cosmos-sdk/v1/MsgCancelProposal',
       value: {
         proposal_id: proposal_id.toString(),
         proposer,
@@ -102,7 +102,7 @@ export class MsgCancelProposalV1 extends JSONSerializable<
 
 export namespace MsgCancelProposalV1 {
   export interface Amino {
-    type: 'gov/MsgCancelProposal' | 'cosmos-sdk/x/gov/v1/MsgCancelProposal';
+    type: 'cosmos-sdk/v1/MsgCancelProposal';
     value: {
       proposal_id: string;
       proposer: AccAddress;

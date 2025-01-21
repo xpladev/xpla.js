@@ -5,15 +5,15 @@ import { Coin } from '../../../../../Coin';
 import { Height } from '../../../../core/client/Height';
 import { Numeric } from '../../../../../numeric';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgTransfer as MsgTransfer_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
+import { MsgTransfer as MsgTransferV1_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
 
 /**
  * A basic message for transfer [[Coin]] via IBC.
  */
-export class MsgTransfer extends JSONSerializable<
-  MsgTransfer.Amino,
-  MsgTransfer.Data,
-  MsgTransfer.Proto
+export class MsgTransferV1 extends JSONSerializable<
+  MsgTransferV1.Amino,
+  MsgTransferV1.Data,
+  MsgTransferV1.Proto
 > {
   public source_port: string;
   public source_channel: string;
@@ -57,7 +57,7 @@ export class MsgTransfer extends JSONSerializable<
       : undefined;
   }
 
-  public static fromAmino(data: MsgTransfer.Amino, _?: boolean): MsgTransfer {
+  public static fromAmino(data: MsgTransferV1.Amino, _?: boolean): MsgTransferV1 {
     const {
       value: {
         source_port,
@@ -74,7 +74,7 @@ export class MsgTransfer extends JSONSerializable<
       throw 'both of timeout_height and timeout_timestamp are undefined';
     }
 
-    return new MsgTransfer(
+    return new MsgTransferV1(
       source_port,
       source_channel,
       token ? Coin.fromAmino(token) : undefined,
@@ -85,7 +85,7 @@ export class MsgTransfer extends JSONSerializable<
     );
   }
 
-  public toAmino(_?: boolean): MsgTransfer.Amino {
+  public toAmino(_?: boolean): MsgTransferV1.Amino {
     const {
       source_port,
       source_channel,
@@ -109,7 +109,7 @@ export class MsgTransfer extends JSONSerializable<
     };
   }
 
-  public static fromData(data: MsgTransfer.Data, _?: boolean): MsgTransfer {
+  public static fromData(data: MsgTransferV1.Data, _?: boolean): MsgTransferV1 {
     const {
       source_port,
       source_channel,
@@ -124,7 +124,7 @@ export class MsgTransfer extends JSONSerializable<
       throw 'both of timeout_height and timeout_timestamp are undefined';
     }
 
-    return new MsgTransfer(
+    return new MsgTransferV1(
       source_port,
       source_channel,
       token ? Coin.fromData(token) : undefined,
@@ -135,7 +135,7 @@ export class MsgTransfer extends JSONSerializable<
     );
   }
 
-  public toData(_?: boolean): MsgTransfer.Data {
+  public toData(_?: boolean): MsgTransferV1.Data {
     const {
       source_port,
       source_channel,
@@ -159,12 +159,12 @@ export class MsgTransfer extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgTransfer.Proto, _?: boolean): MsgTransfer {
+  public static fromProto(proto: MsgTransferV1.Proto, _?: boolean): MsgTransferV1 {
     if (!proto.timeoutHeight && proto.timeoutTimestamp.toNumber() == 0) {
       throw 'both of timeout_height and timeout_timestamp are empty';
     }
 
-    return new MsgTransfer(
+    return new MsgTransferV1(
       proto.sourcePort,
       proto.sourceChannel,
       proto.token ? Coin.fromProto(proto.token) : undefined,
@@ -175,7 +175,7 @@ export class MsgTransfer extends JSONSerializable<
     );
   }
 
-  public toProto(_?: boolean): MsgTransfer.Proto {
+  public toProto(_?: boolean): MsgTransferV1.Proto {
     const {
       source_port,
       source_channel,
@@ -185,7 +185,7 @@ export class MsgTransfer extends JSONSerializable<
       timeout_height,
       timeout_timestamp,
     } = this;
-    return MsgTransfer_pb.fromPartial({
+    return MsgTransferV1_pb.fromPartial({
       sourcePort: source_port,
       sourceChannel: source_channel,
       token: token ? token.toProto() : undefined,
@@ -199,19 +199,19 @@ export class MsgTransfer extends JSONSerializable<
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
       typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-      value: MsgTransfer_pb.encode(this.toProto(isClassic)).finish(),
+      value: MsgTransferV1_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
 
-  public static unpackAny(msgAny: Any, isClassic?: boolean): MsgTransfer {
-    return MsgTransfer.fromProto(
-      MsgTransfer_pb.decode(msgAny.value),
+  public static unpackAny(msgAny: Any, isClassic?: boolean): MsgTransferV1 {
+    return MsgTransferV1.fromProto(
+      MsgTransferV1_pb.decode(msgAny.value),
       isClassic
     );
   }
 }
 
-export namespace MsgTransfer {
+export namespace MsgTransferV1 {
   export interface Amino {
     type: 'cosmos-sdk/MsgTransfer';
     value: {
@@ -234,5 +234,5 @@ export namespace MsgTransfer {
     timeout_height: Height.Data;
     timeout_timestamp: string;
   }
-  export type Proto = MsgTransfer_pb;
+  export type Proto = MsgTransferV1_pb;
 }

@@ -1,12 +1,24 @@
-import { MsgTransfer } from './v1/msgs/MsgTransfer';
+import { MsgTransferV1 } from './v1/msgs/MsgTransfer';
+import { MsgUpdateIbcTransferParamsV1 } from './v1/msgs/MsgUpdateParams';
 
 export * from './v1/msgs/MsgTransfer';
-export * from './v2/FungibleTokenPacketData';
+export * from './v1/msgs/MsgUpdateParams';
 export * from './v1/DenomTrace';
+export * from './v2/FungibleTokenPacketData';
 
-export type IbcTransferMsg = MsgTransfer;
+export type IbcTransferMsgV1 = MsgTransferV1 | MsgUpdateIbcTransferParamsV1;
+export namespace IbcTransferMsgV1 {
+  export type Amino = MsgTransferV1.Amino;
+  export type Data = MsgTransferV1.Data | MsgUpdateIbcTransferParamsV1.Data;
+  export type Proto = MsgTransferV1.Proto | MsgUpdateIbcTransferParamsV1.Proto;
+}
+
+export { MsgTransferV1 as MsgTransfer } from './v1/msgs/MsgTransfer';
+export { MsgUpdateIbcTransferParamsV1 as MsgUpdateIbcTransferParams } from './v1/msgs/MsgUpdateParams';
+
+export type IbcTransferMsg = IbcTransferMsgV1;
 export namespace IbcTransferMsg {
-  export type Data = MsgTransfer.Data;
-  export type Amino = MsgTransfer.Amino;
-  export type Proto = MsgTransfer.Proto;
+  export type Amino = IbcTransferMsgV1.Amino;
+  export type Data = IbcTransferMsgV1.Data;
+  export type Proto = IbcTransferMsgV1.Proto;
 }

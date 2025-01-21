@@ -3,6 +3,7 @@ import { Key } from '../../key';
 import { CreateTxOptions } from '../lcd/api/TxAPI';
 import { Tx } from '../../core/Tx';
 import { SignMode as SignModeV2 } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
+import { Coins, Fee } from '../../core';
 
 export class Wallet {
   constructor(public lcd: LCDClient, public key: Key) {}
@@ -72,16 +73,75 @@ export class Wallet {
     options.sequence = sequence;
     options.accountNumber = accountNumber;
 
-    const tx = await this.createTx(options); // don't need isClassic because lcd already have it
-    return this.key.signTx(
-      tx,
-      {
-        accountNumber,
-        sequence,
-        chainID: this.lcd.config.chainID,
-        signMode: options.signMode ?? SignModeV2.SIGN_MODE_DIRECT,
-      },
-      this.lcd.config.isClassic
-    );
+    let tx: Tx;
+
+    if (options.fee) {
+      tx = await this.createTx(options);
+      tx = await this.key.signTx(
+        tx,
+        {
+          accountNumber,
+          sequence,
+          chainID: this.lcd.config.chainID,
+          signMode: options.signMode ?? SignModeV2.SIGN_MODE_DIRECT,
+        },
+        this.lcd.config.isClassic
+      );
+    }
+    else {
+      const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
+      const gasAdjustment =
+        options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
+      const feeDenoms = options.feeDenoms ?? [ 'axpla' ];
+      let gasPricesCoins: Coins | undefined;
+  
+      if (gasPrices) {
+        gasPricesCoins = new Coins(gasPrices);
+  
+        if (feeDenoms) {
+          const gasPricesCoinsFiltered = gasPricesCoins.filter(c =>
+            feeDenoms.includes(c.denom)
+          );
+  
+          if (gasPricesCoinsFiltered.toArray().length > 0) {
+            gasPricesCoins = gasPricesCoinsFiltered;
+          }
+        }
+      }
+
+      options.fee = new Fee(200000, gasPricesCoins
+        ? gasPricesCoins.mul(200000).toIntCeilCoins()
+        : '0axpla');
+      tx = await this.createTx(options);
+      tx = await this.key.signTx(
+        tx,
+        {
+          accountNumber,
+          sequence,
+          chainID: this.lcd.config.chainID,
+          signMode: options.signMode ?? SignModeV2.SIGN_MODE_DIRECT,
+        },
+        this.lcd.config.isClassic
+      );
+  
+      const gas = await this.lcd.tx.estimateGas(tx, { gasAdjustment });
+      const feeAmount = gasPricesCoins
+        ? gasPricesCoins.mul(gas).toIntCeilCoins()
+        : '0axpla';
+      tx.clearSignatures();
+      tx.auth_info.fee = new Fee(gas, feeAmount);
+      tx = await this.key.signTx(
+        tx,
+        {
+          accountNumber,
+          sequence,
+          chainID: this.lcd.config.chainID,
+          signMode: options.signMode ?? SignModeV2.SIGN_MODE_DIRECT,
+        },
+        this.lcd.config.isClassic
+      );
+    }
+
+    return tx;
   }
 }

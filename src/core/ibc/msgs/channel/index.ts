@@ -8,6 +8,14 @@ import { MsgRecvPacket } from './MsgRecvPacket';
 import { MsgAcknowledgement } from './MsgRecvAcknowledgement';
 import { MsgTimeout } from './MsgTimeout';
 import { MsgTimeoutOnClose } from './MsgTimeoutClose';
+import { MsgChannelUpgradeInit } from './MsgChannelUpgradeInit';
+import { MsgChannelUpgradeTry } from './MsgChannelUpgradeTry';
+import { MsgChannelUpgradeAck } from './MsgChannelUpgradeAck';
+import { MsgChannelUpgradeConfirm } from './MsgChannelUpgradeConfirm';
+import { MsgChannelUpgradeOpen } from './MsgChannelUpgradeOpen';
+import { MsgChannelUpgradeTimeout } from './MsgChannelUpgradeTimeout';
+import { MsgChannelUpgradeCancel } from './MsgChannelUpgradeCancel';
+import { MsgUpdateIbcChannelParamsV1 } from './MsgUpdateParams';
 
 export * from './MsgChannelOpenInit';
 export * from './MsgChannelOpenTry';
@@ -19,6 +27,16 @@ export * from './MsgRecvPacket';
 export * from './MsgRecvAcknowledgement';
 export * from './MsgTimeout';
 export * from './MsgTimeoutClose';
+export * from './MsgChannelUpgradeInit';
+export * from './MsgChannelUpgradeTry';
+export * from './MsgChannelUpgradeAck';
+export * from './MsgChannelUpgradeConfirm';
+export * from './MsgChannelUpgradeOpen';
+export * from './MsgChannelUpgradeTimeout';
+export * from './MsgChannelUpgradeCancel';
+export * from './MsgUpdateParams';
+
+export { MsgUpdateIbcChannelParamsV1 as MsgUpdateIbcChannelParams } from './MsgUpdateParams';
 
 export type IbcChannelMsg =
   | MsgChannelOpenInit
@@ -30,7 +48,15 @@ export type IbcChannelMsg =
   | MsgRecvPacket
   | MsgAcknowledgement
   | MsgTimeout
-  | MsgTimeoutOnClose;
+  | MsgTimeoutOnClose
+  | MsgChannelUpgradeInit
+  | MsgChannelUpgradeTry
+  | MsgChannelUpgradeAck
+  | MsgChannelUpgradeConfirm
+  | MsgChannelUpgradeOpen
+  | MsgChannelUpgradeTimeout
+  | MsgChannelUpgradeCancel
+  | MsgUpdateIbcChannelParamsV1;
 
 export namespace IbcChannelMsg {
   export type Data =
@@ -43,7 +69,15 @@ export namespace IbcChannelMsg {
     | MsgRecvPacket.Data
     | MsgAcknowledgement.Data
     | MsgTimeout.Data
-    | MsgTimeoutOnClose.Data;
+    | MsgTimeoutOnClose.Data
+    | MsgChannelUpgradeInit.Data
+    | MsgChannelUpgradeTry.Data
+    | MsgChannelUpgradeAck.Data
+    | MsgChannelUpgradeConfirm.Data
+    | MsgChannelUpgradeOpen.Data
+    | MsgChannelUpgradeTimeout.Data
+    | MsgChannelUpgradeCancel.Data
+    | MsgUpdateIbcChannelParamsV1.Data;
 
   export type Proto =
     | MsgChannelOpenInit.Proto
@@ -55,5 +89,13 @@ export namespace IbcChannelMsg {
     | MsgRecvPacket.Proto
     | MsgAcknowledgement.Proto
     | MsgTimeout.Proto
-    | MsgTimeoutOnClose.Proto;
+    | MsgTimeoutOnClose.Proto
+    | MsgChannelUpgradeInit.Proto
+    | MsgChannelUpgradeTry.Proto
+    | MsgChannelUpgradeAck.Proto
+    | MsgChannelUpgradeConfirm.Proto
+    | MsgChannelUpgradeOpen.Proto
+    | MsgChannelUpgradeTimeout.Proto
+    | MsgChannelUpgradeCancel.Proto
+    | MsgUpdateIbcChannelParamsV1.Proto;
 }

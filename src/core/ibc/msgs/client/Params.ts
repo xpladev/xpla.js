@@ -1,13 +1,13 @@
 import { JSONSerializable } from '../../../../util/json';
-import { Params as Params_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
+import { Params as IbcClientParamsV1_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
 /**
  * Params defines the set of IBC light client parameters.
  */
-export class Params extends JSONSerializable<
-  Params.Amino,
-  Params.Data,
-  Params.Proto
+export class IbcClientParamsV1 extends JSONSerializable<
+  IbcClientParamsV1.Amino,
+  IbcClientParamsV1.Data,
+  IbcClientParamsV1.Proto
 > {
   /**
    * @param allowed_clients allowed_clients defines the list of allowed client state types.
@@ -16,45 +16,45 @@ export class Params extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: Params.Amino): Params {
+  public static fromAmino(data: IbcClientParamsV1.Amino): IbcClientParamsV1 {
     const { allowed_clients } = data;
-    return new Params(allowed_clients);
+    return new IbcClientParamsV1(allowed_clients);
   }
 
-  public toAmino(): Params.Amino {
+  public toAmino(): IbcClientParamsV1.Amino {
     const { allowed_clients } = this;
-    const res: Params.Amino = {
+    const res: IbcClientParamsV1.Amino = {
       allowed_clients: allowed_clients,
     };
     return res;
   }
 
-  public static fromData(data: Params.Data): Params {
+  public static fromData(data: IbcClientParamsV1.Data): IbcClientParamsV1 {
     const { allowed_clients } = data;
-    return new Params(allowed_clients);
+    return new IbcClientParamsV1(allowed_clients);
   }
 
-  public toData(): Params.Data {
+  public toData(): IbcClientParamsV1.Data {
     const { allowed_clients } = this;
-    const res: Params.Data = {
+    const res: IbcClientParamsV1.Data = {
       allowed_clients,
     };
     return res;
   }
 
-  public static fromProto(proto: Params.Proto): Params {
-    return new Params(proto.allowedClients);
+  public static fromProto(proto: IbcClientParamsV1.Proto): IbcClientParamsV1 {
+    return new IbcClientParamsV1(proto.allowedClients);
   }
 
-  public toProto(): Params.Proto {
+  public toProto(): IbcClientParamsV1.Proto {
     const { allowed_clients } = this;
-    return Params_pb.fromPartial({
+    return IbcClientParamsV1_pb.fromPartial({
       allowedClients: allowed_clients,
     });
   }
 }
 
-export namespace Params {
+export namespace IbcClientParamsV1 {
   export interface Amino {
     allowed_clients: string[];
   }
@@ -63,5 +63,5 @@ export namespace Params {
     allowed_clients: string[];
   }
 
-  export type Proto = Params_pb;
+  export type Proto = IbcClientParamsV1_pb;
 }
