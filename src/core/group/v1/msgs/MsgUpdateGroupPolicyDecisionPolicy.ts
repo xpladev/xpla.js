@@ -42,8 +42,8 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
     const { admin, group_policy_address, decision_policy } = this;
     return {
       type: isClassic
-        ? 'group/MsgUpdateGroupPolicyDecisionPolicy'
-        : 'cosmos-sdk/MsgUpdateGroupPolicyDecisionPolicy',
+        ? 'group/MsgUpdateGroupDecisionPolicy'
+        : 'cosmos-sdk/MsgUpdateGroupDecisionPolicy',
       value: {
         admin,
         group_policy_address,
@@ -121,8 +121,8 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
 export namespace MsgUpdateGroupPolicyDecisionPolicyV1 {
   export interface Amino {
     type:
-      | 'group/MsgUpdateGroupPolicyDecisionPolicy'
-      | 'cosmos-sdk/MsgUpdateGroupPolicyDecisionPolicy';
+      | 'group/MsgUpdateGroupDecisionPolicy'
+      | 'cosmos-sdk/MsgUpdateGroupDecisionPolicy';
     value: {
       admin: AccAddress;
       group_policy_address: AccAddress;

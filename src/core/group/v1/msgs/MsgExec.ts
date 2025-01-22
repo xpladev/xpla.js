@@ -30,7 +30,7 @@ export class MsgGroupExecV1 extends JSONSerializable<
   public toAmino(isClassic?: boolean): MsgGroupExecV1.Amino {
     const { proposal_id, executor } = this;
     return {
-      type: isClassic ? 'group/MsgExec' : 'cosmos-sdk/MsgExec',
+      type: isClassic ? 'group/MsgExec' : 'cosmos-sdk/group/MsgExec',
       value: {
         proposal_id: proposal_id.toFixed(),
         executor,
@@ -87,7 +87,7 @@ export class MsgGroupExecV1 extends JSONSerializable<
 
 export namespace MsgGroupExecV1 {
   export interface Amino {
-    type: 'group/MsgExec' | 'cosmos-sdk/MsgExec';
+    type: 'group/MsgExec' | 'cosmos-sdk/group/MsgExec';
     value: {
       proposal_id: string;
       executor: AccAddress;

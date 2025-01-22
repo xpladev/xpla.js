@@ -37,7 +37,7 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateFeemarketParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'feemarket/MsgUpdateParams',
+      type: 'ethermint/x/feemarket/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -102,7 +102,7 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateFeemarketParamsV1 {
   export interface Amino {
-    type: 'feemarket/MsgUpdateParams';
+    type: 'ethermint/x/feemarket/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: FeemarketParamsV1.Amino | undefined;

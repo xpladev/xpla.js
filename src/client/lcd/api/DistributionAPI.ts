@@ -35,6 +35,23 @@ export namespace Rewards {
   }
 }
 
+/**
+ * Holds the resonse of delegator rewards query
+ */
+export interface ValidatorRewards {
+  operator_address: AccAddress;
+  self_bond_rewards: Coins;
+  commission: Coins;
+}
+
+export namespace ValidatorRewards {
+  export interface Data {
+    operator_address: AccAddress;
+    self_bond_rewards: Coins.Data;
+    commission: Coins.Data;
+  }
+}
+
 export interface Slash {
   fraction: string;
   validator_period: string;
@@ -117,6 +134,26 @@ export class DistributionAPI extends BaseAPI {
 
   /**
    * Gets a validator's rewards.
+   * @param validator validator's operator address
+   */
+  public async validatorRewards(
+    validator: ValAddress,
+    params: APIParams = {}
+  ): Promise<ValidatorRewards> {
+    return this.c
+      .get<ValidatorRewards.Data>(
+        `/cosmos/distribution/v1beta1/validators/${validator}`,
+        params
+      )
+      .then(d => ({
+        operator_address: d.operator_address,
+        self_bond_rewards: Coins.fromData(d.self_bond_rewards),
+        commission: Coins.fromData(d.commission),
+      }));
+  }
+
+  /**
+   * Gets a validator's commission.
    * @param validator validator's operator address
    */
   public async validatorCommission(

@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const commonConfig = {
   mode: 'production',
@@ -19,9 +20,16 @@ const commonConfig = {
     plugins: [new TsconfigPathsPlugin()],
   },
   plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'bundle-report.html',
+      openAnalyzer: false,
+      excludeAssets: [/node_modules/]
+    }),
     new webpack.IgnorePlugin({
       resourceRegExp:
-        /wordlists\/(french|spanish|italian|korean|chinese_simplified|chinese_traditional|japanese|czech|portuguese)\.json$/,
+        // /wordlists\/(french|spanish|italian|korean|chinese_simplified|chinese_traditional|japanese|czech|portuguese)\.json$/,
+        /wordlists\/(?!english\.json$)(.*\.json)$|db\.json$/,
     }),
     new webpack.IgnorePlugin({
       checkResource(resource) {

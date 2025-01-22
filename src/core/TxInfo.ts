@@ -45,7 +45,10 @@ export class TxInfo {
     public data?: string,
     public info?: string,
   ) {
+    if (!Array.isArray(this.events)) this.events = [];
     this.eventsByType = TxEventsByType.parse(this.events);
+    if (!Array.isArray(this.logs) || this.logs.length === 0)
+      this.logs = TxLog.fromEvents(this.events);
   }
 
   public static fromProto(proto: TxInfo.Proto): TxInfo {
@@ -103,15 +106,41 @@ export class TxInfo {
     };
   }
 
-  public getEventAttributeValues(type: string, key: string, msg_index?: string | number): string[] {
+  public getEventAttributes(type: string, msg_index?: number): EventAttributesByKey[] {
+    const attrs: {
+      [key: string]: string;
+    }[] = [];
+    if (msg_index !== undefined) {
+      if (isNaN(msg_index) || msg_index < 0)
+        msg_index = -1;
+      if (type in this.eventsByType[msg_index]) {
+        this.eventsByType[msg_index][type].forEach(attr => {
+          attrs.push(attr);
+        });
+      }
+    }
+    else {
+      for (const msg_index in this.eventsByType) {
+        if (type in this.eventsByType[msg_index]) {
+          this.eventsByType[msg_index][type].forEach(attr => {
+            attrs.push(attr);
+          });
+        }
+      }
+    }
+    return attrs;
+  }
+
+  public getEventAttributeValues(type: string, key: string, msg_index?: number): string[] {
     const values: string[] = [];
     if (msg_index !== undefined) {
-      msg_index = '' + msg_index;
+      if (isNaN(msg_index) || msg_index < 0)
+        msg_index = -1;
       if (msg_index in this.eventsByType) {
         if (type in this.eventsByType[msg_index]) {
           this.eventsByType[msg_index][type].forEach(ev => {
             if (key in ev) {
-              values.push(...ev[key]);
+              values.push(ev[key]);
             }
           })
         }
@@ -176,6 +205,72 @@ export class TxLog {
     public events: Event[]
   ) {
     this.eventsByType = EventsByType.parse(this.events);
+  }
+
+  public static fromEvents(events: TxEvent[]): TxLog[] {
+    if (events.length === 0) {
+      return [];
+    }
+
+    const logs: TxLog[] = [];
+    events.forEach(evt => {
+      let msg_index: number = -1;
+      for (const attr of evt.attributes) {
+        if (attr.key === 'msg_index') {
+          msg_index = parseInt(attr.value);
+          if (isNaN(msg_index) || msg_index < 0)
+            msg_index = -1;
+          break;
+        }
+      }
+      if (msg_index < 0)
+        return;
+
+      if (msg_index >= logs.length) {
+        for (let i = logs.length; i <= msg_index; ++i) {
+          logs.push(new TxLog(i, '', []));
+        }
+      }
+
+      let type_found: Event | undefined;
+      for (const e of logs[msg_index].events) {
+        if (e.type === evt.type) {
+          type_found = e;
+          break;
+        }
+      }
+      if (type_found === undefined) {
+        type_found = {
+          type: evt.type,
+          attributes: [],
+        };
+        logs[msg_index].events.push(type_found);
+      }
+      for (const attr of evt.attributes) {
+        if (attr.key === 'msg_index')
+          continue;
+        let exist = false;
+        for (const a of type_found.attributes) {
+          if (a.key === attr.key && a.value === attr.value) {
+            exist = true;
+            break;
+          }
+        }
+        if (!exist) {
+          const a: EventKV = {
+            key: attr.key,
+            value: attr.value,
+          };
+          type_found.attributes.push(a);
+        }
+      }
+    });
+
+    for (const log of logs) {
+      log.eventsByType = EventsByType.parse(log.events);
+    }
+
+    return logs;
   }
 
   public static fromData(data: TxLog.Data): TxLog {
@@ -333,25 +428,29 @@ export namespace TxEvent {
   export type Proto = Event_pb;
 }
 
+export interface EventAttributesByKey {
+  [key: string]: string;
+}
+
 export interface TxEventsByType {
-  [msg_index: string]: {
-    [type: string]: {
-      [key: string]: string[];
-    }[];
+  [msg_index: number]: {
+    [type: string]: EventAttributesByKey[];
   };
 }
 
 export namespace TxEventsByType {
-  export function parse(events: TxEvent[] | undefined): TxEventsByType {
+  export function parse(events: TxEvent[]): TxEventsByType {
     const byTypes: TxEventsByType = {};
-    if (events === undefined) {
+    if (events.length === 0) {
       return byTypes;
     }
     events.forEach(ev => {
-      let msg_index: string = '';
+      let msg_index: number = -1;
       for (const attr of ev.attributes) {
         if (attr.key === 'msg_index') {
-          msg_index = attr.value;
+          msg_index = parseInt(attr.value);
+          if (isNaN(msg_index) || msg_index < 0)
+            msg_index = -1;
           break;
         }
       }
@@ -369,9 +468,12 @@ export namespace TxEventsByType {
 
       ev.attributes.forEach(attr => {
         if (!(attr.key in byTypes[msg_index][ev.type])) {
-          byTypes[msg_index][ev.type][type_index][attr.key] = [];
+          byTypes[msg_index][ev.type][type_index][attr.key] = '';
         }
-        byTypes[msg_index][ev.type][type_index][attr.key].push(attr.value);
+        else {
+          byTypes[msg_index][ev.type][type_index][attr.key] = ',';
+        }
+        byTypes[msg_index][ev.type][type_index][attr.key] += attr.value;
       });
     });
     return byTypes;

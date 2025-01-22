@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
+import { Convert } from '../../../../util/convert';
 import { Height } from '../../core/client/Height';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgConnectionOpenConfirm as MsgConnectionOpenConfirm_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/tx';
@@ -14,6 +15,8 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   MsgConnectionOpenConfirm.Data,
   MsgConnectionOpenConfirm.Proto
 > {
+  public proof_ack: Buffer;
+
   /**
    * @param connection_id
    * @param proof_ack proof for the change of the connection state on Chain A: `INIT -> OPEN`
@@ -22,11 +25,12 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
    */
   constructor(
     public connection_id: string,
-    public proof_ack: string,
+    proof_ack: Buffer | Uint8Array | number[] | string,
     public proof_height: Height | undefined,
-    public signer: AccAddress
+    public signer: AccAddress,
   ) {
     super();
+    this.proof_ack = Convert.toBuffer(proof_ack);
   }
 
   public static fromAmino(
@@ -58,7 +62,7 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
     return {
       '@type': '/ibc.core.connection.v1.MsgConnectionOpenConfirm',
       connection_id,
-      proof_ack,
+      proof_ack: proof_ack.toString('base64'),
       proof_height: proof_height ? proof_height.toData() : undefined,
       signer,
     };
@@ -70,7 +74,7 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
   ): MsgConnectionOpenConfirm {
     return new MsgConnectionOpenConfirm(
       proto.connectionId,
-      Buffer.from(proto.proofAck).toString('base64'),
+      proto.proofAck,
       proto.proofHeight ? Height.fromProto(proto.proofHeight) : undefined,
       proto.signer
     );
@@ -80,7 +84,7 @@ export class MsgConnectionOpenConfirm extends JSONSerializable<
     const { connection_id, proof_ack, proof_height, signer } = this;
     return MsgConnectionOpenConfirm_pb.fromPartial({
       connectionId: connection_id,
-      proofAck: Buffer.from(proof_ack, 'base64'),
+      proofAck: proof_ack,
       proofHeight: proof_height ? proof_height.toProto() : undefined,
       signer,
     });
@@ -104,7 +108,7 @@ export namespace MsgConnectionOpenConfirm {
   export interface Data {
     '@type': '/ibc.core.connection.v1.MsgConnectionOpenConfirm';
     connection_id: string;
-    proof_ack: string;
+    proof_ack: string; // base64
     proof_height?: Height.Data;
     signer: AccAddress;
   }

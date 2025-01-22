@@ -30,7 +30,7 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
   public toAmino(isClassic?: boolean): MsgLeaveGroupV1.Amino {
     const { address, group_id } = this;
     return {
-      type: isClassic ? 'group/MsgLeaveGroup' : 'cosmos-sdk/MsgLeaveGroup',
+      type: isClassic ? 'group/MsgLeaveGroup' : 'cosmos-sdk/group/MsgLeaveGroup',
       value: {
         address,
         group_id: group_id.toFixed(),
@@ -87,7 +87,7 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
 
 export namespace MsgLeaveGroupV1 {
   export interface Amino {
-    type: 'group/MsgLeaveGroup' | 'cosmos-sdk/MsgLeaveGroup';
+    type: 'group/MsgLeaveGroup' | 'cosmos-sdk/group/MsgLeaveGroup';
     value: {
       address: AccAddress;
       group_id: string;

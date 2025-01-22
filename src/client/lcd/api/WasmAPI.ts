@@ -8,7 +8,6 @@ import {
   AccessConfig,
   CodesParamsV1,
 } from '../../../core/wasm';
-import { Params as WasmCodesParams } from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 
 export interface CodeInfo {
   code_id: number;
@@ -16,6 +15,7 @@ export interface CodeInfo {
   data_hash: string;
   creator: AccAddress;
   instantiate_config?: AccessConfig;
+  data?: string;
 }
 
 export namespace CodeInfo {
@@ -29,6 +29,7 @@ export namespace CodeInfo {
     data_hash: string;
     creator: AccAddress;
     instantiate_permission?: AccessConfig.Data;
+    data?: string;
   }
 }
 
@@ -41,6 +42,7 @@ export interface ContractInfo {
   label?: string;
   created?: AbsoluteTxPosition;
   ibc_port_id?: string;
+  extension?: any;
 }
 
 export namespace ContractInfo {
@@ -59,6 +61,7 @@ export namespace ContractInfo {
     label?: string;
     created?: AbsoluteTxPosition.Data;
     ibc_port_id?: string;
+    extension?: any;
   }
 }
 
@@ -92,12 +95,33 @@ export class WasmAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
+  public async codeInfos(
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[CodeInfo[], Pagination]> {
+    return this.c
+      .get<{
+        code_infos: CodeInfo.DataV2[];
+        pagination: Pagination;
+      }>('/cosmwasm/wasm/v1/code', params)
+      .then(d => ([
+        d.code_infos.map(code_info => ({
+          code_id: +code_info.code_id,
+          code_hash: code_info.data_hash,
+          data_hash: code_info.data_hash,
+          creator: code_info.creator,
+          instantiate_permission: code_info.instantiate_permission
+            ? AccessConfig.fromData(code_info.instantiate_permission)
+            : undefined,
+        })),
+        d.pagination,
+      ]));
+  }
+
   public async codeInfo(
     codeID: number,
     params: APIParams = {}
   ): Promise<CodeInfo> {
     const endpoint = `/cosmwasm/wasm/v1/code/${codeID}`;
-
     return this.c
       .get<{ code_info: CodeInfo.DataV2 }>(endpoint, params)
       .then(({ code_info: d }) => ({
@@ -108,6 +132,7 @@ export class WasmAPI extends BaseAPI {
         instantiate_permission: d.instantiate_permission
           ? AccessConfig.fromData(d.instantiate_permission)
           : undefined,
+        data: d.data,
       }));
   }
 
@@ -130,6 +155,7 @@ export class WasmAPI extends BaseAPI {
         init_msg: historyEntry[0].msg,
         created: d.created ? AbsoluteTxPosition.fromData(d.created) : undefined,
         ibc_port_id: d.ibc_port_id !== '' ? d.ibc_port_id : undefined,
+        extension: d.extension,
       }));
   }
 
@@ -161,7 +187,9 @@ export class WasmAPI extends BaseAPI {
       });
   }
 
-  public async pinnedCodes(params: APIParams = {}): Promise<PinnedCodes> {
+  public async pinnedCodes(
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[PinnedCodes, Pagination]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }
@@ -170,9 +198,10 @@ export class WasmAPI extends BaseAPI {
         code_ids: string[];
         pagination: Pagination;
       }>(`/cosmwasm/wasm/v1/codes/pinned`, params)
-      .then(d => ({
-        code_ids: d.code_ids.map(code_id => Number.parseInt(code_id)),
-      }));
+      .then(d => ([
+        { code_ids: d.code_ids.map(code_id => Number.parseInt(code_id)), },
+        d.pagination,
+      ]));
   }
 
   public async rawContractState(
@@ -274,5 +303,26 @@ export class WasmAPI extends BaseAPI {
         d.contract_addresses,
         d.pagination,
       ]);
+  }
+
+  public async buildAddress(
+    codeHash: string,
+    creator: AccAddress,
+    salt?: string,
+    initArgs?: any,
+    params: APIParams = {}
+  ): Promise<string> {
+    if (this.lcd.config.isClassic) {
+      throw new Error('Not supported for the network');
+    }
+    params.code_hash = codeHash;
+    params.creator_address = creator;
+    params.salt = salt;
+    params.init_msg = initArgs ? Buffer.from(JSON.stringify(initArgs)).toString('base64') : undefined;
+    return this.c
+      .get<{
+        address: string;
+      }>('/cosmwasm/wasm/v1/contract/build_address', params)
+      .then(d => d.address);
   }
 }

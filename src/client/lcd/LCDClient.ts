@@ -2,6 +2,7 @@ import { APIRequester } from './APIRequester';
 import {
   AuthAPI,
   BankAPI,
+  CircuitAPI,
   ConsensusAPI,
   DistributionAPI,
   ERC20API,
@@ -17,8 +18,12 @@ import {
   WasmAPI,
   XplaAPI,
   TxAPI,
-  IbcTransferAPI,
   IbcAPI,
+  IbcFeeAPI,
+  IbcIcaAPI,
+  IbcPacketAPI,
+  IbcTransferAPI,
+  IbcWasmAPI,
 } from './api';
 import { LCDUtils } from './LCDUtils';
 import { Wallet } from './Wallet';
@@ -85,12 +90,19 @@ const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
  * ### Example
  *
  * ```ts
- * import { LCDClient, Coin } from 'xpla.js';
+ * import { LCDClient } from '@xpla/xpla.js';
+ * 
+ * const chainID = 'cube_47-5';
+ * const URL = 'https://cube-lcd.xpla.dev';
+ * const gasPrices = await LCDClient.getGasPricesFromURL(URL);
  *
- * const xpla = new LCDClient({
- *    URL: "https://cube-lcd.xpla.dev",
- *    chainID: "cube_47-5"
+ * const lcd = new LCDClient({
+ *   chainID,
+ *   URL,
+ *   gasAdjustment: 1.2,
+ *   gasPrices,
  * });
+ * console.debug('lcd:', await lcd.info());
  * ```
  */
 
@@ -101,6 +113,7 @@ export class LCDClient {
   // API access
   public auth: AuthAPI;
   public bank: BankAPI;
+  public circuit: CircuitAPI;
   public consensus: ConsensusAPI;
   public distribution: DistributionAPI;
   public erc20: ERC20API;
@@ -117,7 +130,11 @@ export class LCDClient {
   public xpla: XplaAPI;
   public tx: TxAPI;
   public ibc: IbcAPI;
+  public ibcFee: IbcFeeAPI;
+  public ibcIca: IbcIcaAPI;
+  public ibcPacket: IbcPacketAPI;
   public ibcTransfer: IbcTransferAPI;
+  public ibcWasm: IbcWasmAPI;
   public utils: LCDUtils;
 
   /**
@@ -143,6 +160,7 @@ export class LCDClient {
     this.auth = new AuthAPI(this);
     this.authz = new AuthzAPI(this);
     this.bank = new BankAPI(this);
+    this.circuit = new CircuitAPI(this);
     this.consensus = new ConsensusAPI(this);
     this.distribution = new DistributionAPI(this);
     this.erc20 = new ERC20API(this);
@@ -158,7 +176,11 @@ export class LCDClient {
     this.xpla = new XplaAPI(this);
     this.tx = new TxAPI(this);
     this.ibc = new IbcAPI(this);
+    this.ibcFee = new IbcFeeAPI(this);
+    this.ibcIca = new IbcIcaAPI(this);
+    this.ibcPacket = new IbcPacketAPI(this);
     this.ibcTransfer = new IbcTransferAPI(this);
+    this.ibcWasm = new IbcWasmAPI(this);
     this.utils = new LCDUtils(this);
   }
 

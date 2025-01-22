@@ -5,7 +5,7 @@ import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgSend as MsgNftSendV1B1_pb } from '@xpla/xpla.proto/cosmos/nft/v1beta1/tx';
 
 export class MsgNftSendV1B1 extends JSONSerializable<
-  MsgNftSendV1B1.Amino,
+  any,
   MsgNftSendV1B1.Data,
   MsgNftSendV1B1.Proto
 > {
@@ -25,26 +25,14 @@ export class MsgNftSendV1B1 extends JSONSerializable<
   }
 
   public static fromAmino(
-    data: MsgNftSendV1B1.Amino,
+    _: any,
     _isClassic?: boolean
   ): MsgNftSendV1B1 {
-    const {
-      value: { class_id, id, sender, receiver },
-    } = data;
-    return new MsgNftSendV1B1(class_id, id, sender, receiver);
+    throw new Error('Amino not supported');
   }
 
-  public toAmino(isClassic?: boolean): MsgNftSendV1B1.Amino {
-    const { class_id, id, sender, receiver } = this;
-    return {
-      type: isClassic ? 'nft/MsgSend' : 'cosmos-sdk/MsgSend',
-      value: {
-        class_id,
-        id,
-        sender,
-        receiver,
-      },
-    };
+  public toAmino(_isClassic?: boolean): any {
+    throw new Error('Amino not supported');
   }
 
   public static fromData(
@@ -104,16 +92,6 @@ export class MsgNftSendV1B1 extends JSONSerializable<
 }
 
 export namespace MsgNftSendV1B1 {
-  export interface Amino {
-    type: 'nft/MsgSend' | 'cosmos-sdk/MsgSend';
-    value: {
-      class_id: string;
-      id: string;
-      sender: AccAddress;
-      receiver: AccAddress;
-    };
-  }
-
   export interface Data {
     '@type': '/cosmos.nft.v1beta1.MsgSend';
     class_id: string;

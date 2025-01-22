@@ -55,7 +55,7 @@ export class MsgRegisterPayee extends JSONSerializable<
     }
     const { portId, channelId, relayer, payee } = this;
     return {
-      '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee',
+      '@type': '/ibc.applications.fee.v1.MsgRegisterPayee',
       portId,
       channelId,
       relayer,
@@ -96,7 +96,7 @@ export class MsgRegisterPayee extends JSONSerializable<
       throw new Error('Not supported for the network');
     }
     return Any.fromPartial({
-      typeUrl: '/ibc.applications.fee.v1.MsgRegisterCounterpartyAddress',
+      typeUrl: '/ibc.applications.fee.v1.MsgRegisterPayee',
       value: MsgRegisterPayee_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -111,7 +111,7 @@ export class MsgRegisterPayee extends JSONSerializable<
 
 export namespace MsgRegisterPayee {
   export interface Data {
-    '@type': '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee';
+    '@type': '/ibc.applications.fee.v1.MsgRegisterPayee';
     portId: string;
     channelId: string;
     relayer: string;

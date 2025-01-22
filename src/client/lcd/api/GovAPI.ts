@@ -60,6 +60,19 @@ export class GovAPI extends BaseAPI {
   }
 
   /**
+   * Get constitution.
+   */
+  public async constitution(
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<string> {
+    return this.c
+      .get<{
+        constitution: string;
+      }>(`/cosmos/gov/v1/constitution`, params)
+      .then(d => d.constitution);
+  }
+
+  /**
    * Gets all proposals.
    */
   public async proposals(
@@ -161,8 +174,7 @@ export class GovAPI extends BaseAPI {
     params.append('events', `message.action='/cosmos.gov.v1.MsgDeposit'`);
     params.append('events', `proposal_deposit.proposal_id=${proposalId}`);
     // post v0.47.x
-    params.append('query', `message.action='/cosmos.gov.v1.MsgDeposit'`);
-    params.append('query', `proposal_deposit.proposal_id=${proposalId}`);
+    params.append('query', `message.action='/cosmos.gov.v1.MsgDeposit' AND proposal_deposit.proposal_id=${proposalId}`);
 
     Object.entries(_params).forEach(v => {
       params.append(v[0], v[1] as string);
@@ -203,9 +215,7 @@ export class GovAPI extends BaseAPI {
     // post v0.47.x
     params.append(
       'query',
-      `message.action='/cosmos.gov.v1.MsgSubmitProposal'`
-    );
-    params.append('query', `submit_proposal.proposal_id=${proposalId}`);
+      `message.action='/cosmos.gov.v1.MsgSubmitProposal' AND submit_proposal.proposal_id=${proposalId}`);
 
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, params)
@@ -253,10 +263,11 @@ export class GovAPI extends BaseAPI {
       txparams.append('events', `proposal_vote.voter=${voter}`);
     }
     // post v0.47.x
-    txparams.append('query', `message.action='/cosmos.gov.v1.MsgVote'`);
-    txparams.append('query', `proposal_vote.proposal_id=${proposalId}`);
-    if (voter !== undefined) {
-      txparams.append('query', `proposal_vote.voter=${voter}`);
+    if (voter === undefined) {
+      txparams.append('query', `message.action='/cosmos.gov.v1.MsgVote' AND proposal_vote.proposal_id=${proposalId}`);
+    }
+    else {
+      txparams.append('query', `message.action='/cosmos.gov.v1.MsgVote' AND proposal_vote.proposal_id=${proposalId} AND proposal_vote.voter=${voter}`);
     }
 
     Object.entries(params).forEach(v => {

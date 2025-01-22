@@ -1,12 +1,12 @@
-import { JSONSerializable } from '../../../../util/json';
-import { BaseAccount } from '../../../..';
+import { JSONSerializable } from '../../../../../util/json';
+import { BaseAccount } from '../../../../..';
 import { InterchainAccount as InterchainAccount_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/account';
 
 /**
  * An InterchainAccount is defined as a BaseAccount & the address of the account owner on the controller chain
  */
 export class InterchainAccount extends JSONSerializable<
-  InterchainAccount.Amino,
+  any,
   InterchainAccount.Data,
   InterchainAccount.Proto
 > {
@@ -21,21 +21,12 @@ export class InterchainAccount extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(data: InterchainAccount.Amino): InterchainAccount {
-    const { base_account, account_owner } = data;
-    return new InterchainAccount(
-      base_account ? BaseAccount.fromAmino(base_account) : undefined,
-      account_owner
-    );
+  public static fromAmino(_: any): InterchainAccount {
+    throw new Error('Amino not supported');
   }
 
-  public toAmino(): InterchainAccount.Amino {
-    const { base_account, account_owner } = this;
-    const res: InterchainAccount.Amino = {
-      base_account: base_account?.toAmino(),
-      account_owner,
-    };
-    return res;
+  public toAmino(): any {
+    throw new Error('Amino not supported');
   }
 
   public static fromData(data: InterchainAccount.Data): InterchainAccount {
@@ -72,11 +63,6 @@ export class InterchainAccount extends JSONSerializable<
 }
 
 export namespace InterchainAccount {
-  export interface Amino {
-    base_account?: BaseAccount.Amino;
-    account_owner: string;
-  }
-
   export interface Data {
     base_account?: BaseAccount.Data;
     account_owner: string;

@@ -5,9 +5,6 @@ import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgFundRewardPool as MsgFundRewardPoolV1B1_pb } from '@xpla/xpla.proto/xpla/reward/v1beta1/tx';
 
-/**
- * A basic message for sending [[Coins]] between Xpla accounts.
- */
 export class MsgFundRewardPoolV1B1 extends JSONSerializable<
   MsgFundRewardPoolV1B1.Amino,
   MsgFundRewardPoolV1B1.Data,

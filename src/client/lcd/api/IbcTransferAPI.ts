@@ -2,6 +2,7 @@ import { BaseAPI } from './BaseAPI';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
 import { DenomTrace } from '../../../core/ibc/applications/transfer/v1/DenomTrace';
 import { LCDClient } from '../LCDClient';
+import { Coins } from '../../../core';
 
 export interface IbcTransferParams {
   send_enabled: boolean;
@@ -20,11 +21,28 @@ export class IbcTransferAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
+  public async escrowAddress(
+    channel_id: string,
+    port_id: string,
+    params: APIParams = {}
+  ): Promise<string> {
+    return this.c
+      .get<{ escrow_address: string }>(
+        `/ibc/apps/transfer/v1/channels/${channel_id}/ports/${port_id}/escrow_address`,
+        params
+      )
+      .then(d => d.escrow_address);
+  }
+
   /** Gets a denomTrace for the hash */
-  public async denomTrace(hash: string): Promise<DenomTrace> {
+  public async denomTrace(
+    hash: string,
+    params: APIParams = {}
+  ): Promise<DenomTrace> {
     return this.c
       .get<{ denom_trace: DenomTrace.Data }>(
-        `/ibc/apps/transfer/v1/denom_traces/${hash}`
+        `/ibc/apps/transfer/v1/denom_traces/${hash}`,
+        params
       )
       .then(d => DenomTrace.fromData(d.denom_trace));
   }
@@ -46,14 +64,21 @@ export class IbcTransferAPI extends BaseAPI {
     trace: string,
     params: Partial<PaginationOptions & APIParams> = {}
   ): Promise<string> {
-    if (this.lcd.config.isClassic) {
-      throw new Error('Not supported for the network');
-    }
-
     return await this.c.get<string>(
       `/ibc/apps/transfer/v1/denom_hashes/${trace}`,
       params
     );
+  }
+
+  public async totalEscrow(
+    denom: string,
+    params: APIParams = {}
+  ): Promise<Coins> {
+    return await this.c.get<{ amount: { amount: string, denom: string } }>(
+      `/ibc/apps/transfer/v1/denoms/${denom}/total_escrow`,
+      params
+    )
+    .then(d => Coins.fromData([d.amount]));
   }
 
   /**

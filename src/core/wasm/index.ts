@@ -36,4 +36,6 @@ export {
   MsgUpdateContractLabelV1 as MsgUpdateContractLabel,
   MsgUpdateWasmParamsV1 as MsgUpdateWasmParams,
   MsgUpdateInstantiateConfigV1 as MsgUpdateInstantiateConfig,
+  MsgIBCSendV1 as MsgIBCSend,
+  MsgIBCCloseChannelV1 as MsgIBCCloseChannel,
 } from './v1/msgs';

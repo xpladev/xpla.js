@@ -37,7 +37,7 @@ export class MsgUpdateRewardParamsV1B1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateRewardParamsV1B1.Amino {
     const { authority, params } = this;
     return {
-      type: 'xpladev/reward/MsgUpdateParams',
+      type: 'xpladev/x/reward/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -102,7 +102,7 @@ export class MsgUpdateRewardParamsV1B1 extends JSONSerializable<
 
 export namespace MsgUpdateRewardParamsV1B1 {
   export interface Amino {
-    type: 'xpladev/reward/MsgUpdateParams';
+    type: 'xpladev/x/reward/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: RewardParamsV1B1.Amino | undefined;

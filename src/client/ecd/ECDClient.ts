@@ -29,7 +29,7 @@ export interface ECDClientConfig {
 const DEFAULT_ECD_OPTIONS: Partial<ECDClientConfig> = {};
 
 /**
- * An object repesenting a connection to a xplad node running the Lite Client Daemon (LCD)
+ * An object repesenting a connection to a xplad node running the EVM Client Daemon (ECD)
  * server, a REST server providing access to a node.
  *
  * ### Example
@@ -37,11 +37,15 @@ const DEFAULT_ECD_OPTIONS: Partial<ECDClientConfig> = {};
  * ```ts
  * import { ECDClient, Coin } from 'xpla.js';
  *
- * const xpla = new ECDClient({
- *    URL: "https://cube-evm-rpc.xpla.dev",
- *    chainID: "cube_47-5",
- *    id: ECDClient.getIDfromChainID("cube_47-5")
+ * const URL = "https://cube-evm-rpc.xpla.dev";
+ * const chainID = "cube_47-5";
+ * 
+ * const ecd = new ECDClient({
+ *   chainID,
+ *   URL,
+ *   id: ECDClient.getIDfromChainID(chainID),
  * });
+ * console.debug('ecd:', await ecd.info());
  * ```
  */
 
