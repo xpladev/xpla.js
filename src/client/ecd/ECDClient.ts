@@ -97,17 +97,21 @@ export class ECDClient {
     return Buffer.from(hex, 'hex');
   }
 
+  public static bufferToHex(buff: ArrayBuffer | ArrayBufferLike | any[], prefix: string = ''): string {
+    return prefix + Buffer.from(new Uint8Array(buff)).toString('hex');
+  }
+
   public static unpadBuffer(d: Buffer): Buffer {
     let i = 0;
     while (d[i] == 0 && i < d.length) i++;
-    return d.slice(i);
+    return Buffer.from(new Uint8Array(d.subarray(i)));
   }
 
   public static bufferToAddress(buffer: Buffer): EvmAddress {
     if (buffer.length < 20) throw new Error('Buffer length must be 20');
     else if (buffer.length > 20)
-      buffer = buffer.slice(buffer.length - 20, buffer.length);
-    return eip55('0x' + buffer.toString('hex'));
+      buffer = buffer.subarray(buffer.length - 20, buffer.length);
+    return eip55(ECDClient.bufferToHex(buffer, '0x'));
   }
 
   public static bufferFromString(utf8: string): Buffer {
@@ -181,7 +185,7 @@ export class ECDClient {
               if (hex.length % 2 == 1) {
                 hex = '0' + hex;
               }
-              const buff = Buffer.from(hex, 'hex');
+              const buff = ECDClient.bufferFromHex(hex);
               if (buff.length < 32) {
                 const pad = Buffer.alloc(32 - buff.length, 0);
                 data.push(pad);
@@ -200,7 +204,7 @@ export class ECDClient {
               if (hex.length % 2 == 1) {
                 hex = '0' + hex;
               }
-              const buff = Buffer.from(hex, 'hex');
+              const buff = ECDClient.bufferFromHex(hex);
               if (buff.length < 32) {
                 const pad = Buffer.alloc(32 - buff.length, 0);
                 data.push(pad);
@@ -225,7 +229,7 @@ export class ECDClient {
 
               const pos = dynoffset.toString(16);
               {
-                const buff = Buffer.from(pos, 'hex');
+                const buff = ECDClient.bufferFromHex(pos);
                 if (buff.length < 32) {
                   const pad = Buffer.alloc(32 - buff.length, 0);
                   data.push(pad);
@@ -235,7 +239,7 @@ export class ECDClient {
 
               const len = param.length.toString(16);
               {
-                const buff = Buffer.from(len, 'hex');
+                const buff = ECDClient.bufferFromHex(len);
                 if (buff.length < 32) {
                   const pad = Buffer.alloc(32 - buff.length, 0);
                   dyndata.push(pad);
@@ -258,8 +262,8 @@ export class ECDClient {
           case 'bytes':
             {
               let bytes: Buffer;
-              if (typeof param === 'string' && param.startsWith('0x')) {
-                bytes = Buffer.from(param.substring(2), 'hex');
+              if (typeof param === 'string') {
+                bytes = ECDClient.bufferFromHex(param);
               } else if (!(param instanceof Buffer)) {
                 throw new Error('not buffer');
               } else {
@@ -268,7 +272,7 @@ export class ECDClient {
 
               const pos = dynoffset.toString(16);
               {
-                const buff = Buffer.from(pos, 'hex');
+                const buff = ECDClient.bufferFromHex(pos);
                 if (buff.length < 32) {
                   const pad = Buffer.alloc(32 - buff.length, 0);
                   data.push(pad);
@@ -278,7 +282,7 @@ export class ECDClient {
 
               const len = bytes.length.toString(16);
               {
-                const buff = Buffer.from(len, 'hex');
+                const buff = ECDClient.bufferFromHex(len);
                 if (buff.length < 32) {
                   const pad = Buffer.alloc(32 - buff.length, 0);
                   dyndata.push(pad);
@@ -321,14 +325,14 @@ export class ECDClient {
         switch (type) {
           case 'number':
             {
-              const n = parseInt(buff.toString('hex'), 16);
+              const n = parseInt(ECDClient.bufferToHex(buff), 16);
               params.push(n);
             }
             break;
 
           case 'bignumber':
             {
-              const bn = Numeric.parse('0x' + buff.toString('hex'));
+              const bn = Numeric.parse(ECDClient.bufferToHex(buff, '0x'));
               params.push(bn);
             }
             break;
@@ -342,31 +346,31 @@ export class ECDClient {
 
           case 'bool':
             {
-              const n = parseInt(buff.toString('hex'), 16);
+              const n = parseInt(ECDClient.bufferToHex(buff), 16);
               params.push(n != 0);
             }
             break;
 
           case 'string':
             {
-              const pos = parseInt(buff.toString('hex'), 16);
+              const pos = parseInt(ECDClient.bufferToHex(buff), 16);
               const len = parseInt(
-                data.subarray(pos, pos + 32).toString('hex'),
+                ECDClient.bufferToHex(data.subarray(pos, pos + 32)),
                 16
               );
-              const str = data.subarray(pos + 32, pos + 32 + len).toString('utf8');
+              const str = Buffer.from(new Uint8Array(data.subarray(pos + 32, pos + 32 + len))).toString('utf8');
               params.push(str);
             }
             break;
 
           case 'bytes':
             {
-              const pos = parseInt(buff.toString('hex'), 16);
+              const pos = parseInt(ECDClient.bufferToHex(buff), 16);
               const len = parseInt(
-                data.subarray(pos, pos + 32).toString('hex'),
+                ECDClient.bufferToHex(data.subarray(pos, pos + 32)),
                 16
               );
-              const buf = Buffer.from(data.subarray(pos + 32, pos + 32 + len));
+              const buf = Buffer.from(new Uint8Array(data.subarray(pos + 32, pos + 32 + len)));
               params.push(buf);
             }
             break;
