@@ -113,13 +113,29 @@ export class EvmTokenAPI extends EvmAPI {
     contract: EvmAddress,
     address: EvmAddress
   ): Promise<[Coins, Pagination]> {
+    const decimals = await this.decimals(contract);
     const symbol = await this.symbol(contract);
     const amount = await this.balanceOf(contract, address);
+    let denom = '_';
+    switch (decimals) {
+      case 24: denom = 'y'; break;
+      case 21: denom = 'z'; break;
+      case 18: denom = 'a'; break;
+      case 15: denom = 'f'; break;
+      case 12: denom = 'p'; break;
+      case 9: denom = 'n'; break;
+      case 6: denom = 'u'; break;
+      case 3: denom = 'm'; break;
+      case 2: denom = 'c'; break;
+      case 1: denom = 'd'; break;
+      case 0: denom = ''; break;
+    }
+    denom += symbol.toLowerCase();
     return [
       Coins.fromData([
         {
-          denom: symbol,
-          amount: amount.toString(),
+          denom,
+          amount: amount.toFixed(),
         },
       ]),
       { next_key: null, total: 0 },
