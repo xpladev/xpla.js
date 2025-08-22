@@ -34,7 +34,7 @@ export class Coins
    */
   public toString(): string {
     return this.toArray()
-      .map(c => c.toString())
+      .map(String)
       .join(',');
   }
 
@@ -47,7 +47,7 @@ export class Coins
    */
   public static fromString(str: string): Coins {
     const coin_strings = str.split(/,\s*/);
-    const coins = coin_strings.map(s => Coin.fromString(s));
+    const coins = coin_strings.map(Coin.fromString);
     return new Coins(coins);
   }
 

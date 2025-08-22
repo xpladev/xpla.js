@@ -11,7 +11,7 @@ export class QueryRequestV1 extends JSONSerializable<
   QueryRequestV1.Data,
   QueryRequestV1.Proto
 > {
-  public data: Buffer;
+  public data: Uint8Array;
 
   /**
    * @param path defines the path of the query request as defined by ADR-021.
@@ -19,10 +19,10 @@ export class QueryRequestV1 extends JSONSerializable<
    */
   constructor(
     public path: string,
-    data: Buffer | Uint8Array | number[] | string,
+    data: Uint8Array | number[] | string,
   ) {
     super();
-    this.data = Convert.toBuffer(data);
+    this.data = Convert.toBytes(data);
   }
 
   public static fromAmino(_: any): QueryRequestV1 {
@@ -42,7 +42,7 @@ export class QueryRequestV1 extends JSONSerializable<
     const { path, data } = this;
     const res: QueryRequestV1.Data = {
       path,
-      data: data.toString('base64'),
+      data: Convert.toBase64(data),
     };
     return res;
   }

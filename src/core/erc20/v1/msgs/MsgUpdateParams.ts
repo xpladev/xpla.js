@@ -2,7 +2,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgUpdateParams as MsgUpdateERC20ParamsV1_pb } from '@xpla/xpla.proto/evmos/erc20/v1/tx';
+import { MsgUpdateParams as MsgUpdateERC20ParamsV1_pb } from '@xpla/xpla.proto/cosmos/evm/erc20/v1/tx';
 import { ERC20ParamsV1 } from '../Params';
 
 export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
@@ -37,7 +37,7 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateERC20ParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'evmos/erc20/MsgUpdateParams',
+      type: 'evm/erc20/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -59,7 +59,7 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgUpdateERC20ParamsV1.Data {
     const { authority, params } = this;
     return {
-      '@type': '/evmos.erc20.v1.MsgUpdateParams',
+      '@type': '/cosmos.evm.erc20.v1.MsgUpdateParams',
       authority,
       params: params ? params.toData() : undefined,
     };
@@ -85,7 +85,7 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
 
   public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/evmos.erc20.v1.MsgUpdateParams',
+      typeUrl: '/cosmos.evm.erc20.v1.MsgUpdateParams',
       value: MsgUpdateERC20ParamsV1_pb.encode(this.toProto()).finish(),
     });
   }
@@ -102,7 +102,7 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateERC20ParamsV1 {
   export interface Amino {
-    type: 'ethermint/erc20/MsgUpdateParams' | 'evmos/erc20/MsgUpdateParams';
+    type: 'ethermint/erc20/MsgUpdateParams' | 'evmos/erc20/MsgUpdateParams' | 'evm/erc20/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: ERC20ParamsV1.Amino | undefined;
@@ -112,7 +112,8 @@ export namespace MsgUpdateERC20ParamsV1 {
   export interface Data {
     '@type':
       | '/ethermint.erc20.v1.MsgUpdateParams'
-      | '/evmos.erc20.v1.MsgUpdateParams';
+      | '/evmos.erc20.v1.MsgUpdateParams'
+      | '/cosmos.evm.erc20.v1.MsgUpdateParams';
     authority: AccAddress;
     params: ERC20ParamsV1.Data | undefined;
   }

@@ -1,7 +1,8 @@
 import { CompactBitArray as CompactBitArray_pb } from '@xpla/xpla.proto/cosmos/crypto/multisig/v1beta1/multisig';
+import { Convert } from '../util/convert';
 
 export class CompactBitArray {
-  constructor(public extra_bits_stored: number, public elems: Buffer) {}
+  constructor(public extra_bits_stored: number, public elems: Uint8Array) {}
 
   public static fromBits(bits: number): CompactBitArray {
     if (bits <= 0) {
@@ -16,7 +17,7 @@ export class CompactBitArray {
       throw new Error('CompactBitArray overflow');
     }
 
-    return new CompactBitArray(bits % 8, Buffer.alloc(num_elems));
+    return new CompactBitArray(bits % 8, new Uint8Array(num_elems));
   }
 
   // returns the number of bits in the bitarray
@@ -35,7 +36,7 @@ export class CompactBitArray {
       return false;
     }
 
-    return (this.elems.readUInt8(i >> 3) & (1 << (7 - (i % 8)))) > 0;
+    return (this.elems[i >> 3] & (1 << (7 - (i % 8)))) > 0;
   }
 
   // sets the bit at index i within the bit array. Returns true if and only if the
@@ -80,19 +81,19 @@ export class CompactBitArray {
   public static fromData(data: CompactBitArray.Data): CompactBitArray {
     return new CompactBitArray(
       data.extra_bits_stored,
-      Buffer.from(data.elems, 'base64')
+      Convert.fromBase64(data.elems)
     );
   }
 
   public toData(): CompactBitArray.Data {
     return {
-      elems: this.elems.toString('base64'),
+      elems: Convert.toBase64(this.elems),
       extra_bits_stored: this.extra_bits_stored,
     };
   }
 
   public static fromProto(proto: CompactBitArray.Proto): CompactBitArray {
-    return new CompactBitArray(proto.extraBitsStored, Buffer.from(proto.elems));
+    return new CompactBitArray(proto.extraBitsStored, proto.elems);
   }
 
   public toProto(): CompactBitArray.Proto {

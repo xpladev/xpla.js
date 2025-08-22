@@ -54,7 +54,7 @@ export class RedelegationV1B1 extends JSONSerializable<
       delegator_address,
       validator_src_address,
       validator_dst_address,
-      entries.map(e => RedelegationV1B1.Entry.fromAmino(e))
+      entries.map(RedelegationV1B1.Entry.fromAmino)
     );
   }
 
@@ -88,7 +88,7 @@ export class RedelegationV1B1 extends JSONSerializable<
       delegator_address,
       validator_src_address,
       validator_dst_address,
-      entries.map(e => RedelegationV1B1.Entry.fromData(e))
+      entries.map(RedelegationV1B1.Entry.fromData)
     );
   }
 
@@ -115,7 +115,7 @@ export class RedelegationV1B1 extends JSONSerializable<
       redelegationProto.delegatorAddress,
       redelegationProto.validatorDstAddress,
       redelegationProto.validatorDstAddress,
-      data.entries.map(e => RedelegationV1B1.Entry.fromProto(e))
+      data.entries.map(RedelegationV1B1.Entry.fromProto)
     );
   }
 

@@ -126,13 +126,6 @@ import {
   MsgIBCCloseChannelV1,
 } from './wasm';
 import {
-  IbcFeeMsg,
-  MsgPayPacketFee,
-  MsgPayPacketFeeAsync,
-  MsgRegisterCounterpartyAddress,
-  MsgRegisterPayee,
-} from './ibc/applications/fee';
-import {
   IcaMsgV1,
   MsgRegisterInterchainAccountV1,
   MsgSendTxV1,
@@ -146,44 +139,45 @@ import {
   MsgUpdateIbcTransferParamsV1,
 } from './ibc/applications/transfer';
 import {
-  IbcClientMsg,
-  MsgCreateClient,
-  MsgUpdateClient,
-  MsgUpgradeClient,
-  MsgSubmitMisbehaviour,
-  MsgRecoverClient,
+  IbcConnectionMsgV1,
+  MsgConnectionOpenInitV1,
+  MsgConnectionOpenTryV1,
+  MsgConnectionOpenConfirmV1,
+  MsgConnectionOpenAckV1,
+  MsgUpdateIbcConnectionParamsV1,
+} from './ibc/core/connection';
+import {
+  IbcChannelMsgV1,
+  IbcChannelMsgV2,
+  MsgChannelOpenInitV1,
+  MsgChannelOpenTryV1,
+  MsgChannelOpenConfirmV1,
+  MsgChannelOpenAckV1,
+  MsgChannelCloseInitV1,
+  MsgChannelCloseConfirmV1,
+  MsgRecvPacketV1,
+  MsgAcknowledgementV1,
+  MsgTimeoutV1,
+  MsgTimeoutOnCloseV1,
+  MsgSendPacketV2,
+  MsgRecvPacketV2,
+  MsgTimeoutV2,
+  MsgAcknowledgementV2,
+} from './ibc/core/channel';
+import {
+  IbcClientMsgV1,
+  IbcClientMsgV2,
+  MsgCreateClientV1,
+  MsgUpdateClientV1,
+  MsgUpgradeClientV1,
+  MsgSubmitMisbehaviourV1,
+  MsgRecoverClientV1,
   MsgIbcSoftwareUpgradeV1,
   MsgUpdateIbcClientParamsV1,
-} from './ibc/msgs/client';
-import {
-  IbcConnectionMsg,
-  MsgConnectionOpenInit,
-  MsgConnectionOpenTry,
-  MsgConnectionOpenConfirm,
-  MsgConnectionOpenAck,
-  MsgUpdateIbcConnectionParamsV1,
-} from './ibc/msgs/connection';
-import {
-  IbcChannelMsg,
-  MsgChannelOpenInit,
-  MsgChannelOpenTry,
-  MsgChannelOpenConfirm,
-  MsgChannelOpenAck,
-  MsgChannelCloseInit,
-  MsgChannelCloseConfirm,
-  MsgRecvPacket,
-  MsgAcknowledgement,
-  MsgTimeout,
-  MsgTimeoutOnClose,
-  MsgChannelUpgradeInit,
-  MsgChannelUpgradeTry,
-  MsgChannelUpgradeAck,
-  MsgChannelUpgradeConfirm,
-  MsgChannelUpgradeOpen,
-  MsgChannelUpgradeTimeout,
-  MsgChannelUpgradeCancel,
-  MsgUpdateIbcChannelParamsV1,
-} from './ibc/msgs/channel';
+  MsgDeleteClientCreatorV1,
+  MsgUpdateClientConfigV2,
+  MsgRegisterCounterpartyV2,
+} from './ibc/core/client';
 import { CrisisMsg, MsgVerifyInvariant } from './crisis';
 import {
   XplaMsgV1B1,
@@ -191,7 +185,16 @@ import {
   MsgUpdateRewardParamsV1B1,
   MsgRegisterVolunteerValidatorV1B1,
   MsgUnregisterVolunteerValidatorV1B1,
+  MsgBurnV1B1,
 } from './xpla';
+import {
+  ProtocolPoolMsgV1,
+  MsgFundCommunityPoolV1,
+  MsgCommunityPoolSpendV1,
+  MsgCreateContinuousFundV1,
+  MsgCancelContinuousFundV1,
+  MsgUpdateProtocolPoolParamsV1,
+} from './protocolpool';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
@@ -213,16 +216,18 @@ export type Msg =
   | VestingMsgV1B1
   | UpgradeMsgV1B1
   | WasmMsgV1
-  | IbcFeeMsg
   | IcaMsgV1
   | IbcTransferMsgV1
-  | IbcClientMsg
-  | IbcConnectionMsg
-  | IbcChannelMsg
+  | IbcClientMsgV1
+  | IbcClientMsgV2
+  | IbcConnectionMsgV1
+  | IbcChannelMsgV1
+  | IbcChannelMsgV2
   | CrisisMsg
   | Erc20MsgV1
   | EvmMsgV1
-  | XplaMsgV1B1;
+  | XplaMsgV1B1
+  | ProtocolPoolMsgV1;
 
 export namespace Msg {
   export type Amino =
@@ -247,7 +252,8 @@ export namespace Msg {
     | CrisisMsg.Amino
     | Erc20MsgV1.Amino
     | EvmMsgV1.Amino
-    | XplaMsgV1B1.Amino;
+    | XplaMsgV1B1.Amino
+    | ProtocolPoolMsgV1.Amino;
 
   export type Data =
     | AuthMsgV1B1.Data
@@ -268,16 +274,18 @@ export namespace Msg {
     | VestingMsgV1B1.Data
     | UpgradeMsgV1B1.Data
     | WasmMsgV1.Data
-    | IbcFeeMsg.Data
     | IcaMsgV1.Data
     | IbcTransferMsgV1.Data
-    | IbcClientMsg.Data
-    | IbcConnectionMsg.Data
-    | IbcChannelMsg.Data
+    | IbcClientMsgV1.Data
+    | IbcClientMsgV2.Data
+    | IbcConnectionMsgV1.Data
+    | IbcChannelMsgV1.Data
+    | IbcChannelMsgV2.Data
     | CrisisMsg.Data
     | Erc20MsgV1.Data
     | EvmMsgV1.Data
-    | XplaMsgV1B1.Data;
+    | XplaMsgV1B1.Data
+    | ProtocolPoolMsgV1.Data;
 
   export type Proto =
     | AuthMsgV1B1.Proto
@@ -298,16 +306,18 @@ export namespace Msg {
     | VestingMsgV1B1.Proto
     | UpgradeMsgV1B1.Proto
     | WasmMsgV1.Proto
-    | IbcFeeMsg.Proto
     | IcaMsgV1.Proto
     | IbcTransferMsgV1.Proto
-    | IbcClientMsg.Proto
-    | IbcConnectionMsg.Proto
-    | IbcChannelMsg.Proto
+    | IbcClientMsgV1.Proto
+    | IbcClientMsgV2.Proto
+    | IbcConnectionMsgV1.Proto
+    | IbcChannelMsgV1.Proto
+    | IbcChannelMsgV2.Proto
     | CrisisMsg.Proto
     | Erc20MsgV1.Proto
     | EvmMsgV1.Proto
-    | XplaMsgV1B1.Proto;
+    | XplaMsgV1B1.Proto
+    | ProtocolPoolMsgV1.Proto;
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
@@ -595,6 +605,18 @@ export namespace Msg {
       case 'xpladev/MsgUnregisterVolunteerValidator':
         return MsgUnregisterVolunteerValidatorV1B1.fromAmino(data);
 
+      // protocolpool
+      case 'protocolpool/MsgFundCommunityPool':
+        return MsgFundCommunityPoolV1.fromAmino(data);
+      case 'protocolpool/MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1.fromAmino(data);
+      case 'protocolpool/MsgCreateContinuousFund':
+        return MsgCreateContinuousFundV1.fromAmino(data);
+      case 'protocolpool/MsgCancelContinuousFund':
+        return MsgCancelContinuousFundV1.fromAmino(data);
+      case 'protocolpool/MsgUpdateParams':
+        return MsgUpdateProtocolPoolParamsV1.fromAmino(data);
+
       default:
         throw Error(`not supported msg ${data['type']}`);
     }
@@ -799,16 +821,6 @@ export namespace Msg {
       case '/cosmwasm.wasm.v1.MsgIBCCloseChannel':
         return MsgIBCCloseChannelV1.fromData(data, isClassic);
 
-      // ibc-fee
-      case '/ibc.applications.fee.v1.MsgPayPacketFee':
-        return MsgPayPacketFee.fromData(data, isClassic);
-      case '/ibc.applications.fee.v1.MsgPayPacketFeeAsync':
-        return MsgPayPacketFeeAsync.fromData(data, isClassic);
-      case '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee':
-        return MsgRegisterCounterpartyAddress.fromData(data, isClassic);
-      case '/ibc.applications.fee.v1.MsgRegisterPayee':
-        return MsgRegisterPayee.fromData(data, isClassic);
-
       // ibc-ica
       case '/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount':
         return MsgRegisterInterchainAccountV1.fromData(data);
@@ -829,69 +841,67 @@ export namespace Msg {
 
       // ibc-client
       case '/ibc.core.client.v1.MsgCreateClient':
-        return MsgCreateClient.fromData(data, isClassic);
+        return MsgCreateClientV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgUpdateClient':
-        return MsgUpdateClient.fromData(data, isClassic);
+        return MsgUpdateClientV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgUpgradeClient':
-        return MsgUpgradeClient.fromData(data, isClassic);
+        return MsgUpgradeClientV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgSubmitMisbehaviour':
-        return MsgSubmitMisbehaviour.fromData(data, isClassic);
+        return MsgSubmitMisbehaviourV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgRecoverClient':
-        return MsgRecoverClient.fromData(data, isClassic);
+        return MsgRecoverClientV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgIBCSoftwareUpgrade':
         return MsgIbcSoftwareUpgradeV1.fromData(data, isClassic);
       case '/ibc.core.client.v1.MsgUpdateParams':
         return MsgUpdateIbcClientParamsV1.fromData(data, isClassic);
+      case '/ibc.core.client.v1.MsgDeleteClientCreator':
+        return MsgDeleteClientCreatorV1.fromData(data, isClassic);
+      case '/ibc.core.client.v2.MsgUpdateClientConfig':
+        return MsgUpdateClientConfigV2.fromData(data);
+      case '/ibc.core.client.v2.MsgRegisterCounterparty':
+        return MsgRegisterCounterpartyV2.fromData(data);
 
       // ibc-connection
       case '/ibc.core.connection.v1.MsgConnectionOpenInit':
-        return MsgConnectionOpenInit.fromData(data, isClassic);
+        return MsgConnectionOpenInitV1.fromData(data);
       case '/ibc.core.connection.v1.MsgConnectionOpenTry':
-        return MsgConnectionOpenTry.fromData(data, isClassic);
+        return MsgConnectionOpenTryV1.fromData(data);
       case '/ibc.core.connection.v1.MsgConnectionOpenConfirm':
-        return MsgConnectionOpenConfirm.fromData(data, isClassic);
+        return MsgConnectionOpenConfirmV1.fromData(data);
       case '/ibc.core.connection.v1.MsgConnectionOpenAck':
-        return MsgConnectionOpenAck.fromData(data, isClassic);
+        return MsgConnectionOpenAckV1.fromData(data);
       case '/ibc.core.connection.v1.MsgUpdateParams':
-        return MsgUpdateIbcConnectionParamsV1.fromData(data, isClassic);
+        return MsgUpdateIbcConnectionParamsV1.fromData(data);
 
       // ibc-channel
       case '/ibc.core.channel.v1.MsgChannelOpenInit':
-        return MsgChannelOpenInit.fromData(data, isClassic);
+        return MsgChannelOpenInitV1.fromData(data);
       case '/ibc.core.channel.v1.MsgChannelOpenTry':
-        return MsgChannelOpenTry.fromData(data, isClassic);
+        return MsgChannelOpenTryV1.fromData(data);
       case '/ibc.core.channel.v1.MsgChannelOpenConfirm':
-        return MsgChannelOpenConfirm.fromData(data, isClassic);
+        return MsgChannelOpenConfirmV1.fromData(data);
       case '/ibc.core.channel.v1.MsgChannelOpenAck':
-        return MsgChannelOpenAck.fromData(data, isClassic);
+        return MsgChannelOpenAckV1.fromData(data);
       case '/ibc.core.channel.v1.MsgChannelCloseInit':
-        return MsgChannelCloseInit.fromData(data, isClassic);
+        return MsgChannelCloseInitV1.fromData(data);
       case '/ibc.core.channel.v1.MsgChannelCloseConfirm':
-        return MsgChannelCloseConfirm.fromData(data, isClassic);
+        return MsgChannelCloseConfirmV1.fromData(data);
       case '/ibc.core.channel.v1.MsgRecvPacket':
-        return MsgRecvPacket.fromData(data, isClassic);
+        return MsgRecvPacketV1.fromData(data);
       case '/ibc.core.channel.v1.MsgAcknowledgement':
-        return MsgAcknowledgement.fromData(data, isClassic);
+        return MsgAcknowledgementV1.fromData(data);
       case '/ibc.core.channel.v1.MsgTimeout':
-        return MsgTimeout.fromData(data, isClassic);
+        return MsgTimeoutV1.fromData(data);
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
-        return MsgTimeoutOnClose.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeInit':
-        return MsgChannelUpgradeInit.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeTry':
-        return MsgChannelUpgradeTry.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeAck':
-        return MsgChannelUpgradeAck.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeConfirm':
-        return MsgChannelUpgradeConfirm.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeOpen':
-        return MsgChannelUpgradeOpen.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeTimeout':
-        return MsgChannelUpgradeTimeout.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeCancel':
-        return MsgChannelUpgradeCancel.fromData(data, isClassic);
-      case '/ibc.core.channel.v1.MsgUpdateParams':
-        return MsgUpdateIbcChannelParamsV1.fromData(data, isClassic);
+        return MsgTimeoutOnCloseV1.fromData(data);
+      case '/ibc.core.channel.v2.MsgSendPacket':
+        return MsgSendPacketV2.fromData(data);
+      case '/ibc.core.channel.v2.MsgRecvPacket':
+        return MsgRecvPacketV2.fromData(data);
+      case '/ibc.core.channel.v2.MsgAcknowledgement':
+        return MsgAcknowledgementV2.fromData(data);
+      case '/ibc.core.channel.v2.MsgTimeout':
+        return MsgTimeoutV2.fromData(data);
 
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
@@ -919,6 +929,20 @@ export namespace Msg {
         return MsgRegisterVolunteerValidatorV1B1.fromData(data);
       case '/xpla.volunteer.v1beta1.MsgUnregisterVolunteerValidator':
         return MsgUnregisterVolunteerValidatorV1B1.fromData(data);
+      case '/xpla.burn.v1beta1.MsgBurn':
+        return MsgBurnV1B1.fromData(data);
+
+      // protocolpool
+      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
+        return MsgFundCommunityPoolV1.fromData(data);
+      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1.fromData(data);
+      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
+        return MsgCreateContinuousFundV1.fromData(data);
+      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
+        return MsgCancelContinuousFundV1.fromData(data);
+      case '/cosmos.protocolpool.v1.MsgUpdateParams':
+        return MsgUpdateProtocolPoolParamsV1.fromData(data);
 
       default:
         throw Error(`not supported msg ${data['@type']}`);
@@ -1125,16 +1149,6 @@ export namespace Msg {
       case '/cosmwasm.wasm.v1.MsgIBCCloseChannel':
         return MsgIBCCloseChannelV1.unpackAny(proto, isClassic);
 
-      // ibc-fee
-      case '/ibc.applications.fee.v1.MsgPayPacketFee':
-        return MsgPayPacketFee.unpackAny(proto, isClassic);
-      case '/ibc.applications.fee.v1.MsgPayPacketFeeAsync':
-        return MsgPayPacketFeeAsync.unpackAny(proto, isClassic);
-      case '/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee':
-        return MsgRegisterCounterpartyAddress.unpackAny(proto, isClassic);
-      case '/ibc.applications.fee.v1.MsgRegisterPayee':
-        return MsgRegisterPayee.unpackAny(proto, isClassic);
-
       // ibc-ica
       case '/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount':
         return MsgRegisterInterchainAccountV1.unpackAny(proto);
@@ -1155,69 +1169,67 @@ export namespace Msg {
 
       // ibc-client
       case '/ibc.core.client.v1.MsgCreateClient':
-        return MsgCreateClient.unpackAny(proto, isClassic);
+        return MsgCreateClientV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgUpdateClient':
-        return MsgUpdateClient.unpackAny(proto, isClassic);
+        return MsgUpdateClientV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgUpgradeClient':
-        return MsgUpgradeClient.unpackAny(proto, isClassic);
+        return MsgUpgradeClientV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgSubmitMisbehaviour':
-        return MsgSubmitMisbehaviour.unpackAny(proto, isClassic);
+        return MsgSubmitMisbehaviourV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgRecoverClient':
-        return MsgRecoverClient.unpackAny(proto, isClassic);
+        return MsgRecoverClientV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgIBCSoftwareUpgrade':
         return MsgIbcSoftwareUpgradeV1.unpackAny(proto, isClassic);
       case '/ibc.core.client.v1.MsgUpdateParams':
         return MsgUpdateIbcClientParamsV1.unpackAny(proto, isClassic);
+      case '/ibc.core.client.v1.MsgDeleteClientCreator':
+        return MsgDeleteClientCreatorV1.unpackAny(proto, isClassic);
+      case '/ibc.core.client.v2.MsgUpdateClientConfig':
+        return MsgUpdateClientConfigV2.unpackAny(proto);
+      case '/ibc.core.client.v2.MsgRegisterCounterparty':
+        return MsgRegisterCounterpartyV2.unpackAny(proto);
 
       // ibc-connection
       case '/ibc.core.connection.v1.MsgConnectionOpenInit':
-        return MsgConnectionOpenInit.unpackAny(proto, isClassic);
+        return MsgConnectionOpenInitV1.unpackAny(proto);
       case '/ibc.core.connection.v1.MsgConnectionOpenTry':
-        return MsgConnectionOpenTry.unpackAny(proto, isClassic);
+        return MsgConnectionOpenTryV1.unpackAny(proto);
       case '/ibc.core.connection.v1.MsgConnectionOpenConfirm':
-        return MsgConnectionOpenConfirm.unpackAny(proto, isClassic);
+        return MsgConnectionOpenConfirmV1.unpackAny(proto);
       case '/ibc.core.connection.v1.MsgConnectionOpenAck':
-        return MsgConnectionOpenAck.unpackAny(proto, isClassic);
+        return MsgConnectionOpenAckV1.unpackAny(proto);
       case '/ibc.core.connection.v1.MsgUpdateParams':
-        return MsgUpdateIbcConnectionParamsV1.unpackAny(proto, isClassic);
+        return MsgUpdateIbcConnectionParamsV1.unpackAny(proto);
 
       // ibc-channel
       case '/ibc.core.channel.v1.MsgChannelOpenInit':
-        return MsgChannelOpenInit.unpackAny(proto, isClassic);
+        return MsgChannelOpenInitV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgChannelOpenTry':
-        return MsgChannelOpenTry.unpackAny(proto, isClassic);
+        return MsgChannelOpenTryV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgChannelOpenConfirm':
-        return MsgChannelOpenConfirm.unpackAny(proto, isClassic);
+        return MsgChannelOpenConfirmV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgChannelOpenAck':
-        return MsgChannelOpenAck.unpackAny(proto, isClassic);
+        return MsgChannelOpenAckV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgChannelCloseInit':
-        return MsgChannelCloseInit.unpackAny(proto, isClassic);
+        return MsgChannelCloseInitV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgChannelCloseConfirm':
-        return MsgChannelCloseConfirm.unpackAny(proto, isClassic);
+        return MsgChannelCloseConfirmV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgRecvPacket':
-        return MsgRecvPacket.unpackAny(proto, isClassic);
+        return MsgRecvPacketV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgAcknowledgement':
-        return MsgAcknowledgement.unpackAny(proto, isClassic);
+        return MsgAcknowledgementV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgTimeout':
-        return MsgTimeout.unpackAny(proto, isClassic);
+        return MsgTimeoutV1.unpackAny(proto);
       case '/ibc.core.channel.v1.MsgTimeoutOnClose':
-        return MsgTimeoutOnClose.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeInit':
-        return MsgChannelUpgradeInit.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeTry':
-        return MsgChannelUpgradeTry.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeAck':
-        return MsgChannelUpgradeAck.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeConfirm':
-        return MsgChannelUpgradeConfirm.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeOpen':
-        return MsgChannelUpgradeOpen.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeTimeout':
-        return MsgChannelUpgradeTimeout.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgChannelUpgradeCancel':
-        return MsgChannelUpgradeCancel.unpackAny(proto, isClassic);
-      case '/ibc.core.channel.v1.MsgUpdateParams':
-        return MsgUpdateIbcChannelParamsV1.unpackAny(proto, isClassic);
+        return MsgTimeoutOnCloseV1.unpackAny(proto);
+      case '/ibc.core.channel.v2.MsgSendPacket':
+        return MsgSendPacketV2.unpackAny(proto);
+      case '/ibc.core.channel.v2.MsgRecvPacket':
+        return MsgRecvPacketV2.unpackAny(proto);
+      case '/ibc.core.channel.v2.MsgAcknowledgement':
+        return MsgAcknowledgementV2.unpackAny(proto);
+      case '/ibc.core.channel.v2.MsgTimeout':
+        return MsgTimeoutV2.unpackAny(proto);
 
       // crisis
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
@@ -1245,6 +1257,20 @@ export namespace Msg {
         return MsgRegisterVolunteerValidatorV1B1.unpackAny(proto);
       case '/xpla.volunteer.v1beta1.MsgUnregisterVolunteerValidator':
         return MsgUnregisterVolunteerValidatorV1B1.unpackAny(proto);
+      case '/xpla.burn.v1beta1.MsgBurn':
+        return MsgBurnV1B1.unpackAny(proto);
+
+      // protocolpool
+      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
+        return MsgFundCommunityPoolV1.unpackAny(proto);
+      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
+        return MsgCommunityPoolSpendV1.unpackAny(proto);
+      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
+        return MsgCreateContinuousFundV1.unpackAny(proto);
+      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
+        return MsgCancelContinuousFundV1.unpackAny(proto);
+      case '/cosmos.protocolpool.v1.MsgUpdateParams':
+        return MsgUpdateProtocolPoolParamsV1.unpackAny(proto);
 
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);

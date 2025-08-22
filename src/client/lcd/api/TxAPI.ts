@@ -17,6 +17,7 @@ import { LCDClient } from '../LCDClient';
 import { APIParams, ApiResponseError, Pagination, PaginationOptions } from '../APIRequester';
 import { BroadcastMode as BroadcastModeV2 } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
 import { EvmMessage } from '../../../client/ecd/msgs';
+import { Convert } from '../../../util/convert';
 
 const POLL_INTERVAL = 500;
 
@@ -293,7 +294,7 @@ export class TxAPI extends BaseAPI {
     if (!txs) {
       return [];
     }
-    return txs.map(txdata => hashToHex(txdata));
+    return txs.map(hashToHex);
   }
 
   /**
@@ -458,9 +459,7 @@ export class TxAPI extends BaseAPI {
    * @param tx transaction to encode
    */
   public encode(tx: Tx): string {
-    return Buffer.from(tx.toBytes(this.lcd.config.isClassic)).toString(
-      'base64'
-    );
+    return Convert.toBase64(tx.toBytes(this.lcd.config.isClassic));
   }
 
   /**
@@ -468,8 +467,8 @@ export class TxAPI extends BaseAPI {
    * @param tx transaction string to decode
    */
   public decode(encodedTx: string): Tx {
-    return Tx.fromBuffer(
-      Buffer.from(encodedTx, 'base64'),
+    return Tx.fromBytes(
+      Convert.fromBase64(encodedTx),
       this.lcd.config.isClassic
     );
   }
@@ -558,7 +557,7 @@ export class TxAPI extends BaseAPI {
       gas_wanted: txInfo.gas_wanted,
       gas_used: txInfo.gas_used,
       height: +txInfo.height,
-      logs: (txInfo.logs ?? []).map(l => TxLog.fromData(l)),
+      logs: (txInfo.logs ?? []).map(TxLog.fromData),
       code: txInfo.code,
       codespace: txInfo.codespace,
       timestamp: txInfo.timestamp,
@@ -580,7 +579,7 @@ export class TxAPI extends BaseAPI {
         gas_wanted: Number.parseInt(d.gas_wanted),
         gas_used: Number.parseInt(d.gas_used),
         height: +d.height,
-        logs: d.logs.map(l => TxLog.fromData(l)),
+        logs: d.logs.map(TxLog.fromData),
         code: d.code,
         codespace: d.codespace,
         data: d.data,

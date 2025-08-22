@@ -78,7 +78,19 @@ export class CLIKey extends Key {
     return ValAddress.fromAccAddress(this._accAddress);
   }
 
-  public async sign(): Promise<Buffer> {
+  public get privateKeyHex(): string {
+    throw new Error(
+      'CLIKey cannot get private key.'
+    );
+  }
+
+  public get publicKeyHex(): string {
+    throw new Error(
+      'CLIKey cannot get public key.'
+    );
+  }
+
+  public async sign(): Promise<Uint8Array> {
     throw new Error(
       'CLIKey does not use sign() -- use createSignature() directly.'
     );

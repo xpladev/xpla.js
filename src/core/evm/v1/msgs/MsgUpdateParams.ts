@@ -2,7 +2,8 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgUpdateParams as MsgUpdateEvmParamsV1_pb } from '@xpla/xpla.proto/ethermint/evm/v1/tx';
+import { MsgUpdateParams as MsgUpdateEvmParamsV1L_pb } from '@xpla/xpla.proto/ethermint/evm/v1/tx';
+import { MsgUpdateParams as MsgUpdateEvmParamsV1_pb } from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
 import { EvmParamsV1 } from '../Params';
 
 export class MsgUpdateEvmParamsV1 extends JSONSerializable<
@@ -37,7 +38,7 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateEvmParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'ethermint/x/evm/MsgUpdateParams',
+      type: 'evm/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -59,7 +60,7 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgUpdateEvmParamsV1.Data {
     const { authority, params } = this;
     return {
-      '@type': '/ethermint.evm.v1.MsgUpdateParams',
+      '@type': '/cosmos.evm.vm.v1.MsgUpdateParams',
       authority,
       params: params ? params.toData() : undefined,
     };
@@ -85,7 +86,7 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
 
   public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.erc20.v1.MsgUpdateParams',
+      typeUrl: '/cosmos.evm.vm.v1.MsgUpdateParams',
       value: MsgUpdateEvmParamsV1_pb.encode(this.toProto()).finish(),
     });
   }
@@ -102,7 +103,9 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateEvmParamsV1 {
   export interface Amino {
-    type: 'ethermint/x/evm/MsgUpdateParams';
+    type:
+      | 'ethermint/x/evm/MsgUpdateParams'
+      | 'evm/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: EvmParamsV1.Amino | undefined;
@@ -110,7 +113,9 @@ export namespace MsgUpdateEvmParamsV1 {
   }
 
   export interface Data {
-    '@type': '/ethermint.evm.v1.MsgUpdateParams';
+    '@type':
+      | '/ethermint.evm.v1.MsgUpdateParams'
+      | '/cosmos.evm.vm.v1.MsgUpdateParams';
     authority: AccAddress;
     params: EvmParamsV1.Data | undefined;
   }

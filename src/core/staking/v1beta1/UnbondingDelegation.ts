@@ -37,7 +37,7 @@ export class UnbondingDelegationV1B1 extends JSONSerializable<
     return new UnbondingDelegationV1B1(
       delegator_address,
       validator_address,
-      entries.map(e => UnbondingDelegationV1B1.Entry.fromAmino(e))
+      entries.map(UnbondingDelegationV1B1.Entry.fromAmino)
     );
   }
 
@@ -57,7 +57,7 @@ export class UnbondingDelegationV1B1 extends JSONSerializable<
     return new UnbondingDelegationV1B1(
       delegator_address,
       validator_address,
-      entries.map(e => UnbondingDelegationV1B1.Entry.fromData(e))
+      entries.map(UnbondingDelegationV1B1.Entry.fromData)
     );
   }
 
@@ -85,7 +85,7 @@ export class UnbondingDelegationV1B1 extends JSONSerializable<
     return new UnbondingDelegationV1B1(
       proto.delegatorAddress,
       proto.validatorAddress,
-      proto.entries.map(e => UnbondingDelegationV1B1.Entry.fromProto(e))
+      proto.entries.map(UnbondingDelegationV1B1.Entry.fromProto)
     );
   }
 }

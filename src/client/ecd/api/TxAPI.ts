@@ -2,6 +2,7 @@ import { EvmAPI } from './BaseAPI';
 import { EvmAddress } from '../../../core/eip55';
 import { EvmTx, EvmTxInfo, EvmMessage } from '../msgs/EvmTx';
 import { Numeric } from '../../../core';
+import { Convert } from '../../../util/convert';
 import { ECDClient } from '../ECDClient';
 import { EvmWallet } from '../EvmWallet';
 import { Key, RawKey } from '../../../key';
@@ -47,11 +48,11 @@ export class EvmTxAPI extends EvmAPI {
     if (tx.transactionIndex)
       params.transactionIndex = Numeric.parse(tx.transactionIndex).toHex();
     if (tx.value) params.value = Numeric.parse(tx.value).toHex();
-    if (tx.data) params.data = '0x' + Buffer.from(tx.data).toString('hex');
+    if (tx.data) params.data = '0x' + Convert.toHex(tx.data);
     if (tx.type) params.type = Numeric.parse(tx.type).toHex();
     if (tx.v) params.v = Numeric.parse(tx.v).toHex();
-    if (tx.r) params.r = '0x' + Buffer.from(tx.r).toString('hex');
-    if (tx.s) params.s = '0x' + Buffer.from(tx.s).toString('hex');
+    if (tx.r) params.r = '0x' + Convert.toHex(tx.r);
+    if (tx.s) params.s = '0x' + Convert.toHex(tx.s);
     if (tx.accessList) params.accessList = tx.accessList;
     return params;
   }
@@ -72,21 +73,18 @@ export class EvmTxAPI extends EvmAPI {
       tx.transactionIndex = Numeric.parse(params.transactionIndex);
     if (params.value) tx.value = Numeric.parse(params.value);
     if (params.data)
-      tx.data = Buffer.from(
+      tx.data = Convert.fromHex(
         params.data.indexOf('0x') == 0 ? params.data.substring(2) : params.data,
-        'hex'
       );
     if (params.type) tx.type = Numeric.parse(params.type).toNumber();
     if (params.v) tx.v = Numeric.parse(params.v).toNumber();
     if (params.r)
-      tx.r = Buffer.from(
+      tx.r = Convert.fromHex(
         params.r.indexOf('0x') == 0 ? params.r.substring(2) : params.r,
-        'hex'
       );
     if (params.s)
-      tx.s = Buffer.from(
+      tx.s = Convert.fromHex(
         params.s.indexOf('0x') == 0 ? params.s.substring(2) : params.s,
-        'hex'
       );
     if (tx.accessList) params.accessList = tx.accessList;
     return tx;
@@ -171,25 +169,25 @@ export class EvmTxAPI extends EvmAPI {
         ? BigInt(chainId) * BigInt(2) + BigInt(35 + v - 27)
         : BigInt(0);
 
-    const values: Buffer[] = [
-      ECDClient.bufferFromHex(params.nonce ?? '0'),
-      ECDClient.bufferFromHex(params.gasPrice ?? '0'),
-      ECDClient.bufferFromHex(params.gasLimit ?? '0'),
-      ECDClient.unpadBuffer(ECDClient.bufferFromHex(params.to)),
-      ECDClient.bufferFromHex(params.value ?? '0'),
-      ECDClient.unpadBuffer(tx.data ?? Buffer.alloc(0)),
-      ECDClient.bufferFromHex(v_id.toString(16)),
-      ECDClient.unpadBuffer(tx.r ?? Buffer.alloc(0)),
-      ECDClient.unpadBuffer(tx.s ?? Buffer.alloc(0)),
+    const values: Uint8Array[] = [
+      Convert.fromHex(params.nonce ?? '0'),
+      Convert.fromHex(params.gasPrice ?? '0'),
+      Convert.fromHex(params.gasLimit ?? '0'),
+      Convert.unpadBytes(Convert.fromHex(params.to)),
+      Convert.fromHex(params.value ?? '0'),
+      Convert.unpadBytes(tx.data ?? new Uint8Array(0)),
+      Convert.fromHex(v_id.toString(16)),
+      Convert.unpadBytes(tx.r ?? new Uint8Array(0)),
+      Convert.unpadBytes(tx.s ?? new Uint8Array(0)),
     ];
 
     const serializedMsg =
-      '0x' + Buffer.from(RLP.encode(values)).toString('hex');
+      '0x' + Convert.toHex(RLP.encode(values));
 
     const response = await this.e.post(
       this.ecd.config.id,
       'eth_sendRawTransaction',
-      [serializedMsg]
+      [serializedMsg],
     );
 
     return response;
@@ -281,7 +279,7 @@ export class EvmTxAPI extends EvmAPI {
       throw new Error('tx must have [ nonce, gasLimit, gasPrice ]');
     }
 
-    let privateKey: Buffer | null = null;
+    let privateKey: Uint8Array | null = null;
     if ((signer as EvmWallet).key) {
       signer = (signer as EvmWallet).key;
     }
@@ -294,22 +292,22 @@ export class EvmTxAPI extends EvmAPI {
 
     const params = this.toParams(tx);
 
-    const values: Buffer[] = [
-      params.nonce ? ECDClient.bufferFromHex(params.nonce) : Buffer.alloc(0),
+    const values: Uint8Array[] = [
+      params.nonce ? Convert.fromHex(params.nonce) : new Uint8Array(0),
       params.gasPrice
-        ? ECDClient.bufferFromHex(params.gasPrice)
-        : Buffer.alloc(0),
+        ? Convert.fromHex(params.gasPrice)
+        : new Uint8Array(0),
       params.gasLimit
-        ? ECDClient.bufferFromHex(params.gasLimit)
-        : Buffer.alloc(0),
-      ECDClient.unpadBuffer(ECDClient.bufferFromHex(params.to)),
-      params.value ? ECDClient.bufferFromHex(params.value) : Buffer.alloc(0),
-      ECDClient.unpadBuffer(tx.data ?? Buffer.alloc(0)),
+        ? Convert.fromHex(params.gasLimit)
+        : new Uint8Array(0),
+      Convert.unpadBytes(Convert.fromHex(params.to)),
+      params.value ? Convert.fromHex(params.value) : new Uint8Array(0),
+      Convert.unpadBytes(tx.data ?? new Uint8Array(0)),
       params.chainId
-        ? ECDClient.bufferFromHex(params.chainId)
-        : Buffer.alloc(0),
-      Buffer.alloc(0),
-      Buffer.alloc(0),
+        ? Convert.fromHex(params.chainId)
+        : new Uint8Array(0),
+      new Uint8Array(0),
+      new Uint8Array(0),
     ];
 
     const rlp = RLP.encode(values);
@@ -323,13 +321,9 @@ export class EvmTxAPI extends EvmAPI {
         der: false,
       },
     );
-    const r = sig.slice(0, 32);
-    const s = sig.slice(32, 64);
-    const v = recid ? 0x1c : 0x1b;
-
-    tx.v = v;
-    tx.r = Buffer.from(r);
-    tx.s = Buffer.from(s);
+    tx.r = sig.slice(0, 32);
+    tx.s = sig.slice(32, 64);
+    tx.v = recid ? 0x1c : 0x1b;
 
     return tx;
   }

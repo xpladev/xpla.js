@@ -1,4 +1,5 @@
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { SudoContractProposal as SudoContractProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal_legacy';
@@ -63,7 +64,7 @@ export class SudoContractProposal extends JSONSerializable<
       proto.title,
       proto.description,
       proto.contract,
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8'))
+      JSON.parse(Convert.toUTF8(proto.msg))
     );
   }
 
@@ -76,7 +77,7 @@ export class SudoContractProposal extends JSONSerializable<
       title,
       description,
       contract,
-      msg: Buffer.from(JSON.stringify(msg), 'utf-8'),
+      msg: Convert.fromUTF8(JSON.stringify(msg)),
     });
   }
   public packAny(isClassic?: boolean): Any {

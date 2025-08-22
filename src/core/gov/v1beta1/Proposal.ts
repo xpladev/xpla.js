@@ -8,7 +8,7 @@ import {
   ToggleTokenConversionProposal,
 } from '../../erc20';
 import { ParameterChangeProposal } from '../../params/proposals';
-import { ClientUpdateProposal } from '../../ibc/proposals';
+// import { ClientUpdateProposal } from '../../ibc/proposals';
 import { TextProposal } from './proposals';
 import {
   SoftwareUpgradeProposal,
@@ -262,7 +262,6 @@ export namespace ProposalV1B1 {
     | ParameterChangeProposal
     | SoftwareUpgradeProposal
     | CancelSoftwareUpgradeProposal
-    | ClientUpdateProposal
     | ClearAdminProposal
     | ExecuteContractProposal
     | InstantiateContractProposal
@@ -288,7 +287,6 @@ export namespace ProposalV1B1 {
       | ParameterChangeProposal.Amino
       | SoftwareUpgradeProposal.Amino
       | CancelSoftwareUpgradeProposal.Amino
-      | ClientUpdateProposal.Amino
       | ClearAdminProposal.Amino
       | ExecuteContractProposal.Amino
       | InstantiateContractProposal.Amino
@@ -313,7 +311,6 @@ export namespace ProposalV1B1 {
       | ParameterChangeProposal.Data
       | SoftwareUpgradeProposal.Data
       | CancelSoftwareUpgradeProposal.Data
-      | ClientUpdateProposal.Data
       | ClearAdminProposal.Data
       | ExecuteContractProposal.Data
       | InstantiateContractProposal.Data
@@ -338,7 +335,6 @@ export namespace ProposalV1B1 {
       | ParameterChangeProposal.Proto
       | SoftwareUpgradeProposal.Proto
       | CancelSoftwareUpgradeProposal.Proto
-      | ClientUpdateProposal.Proto
       | ClearAdminProposal.Proto
       | ExecuteContractProposal.Proto
       | InstantiateContractProposal.Proto
@@ -377,8 +373,6 @@ export namespace ProposalV1B1 {
         case 'upgrade/CancelSoftwareUpgradeProposal':
         case 'cosmos-sdk/CancelSoftwareUpgradeProposal':
           return CancelSoftwareUpgradeProposal.fromAmino(amino, isClassic);
-        case 'ibc/ClientUpdateProposal':
-          return ClientUpdateProposal.fromAmino(amino, isClassic);
         case 'wasm/ClearAdminProposal':
           return ClearAdminProposal.fromAmino(amino, isClassic);
         case 'wasm/ExecuteContractProposal':
@@ -440,8 +434,6 @@ export namespace ProposalV1B1 {
           return SoftwareUpgradeProposal.fromData(data, isClassic);
         case '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal':
           return CancelSoftwareUpgradeProposal.fromData(data, isClassic);
-        case '/ibc.core.client.v1.ClientUpdateProposal':
-          return ClientUpdateProposal.fromData(data, isClassic);
         case '/cosmwasm.wasm.v1.ClearAdminProposal':
           return ClearAdminProposal.fromData(data, isClassic);
         case '/cosmwasm.wasm.v1.ExecuteContractProposal':
@@ -464,12 +456,15 @@ export namespace ProposalV1B1 {
           return UpdateInstantiateConfigProposal.fromData(data, isClassic);
         case '/ethermint.erc20.v1.RegisterCoinProposal':
         case '/evmos.erc20.v1.RegisterCoinProposal':
-          return RegisterCoinProposal.fromData(data, isClassic);
+        case '/cosmos.evm.erc20.v1.RegisterCoinProposal':
+            return RegisterCoinProposal.fromData(data, isClassic);
         case '/ethermint.erc20.v1.RegisterERC20Proposal':
         case '/evmos.erc20.v1.RegisterERC20Proposal':
+        case '/cosmos.evm.erc20.v1.RegisterERC20Proposal':
           return RegisterERC20Proposal.fromData(data, isClassic);
         case '/ethermint.erc20.v1.ToggleTokenConversionProposal':
         case '/evmos.erc20.v1.ToggleTokenConversionProposal':
+        case '/cosmos.evm.erc20.v1.ToggleTokenConversionProposal':
           return ToggleTokenConversionProposal.fromData(data, isClassic);
         case '/xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
           return RegisterVolunteerValidatorProposal.fromData(data, isClassic);
@@ -504,8 +499,6 @@ export namespace ProposalV1B1 {
           return SoftwareUpgradeProposal.unpackAny(anyProto, isClassic);
         case '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal':
           return CancelSoftwareUpgradeProposal.unpackAny(anyProto, isClassic);
-        case '/ibc.core.client.v1.ClientUpdateProposal':
-          return ClientUpdateProposal.unpackAny(anyProto, isClassic);
         case '/cosmwasm.wasm.v1.ClearAdminProposal':
           return ClearAdminProposal.unpackAny(anyProto, isClassic);
         case '/cosmwasm.wasm.v1.ExecuteContractProposal':
@@ -528,12 +521,15 @@ export namespace ProposalV1B1 {
           return UpdateInstantiateConfigProposal.unpackAny(anyProto, isClassic);
         case '/ethermint.erc20.v1.RegisterCoinProposal':
         case '/evmos.erc20.v1.RegisterCoinProposal':
-          return RegisterCoinProposal.unpackAny(anyProto, isClassic);
+        case '/cosmos.evm.erc20.v1.RegisterCoinProposal':
+            return RegisterCoinProposal.unpackAny(anyProto, isClassic);
         case '/ethermint.erc20.v1.RegisterERC20Proposal':
         case '/evmos.erc20.v1.RegisterERC20Proposal':
+        case '/cosmos.evm.erc20.v1.RegisterERC20Proposal':
           return RegisterERC20Proposal.unpackAny(anyProto, isClassic);
         case '/ethermint.erc20.v1.ToggleTokenConversionProposal':
         case '/evmos.erc20.v1.ToggleTokenConversionProposal':
+        case '/cosmos.evm.erc20.v1.ToggleTokenConversionProposal':
           return ToggleTokenConversionProposal.unpackAny(anyProto, isClassic);
         case '/xpla.volunteer.v1beta1.RegisterVolunteerValidatorProposal':
           return RegisterVolunteerValidatorProposal.unpackAny(

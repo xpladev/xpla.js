@@ -80,9 +80,7 @@ export * from './upgrade';
 export * from './wasm';
 
 // IBC
-export * from './ibc/msgs/channel';
-export * from './ibc/msgs/client';
-export * from './ibc/msgs/connection';
+export * from './ibc/core';
 
 // IBC-transfer
 export * from './ibc/applications/transfer';

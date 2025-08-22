@@ -56,12 +56,12 @@ export class TxInfo {
       proto.height.toNumber(),
       proto.txhash,
       proto.rawLog,
-      proto.logs.map(log => TxLog.fromProto(log)),
+      proto.logs.map(TxLog.fromProto),
       proto.gasWanted.toNumber(),
       proto.gasUsed.toNumber(),
       Tx.unpackAny(proto.tx as Any),
       proto.timestamp,
-      proto.events.map(evt => TxEvent.fromProto(evt)),
+      proto.events.map(TxEvent.fromProto),
       proto.code,
       proto.codespace,
       proto.data,
@@ -74,12 +74,12 @@ export class TxInfo {
       Number.parseInt(data.height),
       data.txhash,
       data.raw_log,
-      data.logs.map(log => TxLog.fromData(log)),
+      data.logs.map(TxLog.fromData),
       Number.parseInt(data.gas_wanted),
       Number.parseInt(data.gas_used),
       Tx.fromData(data.tx, isClassic),
       data.timestamp,
-      data.events.map(evt => TxEvent.fromData(evt)),
+      data.events.map(TxEvent.fromData),
       data.code,
       data.codespace,
       data.data,
@@ -393,7 +393,7 @@ export class TxEvent {
   public static fromData(data: TxEvent.Data): TxEvent {
     return new TxEvent(
       data.type,
-      data.attributes.map(attr => EventAttribute.fromData(attr))
+      data.attributes.map(EventAttribute.fromData)
     );
   }
 
@@ -407,7 +407,7 @@ export class TxEvent {
   public static fromProto(proto: TxEvent.Proto): TxEvent {
     return new TxEvent(
       proto.type,
-      proto.attributes.map(attr => EventAttribute.fromProto(attr))
+      proto.attributes.map(EventAttribute.fromProto)
     );
   }
 

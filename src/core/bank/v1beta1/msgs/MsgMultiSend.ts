@@ -67,14 +67,14 @@ export class MsgMultiSendV1B1 extends JSONSerializable<
 
   public static fromAmino(
     data: MsgMultiSendV1B1.Amino,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgMultiSendV1B1 {
     const {
       value: { inputs, outputs },
     } = data;
     return new MsgMultiSendV1B1(
-      inputs.map(i => MsgMultiSendV1B1.Input.fromAmino(i)),
-      outputs.map(o => MsgMultiSendV1B1.Output.fromAmino(o))
+      inputs.map(i => MsgMultiSendV1B1.Input.fromAmino(i, isClassic)),
+      outputs.map(o => MsgMultiSendV1B1.Output.fromAmino(o, isClassic))
     );
   }
 
@@ -91,12 +91,12 @@ export class MsgMultiSendV1B1 extends JSONSerializable<
 
   public static fromData(
     data: MsgMultiSendV1B1.Data,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgMultiSendV1B1 {
     const { inputs, outputs } = data;
     return new MsgMultiSendV1B1(
-      inputs.map(i => MsgMultiSendV1B1.Input.fromData(i)),
-      outputs.map(o => MsgMultiSendV1B1.Output.fromData(o))
+      inputs.map(i => MsgMultiSendV1B1.Input.fromData(i, isClassic)),
+      outputs.map(o => MsgMultiSendV1B1.Output.fromData(o, isClassic))
     );
   }
 
@@ -111,11 +111,11 @@ export class MsgMultiSendV1B1 extends JSONSerializable<
 
   public static fromProto(
     proto: MsgMultiSendV1B1.Proto,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgMultiSendV1B1 {
     return new MsgMultiSendV1B1(
-      proto.inputs.map(i => MsgMultiSendV1B1.Input.fromProto(i)),
-      proto.outputs.map(o => MsgMultiSendV1B1.Output.fromProto(o))
+      proto.inputs.map(i => MsgMultiSendV1B1.Input.fromProto(i, isClassic)),
+      proto.outputs.map(o => MsgMultiSendV1B1.Output.fromProto(o, isClassic))
     );
   }
 

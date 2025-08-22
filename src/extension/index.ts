@@ -1,4 +1,5 @@
 import { Msg } from '../core';
+import { Convert } from '../util/convert';
 import { CreateTxOptions, EvmMessage } from '../client';
 import PostMessageStream from './PostMessageStream';
 
@@ -22,7 +23,7 @@ interface Option extends CreateTxOptions {
 }
 
 interface SignBytesOption {
-  bytes: Buffer;
+  bytes: Uint8Array;
   purgeQueue?: boolean; // default true
 }
 
@@ -208,7 +209,7 @@ export class Extension {
    */
   signBytes(options: SignBytesOption): number {
     return this.send('sign', {
-      bytes: options.bytes.toString('base64'),
+      bytes: Convert.toBase64(options.bytes),
       purgeQueue: options.purgeQueue,
     });
   }

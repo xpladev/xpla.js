@@ -2,6 +2,7 @@ import { Coins, RewardParamsV1B1 } from '../../../core';
 import { APIParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
+import { BurnProposal } from '../../../core/xpla/v1beta1/proposals';
 
 export class XplaAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
@@ -16,6 +17,24 @@ export class XplaAPI extends BaseAPI {
   public async volunteerValidators(params: APIParams = {}): Promise<string[]> {
     return this.c.get<{ volunteer_validators: string[] }>('/xpla/volunteer/v1beta1/validators', params)
       .then(d => d.volunteer_validators);
+  }
+
+  public async burnOngoingProposal(
+    proposal_id: number,
+    params: APIParams = {},
+  ): Promise<BurnProposal> {
+    params = { ...params, proposal_id };
+    return this.c.get<BurnProposal.Data>(`/xpla/burn/v1beta1/ongoing_proposal`, params)
+      .then(d => {
+        const b = BurnProposal.fromData(d);
+        b.proposal_id = proposal_id;
+        return b;
+      });
+  }
+
+  public async burnOngoingProposals(params: APIParams = {}): Promise<BurnProposal[]> {
+    return this.c.get<{ proposals: BurnProposal.Data[] }>('/xpla/burn/v1beta1/ongoing_proposals', params)
+      .then(d => d.proposals.map(p => BurnProposal.fromData(p)));
   }
 
   /**

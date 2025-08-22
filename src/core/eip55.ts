@@ -1,4 +1,5 @@
 import { verify } from 'eip55';
+import { Convert } from '../util/convert';
 
 /** `0x-` prefixed account address */
 export type EvmAddress = string;
@@ -16,7 +17,7 @@ function checkPrefixAndLength(
     const address = data.substring(2);
 
     try {
-      const bytes = Buffer.from(address, 'hex');
+      const bytes = Convert.fromHex(address);
       return bytes.length === length;
     } catch {
       return false;

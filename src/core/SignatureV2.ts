@@ -1,3 +1,4 @@
+import { Convert } from '../util/convert';
 import { PublicKey } from './PublicKey';
 import { ModeInfo } from './Tx';
 import { CompactBitArray } from './CompactBitArray';
@@ -104,7 +105,7 @@ export namespace SignatureV2 {
         const sigData = this.single;
         return [
           new ModeInfo(new ModeInfo.Single(sigData.mode)),
-          Buffer.from(sigData.signature, 'base64'),
+          Convert.fromBase64(sigData.signature),
         ];
       }
 
@@ -172,7 +173,7 @@ export namespace SignatureV2 {
       public static fromData(data: Multi.Data): Multi {
         return new Multi(
           CompactBitArray.fromData(data.bitarray),
-          data.signatures.map(v => Descriptor.fromData(v))
+          data.signatures.map(Descriptor.fromData)
         );
       }
 

@@ -1,5 +1,6 @@
 import { Key } from './Key';
 import { SimplePublicKey } from '../core/PublicKey';
+import { Convert } from '../util/convert';
 
 import * as secp256k1 from '@noble/secp256k1';
 import { keccak_256 } from '@noble/hashes/sha3';
@@ -11,26 +12,38 @@ export class RawKey extends Key {
   /**
    * Raw private key, in bytes.
    */
-  public privateKey: Buffer;
+  public privateKey: Uint8Array;
 
   constructor(privateKey: Uint8Array) {
     const publicKey = secp256k1.getPublicKey(
-      new Uint8Array(privateKey),
+      privateKey,
       true
     );
-    super(new SimplePublicKey(Buffer.from(publicKey).toString('base64')));
-    this.privateKey = Buffer.from(privateKey);
+    super(new SimplePublicKey(publicKey));
+    this.privateKey = privateKey;
   }
 
-  public static isValidPrivateKey(privateKey: Buffer): boolean {
+  public static isValidPrivateKey(privateKey: Uint8Array): boolean {
     return secp256k1.utils.isValidPrivateKey(privateKey);
   }
 
-  public async sign(payload: Buffer): Promise<Buffer> {
+  public isValid(): boolean {
+    return secp256k1.utils.isValidPrivateKey(this.privateKey);
+  }
+
+  public get privateKeyHex(): string {
+    return Convert.toHex(this.privateKey);
+  }
+
+  public get publicKeyHex(): string {
+    return Convert.toHex(Convert.fromBase64((this.publicKey as SimplePublicKey).key));
+  }
+
+  public async sign(payload: Uint8Array): Promise<Uint8Array> {
     return secp256k1.sign(
       keccak_256(payload),
       this.privateKey,
       { der: false },
-    ).then(value => Buffer.from(value));
+    ).then(value => Uint8Array.from(value));
   }
 }

@@ -26,7 +26,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
     } = data;
     return new MsgUnpinCodesV1(
       authority,
-      code_ids.map(x => Number.parseInt(x))
+      code_ids.map(Number.parseInt)
     );
   }
 
@@ -80,7 +80,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
     const { authority, code_ids } = data;
     return new MsgUnpinCodesV1(
       authority,
-      code_ids.map(x => Number.parseInt(x))
+      code_ids.map(Number.parseInt)
     );
   }
 

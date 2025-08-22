@@ -14,11 +14,11 @@ export type EvmTx = {
   to?: null | EvmAddress;
   transactionIndex?: null | Numeric.Output;
   value?: null | Numeric.Output;
-  data?: null | Buffer;
+  data?: null | Uint8Array;
   type?: null | number;
   v?: null | number;
-  r?: null | Buffer;
-  s?: null | Buffer;
+  r?: null | Uint8Array;
+  s?: null | Uint8Array;
   accessList?: null | string[];
 };
 

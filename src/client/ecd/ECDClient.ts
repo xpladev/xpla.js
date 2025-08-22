@@ -11,6 +11,7 @@ import { Key } from '../../key';
 import { Coins, EvmAddress } from '../../core';
 import { Numeric } from '../../core/numeric';
 import { encode as eip55 } from 'eip55';
+import { Convert } from '../../util/convert';
 
 export interface ECDClientConfig {
   /**
@@ -84,87 +85,18 @@ export class ECDClient {
     return dec;
   }
 
-  public static bufferFromHex(hex: string): Buffer {
-    if (hex === undefined || hex === '0x' || hex === '0x0' || hex === '0x00') {
-      return Buffer.alloc(0);
-    }
-    if (hex.startsWith('0x')) {
-      hex = hex.substring(2);
-    }
-    if (hex.length % 2 == 1) {
-      hex = '0' + hex;
-    }
-    return Buffer.from(hex, 'hex');
-  }
-
-  public static bufferToHex(buff: ArrayBuffer | ArrayBufferLike | any[], prefix: string = ''): string {
-    return prefix + Buffer.from(new Uint8Array(buff)).toString('hex');
-  }
-
-  public static unpadBuffer(d: Buffer): Buffer {
-    let i = 0;
-    while (d[i] == 0 && i < d.length) i++;
-    return Buffer.from(new Uint8Array(d.subarray(i)));
-  }
-
-  public static bufferToAddress(buffer: Buffer): EvmAddress {
-    if (buffer.length < 20) throw new Error('Buffer length must be 20');
+  public static bytesToAddress(buffer: Uint8Array): EvmAddress {
+    if (buffer.length < 20) throw new Error('Bytes length must be 20');
     else if (buffer.length > 20)
       buffer = buffer.subarray(buffer.length - 20, buffer.length);
-    return eip55(ECDClient.bufferToHex(buffer, '0x'));
+    return eip55('0x' + Convert.toHex(buffer));
   }
 
-  public static bufferFromString(utf8: string): Buffer {
-    const result = [];
-    for (let i = 0; i < utf8.length; i += 1) {
-      const hi = utf8.charCodeAt(i);
-      if (hi < 0x0080) {
-        // code point range: U+0000 - U+007F
-        // bytes: 0xxxxxxx
-        result.push(hi);
-        continue;
-      }
-      if (hi < 0x0800) {
-        // code point range: U+0080 - U+07FF
-        // bytes: 110xxxxx 10xxxxxx
-        result.push(0xc0 | (hi >> 6), 0x80 | (hi & 0x3f));
-        continue;
-      }
-      if (hi < 0xd800 || hi >= 0xe000) {
-        // code point range: U+0800 - U+FFFF
-        // bytes: 1110xxxx 10xxxxxx 10xxxxxx
-        result.push(
-          0xe0 | (hi >> 12),
-          0x80 | ((hi >> 6) & 0x3f),
-          0x80 | (hi & 0x3f)
-        );
-        continue;
-      }
-      i += 1;
-      if (i < utf8.length) {
-        // surrogate pair
-        const lo = utf8.charCodeAt(i);
-        const code = ((0x00010000 + (hi & 0x03ff)) << 10) | (lo & 0x03ff);
-        // code point range: U+10000 - U+10FFFF
-        // bytes: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-        result.push(
-          0xf0 | (code >> 18),
-          0x80 | ((code >> 12) & 0x3f),
-          0x80 | ((code >> 6) & 0x3f),
-          0x80 | (code & 0x3f)
-        );
-      } else {
-        break;
-      }
-    }
-    return Buffer.from(result);
-  }
-
-  public static dataFromParams(types: string[], params: any[]): Buffer {
+  public static dataFromParams(types: string[], params: any[]): Uint8Array {
     if (types.length > params.length)
       throw new Error('The params count should be more or equal than types.');
-    const data: Buffer[] = [];
-    const dyndata: Buffer[] = [];
+    const data: Uint8Array[] = [];
+    const dyndata: Uint8Array[] = [];
     let idx = 0;
     let dynoffset = types.length * 32;
     for (const type of types) {
@@ -179,15 +111,9 @@ export class ECDClient {
               } else {
                 hex = parseInt(param).toString(16);
               }
-              if (hex.startsWith('0x')) {
-                hex = hex.substring(2);
-              }
-              if (hex.length % 2 == 1) {
-                hex = '0' + hex;
-              }
-              const buff = ECDClient.bufferFromHex(hex);
+              const buff = Convert.fromHex(hex);
               if (buff.length < 32) {
-                const pad = Buffer.alloc(32 - buff.length, 0);
+                const pad = new Uint8Array(32 - buff.length);
                 data.push(pad);
               }
               data.push(buff);
@@ -198,15 +124,9 @@ export class ECDClient {
           case 'address':
             {
               let hex = Numeric.parse(param).toHex();
-              if (hex.startsWith('0x')) {
-                hex = hex.substring(2);
-              }
-              if (hex.length % 2 == 1) {
-                hex = '0' + hex;
-              }
-              const buff = ECDClient.bufferFromHex(hex);
+              const buff = Convert.fromHex(hex);
               if (buff.length < 32) {
-                const pad = Buffer.alloc(32 - buff.length, 0);
+                const pad = new Uint8Array(32 - buff.length);
                 data.push(pad);
               }
               data.push(buff);
@@ -215,7 +135,7 @@ export class ECDClient {
 
           case 'bool':
             {
-              const buff = Buffer.alloc(32, 0);
+              const buff = new Uint8Array(32);
               if (param) buff[31] = 1;
               data.push(buff);
             }
@@ -229,9 +149,9 @@ export class ECDClient {
 
               const pos = dynoffset.toString(16);
               {
-                const buff = ECDClient.bufferFromHex(pos);
+                const buff = Convert.fromHex(pos);
                 if (buff.length < 32) {
-                  const pad = Buffer.alloc(32 - buff.length, 0);
+                  const pad = new Uint8Array(32 - buff.length);
                   data.push(pad);
                 }
                 data.push(buff);
@@ -239,20 +159,20 @@ export class ECDClient {
 
               const len = param.length.toString(16);
               {
-                const buff = ECDClient.bufferFromHex(len);
+                const buff = Convert.fromHex(len);
                 if (buff.length < 32) {
-                  const pad = Buffer.alloc(32 - buff.length, 0);
+                  const pad = new Uint8Array(32 - buff.length);
                   dyndata.push(pad);
                 }
                 dyndata.push(buff);
                 dynoffset += 32;
               }
 
-              const buff = ECDClient.bufferFromString(param);
+              const buff = Convert.fromUTF8(param);
               dyndata.push(buff);
               dynoffset += buff.length;
               if (buff.length % 32 > 0) {
-                const pad = Buffer.alloc(32 - (buff.length % 32), 0);
+                const pad = new Uint8Array(32 - (buff.length % 32));
                 dyndata.push(pad);
                 dynoffset += pad.length;
               }
@@ -261,20 +181,20 @@ export class ECDClient {
 
           case 'bytes':
             {
-              let bytes: Buffer;
+              let bytes: Uint8Array;
               if (typeof param === 'string') {
-                bytes = ECDClient.bufferFromHex(param);
-              } else if (!(param instanceof Buffer)) {
-                throw new Error('not buffer');
+                bytes = Convert.fromHex(param);
+              } else if (!(param instanceof Uint8Array)) {
+                throw new Error('not bytes');
               } else {
                 bytes = param;
               }
 
               const pos = dynoffset.toString(16);
               {
-                const buff = ECDClient.bufferFromHex(pos);
+                const buff = Convert.fromHex(pos);
                 if (buff.length < 32) {
-                  const pad = Buffer.alloc(32 - buff.length, 0);
+                  const pad = new Uint8Array(32 - buff.length);
                   data.push(pad);
                 }
                 data.push(buff);
@@ -282,9 +202,9 @@ export class ECDClient {
 
               const len = bytes.length.toString(16);
               {
-                const buff = ECDClient.bufferFromHex(len);
+                const buff = Convert.fromHex(len);
                 if (buff.length < 32) {
-                  const pad = Buffer.alloc(32 - buff.length, 0);
+                  const pad = new Uint8Array(32 - buff.length);
                   dyndata.push(pad);
                 }
                 dyndata.push(buff);
@@ -294,7 +214,7 @@ export class ECDClient {
               dyndata.push(bytes);
               dynoffset += bytes.length;
               if (bytes.length % 32 > 0) {
-                const pad = Buffer.alloc(32 - (bytes.length % 32), 0);
+                const pad = new Uint8Array(32 - (bytes.length % 32));
                 dyndata.push(pad);
                 dynoffset += pad.length;
               }
@@ -313,10 +233,10 @@ export class ECDClient {
       }
       ++idx;
     }
-    return Buffer.concat(data.concat(dyndata));
+    return Convert.concatBytes(data.concat(dyndata));
   }
 
-  public static dataToParams(types: string[], data: Buffer): any[] {
+  public static dataToParams(types: string[], data: Uint8Array): any[] {
     const params: any[] = [];
     let idx = 0;
     for (const type of types) {
@@ -325,52 +245,52 @@ export class ECDClient {
         switch (type) {
           case 'number':
             {
-              const n = parseInt(ECDClient.bufferToHex(buff), 16);
+              const n = parseInt(Convert.toHex(buff), 16);
               params.push(n);
             }
             break;
 
           case 'bignumber':
             {
-              const bn = Numeric.parse(ECDClient.bufferToHex(buff, '0x'));
+              const bn = Numeric.parse(Convert.toHex(buff));
               params.push(bn);
             }
             break;
 
           case 'address':
             {
-              const addr = ECDClient.bufferToAddress(buff);
+              const addr = ECDClient.bytesToAddress(buff);
               params.push(addr);
             }
             break;
 
           case 'bool':
             {
-              const n = parseInt(ECDClient.bufferToHex(buff), 16);
+              const n = parseInt(Convert.toHex(buff), 16);
               params.push(n != 0);
             }
             break;
 
           case 'string':
             {
-              const pos = parseInt(ECDClient.bufferToHex(buff), 16);
+              const pos = parseInt(Convert.toHex(buff), 16);
               const len = parseInt(
-                ECDClient.bufferToHex(data.subarray(pos, pos + 32)),
+                Convert.toHex(data.subarray(pos, pos + 32)),
                 16
               );
-              const str = Buffer.from(new Uint8Array(data.subarray(pos + 32, pos + 32 + len))).toString('utf8');
+              const str = Convert.toUTF8(data.subarray(pos + 32, pos + 32 + len));
               params.push(str);
             }
             break;
 
           case 'bytes':
             {
-              const pos = parseInt(ECDClient.bufferToHex(buff), 16);
+              const pos = parseInt(Convert.toHex(buff), 16);
               const len = parseInt(
-                ECDClient.bufferToHex(data.subarray(pos, pos + 32)),
+                Convert.toHex(data.subarray(pos, pos + 32)),
                 16
               );
-              const buf = Buffer.from(new Uint8Array(data.subarray(pos + 32, pos + 32 + len)));
+              const buf = data.subarray(pos + 32, pos + 32 + len);
               params.push(buf);
             }
             break;

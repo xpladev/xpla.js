@@ -24,6 +24,7 @@ import { Fee } from './Fee';
 import { Tip } from './Tip';
 import { SignatureV2 } from './SignatureV2';
 import { SignerData } from '../client/lcd/api/TxAPI';
+import { Convert } from '../util/convert';
 
 export class Tx {
   constructor(
@@ -33,7 +34,7 @@ export class Tx {
   ) {}
 
   public static fromAmino(data: Tx.Amino, isClassic?: boolean): Tx {
-    const signatures = data.value.signatures.map(s => SignatureV2.fromAmino(s));
+    const signatures = data.value.signatures.map(SignatureV2.fromAmino);
 
     return new Tx(
       new TxBody(
@@ -70,7 +71,7 @@ export class Tx {
     return new Tx(
       TxBody.fromProto(proto.body as TxBody_pb, isClassic),
       AuthInfo.fromProto(proto.authInfo as AuthInfo_pb),
-      proto.signatures.map(sig => Buffer.from(sig).toString('base64'))
+      proto.signatures.map(Convert.toBase64)
     );
   }
 
@@ -78,7 +79,7 @@ export class Tx {
     return Tx_pb.fromPartial({
       body: this.body.toProto(isClassic),
       authInfo: this.auth_info.toProto(),
-      signatures: this.signatures.map(s => Buffer.from(s, 'base64')),
+      signatures: this.signatures.map(Convert.fromBase64),
     });
   }
 
@@ -86,7 +87,7 @@ export class Tx {
     return Tx_pb.encode(this.toProto(isClassic)).finish();
   }
 
-  public static fromBuffer(buf: Buffer, isClassic?: boolean): Tx {
+  public static fromBytes(buf: Uint8Array, isClassic?: boolean): Tx {
     return Tx.fromProto(Tx_pb.decode(buf), isClassic);
   }
 
@@ -136,7 +137,7 @@ export class Tx {
     for (const signature of signatures) {
       const [modeInfo, sigBytes] = signature.data.toModeInfoAndSignature();
 
-      this.signatures.push(Buffer.from(sigBytes).toString('base64'));
+      this.signatures.push(Convert.toBase64(sigBytes));
       this.auth_info.signer_infos.push(
         new SignerInfo(signature.public_key, signature.sequence, modeInfo)
       );
@@ -168,14 +169,22 @@ export class TxBody {
   constructor(
     public messages: Msg[],
     public memo?: string,
-    public timeout_height?: number
+    public timeout_height?: number,
+    public unordered?: boolean,
+    public timeout_timestamp?: Date,
+    public extension_options?: Any[],
+    public non_critical_extension_options?: Any[],
   ) {}
 
   public static fromData(data: TxBody.Data, isClassic?: boolean): TxBody {
     return new TxBody(
       data.messages.map(m => Msg.fromData(m, isClassic)),
       data.memo,
-      Number.parseInt(data.timeout_height)
+      Number.parseInt(data.timeout_height),
+      data.unordered,
+      data.timeout_timestamp ? new Date(data.timeout_timestamp) : undefined,
+      data.extension_options,
+      data.non_critical_extension_options,
     );
   }
 
@@ -184,6 +193,10 @@ export class TxBody {
       memo: this.memo ?? '',
       messages: this.messages.map(m => m.toData(isClassic)),
       timeout_height: (this.timeout_height ?? 0).toFixed(),
+      unordered: this.unordered ?? false,
+      timeout_timestamp: this.timeout_timestamp?.toISOString(),
+      extension_options: this.extension_options,
+      non_critical_extension_options: this.non_critical_extension_options,
     };
   }
 
@@ -191,7 +204,11 @@ export class TxBody {
     return new TxBody(
       proto.messages.map(m => Msg.fromProto(m, isClassic)),
       proto.memo,
-      proto.timeoutHeight.toNumber()
+      proto.timeoutHeight.toNumber(),
+      proto.unordered,
+      proto.timeoutTimestamp,
+      proto.extensionOptions,
+      proto.nonCriticalExtensionOptions,
     );
   }
 
@@ -200,6 +217,10 @@ export class TxBody {
       memo: this.memo,
       messages: this.messages.map(m => m.packAny(isClassic)),
       timeoutHeight: this.timeout_height ?? 0,
+      unordered: this.unordered ?? false,
+      timeoutTimestamp: this.timeout_timestamp,
+      extensionOptions: this.extension_options,
+      nonCriticalExtensionOptions: this.non_critical_extension_options,
     });
   }
 
@@ -213,6 +234,10 @@ export namespace TxBody {
     messages: Msg.Data[];
     memo: string;
     timeout_height: string;
+    unordered?: boolean;
+    timeout_timestamp?: string;
+    extension_options?: any[];
+    non_critical_extension_options?: any[];
   }
   export type Proto = TxBody_pb;
 }
@@ -226,7 +251,7 @@ export class AuthInfo {
 
   public static fromData(data: AuthInfo.Data): AuthInfo {
     return new AuthInfo(
-      data.signer_infos.map(s => SignerInfo.fromData(s)),
+      data.signer_infos.map(SignerInfo.fromData),
       data.fee ? Fee.fromData(data.fee) : undefined,
       data.tip ? Tip.fromData(data.tip) : undefined
     );
@@ -243,7 +268,7 @@ export class AuthInfo {
 
   public static fromProto(proto: AuthInfo.Proto): AuthInfo {
     return new AuthInfo(
-      proto.signerInfos.map(s => SignerInfo.fromProto(s)),
+      proto.signerInfos.map(SignerInfo.fromProto),
       proto.fee ? Fee.fromProto(proto.fee as Fee.Proto) : undefined,
       proto.tip ? Tip.fromProto(proto.tip as Tip.Proto) : undefined
     );
@@ -423,7 +448,7 @@ export namespace ModeInfo {
     public static fromData(proto: Multi.Data): Multi {
       return new Multi(
         CompactBitArray.fromData(proto.bitarray),
-        proto.mode_infos.map(m => ModeInfo.fromData(m))
+        proto.mode_infos.map(ModeInfo.fromData)
       );
     }
 
@@ -437,7 +462,7 @@ export namespace ModeInfo {
     public static fromProto(proto: Multi.Proto): Multi {
       return new Multi(
         CompactBitArray.fromProto(proto.bitarray as CompactBitArray.Proto),
-        proto.modeInfos.map(m => ModeInfo.fromProto(m))
+        proto.modeInfos.map(ModeInfo.fromProto)
       );
     }
 

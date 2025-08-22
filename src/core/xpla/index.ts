@@ -17,4 +17,5 @@ export {
   MsgUpdateRewardParamsV1B1 as MsgUpdateRewardParams,
   MsgRegisterVolunteerValidatorV1B1 as MsgRegisterVolunteerValidator,
   MsgUnregisterVolunteerValidatorV1B1 as MsgUnregisterVolunteerValidator,
+  MsgBurnV1B1 as MsgBurn,
 } from './v1beta1/msgs';

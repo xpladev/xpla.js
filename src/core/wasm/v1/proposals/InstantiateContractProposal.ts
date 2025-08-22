@@ -1,4 +1,5 @@
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -85,7 +86,7 @@ export class InstantiateContractProposal extends JSONSerializable<
         code_id: code_id.toFixed(),
         label,
         msg: removeNull(init_msg),
-        funds: init_coins.toAmino(),
+        funds: init_coins.toIntCoins().toAmino(),
       },
     };
   }
@@ -103,7 +104,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       proto.runAs,
       proto.admin !== '' ? proto.admin : undefined,
       proto.codeId.toNumber(),
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8')),
+      JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds),
       proto.label
     );
@@ -129,8 +130,8 @@ export class InstantiateContractProposal extends JSONSerializable<
       runAs: run_as,
       admin,
       codeId: code_id,
-      funds: init_coins.toProto(),
-      msg: Buffer.from(JSON.stringify(init_msg), 'utf-8'),
+      funds: init_coins.toIntCoins().toProto(),
+      msg: Convert.fromUTF8(JSON.stringify(init_msg)),
       label,
     });
   }
@@ -204,7 +205,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       code_id: code_id.toFixed(),
       label,
       msg: removeNull(init_msg),
-      funds: init_coins.toData(),
+      funds: init_coins.toIntCoins().toData(),
     };
   }
 }

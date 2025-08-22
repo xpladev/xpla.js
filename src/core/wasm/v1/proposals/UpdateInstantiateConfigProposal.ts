@@ -38,7 +38,7 @@ export class UpdateInstantiateConfigProposal extends JSONSerializable<
     return new UpdateInstantiateConfigProposal(
       title,
       description,
-      access_config_updates.map(acu => AccessConfigUpdate.fromAmino(acu))
+      access_config_updates.map(AccessConfigUpdate.fromAmino)
     );
   }
 
@@ -118,7 +118,7 @@ export class UpdateInstantiateConfigProposal extends JSONSerializable<
     return new UpdateInstantiateConfigProposal(
       title,
       description,
-      access_config_updates.map(acu => AccessConfigUpdate.fromData(acu))
+      access_config_updates.map(AccessConfigUpdate.fromData)
     );
   }
 

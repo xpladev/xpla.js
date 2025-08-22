@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgSudoContract as MsgSudoContractV1_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/tx';
@@ -51,7 +52,7 @@ export class MsgSudoContractV1 extends JSONSerializable<
     return new MsgSudoContractV1(
       proto.authority,
       proto.contract,
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8'))
+      JSON.parse(Convert.toUTF8(proto.msg))
     );
   }
 
@@ -60,7 +61,7 @@ export class MsgSudoContractV1 extends JSONSerializable<
     return MsgSudoContractV1_pb.fromPartial({
       authority,
       contract,
-      msg: Buffer.from(JSON.stringify(removeNull(msg)), 'utf-8'),
+      msg: Convert.fromUTF8(JSON.stringify(removeNull(msg))),
     });
   }
 

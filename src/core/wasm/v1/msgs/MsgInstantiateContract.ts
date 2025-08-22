@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -26,7 +27,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     public code_id: number,
     public init_msg: object | string,
     init_coins: Coins.Input = {},
-    public label?: string
+    public label: string
   ) {
     super();
     this.init_coins = new Coins(init_coins);
@@ -45,7 +46,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
       Number.parseInt(code_id),
       msg,
       Coins.fromAmino(funds),
-      label
+      label ?? '',
     );
   }
 
@@ -59,7 +60,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
         code_id: code_id.toFixed(),
         label,
         msg: removeNull(init_msg),
-        funds: init_coins.toAmino(),
+        funds: init_coins.toIntCoins().toAmino(),
       },
     };
   }
@@ -72,9 +73,9 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
       proto.sender,
       proto.admin !== '' ? proto.admin : undefined,
       proto.codeId.toNumber(),
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8')),
+      JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds),
-      proto.label !== '' ? proto.label : undefined
+      proto.label !== '' ? proto.label : ''
     );
   }
 
@@ -83,8 +84,8 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     return MsgInstantiateContractV1_pb.fromPartial({
       admin,
       codeId: code_id,
-      funds: init_coins.toProto(),
-      msg: Buffer.from(JSON.stringify(init_msg), 'utf-8'),
+      funds: init_coins.toIntCoins().toProto(),
+      msg: Convert.fromUTF8(JSON.stringify(init_msg)),
       sender,
       label,
     });
@@ -120,7 +121,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
       Number.parseInt(code_id),
       msg,
       Coins.fromData(funds),
-      label
+      label ?? '',
     );
   }
 
@@ -133,7 +134,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
       code_id: code_id.toFixed(),
       label,
       msg: removeNull(init_msg),
-      funds: init_coins.toData(),
+      funds: init_coins.toIntCoins().toData(),
     };
   }
 }

@@ -1,4 +1,5 @@
 import { JSONSerializable, removeNull } from '../../../util/json';
+import { Convert } from '../../../util/convert';
 import { AbsoluteTxPosition } from './AbsoluteTxPosition';
 import {
   ContractCodeHistoryEntry as HistoryEntry_pb,
@@ -71,7 +72,7 @@ export class HistoryEntry extends JSONSerializable<
       proto.operation,
       proto.codeId.toNumber(),
       proto.updated ? AbsoluteTxPosition.fromProto(proto.updated) : undefined,
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8'))
+      JSON.parse(Convert.toUTF8(proto.msg))
     );
   }
 
@@ -80,7 +81,7 @@ export class HistoryEntry extends JSONSerializable<
       operation: this.operation,
       codeId: this.code_id,
       updated: this.updated?.toProto(),
-      msg: Buffer.from(JSON.stringify(removeNull(this.msg)), 'utf-8'),
+      msg: Convert.fromUTF8(JSON.stringify(removeNull(this.msg))),
     });
   }
 }

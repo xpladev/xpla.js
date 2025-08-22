@@ -19,9 +19,7 @@ import {
   XplaAPI,
   TxAPI,
   IbcAPI,
-  IbcFeeAPI,
   IbcIcaAPI,
-  IbcPacketAPI,
   IbcTransferAPI,
   IbcWasmAPI,
 } from './api';
@@ -130,9 +128,7 @@ export class LCDClient {
   public xpla: XplaAPI;
   public tx: TxAPI;
   public ibc: IbcAPI;
-  public ibcFee: IbcFeeAPI;
   public ibcIca: IbcIcaAPI;
-  public ibcPacket: IbcPacketAPI;
   public ibcTransfer: IbcTransferAPI;
   public ibcWasm: IbcWasmAPI;
   public utils: LCDUtils;
@@ -176,9 +172,7 @@ export class LCDClient {
     this.xpla = new XplaAPI(this);
     this.tx = new TxAPI(this);
     this.ibc = new IbcAPI(this);
-    this.ibcFee = new IbcFeeAPI(this);
     this.ibcIca = new IbcIcaAPI(this);
-    this.ibcPacket = new IbcPacketAPI(this);
     this.ibcTransfer = new IbcTransferAPI(this);
     this.ibcWasm = new IbcWasmAPI(this);
     this.utils = new LCDUtils(this);
@@ -241,23 +235,31 @@ export class LCDClient {
 
   public static async getGasPricesFromURL(URL: string): Promise<Coins> {
     const apiReq = new APIRequester(URL);
-    const staking_params = await apiReq
+    const denom = await apiReq
       .get<{ params: any }>('/cosmos/staking/v1beta1/params')
-      .then(({ params: d }) => ({ bond_denom: d.bond_denom, }));
-    const feemarket_params = await apiReq
-      .get<{ params: any }>('/ethermint/feemarket/v1/params')
-      .then(({ params: d }) => ({ min_gas_price: d.min_gas_price, }));
-    const coins: any = {};
-    coins[staking_params.bond_denom] = feemarket_params.min_gas_price;
-    return Promise.resolve(new Coins(coins));
+      .then(({ params: d }) => String(d.bond_denom ?? 'axpla'));
+    
+    let min_gas_price: string;
+    try {
+      // from 1.8
+      min_gas_price = await apiReq
+        .get<{ min_gas_price: string }>('/cosmos/evm/vm/v1/min_gas_price')
+        .catch(() => { throw new Error('Not Implemented') })
+        .then(d => d.min_gas_price);
+    } catch {
+      // for 1.7
+      const feemarket_params = await apiReq
+        .get<{ params: any }>('/ethermint/feemarket/v1/params')
+        .then(({ params: d }) => ({ min_gas_price: d.min_gas_price, }));
+      min_gas_price = String(feemarket_params.min_gas_price);
+    }
+    return Promise.resolve(new Coins([new Coin(denom, min_gas_price)]));
   }
 
   public async getGasPrices(): Promise<Coins> {
     const staking_params = await this.staking.parameters();
-    const feemarket_params = await this.feemarket.parameters();
-    const coins: any = {};
-    coins[staking_params.bond_denom] = feemarket_params.min_gas_price;
-    return Promise.resolve(new Coins(coins));
+    const min_gas_price = await this.evm.minGasPrice();
+    return Promise.resolve(new Coins([new Coin(staking_params.bond_denom, min_gas_price)]));
   }
   public gasPrices(coins?: Coins.Input | Numeric.Input): Coins {
     if (coins !== undefined) {

@@ -4,6 +4,7 @@ import { EvmAddress } from '../../../core';
 import { Numeric } from '../../../core/numeric';
 import { Pagination, PaginationOptions } from '../../lcd/APIRequester';
 import { ECDClient } from '../ECDClient';
+import { Convert } from '../../../util/convert';
 
 export class EvmNftAPI extends EvmAPI {
   constructor(public ecd: ECDClient) {
@@ -23,7 +24,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['string'], data);
         return params[0];
       });
@@ -42,7 +43,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['string'], data);
         return params[0];
       });
@@ -65,7 +66,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['bignumber'], data);
         return params[0];
       });
@@ -81,7 +82,12 @@ export class EvmNftAPI extends EvmAPI {
           to: contract,
           data:
             '0x70a08231' + // keccak256('balanceOf(address)') to 4 bytes
-            ECDClient.dataFromParams(['address'], [address]).toString('hex'),
+            Convert.toHex(
+              ECDClient.dataFromParams(
+                ['address'],
+                [address],
+              )
+            ),
         },
         'latest',
       ])
@@ -89,7 +95,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['bignumber'], data);
         return params[0];
       });
@@ -105,10 +111,12 @@ export class EvmNftAPI extends EvmAPI {
           to: contract,
           data:
             '0x6352211e' + // keccak256('ownerOf(uint256)') to 4 bytes
-            ECDClient.dataFromParams(
-              ['bignumber'],
-              [tokenId.toString()]
-            ).toString('hex'),
+            Convert.toHex(
+              ECDClient.dataFromParams(
+                ['bignumber'],
+                [tokenId.toString()],
+              )
+            ),
         },
         'latest',
       ])
@@ -116,7 +124,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['address'], data);
         return params[0];
       });
@@ -133,17 +141,24 @@ export class EvmNftAPI extends EvmAPI {
         to: contract,
         data:
           '0x2f745c59' + // keccak256('tokenOfOwnerByIndex(address,uint256)') to 4 bytes
-          ECDClient.dataFromParams(
-            ['address', 'number'],
-            [owner, index]
-          ).toString('hex'),
+          Convert.toHex(
+            ECDClient.dataFromParams(
+              ['address', 'number'],
+              [owner, index],
+            )
+          ),
       });
     } else {
       params.push({
         to: contract,
         data:
           '0x4f6ccce7' + // keccak256('tokenByIndex(uint256)') to 4 bytes
-          ECDClient.dataFromParams(['bignumber'], [index]).toString('hex'),
+          Convert.toHex(
+            ECDClient.dataFromParams(
+              ['bignumber'],
+              [index],
+            )
+          ),
       });
     }
     params.push('latest');
@@ -153,7 +168,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['bignumber'], data);
         return params[0];
       });
@@ -169,10 +184,12 @@ export class EvmNftAPI extends EvmAPI {
           to: contract,
           data:
             '0xc87b56dd' + // keccak256('tokenURI(uint256)') to 4 bytes
-            ECDClient.dataFromParams(
-              ['bignumber'],
-              [tokenId.toString()]
-            ).toString('hex'),
+            Convert.toHex(
+              ECDClient.dataFromParams(
+                ['bignumber'],
+                [tokenId.toString()],
+              )
+            ),
         },
         'latest',
       ])
@@ -180,7 +197,7 @@ export class EvmNftAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['string'], data);
         return params[0];
       });

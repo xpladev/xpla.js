@@ -1,4 +1,5 @@
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -68,7 +69,7 @@ export class ExecuteContractProposal extends JSONSerializable<
         run_as,
         contract,
         msg: removeNull(execute_msg),
-        funds: coins.toAmino(),
+        funds: coins.toIntCoins().toAmino(),
       },
     };
   }
@@ -85,7 +86,7 @@ export class ExecuteContractProposal extends JSONSerializable<
       proto.description,
       proto.runAs,
       proto.contract,
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8')),
+      JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds)
     );
   }
@@ -98,10 +99,10 @@ export class ExecuteContractProposal extends JSONSerializable<
       return ExecuteContractProposal_pb.fromPartial({
         title,
         description,
-        funds: coins.toProto(),
+        funds: coins.toIntCoins().toProto(),
         contract,
         runAs: run_as,
-        msg: Buffer.from(JSON.stringify(removeNull(execute_msg)), 'utf-8'),
+        msg: Convert.fromUTF8(JSON.stringify(removeNull(execute_msg))),
       });
     }
   }
@@ -159,7 +160,7 @@ export class ExecuteContractProposal extends JSONSerializable<
         run_as,
         contract,
         msg: execute_msg,
-        funds: coins.toData(),
+        funds: coins.toIntCoins().toData(),
       };
     }
   }
