@@ -196,6 +196,7 @@ export interface TxSearchOptions extends PaginationOptions {
   events: { key: string; value: string }[];
   // post v0.47.x
   query: string;
+  limit?: number;
 }
 
 export class TxAPI extends BaseAPI {
