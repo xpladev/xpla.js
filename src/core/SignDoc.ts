@@ -1,4 +1,5 @@
 import { JSONSerializable } from '../util/json';
+import { Convert } from '../util/convert';
 import { Msg } from './Msg';
 import { Fee } from './Fee';
 import { Tip } from './Tip';
@@ -65,8 +66,8 @@ export class SignDoc extends JSONSerializable<
   public toData(isClassic?: boolean): SignDoc.Data {
     const { account_number, chain_id, tx_body, auth_info } = this;
     return {
-      body_bytes: Buffer.from(tx_body.toBytes(isClassic)).toString('base64'),
-      auth_info_bytes: Buffer.from(auth_info.toBytes()).toString('base64'),
+      body_bytes: Convert.toBase64(tx_body.toBytes(isClassic)),
+      auth_info_bytes: Convert.toBase64(auth_info.toBytes()),
       account_number: account_number.toFixed(),
       chain_id,
     };

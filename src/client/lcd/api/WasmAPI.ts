@@ -8,6 +8,7 @@ import {
   AccessConfig,
   CodesParamsV1,
 } from '../../../core/wasm';
+import { Convert } from '../../../util/convert';
 
 export interface CodeInfo {
   code_id: number;
@@ -29,7 +30,12 @@ export namespace CodeInfo {
     data_hash: string;
     creator: AccAddress;
     instantiate_permission?: AccessConfig.Data;
-    data?: string;
+  }
+  export interface DataV3 {
+    code_id: string;
+    checksum: string;
+    creator: AccAddress;
+    instantiate_permission?: AccessConfig.Data;
   }
 }
 
@@ -119,21 +125,39 @@ export class WasmAPI extends BaseAPI {
 
   public async codeInfo(
     codeID: number,
+    with_data: boolean = false,
     params: APIParams = {}
   ): Promise<CodeInfo> {
-    const endpoint = `/cosmwasm/wasm/v1/code/${codeID}`;
-    return this.c
-      .get<{ code_info: CodeInfo.DataV2 }>(endpoint, params)
-      .then(({ code_info: d }) => ({
+    if (with_data) {
+      const endpoint = `/cosmwasm/wasm/v1/code/${codeID}`;
+      return this.c
+      .get<{ code_info: CodeInfo.DataV2, data: string }>(endpoint, params)
+      .then((d) => ({
+        code_id: +d.code_info.code_id,
+        code_hash: d.code_info.data_hash,
+        data_hash: d.code_info.data_hash,
+        checksum: d.code_info.data_hash,
+        creator: d.code_info.creator,
+        instantiate_permission: d.code_info.instantiate_permission
+          ? AccessConfig.fromData(d.code_info.instantiate_permission)
+          : undefined,
+        data: d.data,
+      }));
+    } else {
+      const endpoint = `/cosmwasm/wasm/v1/code-info/${codeID}`;
+      return this.c
+      .get<CodeInfo.DataV3>(endpoint, params)
+      .then((d) => ({
         code_id: +d.code_id,
-        code_hash: d.data_hash,
-        data_hash: d.data_hash,
+        code_hash: d.checksum,
+        data_hash: d.checksum,
+        checksum: d.checksum,
         creator: d.creator,
         instantiate_permission: d.instantiate_permission
           ? AccessConfig.fromData(d.instantiate_permission)
           : undefined,
-        data: d.data,
       }));
+    }
   }
 
   public async contractInfo(
@@ -164,9 +188,7 @@ export class WasmAPI extends BaseAPI {
     query: object | string,
     params: APIParams = {}
   ): Promise<T> {
-    const query_msg = Buffer.from(JSON.stringify(query), 'utf-8').toString(
-      'base64'
-    );
+    const query_msg = Convert.toBase64(Convert.fromUTF8(JSON.stringify(query)));
     const endpoint = `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${query_msg}`;
     return this.c
       .get<{ data: T }>(endpoint, {
@@ -187,6 +209,14 @@ export class WasmAPI extends BaseAPI {
       });
   }
 
+  public async wasmLimitsConfig(
+    params: APIParams = {}
+  ): Promise<any> {
+    return this.c
+      .get<{ config: string }>('/cosmwasm/wasm/v1/wasm-limits-config', params)
+      .then(({ config: d }) => JSON.parse(d));
+  }
+
   public async pinnedCodes(
     params: Partial<PaginationOptions & APIParams> = {}
   ): Promise<[PinnedCodes, Pagination]> {
@@ -199,7 +229,7 @@ export class WasmAPI extends BaseAPI {
         pagination: Pagination;
       }>(`/cosmwasm/wasm/v1/codes/pinned`, params)
       .then(d => ([
-        { code_ids: d.code_ids.map(code_id => Number.parseInt(code_id)), },
+        { code_ids: d.code_ids.map(Number.parseInt), },
         d.pagination,
       ]));
   }
@@ -214,14 +244,13 @@ export class WasmAPI extends BaseAPI {
     }
     return this.c
       .get<{ result: QueryResult.Data }>(
-        `/cosmwasm/wasm/v1/contract/${contractAddress}/raw/${Buffer.from(
-          query_data,
-          'utf-8'
-        ).toString('base64')}`,
+        `/cosmwasm/wasm/v1/contract/${contractAddress}/raw/${
+          Convert.toBase64(Convert.fromUTF8(query_data))
+        }`,
         params
       )
       .then(({ result: d }) => ({
-        data: Buffer.from(d.data, 'base64').toString(),
+        data: Convert.toUTF8(Convert.fromBase64(d.data)),
       }));
   }
 
@@ -235,10 +264,9 @@ export class WasmAPI extends BaseAPI {
     }
     return this.c
       .get<{ result: QueryResult.Data }>(
-        `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${Buffer.from(
-          JSON.stringify(query_data),
-          'utf-8'
-        ).toString('base64')}`,
+        `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${
+          Convert.toBase64(Convert.fromUTF8(JSON.stringify(query_data)))
+        }`,
         params
       )
       .then(({ result: d }) => ({
@@ -259,7 +287,7 @@ export class WasmAPI extends BaseAPI {
         pagination: Pagination;
       }>(`/cosmwasm/wasm/v1/contract/${contractAddress}/history`, params)
       .then(d => [
-        d.entries.map(entry => HistoryEntry.fromData(entry)),
+        d.entries.map(HistoryEntry.fromData),
         d.pagination,
       ]);
   }
@@ -318,7 +346,7 @@ export class WasmAPI extends BaseAPI {
     params.code_hash = codeHash;
     params.creator_address = creator;
     params.salt = salt;
-    params.init_msg = initArgs ? Buffer.from(JSON.stringify(initArgs)).toString('base64') : undefined;
+    params.init_msg = initArgs ? Convert.toBase64(Convert.fromUTF8(JSON.stringify(initArgs))) : undefined;
     return this.c
       .get<{
         address: string;

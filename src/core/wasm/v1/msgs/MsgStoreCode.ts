@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { AccessConfig } from '../AccessConfig';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -57,7 +58,7 @@ export class MsgStoreCodeV1 extends JSONSerializable<
   ): MsgStoreCodeV1 {
     return new MsgStoreCodeV1(
       proto.sender,
-      Buffer.from(proto.wasmByteCode).toString('base64'),
+      Convert.toBase64(proto.wasmByteCode),
       proto.instantiatePermission
         ? AccessConfig.fromProto(proto.instantiatePermission)
         : undefined
@@ -68,7 +69,7 @@ export class MsgStoreCodeV1 extends JSONSerializable<
     const { sender, wasm_byte_code, instantiate_permission } = this;
     return MsgStoreCodeV1_pb.fromPartial({
       sender,
-      wasmByteCode: Buffer.from(wasm_byte_code, 'base64'),
+      wasmByteCode: Convert.fromBase64(wasm_byte_code),
       instantiatePermission: instantiate_permission?.toProto(),
     });
   }

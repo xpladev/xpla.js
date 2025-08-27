@@ -1,4 +1,5 @@
 import { JSONSerializable } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { AccessConfig } from '../AccessConfig';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -136,7 +137,7 @@ export class StoreCodeProposal extends JSONSerializable<
       proto.title,
       proto.description,
       proto.runAs,
-      Buffer.from(proto.wasmByteCode).toString('base64'),
+      Convert.toBase64(proto.wasmByteCode),
       proto.instantiatePermission
         ? AccessConfig.fromProto(proto.instantiatePermission)
         : undefined
@@ -158,7 +159,7 @@ export class StoreCodeProposal extends JSONSerializable<
       title,
       description,
       runAs: run_as,
-      wasmByteCode: Buffer.from(wasm_byte_code, 'base64'),
+      wasmByteCode: Convert.fromBase64(wasm_byte_code),
       instantiatePermission: instantiate_permission?.toProto(),
     });
   }

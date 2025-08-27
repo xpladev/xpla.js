@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
 import { AccessConfig } from '../AccessConfig';
@@ -103,7 +104,7 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
         admin,
         label,
         msg,
-        funds: funds.toAmino(),
+        funds: funds.toIntCoins().toAmino(),
         source,
         builder,
         code_hash,
@@ -117,7 +118,7 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
   ): MsgStoreAndInstantiateContractV1 {
     return new MsgStoreAndInstantiateContractV1(
       proto.authority,
-      Buffer.from(proto.wasmByteCode).toString('base64'),
+      Convert.toBase64(proto.wasmByteCode),
       proto.instantiatePermission
         ? AccessConfig.fromProto(proto.instantiatePermission)
         : undefined,
@@ -128,7 +129,7 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
       Coins.fromProto(proto.funds),
       proto.source,
       proto.builder,
-      Buffer.from(proto.codeHash).toString('hex')
+      Convert.toHex(proto.codeHash),
     );
   }
 
@@ -148,16 +149,16 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
     } = this;
     return MsgStoreAndInstantiateContractV1_pb.fromPartial({
       authority,
-      wasmByteCode: Buffer.from(wasm_byte_code, 'base64'),
+      wasmByteCode: Convert.fromBase64(wasm_byte_code),
       instantiatePermission: instantiate_permission?.toProto(),
       unpinCode: unpin_code,
       admin,
       label,
-      msg: Buffer.from(JSON.stringify(msg), 'utf-8'),
-      funds: funds.toProto(),
+      msg: Convert.fromUTF8(JSON.stringify(msg)),
+      funds: funds.toIntCoins().toProto(),
       source,
       builder,
-      codeHash: Buffer.from(code_hash, 'hex'),
+      codeHash: Convert.fromHex(code_hash),
     });
   }
 
@@ -237,7 +238,7 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
       admin,
       label,
       msg: removeNull(msg),
-      funds: funds.toData(),
+      funds: funds.toIntCoins().toData(),
       source,
       builder,
       code_hash,

@@ -37,7 +37,7 @@ export class UnpinCodesProposal extends JSONSerializable<
     return new UnpinCodesProposal(
       title,
       description,
-      code_ids.map(cid => Number.parseInt(cid))
+      code_ids.map(Number.parseInt)
     );
   }
 
@@ -115,7 +115,7 @@ export class UnpinCodesProposal extends JSONSerializable<
     return new UnpinCodesProposal(
       title,
       description,
-      code_ids.map(cid => Number.parseInt(cid))
+      code_ids.map(Number.parseInt)
     );
   }
 

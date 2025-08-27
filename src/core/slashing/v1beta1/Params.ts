@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
+import { Convert } from '../../../util/convert';
 import { Dec, Int, Numeric } from '../../../core/numeric';
 import { Duration } from '../../../core';
 import { Params as SlashingParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/slashing/v1beta1/slashing';
@@ -129,12 +130,12 @@ export class SlashingParamsV1B1 extends JSONSerializable<
     const dec18 = new Dec(10).pow(18);
     return new SlashingParamsV1B1(
       proto.signedBlocksWindow.toString(),
-      new Dec(Buffer.from(proto.minSignedPerWindow).toString('ascii')).div(dec18),
+      new Dec(Convert.toAscii(proto.minSignedPerWindow)).div(dec18),
       proto.downtimeJailDuration
         ? Duration.fromProto(proto.downtimeJailDuration)
         : undefined,
-      new Dec(Buffer.from(proto.slashFractionDoubleSign).toString('ascii')).div(dec18),
-      new Dec(Buffer.from(proto.slashFractionDowntime).toString('ascii')).div(dec18),
+      new Dec(Convert.toAscii(proto.slashFractionDoubleSign)).div(dec18),
+      new Dec(Convert.toAscii(proto.slashFractionDowntime)).div(dec18),
     );
   }
 
@@ -149,17 +150,17 @@ export class SlashingParamsV1B1 extends JSONSerializable<
     const dec18 = new Dec(10).pow(18);
     return SlashingParamsV1B1_pb.fromPartial({
       signedBlocksWindow: signed_blocks_window.toFixed(),
-      minSignedPerWindow: Buffer.from(min_signed_per_window.mul(dec18).toFixed(0), 'ascii'),
+      minSignedPerWindow: Convert.fromAscii(
+        min_signed_per_window.mul(dec18).toFixed(0),
+      ),
       downtimeJailDuration: downtime_jail_duration
         ? downtime_jail_duration.toProto()
         : undefined,
-      slashFractionDoubleSign: Buffer.from(
+      slashFractionDoubleSign: Convert.fromAscii(
         slash_fraction_double_sign.mul(dec18).toFixed(0),
-        'ascii'
       ),
-      slashFractionDowntime: Buffer.from(
+      slashFractionDowntime: Convert.fromAscii(
         slash_fraction_downtime.mul(dec18).toFixed(0),
-        'ascii'
       ),
     });
   }

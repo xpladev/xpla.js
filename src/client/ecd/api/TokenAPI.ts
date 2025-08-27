@@ -3,6 +3,7 @@ import { Coins, EvmAddress } from '../../../core';
 import { Numeric } from '../../../core/numeric';
 import { Pagination } from '../../lcd/APIRequester';
 import { ECDClient } from '../ECDClient';
+import { Convert } from '../../../util/convert';
 
 export class EvmTokenAPI extends EvmAPI {
   constructor(public ecd: ECDClient) {
@@ -22,7 +23,7 @@ export class EvmTokenAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['string'], data);
         return params[0];
       });
@@ -41,7 +42,7 @@ export class EvmTokenAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['string'], data);
         return params[0];
       });
@@ -60,7 +61,7 @@ export class EvmTokenAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['number'], data);
         return params[0];
       });
@@ -79,7 +80,7 @@ export class EvmTokenAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['bignumber'], data);
         return params[0];
       });
@@ -95,7 +96,12 @@ export class EvmTokenAPI extends EvmAPI {
           to: contract,
           data:
             '0x70a08231' + // keccak256('balanceOf(address)') to 4 bytes
-            ECDClient.dataFromParams(['address'], [address]).toString('hex'),
+            Convert.toHex(
+              ECDClient.dataFromParams(
+                ['address'],
+                [address],
+              )
+            ),
         },
         'latest',
       ])
@@ -103,7 +109,7 @@ export class EvmTokenAPI extends EvmAPI {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        const data = ECDClient.bufferFromHex(response.result ?? '0');
+        const data = Convert.fromHex(response.result ?? '0');
         const params = ECDClient.dataToParams(['bignumber'], data);
         return params[0];
       });

@@ -14,12 +14,8 @@ export class CodesParamsV1 extends JSONSerializable<
   CodesParamsV1.Proto
 > {
   /**
-   * @param mint_denom type of coin to mint
-   * @param inflation_rate_change maximum annual change in inflation rate
-   * @param inflation_max maximum inflation rate
-   * @param inflation_min minimum inflation rate
-   * @param goal_bonded goal of percent bonded atoms
-   * @param blocks_per_year expected blocks per year
+   * @param code_upload_access 
+   * @param instantiate_default_permission 
    */
   constructor(
     public code_upload_access: AccessConfig | undefined,

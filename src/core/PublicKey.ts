@@ -1,4 +1,5 @@
 import { JSONSerializable } from '../util/json';
+import { Convert } from '../util/convert';
 import { LegacyAminoPubKey as LegacyAminoPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/multisig/keys';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/secp256k1/keys';
@@ -12,18 +13,15 @@ import { sha256 } from '@noble/hashes/sha256';
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
 // Last bytes is varint-encoded length prefix
-// const pubkeyAminoPrefixSecp256k1 = Buffer.from(
+// const pubkeyAminoPrefixSecp256k1 = Convert.fromHex(
 //   'eb5ae987' + '21' /* fixed length */,
-//   'hex'
 // );
-const pubkeyAminoPrefixEd25519 = Buffer.from(
+const pubkeyAminoPrefixEd25519 = Convert.fromHex(
   '1624de64' + '20' /* fixed length */,
-  'hex'
 );
 /** See https://github.com/tendermint/tendermint/commit/38b401657e4ad7a7eeb3c30a3cbf512037df3740 */
-const pubkeyAminoPrefixMultisigThreshold = Buffer.from(
+const pubkeyAminoPrefixMultisigThreshold = Convert.fromHex(
   '22c1f7e2' /* variable length not included */,
-  'hex'
 );
 
 const encodeUvarint = (value: number | string): number[] => {
@@ -110,8 +108,24 @@ export namespace PublicKey {
     throw new Error(`Pubkey type ${typeUrl} not recognized`);
   }
 
-  export async function verify(pubkey: PublicKey, payload: Buffer, signature: Buffer): Promise<boolean> {
+  export async function verify(pubkey: PublicKey, payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
     return pubkey.verify(payload, signature);
+  }
+
+  export function prefixFromAddress(address: string): string {
+    return bech32.decode(address).prefix;
+  }
+
+  export function rawFromAddress(address: string): Uint8Array {
+    const words = bech32.decode(address).words;
+    const raw = Uint8Array.from(bech32.fromWords(words));
+    return raw;
+  }
+
+  export function rawToAddress(raw: Uint8Array, prefix?: string): string {
+		const words = bech32.toWords(raw);
+    const address = bech32.encode(prefix ?? 'xpla', words);
+    return address;
   }
 }
 
@@ -120,8 +134,16 @@ export class SimplePublicKey extends JSONSerializable<
   SimplePublicKey.Data,
   SimplePublicKey.Proto
 > {
-  constructor(public key: string) {
+  public key: string;  // base64
+
+  constructor(key: Uint8Array | string) {
     super();
+    if (typeof key === 'string') {
+      this.key = key;
+    }
+    else {
+      this.key = Convert.toBase64(key);
+    }
   }
 
   public static fromAmino(data: SimplePublicKey.Amino): SimplePublicKey {
@@ -147,12 +169,12 @@ export class SimplePublicKey extends JSONSerializable<
   }
 
   public static fromProto(pubkeyProto: SimplePublicKey.Proto): SimplePublicKey {
-    return new SimplePublicKey(Buffer.from(pubkeyProto.key).toString('base64'));
+    return new SimplePublicKey(pubkeyProto.key);
   }
 
   public toProto(): SimplePublicKey.Proto {
     return PubKey_pb.fromPartial({
-      key: Buffer.from(this.key, 'base64'),
+      key: Convert.fromBase64(this.key),
     });
   }
 
@@ -168,17 +190,21 @@ export class SimplePublicKey extends JSONSerializable<
   }
 
   public encodeAminoPubkey(): Uint8Array {
-    return Buffer.from(this.key, 'base64');
+    return Convert.fromBase64(this.key);
   }
 
   public rawAddress(): Uint8Array {
-    const pubkeyData = Buffer.from(this.key, 'base64');
+    const pubkeyData = Convert.fromBase64(this.key);
 		const x0 = secp256k1.Point.fromHex(pubkeyData).toRawBytes(false);
 
 		const x1 = keccak_256(x0.slice(1));
 		const x2 = x1.slice(12);
 
-    return Buffer.from(x2);
+    return x2;
+  }
+
+  public addressHex(): string {
+    return Convert.toHex(this.rawAddress());
   }
 
   public address(): string {
@@ -190,14 +216,14 @@ export class SimplePublicKey extends JSONSerializable<
   }
 
   public evmAddress(): string {
-    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+    return eip55('0x' + Convert.toHex(this.rawAddress()));
   }
 
-  public async verify(payload: Buffer, signature: Buffer): Promise<boolean> {
+  public async verify(payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
     return secp256k1.verify(
       signature,
       keccak_256(payload),
-      Buffer.from(this.key, 'base64'),
+      Convert.fromBase64(this.key),
     );
   }
 }
@@ -246,6 +272,10 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
     return sha256(pubkeyData).slice(0, 20);
   }
 
+  public addressHex(): string {
+    return Convert.toHex(this.rawAddress());
+  }
+
   public address(): string {
     return bech32.encode('xpla', bech32.toWords(this.rawAddress()));
   }
@@ -255,7 +285,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
   }
 
   public evmAddress(): string {
-    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+    return eip55('0x' + Convert.toHex(this.rawAddress()));
   }
 
   public static fromAmino(
@@ -263,7 +293,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
   ): LegacyAminoMultisigPublicKey {
     return new LegacyAminoMultisigPublicKey(
       Number.parseInt(data.value.threshold),
-      data.value.pubkeys.map(p => SimplePublicKey.fromAmino(p))
+      data.value.pubkeys.map(SimplePublicKey.fromAmino)
     );
   }
 
@@ -282,7 +312,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
   ): LegacyAminoMultisigPublicKey {
     return new LegacyAminoMultisigPublicKey(
       Number.parseInt(data.threshold),
-      data.public_keys.map(v => SimplePublicKey.fromData(v))
+      data.public_keys.map(SimplePublicKey.fromData)
     );
   }
 
@@ -299,7 +329,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
   ): LegacyAminoMultisigPublicKey {
     return new LegacyAminoMultisigPublicKey(
       pubkeyProto.threshold,
-      pubkeyProto.publicKeys.map(v => SimplePublicKey.unpackAny(v))
+      pubkeyProto.publicKeys.map(SimplePublicKey.unpackAny)
     );
   }
 
@@ -323,7 +353,7 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
     );
   }
 
-  public async verify(_payload: Buffer, _signature: Buffer): Promise<boolean> {
+  public async verify(_payload: Uint8Array, _signature: Uint8Array): Promise<boolean> {
     throw new Error('Could not verify: LegacyAminoMultisigPublicKey cannot be used to verify');
   }
 }
@@ -381,13 +411,13 @@ export class ValConsPublicKey extends JSONSerializable<
     pubkeyProto: ValConsPublicKey.Proto
   ): ValConsPublicKey {
     return new ValConsPublicKey(
-      Buffer.from(pubkeyProto.key).toString('base64')
+      Convert.toBase64(pubkeyProto.key)
     );
   }
 
   public toProto(): ValConsPublicKey.Proto {
     return PubKey_pb.fromPartial({
-      key: Buffer.from(this.key, 'base64'),
+      key: Convert.fromBase64(this.key),
     });
   }
 
@@ -403,15 +433,19 @@ export class ValConsPublicKey extends JSONSerializable<
   }
 
   public encodeAminoPubkey(): Uint8Array {
-    return Buffer.concat([
+    return Convert.concatBytes([
       pubkeyAminoPrefixEd25519,
-      Buffer.from(this.key, 'base64'),
+      Convert.fromBase64(this.key),
     ]);
   }
 
   public rawAddress(): Uint8Array {
-    const pubkeyData = Buffer.from(this.key, 'base64');
+    const pubkeyData = Convert.fromBase64(this.key);
     return sha256(pubkeyData).slice(0, 20);
+  }
+
+  public addressHex(): string {
+    return Convert.toHex(this.rawAddress());
   }
 
   public address(): string {
@@ -426,10 +460,10 @@ export class ValConsPublicKey extends JSONSerializable<
   }
 
   public evmAddress(): string {
-    return eip55('0x' + Buffer.from(this.rawAddress()).toString('hex'));
+    return eip55('0x' + Convert.toHex(this.rawAddress()));
   }
 
-  public async verify(_payload: Buffer, _signature: Buffer): Promise<boolean> {
+  public async verify(_payload: Uint8Array, _signature: Uint8Array): Promise<boolean> {
     throw new Error('Could not verify: ValConsPublicKey cannot be used to verify');
   }
 }

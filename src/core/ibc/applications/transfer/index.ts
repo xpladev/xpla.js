@@ -3,8 +3,6 @@ import { MsgUpdateIbcTransferParamsV1 } from './v1/msgs/MsgUpdateParams';
 
 export * from './v1/msgs/MsgTransfer';
 export * from './v1/msgs/MsgUpdateParams';
-export * from './v1/DenomTrace';
-export * from './v2/FungibleTokenPacketData';
 
 export type IbcTransferMsgV1 = MsgTransferV1 | MsgUpdateIbcTransferParamsV1;
 export namespace IbcTransferMsgV1 {

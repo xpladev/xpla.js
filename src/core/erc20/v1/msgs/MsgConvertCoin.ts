@@ -3,7 +3,7 @@ import { JSONSerializable } from '../../../../util/json';
 import { Coin } from '../../../Coin';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgConvertCoin as MsgConvertCoinV1_pb } from '@xpla/xpla.proto/evmos/erc20/v1/tx';
+import { MsgConvertCoin as MsgConvertCoinV1_pb } from '@xpla/xpla.proto/cosmos/evm/erc20/v1/tx';
 
 /**
  * erc20 MsgConvertCoin
@@ -42,7 +42,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgConvertCoinV1.Amino {
     const { coin, receiver, sender } = this;
     return {
-      type: 'evmos/MsgConvertCoin',
+      type: 'evm/MsgConvertCoin',
       value: {
         coin: coin ? coin.toAmino() : undefined,
         receiver,
@@ -62,7 +62,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgConvertCoinV1.Data {
     const { coin, receiver, sender } = this;
     return {
-      '@type': '/evmos.erc20.v1.MsgConvertCoin',
+      '@type': '/cosmos.evm.erc20.v1.MsgConvertCoin',
       coin: coin ? coin.toData() : undefined,
       receiver,
       sender,
@@ -87,7 +87,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/evmos.erc20.v1.MsgConvertCoin',
+      typeUrl: '/cosmos.evm.erc20.v1.MsgConvertCoin',
       value: MsgConvertCoinV1_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -102,7 +102,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
 
 export namespace MsgConvertCoinV1 {
   export interface Amino {
-    type: 'ethermint/MsgConvertCoin' | 'evmos/MsgConvertCoin';
+    type: 'ethermint/MsgConvertCoin' | 'evmos/MsgConvertCoin' | 'evm/MsgConvertCoin';
     value: {
       coin: Coin.Amino | undefined;
       receiver: AccAddress;
@@ -113,7 +113,8 @@ export namespace MsgConvertCoinV1 {
   export interface Data {
     '@type':
       | '/ethermint.erc20.v1.MsgConvertCoin'
-      | '/evmos.erc20.v1.MsgConvertCoin';
+      | '/evmos.erc20.v1.MsgConvertCoin'
+      | '/cosmos.evm.erc20.v1.MsgConvertCoin';
     coin: Coin.Data | undefined;
     receiver: AccAddress;
     sender: AccAddress;

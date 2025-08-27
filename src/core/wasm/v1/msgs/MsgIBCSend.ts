@@ -12,7 +12,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
 > {
   public timeout_height: Int;
   public timeout_timestamp: Int;
-  public data: Buffer;
+  public data: Uint8Array;
 
   /**
    * @param channel by which the packet will be sent
@@ -24,12 +24,12 @@ export class MsgIBCSendV1 extends JSONSerializable<
     public channel: string,
     timeout_height: Numeric.Input,
     timeout_timestamp: Numeric.Input,
-    data: Buffer | Uint8Array | number[] | string,
+    data: Uint8Array | number[] | string,
   ) {
     super();
     this.timeout_height = new Int(timeout_height);
     this.timeout_timestamp = new Int(timeout_timestamp);
-    this.data = Convert.toBuffer(data);
+    this.data = Convert.toBytes(data);
   }
 
   public static fromAmino(
@@ -54,7 +54,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
       channel: channel.length > 0 ? channel : undefined,
       timeout_height: timeout_height.gt(0) ? timeout_height.toFixed() : undefined,
       timeout_timestamp: timeout_timestamp.gt(0) ? timeout_timestamp.toFixed() : undefined,
-      data: data.length > 0 ? data.toString('base64') : undefined,
+      data: data.length > 0 ? Convert.toBase64(data) : undefined,
     };
   }
 
@@ -114,7 +114,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
       channel,
       timeout_height: timeout_height.toFixed(),
       timeout_timestamp: timeout_timestamp.toFixed(),
-      data: data.toString('base64'),
+      data: Convert.toBase64(data),
     };
   }
 }

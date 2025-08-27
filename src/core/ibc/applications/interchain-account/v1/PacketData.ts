@@ -1,6 +1,5 @@
 import { JSONSerializable } from '../../../../../util/json';
 import { Convert } from '../../../../../util/convert';
-import { BaseAccount } from '../../../../..';
 import {
   InterchainAccountPacketData as InterchainAccountPacketDataV1_pb,
   Type as InterchainAccountPacketTypeV1,
@@ -15,7 +14,7 @@ export class InterchainAccountPacketDataV1 extends JSONSerializable<
   InterchainAccountPacketDataV1.Data,
   InterchainAccountPacketDataV1.Proto
 > {
-  public data: Buffer;
+  public data: Uint8Array;
 
   /**
    * @param type
@@ -24,11 +23,11 @@ export class InterchainAccountPacketDataV1 extends JSONSerializable<
    */
   constructor(
     public type: InterchainAccountPacketTypeV1,
-    data: Buffer | Uint8Array | number[] | string,
+    data: Uint8Array | number[] | string,
     public memo: string,
   ) {
     super();
-    this.data = Convert.toBuffer(data);
+    this.data = Convert.toBytes(data);
   }
 
   public static fromAmino(_: any): InterchainAccountPacketDataV1 {
@@ -43,7 +42,7 @@ export class InterchainAccountPacketDataV1 extends JSONSerializable<
     const { type, data, memo } = data_;
     return new InterchainAccountPacketDataV1(
       typeFromJSON(type),
-      Buffer.from(data, 'base64'),
+      Convert.fromBase64(data),
       memo,
     );
   }
@@ -52,7 +51,7 @@ export class InterchainAccountPacketDataV1 extends JSONSerializable<
     const { type, data, memo } = this;
     const res: InterchainAccountPacketDataV1.Data = {
       type: typeToJSON(type),
-      data: data.toString('base64'),
+      data: Convert.toBase64(data),
       memo,
     };
     return res;

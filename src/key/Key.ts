@@ -9,10 +9,10 @@ import {
   ModeInfo,
   AuthInfo,
   PublicKey,
-  SimplePublicKey,
 } from '../core';
 import { SignatureV2 } from '../core/SignatureV2';
 import { SignMode } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
+import { Convert } from '../util/convert';
 
 /**
  * Abstract key interface that provides transaction signing features and Bech32 address
@@ -22,15 +22,20 @@ import { SignMode } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
  * an implementation of a basic mnemonic-based key.
  */
 export abstract class Key {
+
+  public abstract get privateKeyHex(): string;
+
+  public abstract get publicKeyHex(): string;
+  
   /**
    * You will need to supply `sign`, which produces a signature for an arbitrary bytes payload
    * with the ECDSA curve secp256pk1.
    *
    * @param payload the data to be signed
    */
-  public abstract sign(payload: Buffer): Promise<Buffer>;
+  public abstract sign(payload: Uint8Array): Promise<Uint8Array>;
 
-  public async verify(payload: Buffer, signature: Buffer): Promise<boolean> {
+  public async verify(payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
     if (!this.publicKey) {
       throw new Error('Could not compute accAddress: missing rawAddress');
     }
@@ -106,9 +111,9 @@ export abstract class Key {
       new SignatureV2.Descriptor(
         new SignatureV2.Descriptor.Single(
           signMode ?? SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
-          (
-            await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))
-          ).toString('base64')
+          Convert.toBase64(
+            await this.sign(Convert.fromUTF8(tx.toAminoJSON(isClassic)))
+          )
         )
       ),
       tx.sequence
@@ -138,9 +143,9 @@ export abstract class Key {
       new SignatureV2.Descriptor(
         new SignatureV2.Descriptor.Single(
           signMode ?? SignMode.SIGN_MODE_TEXTUAL,
-          (
-            await this.sign(Buffer.from(tx.toAminoJSON(isClassic)))
-          ).toString('base64')
+          Convert.toBase64(
+            await this.sign(Convert.fromUTF8(tx.toAminoJSON(isClassic)))
+          )
         )
       ),
       tx.sequence
@@ -174,9 +179,9 @@ export abstract class Key {
       ),
     ];
 
-    const sigBytes = (
-      await this.sign(Buffer.from(signDoc.toBytes(isClassic)))
-    ).toString('base64');
+    const sigBytes = Convert.toBase64(
+      await this.sign(signDoc.toBytes(isClassic))
+    );
 
     // restore signDoc to origin
     signDoc.auth_info.signer_infos = signerInfos;
@@ -212,9 +217,9 @@ export abstract class Key {
     const signerInfos = signDoc.auth_info.signer_infos;
     signDoc.auth_info.signer_infos = signers;
 
-    const sigBytes = (
-      await this.sign(Buffer.from(signDoc.toBytes(isClassic)))
-    ).toString('base64');
+    const sigBytes = Convert.toBase64(
+      await this.sign(signDoc.toBytes(isClassic))
+    );
 
     // restore signDoc to origin
     signDoc.auth_info.signer_infos = signerInfos;

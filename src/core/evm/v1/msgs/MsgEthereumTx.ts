@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgEthereumTx as MsgEthereumTxV1_pb } from '@xpla/xpla.proto/ethermint/evm/v1/tx';
+import {
+  MsgEthereumTx as MsgEthereumTxV1_pb,
+  LegacyTx,
+  AccessListTx,
+  DynamicFeeTx,
+  ExtensionOptionsEthereumTx,
+} from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
 
 /**
  * evm MsgEthereumTx
@@ -21,7 +27,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     public hash: string,
     public from: string,
     public size: number,
-    public data: Any | undefined
+    public data: LegacyTx | AccessListTx | DynamicFeeTx | ExtensionOptionsEthereumTx | Any | undefined
   ) {
     super();
   }
@@ -39,7 +45,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgEthereumTxV1.Amino {
     const { hash, from, size, data } = this;
     return {
-      type: 'ethermint/MsgEthereumTx',
+      type: 'evm/MsgEthereumTx',
       value: {
         hash,
         from,
@@ -61,7 +67,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgEthereumTxV1.Data {
     const { hash, from, size, data } = this;
     return {
-      '@type': '/ethermint.evm.v1.MsgEthereumTx',
+      '@type': '/cosmos.evm.vm.v1.MsgEthereumTx',
       hash,
       from,
       size,
@@ -79,7 +85,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
   public toProto(_isClassic?: boolean): MsgEthereumTxV1.Proto {
     const { hash, from, size, data } = this;
     return MsgEthereumTxV1_pb.fromPartial({
-      data,
+      data: data as any,
       size,
       hash,
       from,
@@ -88,7 +94,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.evm.v1.MsgEthereumTx',
+      typeUrl: '/cosmos.evm.vm.v1.MsgEthereumTx',
       value: MsgEthereumTxV1_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -103,9 +109,11 @@ export class MsgEthereumTxV1 extends JSONSerializable<
 
 export namespace MsgEthereumTxV1 {
   export interface Amino {
-    type: 'ethermint/MsgEthereumTx';
+    type:
+      | 'ethermint/MsgEthereumTx'
+      | 'evm/MsgEthereumTx';
     value: {
-      data: Any | undefined;
+      data: LegacyTx | AccessListTx | DynamicFeeTx | ExtensionOptionsEthereumTx | Any | undefined;
       size: number;
       hash: string;
       from: string;
@@ -113,8 +121,10 @@ export namespace MsgEthereumTxV1 {
   }
 
   export interface Data {
-    '@type': '/ethermint.evm.v1.MsgEthereumTx';
-    data: Any | undefined;
+    '@type':
+      | '/ethermint.evm.v1.MsgEthereumTx'
+      | '/cosmos.evm.vm.v1.MsgEthereumTx';
+    data: LegacyTx | AccessListTx | DynamicFeeTx | ExtensionOptionsEthereumTx | Any | undefined;
     size: number;
     hash: string;
     from: string;

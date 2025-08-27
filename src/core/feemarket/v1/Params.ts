@@ -3,7 +3,7 @@ import { JSONSerializable } from '../../../util/json';
 import { Int, Dec, Numeric } from '../../numeric';
 import {
   Params as FeemarketParamsV1_pb,
-} from '@xpla/xpla.proto/ethermint/feemarket/v1/feemarket';
+} from '@xpla/xpla.proto/cosmos/evm/feemarket/v1/feemarket';
 
 export class FeemarketParamsV1 extends JSONSerializable<
   FeemarketParamsV1.Amino,
@@ -118,7 +118,7 @@ export class FeemarketParamsV1 extends JSONSerializable<
     } = this;
 
     const res: FeemarketParamsV1.Data = {
-      '@type': '/ethermint.feemarket.v1.Params',
+      '@type': '/cosmos.evm.feemarket.v1.Params',
       no_base_fee,
       base_fee_change_denominator,
       elasticity_multiplier,
@@ -179,7 +179,9 @@ export namespace FeemarketParamsV1 {
   }
 
   export interface Data {
-    '@type': '/ethermint.feemarket.v1.Params';
+    '@type':
+      | '/ethermint.feemarket.v1.Params'
+      | '/cosmos.evm.feemarket.v1.Params';
     no_base_fee: boolean;
     base_fee_change_denominator: number;
     elasticity_multiplier: number;

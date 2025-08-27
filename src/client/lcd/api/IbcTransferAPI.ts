@@ -1,14 +1,26 @@
 import { BaseAPI } from './BaseAPI';
 import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
-import { DenomTrace } from '../../../core/ibc/applications/transfer/v1/DenomTrace';
 import { LCDClient } from '../LCDClient';
 import { Coins } from '../../../core';
+import {
+  IbcChannelCounterpartyV1 as PortChannel,
+} from '../../../core/ibc/core';
+
+export interface IbcDenom {
+  base: string;
+  trace: PortChannel[];
+}
+export namespace IbcDenom {
+  export interface Data {
+    base: string;
+    trace: PortChannel.Data[];
+  }
+}
 
 export interface IbcTransferParams {
   send_enabled: boolean;
   receive_enabled: boolean;
 }
-
 export namespace IbcTransferParams {
   export interface Data {
     send_enabled: boolean;
@@ -19,6 +31,39 @@ export namespace IbcTransferParams {
 export class IbcTransferAPI extends BaseAPI {
   constructor(public lcd: LCDClient) {
     super(lcd.apiRequester);
+  }
+
+  public async denoms(
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[ IbcDenom[], Pagination ]> {
+    return await this.c.get<{ denoms: IbcDenom[], pagination: Pagination }>(
+      '/ibc/apps/transfer/v1/denoms',
+      params
+    )
+    .then(d => [
+      d.denoms.map(d => ({
+        base: d.base,
+        trace: d.trace.map(PortChannel.fromData),
+      })),
+      d.pagination,
+    ]);
+  }
+
+  public async denom(
+    hash: string,
+    params: Partial<PaginationOptions & APIParams> = {}
+  ): Promise<[ IbcDenom, Pagination ]> {
+    return await this.c.get<{ denom: IbcDenom.Data, pagination: Pagination }>(
+      `/ibc/apps/transfer/v1/denoms/${encodeURIComponent(hash)}`,
+      params
+    )
+    .then(d => [
+      {
+        base: d.denom.base,
+        trace: d.denom.trace.map(PortChannel.fromData),
+      },
+      d.pagination,
+    ]);
   }
 
   public async escrowAddress(
@@ -32,31 +77,6 @@ export class IbcTransferAPI extends BaseAPI {
         params
       )
       .then(d => d.escrow_address);
-  }
-
-  /** Gets a denomTrace for the hash */
-  public async denomTrace(
-    hash: string,
-    params: APIParams = {}
-  ): Promise<DenomTrace> {
-    return this.c
-      .get<{ denom_trace: DenomTrace.Data }>(
-        `/ibc/apps/transfer/v1/denom_traces/${hash}`,
-        params
-      )
-      .then(d => DenomTrace.fromData(d.denom_trace));
-  }
-
-  /** Gets a list of denomTraces */
-  public async denomTraces(
-    params: Partial<PaginationOptions & APIParams> = {}
-  ): Promise<[DenomTrace[], Pagination]> {
-    return this.c
-      .get<{ denom_traces: DenomTrace[]; pagination: Pagination }>(
-        `/ibc/apps/transfer/v1/denom_traces`,
-        params
-      )
-      .then(d => [d.denom_traces.map(DenomTrace.fromData), d.pagination]);
   }
 
   /** Gets a denomination hash information */

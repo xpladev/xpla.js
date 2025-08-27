@@ -74,8 +74,8 @@ export class PeriodicVestingAccount extends JSONSerializable<
     return new PeriodicVestingAccount(
       base_vesting_account,
       Number.parseInt(data.value.start_time),
-      data.value.vesting_periods.map(vs =>
-        PeriodicVestingAccount.Period.fromAmino(vs)
+      data.value.vesting_periods.map(
+        PeriodicVestingAccount.Period.fromAmino
       )
     );
   }
@@ -107,7 +107,7 @@ export class PeriodicVestingAccount extends JSONSerializable<
     return new PeriodicVestingAccount(
       base_vesting_account,
       Number.parseInt(data.start_time),
-      data.vesting_periods.map(vs => PeriodicVestingAccount.Period.fromData(vs))
+      data.vesting_periods.map(PeriodicVestingAccount.Period.fromData)
     );
   }
 
@@ -137,7 +137,7 @@ export class PeriodicVestingAccount extends JSONSerializable<
     return new PeriodicVestingAccount(
       baseVestingAccount,
       proto.startTime.toNumber(),
-      proto.vestingPeriods.map(s => this.Period.fromProto(s))
+      proto.vestingPeriods.map(this.Period.fromProto)
     );
   }
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable, removeNull } from '../../../../util/json';
+import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -51,7 +52,7 @@ export class MsgExecuteContractV1 extends JSONSerializable<
         sender,
         contract,
         msg: removeNull(execute_msg),
-        funds: coins.toAmino(),
+        funds: coins.toIntCoins().toAmino(),
       },
     };
   }
@@ -63,7 +64,7 @@ export class MsgExecuteContractV1 extends JSONSerializable<
     return new MsgExecuteContractV1(
       proto.sender,
       proto.contract,
-      JSON.parse(Buffer.from(proto.msg).toString('utf-8')),
+      JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds)
     );
   }
@@ -71,10 +72,10 @@ export class MsgExecuteContractV1 extends JSONSerializable<
   public toProto(_isClassic?: boolean): MsgExecuteContractV1.Proto {
     const { sender, contract, execute_msg, coins } = this;
     return MsgExecuteContractV1_pb.fromPartial({
-      funds: coins.toProto(),
+      funds: coins.toIntCoins().toProto(),
       contract,
       sender,
-      msg: Buffer.from(JSON.stringify(removeNull(execute_msg)), 'utf-8'),
+      msg: Convert.fromUTF8(JSON.stringify(removeNull(execute_msg))),
     });
   }
 
@@ -115,7 +116,7 @@ export class MsgExecuteContractV1 extends JSONSerializable<
       sender,
       contract,
       msg: execute_msg,
-      funds: coins.toData(),
+      funds: coins.toIntCoins().toData(),
     };
   }
 }

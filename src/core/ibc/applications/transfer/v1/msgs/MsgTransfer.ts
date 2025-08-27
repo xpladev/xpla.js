@@ -2,7 +2,7 @@
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Coin } from '../../../../../Coin';
-import { Height } from '../../../../core/client/Height';
+import { HeightV1 } from '../../../../core/client/v1/Height';
 import { Numeric } from '../../../../../numeric';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgTransfer as MsgTransferV1_pb } from '@xpla/xpla.proto/ibc/applications/transfer/v1/tx';
@@ -15,12 +15,8 @@ export class MsgTransferV1 extends JSONSerializable<
   MsgTransferV1.Data,
   MsgTransferV1.Proto
 > {
-  public source_port: string;
-  public source_channel: string;
   public token?: Coin;
-  public sender: AccAddress;
-  public receiver: string; // destination chain can be non-cosmos-based
-  public timeout_height?: Height; // 0 to disable
+  public timeout_height?: HeightV1; // 0 to disable
   public timeout_timestamp?: Numeric.Output; // 0 to disable
   /**
    * @param source_port the port on which the packet will be sent
@@ -30,15 +26,19 @@ export class MsgTransferV1 extends JSONSerializable<
    * @param receiver the recipient address on the destination chain
    * @param timeout_height Timeout height relative to the current block height. (0 to disable)
    * @param timeout_timestamp Timeout timestamp (in nanoseconds) relative to the current block timestamp. (0 to disable)
+   * @param memo optional memo
+   * @param encoding optional encoding
    */
   constructor(
-    source_port: string,
-    source_channel: string,
+    public source_port: string,
+    public source_channel: string,
     token: Coin | undefined,
-    sender: AccAddress,
-    receiver: string,
-    timeout_height: Height | undefined,
-    timeout_timestamp: Numeric.Input | undefined
+    public sender: AccAddress,
+    public receiver: string,
+    timeout_height: HeightV1 | undefined,
+    timeout_timestamp: Numeric.Input | undefined,
+    public memo: string | undefined,
+    public encoding: string | undefined,
   ) {
     super();
 
@@ -46,11 +46,7 @@ export class MsgTransferV1 extends JSONSerializable<
       throw 'both of timeout_height and timeout_timestamp are undefined';
     }
 
-    this.source_port = source_port;
-    this.source_channel = source_channel;
     this.token = token;
-    this.sender = sender;
-    this.receiver = receiver;
     this.timeout_height = timeout_height;
     this.timeout_timestamp = timeout_timestamp
       ? Numeric.parse(timeout_timestamp)
@@ -67,6 +63,8 @@ export class MsgTransferV1 extends JSONSerializable<
         receiver,
         timeout_height,
         timeout_timestamp,
+        memo,
+        encoding,
       },
     } = data;
 
@@ -80,8 +78,10 @@ export class MsgTransferV1 extends JSONSerializable<
       token ? Coin.fromAmino(token) : undefined,
       sender,
       receiver,
-      timeout_height ? Height.fromAmino(timeout_height) : undefined,
-      timeout_timestamp ? Numeric.parse(timeout_timestamp) : undefined
+      timeout_height ? HeightV1.fromAmino(timeout_height) : undefined,
+      timeout_timestamp ? Numeric.parse(timeout_timestamp) : undefined,
+      memo,
+      encoding,
     );
   }
 
@@ -94,6 +94,8 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeout_height,
       timeout_timestamp,
+      memo,
+      encoding,
     } = this;
     return {
       type: 'cosmos-sdk/MsgTransfer',
@@ -105,6 +107,8 @@ export class MsgTransferV1 extends JSONSerializable<
         receiver,
         timeout_height: timeout_height?.toAmino() || {},
         timeout_timestamp: timeout_timestamp?.toFixed() || undefined,
+        memo,
+        encoding,
       },
     };
   }
@@ -118,6 +122,8 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeout_timestamp,
       timeout_height,
+      memo,
+      encoding,
     } = data;
 
     if (!timeout_height && !timeout_timestamp) {
@@ -130,8 +136,10 @@ export class MsgTransferV1 extends JSONSerializable<
       token ? Coin.fromData(token) : undefined,
       sender,
       receiver,
-      timeout_height ? Height.fromData(timeout_height) : undefined,
-      timeout_timestamp ? Number.parseInt(timeout_timestamp) : undefined
+      timeout_height ? HeightV1.fromData(timeout_height) : undefined,
+      timeout_timestamp ? Number.parseInt(timeout_timestamp) : undefined,
+      memo,
+      encoding,
     );
   }
 
@@ -144,6 +152,8 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeout_height,
       timeout_timestamp,
+      memo,
+      encoding,
     } = this;
     return {
       '@type': '/ibc.applications.transfer.v1.MsgTransfer',
@@ -154,8 +164,10 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeout_height: timeout_height
         ? timeout_height.toData()
-        : new Height(0, 0).toData(),
+        : new HeightV1(0, 0).toData(),
       timeout_timestamp: timeout_timestamp?.toFixed() || '0',
+      memo,
+      encoding,
     };
   }
 
@@ -170,8 +182,10 @@ export class MsgTransferV1 extends JSONSerializable<
       proto.token ? Coin.fromProto(proto.token) : undefined,
       proto.sender,
       proto.receiver,
-      proto.timeoutHeight ? Height.fromProto(proto.timeoutHeight) : undefined,
-      proto.timeoutTimestamp.toNumber()
+      proto.timeoutHeight ? HeightV1.fromProto(proto.timeoutHeight) : undefined,
+      proto.timeoutTimestamp.toNumber(),
+      proto.memo,
+      proto.encoding,
     );
   }
 
@@ -184,6 +198,8 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeout_height,
       timeout_timestamp,
+      memo,
+      encoding,
     } = this;
     return MsgTransferV1_pb.fromPartial({
       sourcePort: source_port,
@@ -193,6 +209,8 @@ export class MsgTransferV1 extends JSONSerializable<
       receiver,
       timeoutHeight: timeout_height ? timeout_height.toProto() : undefined,
       timeoutTimestamp: timeout_timestamp?.toFixed() ?? '0',
+      memo,
+      encoding,
     });
   }
 
@@ -220,8 +238,10 @@ export namespace MsgTransferV1 {
       token?: Coin.Amino;
       sender: AccAddress;
       receiver: string;
-      timeout_height: Height.Amino;
+      timeout_height: HeightV1.Amino;
       timeout_timestamp?: string;
+      memo?: string;
+      encoding?: string;
     };
   }
   export interface Data {
@@ -231,8 +251,10 @@ export namespace MsgTransferV1 {
     token?: Coin.Data;
     sender: AccAddress;
     receiver: string;
-    timeout_height: Height.Data;
+    timeout_height: HeightV1.Data;
     timeout_timestamp: string;
+    memo?: string;
+    encoding?: string;
   }
   export type Proto = MsgTransferV1_pb;
 }
