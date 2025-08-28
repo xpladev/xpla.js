@@ -590,8 +590,10 @@ export namespace Msg {
 
       // evm
       case 'ethermint/MsgEthereumTx':
+      case 'evm/MsgEthereumTx':
         return MsgEthereumTxV1.fromAmino(data);
       case 'ethermint/x/evm/MsgUpdateParams':
+      case 'evm/MsgUpdateParams':
         return MsgUpdateEvmParamsV1.fromAmino(data);
 
       // xpla
@@ -910,14 +912,17 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-        return MsgConvertCoinV1.fromData(data);
+      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
+          return MsgConvertCoinV1.fromData(data);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-        return MsgConvertERC20V1.fromData(data);
+      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
+          return MsgConvertERC20V1.fromData(data);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
-        return MsgEthereumTxV1.fromData(data);
+      case '/cosmos.evm.vm.v1.MsgEthereumTx':
+          return MsgEthereumTxV1.fromData(data);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
@@ -1238,14 +1243,17 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-        return MsgConvertCoinV1.unpackAny(proto);
+      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
+          return MsgConvertCoinV1.unpackAny(proto);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-        return MsgConvertERC20V1.unpackAny(proto);
+      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
+          return MsgConvertERC20V1.unpackAny(proto);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
-        return MsgEthereumTxV1.unpackAny(proto);
+      case '/cosmos.evm.vm.v1.MsgEthereumTx':
+          return MsgEthereumTxV1.unpackAny(proto);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
