@@ -918,6 +918,8 @@ export namespace Msg {
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
         return MsgEthereumTxV1.fromData(data);
+      case '/cosmos.evm.vm.v1.MsgEthereumTx':
+        return MsgEthereumTxV1.fromData(data);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
