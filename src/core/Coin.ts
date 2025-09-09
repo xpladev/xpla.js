@@ -76,7 +76,7 @@ export class Coin
   }
 
   public static fromString(str: string): Coin {
-    const m = str.match(/^(-?[0-9]+(\.[0-9]+)?)([0-9a-zA-Z/]+)$/);
+    const m = str.match(/^(-?[0-9]+(\.[0-9]+)?)([\S]+)$/);
     if (m === null) {
       throw new Error(`failed to parse to Coin: ${str}`);
     }
