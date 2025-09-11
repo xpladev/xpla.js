@@ -912,11 +912,9 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
           return MsgConvertCoinV1.fromData(data);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
           return MsgConvertERC20V1.fromData(data);
 
       // evm
@@ -1243,11 +1241,9 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
           return MsgConvertCoinV1.unpackAny(proto);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
           return MsgConvertERC20V1.unpackAny(proto);
 
       // evm
