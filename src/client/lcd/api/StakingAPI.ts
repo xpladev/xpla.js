@@ -7,7 +7,7 @@ import {
 import { BaseAPI } from './BaseAPI';
 import { Delegation, Validator, Redelegation } from '../../../core/staking';
 import { Denom } from '../../../core/Denom';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export interface StakingParams {
@@ -66,7 +66,7 @@ export class StakingAPI extends BaseAPI {
   public async delegations(
     delegator?: AccAddress,
     validator?: ValAddress,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Delegation[], Pagination]> {
     if (delegator !== undefined && validator !== undefined) {
       return this.c
@@ -115,9 +115,10 @@ export class StakingAPI extends BaseAPI {
    */
   public async delegation(
     delegator: AccAddress,
-    validator: ValAddress
+    validator: ValAddress,
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<Delegation> {
-    return this.delegations(delegator, validator).then(delgs => delgs[0][0]);
+    return this.delegations(delegator, validator, params).then(delgs => delgs[0][0]);
   }
 
   /**
@@ -130,7 +131,7 @@ export class StakingAPI extends BaseAPI {
   public async unbondingDelegations(
     delegator?: AccAddress,
     validator?: ValAddress,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[UnbondingDelegation[], Pagination]> {
     if (delegator !== undefined && validator !== undefined) {
       return this.c
@@ -199,7 +200,7 @@ export class StakingAPI extends BaseAPI {
     delegator: AccAddress,
     validatorSrc?: ValAddress,
     validatorDst?: ValAddress,
-    _params: Partial<PaginationOptions & APIParams> = {}
+    _params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Redelegation[], Pagination]> {
     const params = {
       ..._params,
@@ -226,7 +227,7 @@ export class StakingAPI extends BaseAPI {
    */
   public async bondedValidators(
     delegator: AccAddress,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Validator[], Pagination]> {
     return this.c
       .get<{ validators: Validator.Data[]; pagination: Pagination }>(
@@ -240,7 +241,7 @@ export class StakingAPI extends BaseAPI {
    * Get all current registered validators, including validators that are not currently in the validating set.
    */
   public async validators(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Validator[], Pagination]> {
     return this.c
       .get<{ validators: Validator.Data[]; pagination: Pagination }>(
@@ -256,7 +257,7 @@ export class StakingAPI extends BaseAPI {
    */
   public async validator(
     validator: ValAddress,
-    params: APIParams = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<Validator> {
     return this.c
       .get<{ validator: Validator.Data }>(
@@ -269,7 +270,7 @@ export class StakingAPI extends BaseAPI {
   /**
    * Gets the current staking pool.
    */
-  public async pool(params: APIParams = {}): Promise<StakingPool> {
+  public async pool(params: Partial<PaginationOptions & APIParams & CosmosParams> = {}): Promise<StakingPool> {
     return this.c
       .get<{ pool: StakingPool.Data }>(`/cosmos/staking/v1beta1/pool`, params)
       .then(({ pool: d }) => ({
@@ -281,7 +282,7 @@ export class StakingAPI extends BaseAPI {
   /**
    * Gets the current Staking module's parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<StakingParams> {
+  public async parameters(params: Partial<PaginationOptions & APIParams & CosmosParams> = {}): Promise<StakingParams> {
     return this.c
       .get<{ params: StakingParams.Data }>(
         '/cosmos/staking/v1beta1/params',

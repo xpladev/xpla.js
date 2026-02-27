@@ -9,7 +9,7 @@ import {
   AuthParamsV1B1,
 } from '../../../core';
 import { BaseAPI } from './BaseAPI';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class AuthAPI extends BaseAPI {
@@ -25,7 +25,7 @@ export class AuthAPI extends BaseAPI {
    */
   public async accountInfo(
     address: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Account> {
     const { account } = await this.c.get<{
       account:
@@ -38,7 +38,7 @@ export class AuthAPI extends BaseAPI {
   }
 
   public async bech32Prefix(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     const { bech32_prefix } = await this.c.get<{
       bech32_prefix: string;
@@ -48,7 +48,7 @@ export class AuthAPI extends BaseAPI {
 
   public async moduleAccount(
     name: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<ModuleAccount> {
     const { account } = await this.c.get<{
       account: ModuleAccount.Data;
@@ -57,7 +57,7 @@ export class AuthAPI extends BaseAPI {
   }
 
   public async moduleAccounts(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<ModuleAccount[]> {
     const { accounts } = await this.c.get<{
       accounts: ModuleAccount.Data[];
@@ -65,7 +65,7 @@ export class AuthAPI extends BaseAPI {
     return accounts.map(acc => ModuleAccount.fromData(acc));
   }
 
-  public async parameters(params: APIParams = {}): Promise<AuthParamsV1B1> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<AuthParamsV1B1> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }

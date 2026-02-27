@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { AccAddress } from '../../../core/bech32';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import {
   HistoryEntry,
@@ -126,7 +126,7 @@ export class WasmAPI extends BaseAPI {
   public async codeInfo(
     codeID: number,
     with_data: boolean = false,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<CodeInfo> {
     if (with_data) {
       const endpoint = `/cosmwasm/wasm/v1/code/${codeID}`;
@@ -162,7 +162,7 @@ export class WasmAPI extends BaseAPI {
 
   public async contractInfo(
     contractAddress: AccAddress,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<ContractInfo> {
     // new endpoint doesn't return init_msg so have to retrieve it from history
     const [historyEntry, _] = await this.contractHistory(contractAddress);
@@ -186,7 +186,7 @@ export class WasmAPI extends BaseAPI {
   public async contractQuery<T>(
     contractAddress: AccAddress,
     query: object | string,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<T> {
     const query_msg = Convert.toBase64(Convert.fromUTF8(JSON.stringify(query)));
     const endpoint = `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${query_msg}`;
@@ -199,7 +199,7 @@ export class WasmAPI extends BaseAPI {
 
   public async parameters(
     module = 'codes',
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<CodesParamsV1 | any> {
     return this.c
       .get<{ params: any }>(`/cosmwasm/wasm/v1/${module}/params`, params)
@@ -210,7 +210,7 @@ export class WasmAPI extends BaseAPI {
   }
 
   public async wasmLimitsConfig(
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<any> {
     return this.c
       .get<{ config: string }>('/cosmwasm/wasm/v1/wasm-limits-config', params)

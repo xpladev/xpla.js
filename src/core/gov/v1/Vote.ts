@@ -16,8 +16,6 @@ export class VoteV1 extends JSONSerializable<
   VoteV1.Data,
   VoteV1.Proto
 > {
-  public Option = VoteOption;
-
   /**
    * @param proposal_id defines the unique id of the proposal
    * @param voter is the voter address of the proposal

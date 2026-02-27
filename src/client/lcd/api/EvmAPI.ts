@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { Account, Coin, Coins, EvmAccount, EvmParamsV1, EvmChainConfigV1 } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class EvmAPI extends BaseAPI {
@@ -8,7 +8,7 @@ export class EvmAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
-  public async account(address: string, params: APIParams = {}): Promise<[EvmAccount, Coin]> {
+  public async account(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<[EvmAccount, Coin]> {
     try {
       // from 1.8
       return await this.c
@@ -28,7 +28,7 @@ export class EvmAPI extends BaseAPI {
       ]);
   }
 
-  public async cosmosAccount(address: string, params: APIParams = {}): Promise<Account> {
+  public async cosmosAccount(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Account> {
     try {
       // from 1.8
       return await this.c
@@ -62,7 +62,7 @@ export class EvmAPI extends BaseAPI {
       });
   }
 
-  public async validatorAccount(consAddress: string, params: APIParams = {}): Promise<Account> {
+  public async validatorAccount(consAddress: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Account> {
     try {
       // from 1.8
       return await this.c
@@ -96,7 +96,7 @@ export class EvmAPI extends BaseAPI {
       });
   }
 
-  public async balances(address: string, params: APIParams = {}): Promise<Coins> {
+  public async balances(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Coins> {
     try {
       // from 1.8
       return await this.c
@@ -114,7 +114,7 @@ export class EvmAPI extends BaseAPI {
       });
   }
 
-  public async baseFee(params: APIParams = {}): Promise<string> {
+  public async baseFee(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -128,7 +128,7 @@ export class EvmAPI extends BaseAPI {
       .then(d => d.base_fee ?? '');
   }
 
-  public async codes(address: string, params: APIParams = {}): Promise<string> {
+  public async codes(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -142,7 +142,7 @@ export class EvmAPI extends BaseAPI {
       .then(d => d.code ?? '');
   }
 
-  public async estimateGas(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: APIParams = {}): Promise<string> {
+  public async estimateGas(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -156,7 +156,7 @@ export class EvmAPI extends BaseAPI {
       .then(d => d.gas ?? '');
   }
 
-  public async ethCall(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: APIParams = {}): Promise<any> {
+  public async ethCall(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: Partial<APIParams & CosmosParams> = {}): Promise<any> {
     try {
       // from 1.8
       return await this.c.get('/cosmos/evm/vm/v1/eth_call', { args, gas_cap, proposer_address, chain_id, ...params })
@@ -166,7 +166,7 @@ export class EvmAPI extends BaseAPI {
     return await this.c.get('/ethermint/evm/v1/eth_call', { args, gas_cap, proposer_address, chain_id, ...params });
   }
 
-  public async storage(address: string, key: string, params: APIParams = {}): Promise<string> {
+  public async storage(address: string, key: string, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -180,7 +180,7 @@ export class EvmAPI extends BaseAPI {
       .then(d => d.value ?? '');
   }
 
-  public async minGasPrice(params: APIParams = {}): Promise<string> {
+  public async minGasPrice(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -195,7 +195,7 @@ export class EvmAPI extends BaseAPI {
     return String(min_gas_price);
   }
 
-  public async config(params: APIParams = {}): Promise<EvmChainConfigV1> {
+  public async config(params: Partial<APIParams & CosmosParams> = {}): Promise<EvmChainConfigV1> {
     return await this.c
       .get<{ config: EvmChainConfigV1 }>('/cosmos/evm/vm/v1/config', params)
       .then(({ config: d }) => d);
@@ -204,7 +204,7 @@ export class EvmAPI extends BaseAPI {
   /**
    * Gets the current evm module's parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<EvmParamsV1> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<EvmParamsV1> {
     try {
       // from 1.8
       return await this.c

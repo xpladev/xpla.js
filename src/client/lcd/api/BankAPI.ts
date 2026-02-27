@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { Coin, Coins, AccAddress, BankParamsV1B1 } from '../../../core';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export interface DenomOwner {
@@ -36,7 +36,7 @@ export class BankAPI extends BaseAPI {
    */
   public async balance(
     address: AccAddress,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Coins, Pagination]> {
     return this.c
       .get<{
@@ -54,7 +54,7 @@ export class BankAPI extends BaseAPI {
   public async balanceByDenom(
     address: AccAddress,
     denom: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<Coin> {
     return this.c
       .get<{
@@ -69,7 +69,7 @@ export class BankAPI extends BaseAPI {
    */
   public async denomOwners(
     denom: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[DenomOwner[], Pagination]> {
     return this.c
       .get<{
@@ -84,7 +84,7 @@ export class BankAPI extends BaseAPI {
    * @param denom denom to look up.
    */
   public async denomsMetadata(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[DenomMetadata[], Pagination]> {
     return this.c
       .get<{
@@ -99,7 +99,7 @@ export class BankAPI extends BaseAPI {
    */
   public async total(
     denom?: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Coins, Pagination]> {
     if (denom !== undefined) {
       return this.c
@@ -123,7 +123,7 @@ export class BankAPI extends BaseAPI {
    */
   public async spendableBalances(
     address: AccAddress,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Coins, Pagination]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
@@ -136,7 +136,7 @@ export class BankAPI extends BaseAPI {
       .then(d => [Coins.fromData(d.balances), d.pagination]);
   }
 
-  public async parameters(params: APIParams = {}): Promise<BankParamsV1B1> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<BankParamsV1B1> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }

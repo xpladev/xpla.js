@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { BlockInfo, DelegateValidator } from '../../../core';
-import { APIParams, Pagination } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class TendermintAPI extends BaseAPI {
@@ -11,14 +11,14 @@ export class TendermintAPI extends BaseAPI {
   /**
    * Gets the node's information.
    */
-  public async nodeInfo(params: APIParams = {}): Promise<any> {
+  public async nodeInfo(params: APIParams | CosmosParams = {}): Promise<any> {
     return this.c.get('/cosmos/base/tendermint/v1beta1/node_info', params);
   }
 
   /**
    * Gets whether the node is currently in syncing mode to catch up with blocks.
    */
-  public async syncing(params: APIParams = {}): Promise<boolean> {
+  public async syncing(params: APIParams | CosmosParams = {}): Promise<boolean> {
     return this.c
       .get<{ syncing: boolean }>(
         `/cosmos/base/tendermint/v1beta1/syncing`,
@@ -33,7 +33,7 @@ export class TendermintAPI extends BaseAPI {
    */
   public async validatorSet(
     height?: number,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<[DelegateValidator[], Pagination]> {
     const url =
       height !== undefined
@@ -54,7 +54,7 @@ export class TendermintAPI extends BaseAPI {
    */
   public async blockInfo(
     height?: number,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<BlockInfo> {
     const url =
       height !== undefined
@@ -65,7 +65,7 @@ export class TendermintAPI extends BaseAPI {
 
   public async abciQuery(
     data?: string, path?: string, height?: number, prove?: boolean,
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<any> {
     return this.c.get(
       '/cosmos/base/tendermint/v1beta1/abci_query',

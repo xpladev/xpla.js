@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { ConsensusParams } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class ConsensusAPI extends BaseAPI {
@@ -11,7 +11,7 @@ export class ConsensusAPI extends BaseAPI {
   /**
    * Gets the current consensus parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<ConsensusParams> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<ConsensusParams> {
     return this.c
       .get<{ params: any }>('/cosmos/consensus/v1/params', params)
       .then(({ params: d }) => ConsensusParams.fromData(d));

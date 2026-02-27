@@ -3,6 +3,10 @@ import { OrderBy as OrderBy_pb } from '@xpla/xpla.proto/cosmos/tx/v1beta1/servic
 
 export type APIParams = Record<string, string | number | null | undefined>;
 
+export interface CosmosParams {
+  block_height?: string|number;
+}
+
 export interface Pagination {
   next_key: string | null;
   total: number;
@@ -59,13 +63,31 @@ export class APIRequester {
     return url.toString();
   }
 
+  private buildConfig(
+    params: URLSearchParams | APIParams | CosmosParams
+  ): { params: URLSearchParams | APIParams; headers?: Record<string, string> } {
+    if (
+      params instanceof URLSearchParams ||
+      (params as CosmosParams).block_height == null
+    ) {
+      return { params: params as URLSearchParams | APIParams };
+    }
+    const { block_height, ...rest } = params as CosmosParams &
+      Record<string, any>;
+    return {
+      params: rest,
+      headers: { 'x-cosmos-block-height': String(block_height) },
+    };
+  }
+
   public async getRaw(
     endpoint: string,
-    params: URLSearchParams | APIParams = {}
+    params: URLSearchParams | APIParams | CosmosParams = {}
   ): Promise<any> {
     const url = this.computeEndpoint(endpoint);
+    const config = this.buildConfig(params);
     return this.axios.get(
-      url, { params },
+      url, config,
     ).then(d => {
       d.data.http_status = d.status;
       return d.data;
@@ -80,10 +102,11 @@ export class APIRequester {
 
   public async get<T>(
     endpoint: string,
-    params: URLSearchParams | APIParams = {}
+    params: URLSearchParams | APIParams | CosmosParams = {}
   ): Promise<T> {
     const url = this.computeEndpoint(endpoint);
-    return this.axios.get(url, { params }).then(d => d.data);
+    const config = this.buildConfig(params);
+    return this.axios.get(url, config).then(d => d.data);
   }
 
   public async postRaw(endpoint: string, data?: any): Promise<any> {
