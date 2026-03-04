@@ -1,5 +1,5 @@
 import { Dec, Numeric, MintParamsV1B1 } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
 
@@ -11,7 +11,7 @@ export class MintAPI extends BaseAPI {
   /**
    * Gets the current minting inflation value
    */
-  public async inflation(params: APIParams = {}): Promise<Dec> {
+  public async inflation(params: Partial<APIParams & CosmosParams> = {}): Promise<Dec> {
     return this.c
       .get<{ inflation: Numeric.Input }>(
         `/cosmos/mint/v1beta1/inflation`,
@@ -23,7 +23,7 @@ export class MintAPI extends BaseAPI {
   /**
    * Gets the current minting annual provisions value
    */
-  public async annualProvisions(params: APIParams = {}): Promise<Dec> {
+  public async annualProvisions(params: Partial<APIParams & CosmosParams> = {}): Promise<Dec> {
     return this.c
       .get<{ annual_provisions: Numeric.Input }>(
         `cosmos/mint/v1beta1/annual_provisions`,
@@ -35,7 +35,7 @@ export class MintAPI extends BaseAPI {
   /**
    * Gets the current minting module's parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<MintParamsV1B1> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<MintParamsV1B1> {
     return this.c
       .get<{ params: any }>('/cosmos/mint/v1beta1/params', params)
       .then(({ params: d }) => MintParamsV1B1.fromData(d));

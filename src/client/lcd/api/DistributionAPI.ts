@@ -5,7 +5,7 @@ import {
   ValAddress,
   DistributionParamsV1B1,
 } from '../../../core';
-import { APIParams, Pagination } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 /**
@@ -69,7 +69,7 @@ export class DistributionAPI extends BaseAPI {
   public async rewards(
     delegator: AccAddress,
     validator?: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Rewards> {
     if (validator !== undefined) {
       const rewardsData = await this.c
@@ -106,7 +106,7 @@ export class DistributionAPI extends BaseAPI {
 
   public async validators(
     delegator: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string[]> {
     return this.c
       .get<{ validators: string[] }>(
@@ -122,7 +122,7 @@ export class DistributionAPI extends BaseAPI {
    */
   public async withdrawAddress(
     delegator: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<AccAddress> {
     return this.c
       .get<{ withdraw_address: AccAddress }>(
@@ -138,7 +138,7 @@ export class DistributionAPI extends BaseAPI {
    */
   public async validatorRewards(
     validator: ValAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<ValidatorRewards> {
     return this.c
       .get<ValidatorRewards.Data>(
@@ -158,7 +158,7 @@ export class DistributionAPI extends BaseAPI {
    */
   public async validatorCommission(
     validator: ValAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Coins> {
     return this.c
       .get<{
@@ -175,7 +175,7 @@ export class DistributionAPI extends BaseAPI {
 
   public async validatorOutstandingRewards(
     validator: ValAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Coins> {
     return this.c
       .get<{
@@ -192,7 +192,7 @@ export class DistributionAPI extends BaseAPI {
 
   public async validatorSlashes(
     validator: ValAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[Slash[], Pagination]> {
     return this.c
       .get<{
@@ -208,7 +208,7 @@ export class DistributionAPI extends BaseAPI {
   /**
    * Gets the current value of the community pool.
    */
-  public async communityPool(params: APIParams = {}): Promise<Coins> {
+  public async communityPool(params: Partial<APIParams & CosmosParams> = {}): Promise<Coins> {
     return this.c
       .get<{ pool: Coins.Data }>(
         `/cosmos/distribution/v1beta1/community_pool`,
@@ -221,7 +221,7 @@ export class DistributionAPI extends BaseAPI {
    * Gets the current distribution parameters.
    */
   public async parameters(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<DistributionParamsV1B1> {
     return this.c
       .get<{ params: any }>('/cosmos/distribution/v1beta1/params', params)

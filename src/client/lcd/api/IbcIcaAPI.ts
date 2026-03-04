@@ -1,5 +1,5 @@
 import { BaseAPI } from './BaseAPI';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { IcaControllerParamsV1 as ControllerParams } from '../../../core/ibc/applications/interchain-account/controller/v1/Params';
 import { IcaHostParamsV1 as HostParams } from '../../../core/ibc/applications/interchain-account/host/v1/Params';
@@ -12,7 +12,7 @@ export class IbcIcaAPI extends BaseAPI {
   public async icaAddress(
     owner: string,
     connection_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
       .get<{
@@ -22,7 +22,7 @@ export class IbcIcaAPI extends BaseAPI {
   }
 
   public async controllerParameters(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<ControllerParams> {
     return this.c
       .get<{ params: ControllerParams.Data }>(
@@ -33,7 +33,7 @@ export class IbcIcaAPI extends BaseAPI {
   }
 
   public async hostParameters(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<HostParams> {
     return this.c
       .get<{ params: HostParams.Data }>(

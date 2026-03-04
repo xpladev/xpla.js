@@ -14,7 +14,6 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
-    '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-namespace': 'off',
     'no-inner-declarations': 'off',
     // TODO: we have to figure out how to use eslint without below rules

@@ -117,7 +117,7 @@ export class EvmParamsV1 extends JSONSerializable<
       undefined,
       p.extra_eips,
       undefined,
-      p.allow_unprotected_txs,
+      undefined,
       p.evm_channels,
       p.access_control,
       p.active_static_precompiles,
@@ -138,7 +138,6 @@ export class EvmParamsV1 extends JSONSerializable<
       '@type': '/cosmos.evm.vm.v1.Params',
       evm_denom: evm_denom ?? 'axpla',
       extra_eips: extra_eips?.map(eip => eip.toFixed()) ?? [],
-      allow_unprotected_txs: allow_unprotected_txs ?? false,
       evm_channels: evm_channels ?? [],
       access_control: access_control,
       active_static_precompiles: active_static_precompiles ?? [],
@@ -171,7 +170,7 @@ export class EvmParamsV1 extends JSONSerializable<
       undefined,
       p.extraEips.map(eip => new Int(eip.toString())),
       undefined,
-      p.allowUnprotectedTxs,
+      undefined,
       p.evmChannels,
       p.accessControl,
       p.activeStaticPrecompiles,
@@ -190,7 +189,6 @@ export class EvmParamsV1 extends JSONSerializable<
     return EvmParamsV1_pb.fromPartial({
       evmDenom: evm_denom,
       extraEips: extra_eips?.map(eip => eip.toFixed()),
-      allowUnprotectedTxs: allow_unprotected_txs ?? false,
       evmChannels: evm_channels ?? [],
       accessControl: access_control,
       activeStaticPrecompiles: active_static_precompiles,
@@ -224,7 +222,6 @@ export namespace EvmParamsV1 {
     '@type': '/cosmos.evm.vm.v1.Params';
     evm_denom: string;
     extra_eips: string[];
-    allow_unprotected_txs: boolean;
     evm_channels: string[];
     access_control: AccessControl | undefined;
     active_static_precompiles: string[];

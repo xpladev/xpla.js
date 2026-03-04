@@ -3,12 +3,13 @@ import { MsgEthereumTxV1 } from './MsgEthereumTx';
 describe('MsgEthereumTx', () => {
   it('deserialize correctly', () => {
     const evmtx = MsgEthereumTxV1.fromAmino({
-      type: 'evm/MsgEthereumTx',
+      type: 'cosmos/evm/MsgEthereumTx',
       value: {
         size: 0,
         hash: '',
         from: '',
         data: undefined,
+        raw: undefined,
       },
     });
 
@@ -17,26 +18,29 @@ describe('MsgEthereumTx', () => {
       hash: '',
       from: '',
       data: undefined,
+      raw: undefined,
     });
 
     expect(evmtx.toAmino(true)).toMatchObject({
-      type: 'evm/MsgEthereumTx',
+      type: 'cosmos/evm/MsgEthereumTx',
       value: {
         size: 0,
         hash: '',
         from: '',
         data: undefined,
+        raw: undefined,
       },
     });
   });
 
   it('deserialize correctly proto', () => {
     const evmtx = MsgEthereumTxV1.fromData({
-      '@type': '/ethermint.evm.v1.MsgEthereumTx',
+      '@type': '/cosmos.evm.vm.v1.MsgEthereumTx',
       size: 0,
       hash: '',
       from: '',
       data: undefined,
+      raw: undefined,
     });
 
     expect(evmtx).toMatchObject({
@@ -44,14 +48,16 @@ describe('MsgEthereumTx', () => {
       hash: '',
       from: '',
       data: undefined,
+      raw: undefined,
     });
 
     expect(evmtx.toData()).toMatchObject({
-      '@type': '/ethermint.evm.v1.MsgEthereumTx',
+      '@type': '/cosmos.evm.vm.v1.MsgEthereumTx',
       size: 0,
       hash: '',
       from: '',
       data: undefined,
+      raw: undefined,
     });
   });
 });

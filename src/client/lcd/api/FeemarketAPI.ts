@@ -1,5 +1,5 @@
 import { FeemarketParamsV1 } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
 
@@ -8,7 +8,7 @@ export class FeemarketAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
-  public async baseFee(params: APIParams = {}): Promise<string> {
+  public async baseFee(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -22,7 +22,7 @@ export class FeemarketAPI extends BaseAPI {
       .then(d => d.base_fee ?? '');
   }
 
-  public async blockGas(params: APIParams = {}): Promise<string> {
+  public async blockGas(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
     try {
       // from 1.8
       return await this.c
@@ -40,7 +40,7 @@ export class FeemarketAPI extends BaseAPI {
    * Gets the current evm feemarket module's parameters.
    */
   public async parameters(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<FeemarketParamsV1 | any> {
     try {
       // from 1.8

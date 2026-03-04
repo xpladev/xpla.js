@@ -1,5 +1,5 @@
 import { BaseAPI } from './BaseAPI';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { Int, Numeric } from '../../../core/numeric';
 import {
   ChannelV1,
@@ -83,7 +83,7 @@ export class IbcAPI extends BaseAPI {
    * query all the IBC channels of a chain
    */
   public async channels(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ ChannelV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -100,7 +100,7 @@ export class IbcAPI extends BaseAPI {
 
   public async channelsByConnection(
     connection_id: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ ChannelV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -122,7 +122,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async port(
     port_channel: PortChannel,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ChannelV1, Proof ]> {
     return this.c
       .get<{
@@ -147,7 +147,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async channelClientState(
     port_channel: PortChannel,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ChannelV1, Proof ]> {
     return this.c
       .get<{
@@ -194,7 +194,7 @@ export class IbcAPI extends BaseAPI {
 
   public async nextSequence(
     port_channel: PortChannel,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ Int, Proof ]> {
     return this.c
       .get<{
@@ -213,7 +213,7 @@ export class IbcAPI extends BaseAPI {
 
   public async nextSequenceSend(
     port_channel: PortChannel,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ Int, Proof ]> {
     return this.c
       .get<{
@@ -232,7 +232,7 @@ export class IbcAPI extends BaseAPI {
 
   public async nextSequenceSendByClient(
     client_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ Int, Proof ]> {
     return this.c
       .get<{
@@ -251,7 +251,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetAcknowledgements(
     port_channel: PortChannel,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -268,7 +268,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetAcknowledgementsByClient(
     client_id: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -285,7 +285,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetAcknowledgement(
     packet_id: PacketIdV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string, Proof ]> {
     return this.c
       .get<{
@@ -305,7 +305,7 @@ export class IbcAPI extends BaseAPI {
   public async packetAcknowledgementByClient(
     client_id: string,
     sequence: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string, Proof ]> {
     return this.c
       .get<{
@@ -324,7 +324,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetCommitments(
     port_channel: PortChannel,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -341,7 +341,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetCommitmentsByClient(
     client_id: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -358,7 +358,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetCommitment(
     packet_id: PacketIdV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string, Proof ]> {
     return this.c
       .get<{
@@ -378,7 +378,7 @@ export class IbcAPI extends BaseAPI {
   public async packetCommitmentByClient(
     client_id: string,
     sequence: Numeric.Input,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string, Proof ]> {
     return this.c
       .get<{
@@ -397,7 +397,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetCommitmentUnreceivedAcknowledgements(
     packet_id: PacketIdV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string[], HeightV1 ]> {
     return this.c
       .get<{
@@ -413,7 +413,7 @@ export class IbcAPI extends BaseAPI {
   public async packetCommitmentUnreceivedAcknowledgementsByClient(
     client_id: string,
     packet_ack_sequences: string[],
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string[], HeightV1 ]> {
     return this.c
       .get<{
@@ -428,7 +428,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetCommitmentUnreceivedPackets(
     packet_id: PacketIdV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string[], HeightV1 ]> {
     return this.c
       .get<{
@@ -444,7 +444,7 @@ export class IbcAPI extends BaseAPI {
   public async packetCommitmentUnreceivedPacketsByClient(
     client_id: string,
     sequences: string[],
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ string[], HeightV1 ]> {
     return this.c
       .get<{
@@ -459,7 +459,7 @@ export class IbcAPI extends BaseAPI {
 
   public async packetReceipts(
     packet_id: PacketIdV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ boolean, Proof ]> {
     return this.c
       .get<{
@@ -479,7 +479,7 @@ export class IbcAPI extends BaseAPI {
   public async packetReceiptsByClient(
     client_id: string,
     sequence: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ boolean, Proof ]> {
     return this.c
       .get<{
@@ -500,7 +500,7 @@ export class IbcAPI extends BaseAPI {
    *  query all the IBC connections of a chain
    */
   public async connections(
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ConnectionEndV1[], Pagination, HeightV1 ]> {
     return this.c
       .get<{
@@ -517,7 +517,7 @@ export class IbcAPI extends BaseAPI {
 
   public async clientConnectionPaths(
     client_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ConnectionPathsV1, Proof ]> {
     return this.c
       .get<{
@@ -543,7 +543,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async connection(
     connection_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ConnectionEndV1, Proof ]> {
     return this.c
       .get<{
@@ -562,7 +562,7 @@ export class IbcAPI extends BaseAPI {
 
   public async connectionClientState(
     connection_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ IdentifiedClientStateV1, Proof ]> {
     return this.c
       .get<{
@@ -582,7 +582,7 @@ export class IbcAPI extends BaseAPI {
   public async connectionConsensusState(
     connection_id: string,
     height: HeightV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ { client_id: string, consensus_state: ConsensusStateV1 }, Proof ]> {
     return this.c
       .get<{
@@ -605,7 +605,7 @@ export class IbcAPI extends BaseAPI {
 
   public async clientCreator(
     client_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
       .get<{ creator: string }>(`/ibc/core/client/v1/client_creator/${client_id}`, params)
@@ -616,7 +616,7 @@ export class IbcAPI extends BaseAPI {
    * query all the IBC light clients of a chain
    */
   public async clientStates(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ { client_id: string, client_state: ClientStateV1 }[], Pagination ]> {
     return this.c
       .get<{
@@ -639,7 +639,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async clientState(
     client_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ClientStateV1, Proof ]> {
     return this.c
       .get<{
@@ -663,7 +663,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async clientStatus(
     client_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
       .get<{ status: string }>(`/ibc/core/client/v1/client_status/${client_id}`, params)
@@ -677,7 +677,7 @@ export class IbcAPI extends BaseAPI {
    */
   public async clientConsensusStates(
     client_id: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ { height: HeightV1, consensus_state: ConsensusStateV1 }[], Pagination ]> {
     return this.c
       .get<{
@@ -698,7 +698,7 @@ export class IbcAPI extends BaseAPI {
 
   public async clientConsensusStateHeights(
     client_id: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ HeightV1[], Pagination ]> {
     return this.c
       .get<{
@@ -714,7 +714,7 @@ export class IbcAPI extends BaseAPI {
   public async clientConsensusStateByHeight(
     client_id: string,
     height: HeightV1,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[ ConsensusStateV1, Proof ]> {
     return this.c
       .get<{
@@ -732,7 +732,7 @@ export class IbcAPI extends BaseAPI {
   }
 
   public async upgradedClientStates(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<ClientStateV1> {
     return this.c
       .get<{
@@ -742,7 +742,7 @@ export class IbcAPI extends BaseAPI {
   }
 
   public async upgradedConsensusStates(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<ConsensusStateV1> {
     return this.c
       .get<{
@@ -762,17 +762,17 @@ export class IbcAPI extends BaseAPI {
     ).then(d => d.success);
   }
 
-  public async clientParameters(params: APIParams = {}): Promise<IbcClientParamsV1> {
+  public async clientParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<IbcClientParamsV1> {
     return this.c
       .get<{ params: IbcClientParamsV1.Data }>('/ibc/client/v1/params', params)
       .then(({ params: d }) => IbcClientParamsV1.fromData(d));
   }
 
-  public async channelParameters(_: APIParams = {}): Promise<any> {
+  public async channelParameters(_: Partial<APIParams & CosmosParams> = {}): Promise<any> {
     throw new Error('Not Implemented');
   }
 
-  public async connectionParameters(params: APIParams = {}): Promise<IbcConnectionParamsV1> {
+  public async connectionParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<IbcConnectionParamsV1> {
     return this.c
       .get<{ params: IbcConnectionParamsV1.Data }>('/ibc/core/connection/v1/params', params)
       .then(({ params: d }) => IbcConnectionParamsV1.fromData(d));

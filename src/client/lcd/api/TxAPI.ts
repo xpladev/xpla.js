@@ -27,7 +27,7 @@ interface Wait {
   raw_log: string;
   gas_wanted: number;
   gas_used: number;
-  logs: TxLog.Data[];
+  logs: TxLog[];
   timestamp: string;
 }
 
@@ -645,11 +645,12 @@ export class TxAPI extends BaseAPI {
   ): Promise<TxSearchResult> {
     const params = new URLSearchParams();
     let query: string = ''; // post v0.47.x
+    const events: string[] = []; // pre v0.47.x
 
     // build search params
     options.events?.forEach(v => {
-      params.append(
-        'events',
+      // pre v0.47.x
+      events.push(
         v.key === 'tx.height' ? `${v.key}=${v.value}` : `${v.key}='${v.value}'`
       );
       // post v0.47.x
@@ -665,6 +666,10 @@ export class TxAPI extends BaseAPI {
     else if (query.length > 0) {
       params.append('query', query);
     }
+    // pre v0.47.x
+    events.forEach(e => {
+      params.append('events', e);
+    });
 
     delete options['events'];
     delete options['query'];

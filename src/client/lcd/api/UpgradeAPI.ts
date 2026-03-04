@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { Plan } from '../../../core';
-import { APIParams, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export interface ModuleVersion {
@@ -39,7 +39,7 @@ export class UpgradeAPI extends BaseAPI {
   /**
    * Look up the current plan
    */
-  public async currentPlan(params: APIParams = {}): Promise<Plan | null> {
+  public async currentPlan(params: APIParams | CosmosParams = {}): Promise<Plan | null> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }
@@ -54,7 +54,7 @@ export class UpgradeAPI extends BaseAPI {
    * Look up the versions of the modules
    */
   public async moduleVersions(
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<ModuleVersion[]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
@@ -70,11 +70,11 @@ export class UpgradeAPI extends BaseAPI {
       );
   }
 
-  public async authority(params: APIParams = {}): Promise<any> {
+  public async authority(params: APIParams | CosmosParams = {}): Promise<any> {
     return this.c.get('/cosmos/upgrade/v1beta1/authority', params);
   }
 
-  public async upgradedConsensusState(height: number, params: APIParams = {}): Promise<any> {
+  public async upgradedConsensusState(height: number, params: APIParams | CosmosParams = {}): Promise<any> {
     return this.c.get(`/cosmos/upgrade/v1beta1/upgraded_consensus_state/${height}`, params);
   }
 }

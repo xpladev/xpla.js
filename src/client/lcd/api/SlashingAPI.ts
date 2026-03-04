@@ -1,6 +1,6 @@
 import { BaseAPI } from './BaseAPI';
 import { Dec, ValConsAddress } from '../../../core';
-import { APIParams, Pagination } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export interface SlashingParams {
@@ -73,7 +73,7 @@ export class SlashingAPI extends BaseAPI {
    */
   public async signingInfo(
     valConsAddress: ValConsAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<SigningInfo> {
     return this.c
       .get<{ val_signing_info: SigningInfo.Data }>(
@@ -90,7 +90,7 @@ export class SlashingAPI extends BaseAPI {
       }));
   }
 
-  public async signingInfos(params: APIParams = {}): Promise<SigningInfo[]> {
+  public async signingInfos(params: Partial<APIParams & CosmosParams> = {}): Promise<SigningInfo[]> {
     return this.c
       .get<{ info: SigningInfo.Data[]; pagination: Pagination }>(
         `/cosmos/slashing/v1beta1/signing_infos`,
@@ -111,7 +111,7 @@ export class SlashingAPI extends BaseAPI {
   /**
    * Gets the current Slashing module's parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<SlashingParams> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<SlashingParams> {
     return this.c
       .get<{ params: SlashingParams.Data }>(
         `/cosmos/slashing/v1beta1/params`,

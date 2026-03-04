@@ -1,5 +1,5 @@
 import { Coins, RewardParamsV1B1 } from '../../../core';
-import { APIParams } from '../APIRequester';
+import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { BaseAPI } from './BaseAPI';
 import { BurnProposal } from '../../../core/xpla/v1beta1/proposals';
@@ -9,19 +9,19 @@ export class XplaAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
-  public async rewardPool(params: APIParams = {}): Promise<Coins> {
+  public async rewardPool(params: APIParams | CosmosParams = {}): Promise<Coins> {
     return this.c.get<{ pool: any[] }>('/xpla/reward/v1beta1/pool', params)
       .then(d => Coins.fromData(d.pool));
   }
 
-  public async volunteerValidators(params: APIParams = {}): Promise<string[]> {
+  public async volunteerValidators(params: APIParams | CosmosParams = {}): Promise<string[]> {
     return this.c.get<{ volunteer_validators: string[] }>('/xpla/volunteer/v1beta1/validators', params)
       .then(d => d.volunteer_validators);
   }
 
   public async burnOngoingProposal(
     proposal_id: number,
-    params: APIParams = {},
+    params: APIParams | CosmosParams = {},
   ): Promise<BurnProposal> {
     params = { ...params, proposal_id };
     return this.c.get<BurnProposal.Data>(`/xpla/burn/v1beta1/ongoing_proposal`, params)
@@ -32,7 +32,7 @@ export class XplaAPI extends BaseAPI {
       });
   }
 
-  public async burnOngoingProposals(params: APIParams = {}): Promise<BurnProposal[]> {
+  public async burnOngoingProposals(params: APIParams | CosmosParams = {}): Promise<BurnProposal[]> {
     return this.c.get<{ proposals: BurnProposal.Data[] }>('/xpla/burn/v1beta1/ongoing_proposals', params)
       .then(d => d.proposals.map(p => BurnProposal.fromData(p)));
   }
@@ -42,7 +42,7 @@ export class XplaAPI extends BaseAPI {
    */
   public async parameters(
     module = 'reward',
-    params: APIParams = {}
+    params: APIParams | CosmosParams = {}
   ): Promise<RewardParamsV1B1 | any> {
     return this.c
       .get<{ params: any }>(`/xpla/${module}/v1beta1/params`, params)

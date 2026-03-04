@@ -1,7 +1,7 @@
 import { AccAddress } from '../../../core';
 import { BaseAPI } from './BaseAPI';
 import { Allowance } from '../../../core/feegrant/allowances';
-import { Pagination, PaginationOptions } from '../APIRequester';
+import { CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class FeeGrantAPI extends BaseAPI {
@@ -11,7 +11,7 @@ export class FeeGrantAPI extends BaseAPI {
 
   public async allowances(
     grantee: AccAddress,
-    params: Partial<PaginationOptions> = {}
+    params: Partial<PaginationOptions & CosmosParams> = {}
   ): Promise<{
     allowances: {
       granter: AccAddress;
@@ -56,7 +56,7 @@ export class FeeGrantAPI extends BaseAPI {
 
   public async allowancesByGranter(
     granter: AccAddress,
-    params: Partial<PaginationOptions> = {}
+    params: Partial<PaginationOptions & CosmosParams> = {}
   ): Promise<{
     allowances: {
       granter: AccAddress;

@@ -1,7 +1,7 @@
 import { AccAddress } from '../../../core';
 import { BaseAPI } from './BaseAPI';
 import { AuthorizationGrant } from '../../../core/authz/authorizations';
-import { APIParams, Pagination } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
 export class AuthzAPI extends BaseAPI {
@@ -16,7 +16,7 @@ export class AuthzAPI extends BaseAPI {
     granter: AccAddress,
     grantee: AccAddress,
     msgTypeUrl?: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[AuthorizationGrant[], Pagination]> {
     return this.c
       .get<{ grants: AuthorizationGrant.Data[]; pagination: Pagination }>(
@@ -43,7 +43,7 @@ export class AuthzAPI extends BaseAPI {
    */
   public async granter(
     granter: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[AuthorizationGrant[], Pagination]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
@@ -66,7 +66,7 @@ export class AuthzAPI extends BaseAPI {
    */
   public async grantee(
     grantee: AccAddress,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<[AuthorizationGrant[], Pagination]> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');

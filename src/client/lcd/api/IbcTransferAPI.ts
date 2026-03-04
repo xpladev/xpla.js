@@ -1,5 +1,5 @@
 import { BaseAPI } from './BaseAPI';
-import { APIParams, Pagination, PaginationOptions } from '../APIRequester';
+import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 import { Coins } from '../../../core';
 import {
@@ -34,7 +34,7 @@ export class IbcTransferAPI extends BaseAPI {
   }
 
   public async denoms(
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ IbcDenom[], Pagination ]> {
     return await this.c.get<{ denoms: IbcDenom[], pagination: Pagination }>(
       '/ibc/apps/transfer/v1/denoms',
@@ -51,7 +51,7 @@ export class IbcTransferAPI extends BaseAPI {
 
   public async denom(
     hash: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[ IbcDenom, Pagination ]> {
     return await this.c.get<{ denom: IbcDenom.Data, pagination: Pagination }>(
       `/ibc/apps/transfer/v1/denoms/${encodeURIComponent(hash)}`,
@@ -69,7 +69,7 @@ export class IbcTransferAPI extends BaseAPI {
   public async escrowAddress(
     channel_id: string,
     port_id: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
       .get<{ escrow_address: string }>(
@@ -82,7 +82,7 @@ export class IbcTransferAPI extends BaseAPI {
   /** Gets a denomination hash information */
   public async denomHash(
     trace: string,
-    params: Partial<PaginationOptions & APIParams> = {}
+    params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<string> {
     return await this.c.get<string>(
       `/ibc/apps/transfer/v1/denom_hashes/${trace}`,
@@ -92,7 +92,7 @@ export class IbcTransferAPI extends BaseAPI {
 
   public async totalEscrow(
     denom: string,
-    params: APIParams = {}
+    params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Coins> {
     return await this.c.get<{ amount: { amount: string, denom: string } }>(
       `/ibc/apps/transfer/v1/denoms/${denom}/total_escrow`,
@@ -104,7 +104,7 @@ export class IbcTransferAPI extends BaseAPI {
   /**
    * Gets the current transfer application parameters.
    */
-  public async parameters(params: APIParams = {}): Promise<IbcTransferParams> {
+  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<IbcTransferParams> {
     return this.c
       .get<{ params: IbcTransferParams.Data }>(
         `/ibc/apps/transfer/v1/params`,
