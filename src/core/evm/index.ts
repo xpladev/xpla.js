@@ -13,5 +13,6 @@ export namespace EvmMsg {
 
 export {
   MsgEthereumTxV1 as MsgEthereumTx,
+  MsgRegisterPreinstallsV1 as MsgRegisterPreinstalls,
   MsgUpdateEvmParamsV1 as MsgUpdateEvmParams,
 } from './v1/msgs';
