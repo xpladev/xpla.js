@@ -1,6 +1,6 @@
 {
   "name": "@xpla/xpla.js",
-  "version": "1.9.0-beta.1",
+  "version": "1.9.1",
   "description": "The JavaScript SDK for Xpla",
   "license": "MIT",
   "author": "XPLA",
@@ -86,8 +86,8 @@
     "@noble/secp256k1": "1.7.1",
     "@scure/bip32": "1.6",
     "@scure/bip39": "1.5",
-    "@xpla/xpla.proto": "^1.9.0-beta.1",
-    "@xpla/xpla.proto-v1_8": "npm:@xpla/xpla.proto@^1.8.0-beta.2",
+    "@xpla/xpla.proto": "^1.9.0",
+    "@xpla/xpla.proto-v1_8": "npm:@xpla/xpla.proto@1.8.0",
     "axios": "^1.7.3",
     "bech32": "^2.0.0",
     "bufferutil": "^4.0.1",

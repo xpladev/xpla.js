@@ -29,7 +29,12 @@ import {
   MsgConvertERC20V1,
   MsgUpdateERC20ParamsV1,
 } from './erc20';
-import { EvmMsgV1, MsgEthereumTxV1, MsgUpdateEvmParamsV1 } from './evm';
+import {
+  EvmMsgV1,
+  MsgEthereumTxV1,
+  MsgRegisterPreinstallsV1,
+  MsgUpdateEvmParamsV1,
+} from './evm';
 import {
   FeeGrantMsg,
   MsgGrantAllowance,
@@ -592,6 +597,9 @@ export namespace Msg {
       case 'ethermint/MsgEthereumTx':
       case 'evm/MsgEthereumTx':
         return MsgEthereumTxV1.fromAmino(data);
+      case 'ethermint/MsgRegisterPreinstalls':
+      case 'evm/MsgRegisterPreinstalls':
+        return MsgRegisterPreinstallsV1.fromAmino(data);
       case 'ethermint/x/evm/MsgUpdateParams':
       case 'evm/MsgUpdateParams':
         return MsgUpdateEvmParamsV1.fromAmino(data);
@@ -921,6 +929,8 @@ export namespace Msg {
       case '/ethermint.evm.v1.MsgEthereumTx':
       case '/cosmos.evm.vm.v1.MsgEthereumTx':
           return MsgEthereumTxV1.fromData(data);
+      case '/cosmos.evm.vm.v1.MsgRegisterPreinstalls':
+          return MsgRegisterPreinstallsV1.fromData(data);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
@@ -1250,6 +1260,8 @@ export namespace Msg {
       case '/ethermint.evm.v1.MsgEthereumTx':
       case '/cosmos.evm.vm.v1.MsgEthereumTx':
           return MsgEthereumTxV1.unpackAny(proto);
+      case '/cosmos.evm.vm.v1.MsgRegisterPreinstalls':
+          return MsgRegisterPreinstallsV1.unpackAny(proto);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
