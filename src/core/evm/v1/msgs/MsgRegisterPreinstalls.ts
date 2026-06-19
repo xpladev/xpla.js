@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import {
-  MsgRegisterPreinstalls as MsgRegisterPreinstallsV1_pb,
-} from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
-import {
-  Preinstall,
-} from '@xpla/xpla.proto/cosmos/evm/vm/v1/evm';
+import { MsgRegisterPreinstalls as MsgRegisterPreinstallsV1_pb } from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
+import { Preinstall } from '@xpla/xpla.proto/cosmos/evm/vm/v1/evm';
 
 /**
  * evm MsgRegisterPreinstalls
@@ -17,7 +13,7 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
   MsgRegisterPreinstallsV1.Proto
 > {
   public preinstalls: Preinstall[];
-  
+
   /**
    * @param authority is the address of the governance account.
    * @param preinstalls defines the preinstalls to create.
@@ -29,7 +25,7 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
     preinstalls: any[]
   ) {
     super();
-    this.preinstalls = preinstalls.map((p) => Preinstall.fromJSON(p));
+    this.preinstalls = preinstalls.map(p => Preinstall.fromJSON(p));
   }
 
   public static fromAmino(
@@ -48,7 +44,7 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
       type: 'cosmos/evm/MsgRegisterPreinstalls',
       value: {
         authority,
-        preinstalls: preinstalls.map((p) => Preinstall.toJSON(p)),
+        preinstalls: preinstalls.map(p => Preinstall.toJSON(p)),
       },
     };
   }
@@ -66,7 +62,7 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
     return {
       '@type': '/cosmos.evm.vm.v1.MsgRegisterPreinstalls',
       authority,
-      preinstalls: preinstalls.map((p) => Preinstall.toJSON(p)),
+      preinstalls: preinstalls.map(p => Preinstall.toJSON(p)),
     };
   }
 
@@ -98,9 +94,12 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
     });
   }
 
-  public static unpackAny(msgAny: Any, _isClassic?: boolean): MsgRegisterPreinstallsV1 {
+  public static unpackAny(
+    msgAny: Any,
+    _isClassic?: boolean
+  ): MsgRegisterPreinstallsV1 {
     return MsgRegisterPreinstallsV1.fromProto(
-      MsgRegisterPreinstallsV1_pb.decode(msgAny.value),
+      MsgRegisterPreinstallsV1_pb.decode(msgAny.value)
     );
   }
 }

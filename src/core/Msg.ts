@@ -354,7 +354,7 @@ export namespace Msg {
       case 'circuit/MsgTripCircuitBreaker':
       case 'cosmos-sdk/x/circuit/MsgTripCircuitBreaker':
         return MsgTripCircuitBreakerV1.fromAmino(data, isClassic);
-      
+
       // consensus
       case 'consensus/MsgUpdateParams':
       case 'cosmos-sdk/x/consensus/MsgUpdateParams':
@@ -419,9 +419,15 @@ export namespace Msg {
         return MsgVoteV1.fromAmino(<MsgVoteV1.Amino>data, isClassic);
       case 'gov/MsgVoteWeighted':
       case 'cosmos-sdk/MsgVoteWeighted':
-        return MsgVoteWeightedV1B1.fromAmino(<MsgVoteWeightedV1B1.Amino>data, isClassic);
+        return MsgVoteWeightedV1B1.fromAmino(
+          <MsgVoteWeightedV1B1.Amino>data,
+          isClassic
+        );
       case 'cosmos-sdk/v1/MsgVoteWeighted':
-        return MsgVoteWeightedV1.fromAmino(<MsgVoteWeightedV1.Amino>data, isClassic);
+        return MsgVoteWeightedV1.fromAmino(
+          <MsgVoteWeightedV1.Amino>data,
+          isClassic
+        );
       case 'cosmos-sdk/v1/MsgExecLegacyContent':
         return MsgExecLegacyContentV1.fromAmino(data, isClassic);
       case 'cosmos-sdk/x/gov/v1/MsgUpdateParams':
@@ -654,7 +660,7 @@ export namespace Msg {
         return MsgResetCircuitBreakerV1.fromData(data, isClassic);
       case '/cosmos.circuit.v1.MsgTripCircuitBreaker':
         return MsgTripCircuitBreakerV1.fromData(data, isClassic);
-      
+
       // consensus
       case '/cosmos.consensus.v1.MsgUpdateParams':
         return MsgUpdateConsensusParamsV1.fromData(data, isClassic);
@@ -920,17 +926,19 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-          return MsgConvertCoinV1.fromData(data);
+        return MsgConvertCoinV1.fromData(data);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-          return MsgConvertERC20V1.fromData(data);
+        return MsgConvertERC20V1.fromData(data);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
       case '/cosmos.evm.vm.v1.MsgEthereumTx':
-          return MsgEthereumTxV1.fromData(data);
+        return MsgEthereumTxV1.fromData(data);
       case '/cosmos.evm.vm.v1.MsgRegisterPreinstalls':
-          return MsgRegisterPreinstallsV1.fromData(data);
+        return MsgRegisterPreinstallsV1.fromData(data);
+      case '/cosmos.evm.vm.v1.MsgUpdateParams':
+        return MsgUpdateEvmParamsV1.fromData(data);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
@@ -1251,17 +1259,19 @@ export namespace Msg {
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
-          return MsgConvertCoinV1.unpackAny(proto);
+        return MsgConvertCoinV1.unpackAny(proto);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
-          return MsgConvertERC20V1.unpackAny(proto);
+        return MsgConvertERC20V1.unpackAny(proto);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
       case '/cosmos.evm.vm.v1.MsgEthereumTx':
-          return MsgEthereumTxV1.unpackAny(proto);
+        return MsgEthereumTxV1.unpackAny(proto);
       case '/cosmos.evm.vm.v1.MsgRegisterPreinstalls':
-          return MsgRegisterPreinstallsV1.unpackAny(proto);
+        return MsgRegisterPreinstallsV1.unpackAny(proto);
+      case '/cosmos.evm.vm.v1.MsgUpdateParams':
+        return MsgUpdateEvmParamsV1.unpackAny(proto);
 
       // xpla
       case '/xpla.reward.v1beta1.MsgFundFeeCollector':
