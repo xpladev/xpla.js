@@ -103,9 +103,7 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateEvmParamsV1 {
   export interface Amino {
-    type:
-      | 'ethermint/x/evm/MsgUpdateParams'
-      | 'evm/MsgUpdateParams';
+    type: 'ethermint/x/evm/MsgUpdateParams' | 'evm/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: EvmParamsV1.Amino | undefined;

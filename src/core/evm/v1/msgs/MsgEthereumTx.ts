@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import {
-  MsgEthereumTx as MsgEthereumTxV1_pb,
-} from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
+import { MsgEthereumTx as MsgEthereumTxV1_pb } from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
 import {
   MsgEthereumTx as MsgEthereumTxV1_1_8_pb,
   ExtensionOptionsEthereumTx,
@@ -30,7 +28,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     public from?: string,
     public size?: number,
     public data?: ExtensionOptionsEthereumTx | Any, // pre v1.9.0
-    public raw?: Uint8Array, // post v1.9.0
+    public raw?: Uint8Array // post v1.9.0
   ) {
     super();
   }
@@ -46,9 +44,17 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     if (from && from.length > 0) {
       try {
         from = '0x' + Convert.toHex(Convert.fromBase64(from));
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
-    return new MsgEthereumTxV1(hash, from, size, data, raw ? Convert.fromBase64(raw) : undefined);
+    return new MsgEthereumTxV1(
+      hash,
+      from,
+      size,
+      data,
+      raw ? Convert.fromBase64(raw) : undefined
+    );
   }
 
   public toAmino(_isClassic?: boolean): MsgEthereumTxV1.Amino {
@@ -57,7 +63,9 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     if (from && from.length > 0) {
       try {
         from = Convert.toBase64(Convert.fromHex(from));
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
     return {
       type: 'cosmos/evm/MsgEthereumTx',
@@ -80,9 +88,17 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     if (from && from.length > 0) {
       try {
         from = '0x' + Convert.toHex(Convert.fromBase64(from));
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
-    return new MsgEthereumTxV1(hash, from, size, data, raw ? Convert.fromHex(raw) : undefined);
+    return new MsgEthereumTxV1(
+      hash,
+      from,
+      size,
+      data,
+      raw ? Convert.fromHex(raw) : undefined
+    );
   }
 
   public toData(_isClassic?: boolean): MsgEthereumTxV1.Data {
@@ -91,7 +107,9 @@ export class MsgEthereumTxV1 extends JSONSerializable<
     if (from && from.length > 0) {
       try {
         from = Convert.toBase64(Convert.fromHex(from));
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
     return {
       '@type': '/cosmos.evm.vm.v1.MsgEthereumTx',
@@ -109,14 +127,22 @@ export class MsgEthereumTxV1 extends JSONSerializable<
   ): MsgEthereumTxV1 {
     if ('raw' in proto) {
       // v1.9.0+ (MsgEthereumTxV1_pb): from is Uint8Array, has raw
-      return new MsgEthereumTxV1(undefined, '0x' + Convert.toHex(proto.from), undefined, undefined, Uint8Array.from(proto.raw));
+      return new MsgEthereumTxV1(
+        undefined,
+        '0x' + Convert.toHex(proto.from),
+        undefined,
+        undefined,
+        Uint8Array.from(proto.raw)
+      );
     }
     // pre v1.9.0 (MsgEthereumTxV1_1_8_pb): from is string, has data/hash/size
     let from = proto.from;
     if (from.length > 0) {
       try {
         from = '0x' + Convert.toHex(Convert.fromBase64(from));
-      } catch {}
+      } catch {
+        /* empty */
+      }
     }
     return new MsgEthereumTxV1(proto.hash, from, proto.size, proto.data);
   }
@@ -176,7 +202,9 @@ export class MsgEthereumTxV1 extends JSONSerializable<
       if (protod.data !== undefined && 'typeUrl' in protod.data) {
         return MsgEthereumTxV1.fromProto(protod, isClassic);
       }
-    } catch {}
+    } catch {
+      /* empty */
+    }
     const protor = MsgEthereumTxV1_pb.decode(msgAny.value);
     return MsgEthereumTxV1.fromProto(protor, isClassic);
   }

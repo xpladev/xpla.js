@@ -1,5 +1,12 @@
 import { BaseAPI } from './BaseAPI';
-import { Account, Coin, Coins, EvmAccount, EvmParamsV1, EvmChainConfigV1 } from '../../../core';
+import {
+  Account,
+  Coin,
+  Coins,
+  EvmAccount,
+  EvmParamsV1,
+  EvmChainConfigV1,
+} from '../../../core';
 import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
@@ -8,32 +15,44 @@ export class EvmAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
-  public async account(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<[EvmAccount, Coin]> {
+  public async account(
+    address: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<[EvmAccount, Coin]> {
     try {
       // from 1.8
       return await this.c
         .get<any>(`/cosmos/evm/vm/v1/account/${address}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => [
-            new EvmAccount(address, d.nonce, d.code_hash),
-            d.balance ? new Coin('axpla', d.balance) : new Coin('axpla', 0),
+          new EvmAccount(address, d.nonce, d.code_hash),
+          d.balance ? new Coin('axpla', d.balance) : new Coin('axpla', 0),
         ]);
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<any>(`/ethermint/evm/v1/account/${address}`, params)
       .then(d => [
-          new EvmAccount(address, d.nonce, d.code_hash),
-          d.balance ? new Coin('axpla', d.balance) : new Coin('axpla', 0),
+        new EvmAccount(address, d.nonce, d.code_hash),
+        d.balance ? new Coin('axpla', d.balance) : new Coin('axpla', 0),
       ]);
   }
 
-  public async cosmosAccount(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Account> {
+  public async cosmosAccount(
+    address: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<Account> {
     try {
       // from 1.8
       return await this.c
         .get<any>(`/cosmos/evm/vm/v1/cosmos_account/${address}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => {
           return Account.fromAmino({
             type: 'cosmos-sdk/BaseAccount',
@@ -42,10 +61,12 @@ export class EvmAPI extends BaseAPI {
               public_key: null,
               account_number: d.account_number,
               sequence: d.sequence,
-            }
+            },
           });
         });
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<any>(`/ethermint/evm/v1/cosmos_account/${address}`, params)
@@ -57,17 +78,22 @@ export class EvmAPI extends BaseAPI {
             public_key: null,
             account_number: d.account_number,
             sequence: d.sequence,
-          }
+          },
         });
       });
   }
 
-  public async validatorAccount(consAddress: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Account> {
+  public async validatorAccount(
+    consAddress: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<Account> {
     try {
       // from 1.8
       return await this.c
         .get<any>(`/cosmos/evm/vm/v1/validator_account/${consAddress}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => {
           return Account.fromAmino({
             type: 'cosmos-sdk/BaseAccount',
@@ -76,10 +102,12 @@ export class EvmAPI extends BaseAPI {
               public_key: null,
               account_number: d.account_number,
               sequence: d.sequence,
-            }
+            },
           });
         });
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<any>(`/ethermint/evm/v1/validator_account/${consAddress}`, params)
@@ -91,21 +119,31 @@ export class EvmAPI extends BaseAPI {
             public_key: null,
             account_number: d.account_number,
             sequence: d.sequence,
-          }
+          },
         });
       });
   }
 
-  public async balances(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<Coins> {
+  public async balances(
+    address: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<Coins> {
     try {
       // from 1.8
       return await this.c
-        .get<{ balance: string }>(`/cosmos/evm/vm/v1/balances/${address}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .get<{ balance: string }>(
+          `/cosmos/evm/vm/v1/balances/${address}`,
+          params
+        )
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => {
           return Coins.fromString(d.balance + 'axpla');
         });
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<{ balance: string }>(`/ethermint/evm/v1/balances/${address}`, params)
@@ -114,80 +152,163 @@ export class EvmAPI extends BaseAPI {
       });
   }
 
-  public async baseFee(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
+  public async baseFee(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<string> {
     try {
       // from 1.8
       return await this.c
         .get<{ base_fee: string }>('/cosmos/evm/vm/v1/base_fee', params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => d.base_fee ?? '');
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<{ base_fee: string }>('/ethermint/evm/v1/base_fee', params)
       .then(d => d.base_fee ?? '');
   }
 
-  public async codes(address: string, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
+  public async codes(
+    address: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<string> {
     try {
       // from 1.8
       return await this.c
         .get<{ code: string }>(`/cosmos/evm/vm/v1/codes/${address}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => d.code ?? '');
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<{ code: string }>(`/ethermint/evm/v1/codes/${address}`, params)
       .then(d => d.code ?? '');
   }
 
-  public async estimateGas(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
+  public async estimateGas(
+    args?: string,
+    gas_cap?: string,
+    proposer_address?: string,
+    chain_id?: number,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<string> {
     try {
       // from 1.8
       return await this.c
-        .get<{ gas: string }>('/cosmos/evm/vm/v1/estimate_gas', { args, gas_cap, proposer_address, chain_id, ...params })
-        .catch(() => { throw new Error('Not Implemented') })
+        .get<{ gas: string }>('/cosmos/evm/vm/v1/estimate_gas', {
+          args,
+          gas_cap,
+          proposer_address,
+          chain_id,
+          ...params,
+        })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => d.gas ?? '');
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
-      .get<{ gas: string }>('/ethermint/evm/v1/estimate_gas', { args, gas_cap, proposer_address, chain_id, ...params })
+      .get<{
+        gas: string;
+      }>('/ethermint/evm/v1/estimate_gas', {
+        args,
+        gas_cap,
+        proposer_address,
+        chain_id,
+        ...params,
+      })
       .then(d => d.gas ?? '');
   }
 
-  public async ethCall(args?: string, gas_cap?: string, proposer_address?: string, chain_id?: number, params: Partial<APIParams & CosmosParams> = {}): Promise<any> {
+  public async ethCall(
+    args?: string,
+    gas_cap?: string,
+    proposer_address?: string,
+    chain_id?: number,
+    overrides?: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<any> {
     try {
-      // from 1.8
-      return await this.c.get('/cosmos/evm/vm/v1/eth_call', { args, gas_cap, proposer_address, chain_id, ...params })
-        .catch(() => { throw new Error('Not Implemented') });
-    } catch {}
+      return await this.c
+        .get('/cosmos/evm/vm/v1/eth_call', {
+          args,
+          gas_cap,
+          proposer_address,
+          chain_id,
+          overrides,
+          ...params,
+        })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        });
+    } catch {
+      /* empty */
+    }
     // for 1.7
-    return await this.c.get('/ethermint/evm/v1/eth_call', { args, gas_cap, proposer_address, chain_id, ...params });
+    return await this.c.get('/ethermint/evm/v1/eth_call', {
+      args,
+      gas_cap,
+      proposer_address,
+      chain_id,
+      ...params,
+    });
   }
 
-  public async storage(address: string, key: string, params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
+  public async storage(
+    address: string,
+    key: string,
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<string> {
     try {
       // from 1.8
       return await this.c
-        .get<{ value: string }>(`/cosmos/evm/vm/v1/storage/${address}/${key}`, params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .get<{ value: string }>(
+          `/cosmos/evm/vm/v1/storage/${address}/${key}`,
+          params
+        )
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => d.value ?? '');
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
-      .get<{ value: string }>(`/ethermint/evm/v1/storage/${address}/${key}`, params)
+      .get<{
+        value: string;
+      }>(`/ethermint/evm/v1/storage/${address}/${key}`, params)
       .then(d => d.value ?? '');
   }
 
-  public async minGasPrice(params: Partial<APIParams & CosmosParams> = {}): Promise<string> {
+  public async minGasPrice(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<string> {
     try {
       // from 1.8
       return await this.c
-        .get<{ min_gas_price: string }>('/cosmos/evm/vm/v1/min_gas_price', params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .get<{ min_gas_price: string }>(
+          '/cosmos/evm/vm/v1/min_gas_price',
+          params
+        )
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(d => d.min_gas_price ?? '');
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     const min_gas_price = await this.c
       .get<{ params: any }>('/ethermint/feemarket/v1/params')
@@ -195,7 +316,9 @@ export class EvmAPI extends BaseAPI {
     return String(min_gas_price);
   }
 
-  public async config(params: Partial<APIParams & CosmosParams> = {}): Promise<EvmChainConfigV1> {
+  public async config(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<EvmChainConfigV1> {
     return await this.c
       .get<{ config: EvmChainConfigV1 }>('/cosmos/evm/vm/v1/config', params)
       .then(({ config: d }) => d);
@@ -204,14 +327,20 @@ export class EvmAPI extends BaseAPI {
   /**
    * Gets the current evm module's parameters.
    */
-  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<EvmParamsV1> {
+  public async parameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<EvmParamsV1> {
     try {
       // from 1.8
       return await this.c
         .get<{ params: any }>('/cosmos/evm/vm/v1/params', params)
-        .catch(() => { throw new Error('Not Implemented') })
+        .catch(() => {
+          throw new Error('Not Implemented');
+        })
         .then(({ params: d }) => EvmParamsV1.fromData(d));
-    } catch {}
+    } catch {
+      /* empty */
+    }
     // for 1.7
     return await this.c
       .get<{ params: any }>('/ethermint/evm/v1/params', params)

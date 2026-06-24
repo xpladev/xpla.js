@@ -10,6 +10,7 @@ import {
   ChainConfig as EvmChainConfigV1_pb,
   Params as EvmParamsV1_pb,
   AccessControl,
+  ExtendedDenomOptions,
 } from '@xpla/xpla.proto/cosmos/evm/vm/v1/evm';
 
 export class EvmParamsV1 extends JSONSerializable<
@@ -37,6 +38,8 @@ export class EvmParamsV1 extends JSONSerializable<
     public evm_channels: string[] | undefined,
     public access_control: AccessControl | undefined,
     public active_static_precompiles: string[] | undefined,
+    public history_serve_window: Numeric.Input | undefined,
+    public extended_denom_options: ExtendedDenomOptions | undefined
   ) {
     super();
     this.extra_eips = extra_eips?.map(eip => new Int(eip));
@@ -53,6 +56,8 @@ export class EvmParamsV1 extends JSONSerializable<
       evm_channels,
       access_control,
       active_static_precompiles,
+      history_serve_window,
+      extended_denom_options,
     } = data;
     return new EvmParamsV1(
       evm_denom,
@@ -64,6 +69,12 @@ export class EvmParamsV1 extends JSONSerializable<
       evm_channels,
       access_control ? AccessControl.fromPartial(access_control) : undefined,
       active_static_precompiles,
+      history_serve_window
+        ? new Int(history_serve_window.toString())
+        : undefined,
+      extended_denom_options
+        ? ExtendedDenomOptions.fromPartial(extended_denom_options)
+        : undefined
     );
   }
 
@@ -78,6 +89,8 @@ export class EvmParamsV1 extends JSONSerializable<
       evm_channels,
       access_control,
       active_static_precompiles,
+      history_serve_window,
+      extended_denom_options,
     } = this;
 
     const res: EvmParamsV1.Amino = {
@@ -90,12 +103,17 @@ export class EvmParamsV1 extends JSONSerializable<
       evm_channels,
       access_control,
       active_static_precompiles,
+      history_serve_window: history_serve_window?.toString(),
+      extended_denom_options: extended_denom_options,
     };
 
     return res;
   }
 
-  public static fromData(data: EvmParamsV1.DataL | EvmParamsV1.Data, _?: boolean): EvmParamsV1 {
+  public static fromData(
+    data: EvmParamsV1.DataL | EvmParamsV1.Data,
+    _?: boolean
+  ): EvmParamsV1 {
     if ('chain_config' in data) {
       const p = data as EvmParamsV1.DataL;
       return new EvmParamsV1(
@@ -108,6 +126,8 @@ export class EvmParamsV1 extends JSONSerializable<
         undefined,
         undefined,
         undefined,
+        undefined,
+        undefined
       );
     }
     const p = data as EvmParamsV1.Data;
@@ -121,6 +141,12 @@ export class EvmParamsV1 extends JSONSerializable<
       p.evm_channels,
       p.access_control,
       p.active_static_precompiles,
+      p.history_serve_window
+        ? new Int(p.history_serve_window.toString())
+        : undefined,
+      p.extended_denom_options
+        ? ExtendedDenomOptions.fromPartial(p.extended_denom_options)
+        : undefined
     );
   }
 
@@ -128,10 +154,11 @@ export class EvmParamsV1 extends JSONSerializable<
     const {
       evm_denom,
       extra_eips,
-      allow_unprotected_txs,
       evm_channels,
       access_control,
       active_static_precompiles,
+      history_serve_window,
+      extended_denom_options,
     } = this;
 
     const res: EvmParamsV1.Data = {
@@ -141,12 +168,21 @@ export class EvmParamsV1 extends JSONSerializable<
       evm_channels: evm_channels ?? [],
       access_control: access_control,
       active_static_precompiles: active_static_precompiles ?? [],
+      history_serve_window: history_serve_window
+        ? history_serve_window.toString()
+        : undefined,
+      extended_denom_options: extended_denom_options
+        ? ExtendedDenomOptions.fromPartial(extended_denom_options)
+        : undefined,
     };
 
     return res;
   }
 
-  public static fromProto(proto: EvmParamsV1.ProtoL | EvmParamsV1.Proto, _?: boolean): EvmParamsV1 {
+  public static fromProto(
+    proto: EvmParamsV1.ProtoL | EvmParamsV1.Proto,
+    _?: boolean
+  ): EvmParamsV1 {
     if ('chain_config' in proto) {
       const p = proto as EvmParamsV1.ProtoL;
       return new EvmParamsV1(
@@ -154,13 +190,13 @@ export class EvmParamsV1 extends JSONSerializable<
         p.enableCreate,
         p.enableCall,
         p.extraEips.map(eip => new Int(eip.toString())),
-        p.chainConfig
-          ? EvmChainConfigV1.fromProto(p.chainConfig)
-          : undefined,
+        p.chainConfig ? EvmChainConfigV1.fromProto(p.chainConfig) : undefined,
         p.allowUnprotectedTxs,
         undefined,
         undefined,
         undefined,
+        undefined,
+        undefined
       );
     }
     const p = proto as EvmParamsV1.Proto;
@@ -174,6 +210,12 @@ export class EvmParamsV1 extends JSONSerializable<
       p.evmChannels,
       p.accessControl,
       p.activeStaticPrecompiles,
+      p.historyServeWindow
+        ? new Int(p.historyServeWindow.toString())
+        : undefined,
+      p.extendedDenomOptions
+        ? ExtendedDenomOptions.fromPartial(p.extendedDenomOptions)
+        : undefined
     );
   }
 
@@ -181,10 +223,11 @@ export class EvmParamsV1 extends JSONSerializable<
     const {
       evm_denom,
       extra_eips,
-      allow_unprotected_txs,
       evm_channels,
       access_control,
       active_static_precompiles,
+      history_serve_window,
+      extended_denom_options,
     } = this;
     return EvmParamsV1_pb.fromPartial({
       evmDenom: evm_denom,
@@ -192,6 +235,12 @@ export class EvmParamsV1 extends JSONSerializable<
       evmChannels: evm_channels ?? [],
       accessControl: access_control,
       activeStaticPrecompiles: active_static_precompiles,
+      historyServeWindow: history_serve_window
+        ? history_serve_window.toString()
+        : undefined,
+      extendedDenomOptions: extended_denom_options
+        ? ExtendedDenomOptions.fromPartial(extended_denom_options)
+        : undefined,
     });
   }
 }
@@ -207,6 +256,8 @@ export namespace EvmParamsV1 {
     evm_channels: string[] | undefined;
     access_control: object | undefined;
     active_static_precompiles: string[] | undefined;
+    history_serve_window: string | undefined;
+    extended_denom_options: object | undefined;
   }
 
   export interface DataL {
@@ -225,6 +276,8 @@ export namespace EvmParamsV1 {
     evm_channels: string[];
     access_control: AccessControl | undefined;
     active_static_precompiles: string[];
+    history_serve_window: string | undefined;
+    extended_denom_options: ExtendedDenomOptions | undefined;
   }
 
   export type ProtoL = EvmParamsV1L_pb;
@@ -304,24 +357,40 @@ export class EvmChainConfigV1 extends JSONSerializable<
     public cancun_time: string | undefined,
     public prague_time: string | undefined,
     public verkle_time: string | undefined,
-    public osaka_time: string | undefined,
+    public osaka_time: string | undefined
   ) {
     super();
-    this.homestead_block = homestead_block ? new Int(homestead_block) : undefined;
+    this.homestead_block = homestead_block
+      ? new Int(homestead_block)
+      : undefined;
     this.dao_fork_block = dao_fork_block ? new Int(dao_fork_block) : undefined;
     this.eip150_block = eip150_block ? new Int(eip150_block) : undefined;
     this.eip155_block = eip155_block ? new Int(eip155_block) : undefined;
     this.eip158_block = eip158_block ? new Int(eip158_block) : undefined;
-    this.byzantium_block = byzantium_block ? new Int(byzantium_block) : undefined;
-    this.constantinople_block = constantinople_block ? new Int(constantinople_block) : undefined;
-    this.petersburg_block = petersburg_block ? new Int(petersburg_block) : undefined;
+    this.byzantium_block = byzantium_block
+      ? new Int(byzantium_block)
+      : undefined;
+    this.constantinople_block = constantinople_block
+      ? new Int(constantinople_block)
+      : undefined;
+    this.petersburg_block = petersburg_block
+      ? new Int(petersburg_block)
+      : undefined;
     this.istanbul_block = istanbul_block ? new Int(istanbul_block) : undefined;
-    this.muir_glacier_block = muir_glacier_block ? new Int(muir_glacier_block) : undefined;
+    this.muir_glacier_block = muir_glacier_block
+      ? new Int(muir_glacier_block)
+      : undefined;
     this.berlin_block = berlin_block ? new Int(berlin_block) : undefined;
     this.london_block = london_block ? new Int(london_block) : undefined;
-    this.arrow_glacier_block = arrow_glacier_block ? new Int(arrow_glacier_block) : undefined;
-    this.gray_glacier_block = gray_glacier_block ? new Int(gray_glacier_block) : undefined;
-    this.merge_netsplit_block = merge_netsplit_block ? new Int(merge_netsplit_block) : undefined;
+    this.arrow_glacier_block = arrow_glacier_block
+      ? new Int(arrow_glacier_block)
+      : undefined;
+    this.gray_glacier_block = gray_glacier_block
+      ? new Int(gray_glacier_block)
+      : undefined;
+    this.merge_netsplit_block = merge_netsplit_block
+      ? new Int(merge_netsplit_block)
+      : undefined;
     this.shanghai_block = shanghai_block ? new Int(shanghai_block) : undefined;
     this.cancun_block = cancun_block ? new Int(cancun_block) : undefined;
     this.chain_id = chain_id ? new Int(chain_id) : undefined;
@@ -388,7 +457,7 @@ export class EvmChainConfigV1 extends JSONSerializable<
       cancun_time,
       prague_time,
       verkle_time,
-      osaka_time,
+      osaka_time
     );
   }
 
@@ -509,7 +578,7 @@ export class EvmChainConfigV1 extends JSONSerializable<
         undefined,
         undefined,
         undefined,
-        undefined,
+        undefined
       );
     }
 
@@ -566,7 +635,7 @@ export class EvmChainConfigV1 extends JSONSerializable<
       cancun_time,
       prague_time,
       verkle_time,
-      osaka_time,
+      osaka_time
     );
   }
 
@@ -662,10 +731,10 @@ export class EvmChainConfigV1 extends JSONSerializable<
         undefined,
         undefined,
         undefined,
-        undefined,
+        undefined
       );
     }
-    
+
     const p = proto as EvmChainConfigV1.Proto;
     return new EvmChainConfigV1(
       p.homesteadBlock,
@@ -694,7 +763,7 @@ export class EvmChainConfigV1 extends JSONSerializable<
       p.cancunTime,
       p.pragueTime,
       p.verkleTime,
-      p.osakaTime,
+      p.osakaTime
     );
   }
 
