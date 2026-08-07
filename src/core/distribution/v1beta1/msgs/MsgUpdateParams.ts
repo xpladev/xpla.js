@@ -87,7 +87,7 @@ export class MsgUpdateDistributionParamsV1B1 extends JSONSerializable<
 
   public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/cosmos.auth.v1beta1.MsgUpdateParams',
+      typeUrl: '/cosmos.distribution.v1beta1.MsgUpdateParams',
       value: MsgUpdateDistributionParamsV1B1_pb.encode(this.toProto()).finish(),
     });
   }
@@ -105,8 +105,8 @@ export class MsgUpdateDistributionParamsV1B1 extends JSONSerializable<
 export namespace MsgUpdateDistributionParamsV1B1 {
   export interface Amino {
     type:
-      | 'distribution/MsgUpdateParams'
-      | 'cosmos-sdk/distribution/MsgUpdateParams';
+      | 'cosmos-sdk/distribution/MsgUpdateParams'
+      | 'distribution/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: DistributionParamsV1B1.Amino | undefined;

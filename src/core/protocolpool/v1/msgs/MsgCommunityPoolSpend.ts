@@ -51,7 +51,7 @@ export class MsgCommunityPoolSpendV1 extends JSONSerializable<
       amount,
     } = this;
     return {
-      type: 'protocolpool/MsgCommunityPoolSpend',
+      type: 'cosmos-sdk/pp/MsgCommunityPoolSpend',
       authority,
       recipient,
       amount: amount.toAmino(),
@@ -126,7 +126,7 @@ export class MsgCommunityPoolSpendV1 extends JSONSerializable<
 
 export namespace MsgCommunityPoolSpendV1 {
   export interface Amino {
-    type: 'protocolpool/MsgCommunityPoolSpend';
+    type: 'cosmos-sdk/pp/MsgCommunityPoolSpend' | 'protocolpool/MsgCommunityPoolSpend';
     authority: AccAddress;
     recipient: AccAddress;
     amount: Coins.Amino;

@@ -36,6 +36,8 @@ export class ProposalV1 extends JSONSerializable<
    * @param title title of the proposal
    * @param summary short summary of the proposal
    * @param proposer address of the proposal sumbitter
+   * @param expedited defines if the proposal is expedited
+   * @param failed_reason defines the reason why the proposal failed
    */
   constructor(
     public id: number,
@@ -50,7 +52,9 @@ export class ProposalV1 extends JSONSerializable<
     public metadata: string,
     public title: string,
     public summary: string,
-    public proposer: AccAddress
+    public proposer: AccAddress,
+    public expedited: boolean = false,
+    public failed_reason: string = ''
   ) {
     super();
 
@@ -82,6 +86,8 @@ export class ProposalV1 extends JSONSerializable<
       title,
       summary,
       proposer,
+      expedited,
+      failed_reason,
     } = data;
 
     return new ProposalV1(
@@ -102,7 +108,9 @@ export class ProposalV1 extends JSONSerializable<
       metadata,
       title,
       summary,
-      proposer
+      proposer,
+      expedited ?? false,
+      failed_reason ?? ''
     );
   }
 
@@ -136,6 +144,8 @@ export class ProposalV1 extends JSONSerializable<
       title: this.title,
       summary: this.summary,
       proposer: this.proposer,
+      expedited: this.expedited ? this.expedited : undefined,
+      failed_reason: this.failed_reason || undefined,
     };
   }
 
@@ -157,6 +167,8 @@ export class ProposalV1 extends JSONSerializable<
       title,
       summary,
       proposer,
+      expedited,
+      failed_reason,
     } = data;
 
     return new ProposalV1(
@@ -177,7 +189,9 @@ export class ProposalV1 extends JSONSerializable<
       metadata,
       title,
       summary,
-      proposer
+      proposer,
+      expedited ?? false,
+      failed_reason ?? ''
     );
   }
 
@@ -212,6 +226,8 @@ export class ProposalV1 extends JSONSerializable<
       title: this.title,
       summary: this.summary,
       proposer: this.proposer,
+      expedited: this.expedited ? this.expedited : undefined,
+      failed_reason: this.failed_reason || undefined,
     };
   }
 
@@ -237,7 +253,9 @@ export class ProposalV1 extends JSONSerializable<
       data.metadata,
       data.title,
       data.summary,
-      data.proposer
+      data.proposer,
+      data.expedited ?? false,
+      data.failedReason ?? ''
     );
   }
 
@@ -276,6 +294,8 @@ export class ProposalV1 extends JSONSerializable<
       title: this.title,
       summary: this.summary,
       proposer: this.proposer,
+      expedited: this.expedited,
+      failedReason: this.failed_reason,
     });
   }
 }
@@ -310,6 +330,8 @@ export namespace ProposalV1 {
     title: string;
     summary: string;
     proposer: string;
+    expedited?: boolean | undefined;
+    failed_reason?: string | undefined;
   }
 
   export interface Data {
@@ -331,6 +353,8 @@ export namespace ProposalV1 {
     title: string;
     summary: string;
     proposer: string;
+    expedited?: boolean | undefined;
+    failed_reason?: string | undefined;
   }
 
   export type Proto = ProposalV1_pb;

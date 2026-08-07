@@ -49,7 +49,7 @@ export class MsgCreatePermanentLockedAccountV1B1 extends JSONSerializable<
     return {
       type: isClassic
         ? 'vesting/MsgCreatePermanentLockedAccount'
-        : 'cosmos-sdk/MsgCreatePermanentLockedAccount',
+        : 'cosmos-sdk/MsgCreatePermLockedAccount',
       value: {
         from_address,
         to_address,
@@ -144,8 +144,9 @@ export class MsgCreatePermanentLockedAccountV1B1 extends JSONSerializable<
 export namespace MsgCreatePermanentLockedAccountV1B1 {
   export interface Amino {
     type:
-      | 'vesting/MsgCreatePermanentLockedAccount'
-      | 'cosmos-sdk/MsgCreatePermanentLockedAccount';
+      | 'cosmos-sdk/MsgCreatePermLockedAccount'
+      | 'cosmos-sdk/MsgCreatePermanentLockedAccount'
+      | 'vesting/MsgCreatePermanentLockedAccount';
     value: {
       from_address: AccAddress;
       to_address: AccAddress;

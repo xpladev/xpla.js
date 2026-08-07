@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
+import { AccAddress } from '../../bech32';
 import { Coins } from '../../Coins';
 import { Dec, Numeric } from '../../numeric';
 import { Duration } from '../../../core/Duration';
@@ -15,6 +16,10 @@ export class GovParamsV1 extends JSONSerializable<
   public threshold: Dec;
   public veto_threshold: Dec;
   public min_initial_deposit_ratio: Dec;
+  public proposal_cancel_ratio: Dec;
+  public expedited_threshold: Dec;
+  public expedited_min_deposit: Coins;
+  public min_deposit_ratio: Dec;
 
   /**
    * @param min_deposit Minimum deposit for a proposal to enter voting period
@@ -27,6 +32,12 @@ export class GovParamsV1 extends JSONSerializable<
    * @param burn_vote_quorum burn deposits if a proposal does not meet quorum
    * @param burn_proposal_deposit_prevote burn deposits if the proposal does not enter voting period
    * @param burn_vote_veto burn deposits if quorum with vote type no_veto is met
+   * @param proposal_cancel_ratio The cancel ratio which will not be returned back to the depositors when a proposal is cancelled
+   * @param proposal_cancel_dest The address which will receive (proposal_cancel_ratio * deposit) proposal deposits
+   * @param expedited_voting_period Duration of the voting period of an expedited proposal
+   * @param expedited_threshold Minimum proportion of Yes votes for an expedited proposal to pass. Default value: 0.67
+   * @param expedited_min_deposit Minimum expedited deposit for a proposal to enter voting period
+   * @param min_deposit_ratio The ratio representing the proportion of the deposit value minimum that must be met when making a deposit
    */
   constructor(
     min_deposit: Coins.Input,
@@ -38,7 +49,13 @@ export class GovParamsV1 extends JSONSerializable<
     min_initial_deposit_ratio: Numeric.Input,
     public burn_vote_quorum: boolean,
     public burn_proposal_deposit_prevote: boolean,
-    public burn_vote_veto: boolean
+    public burn_vote_veto: boolean,
+    proposal_cancel_ratio: Numeric.Input = '',
+    public proposal_cancel_dest: AccAddress = '',
+    public expedited_voting_period: Duration | undefined = undefined,
+    expedited_threshold: Numeric.Input = '',
+    expedited_min_deposit: Coins.Input = [],
+    min_deposit_ratio: Numeric.Input = ''
   ) {
     super();
     this.min_deposit = new Coins(min_deposit);
@@ -46,6 +63,10 @@ export class GovParamsV1 extends JSONSerializable<
     this.threshold = new Dec(threshold);
     this.veto_threshold = new Dec(veto_threshold);
     this.min_initial_deposit_ratio = new Dec(min_initial_deposit_ratio);
+    this.proposal_cancel_ratio = new Dec(proposal_cancel_ratio);
+    this.expedited_threshold = new Dec(expedited_threshold);
+    this.expedited_min_deposit = new Coins(expedited_min_deposit);
+    this.min_deposit_ratio = new Dec(min_deposit_ratio);
   }
 
   public static fromAmino(data: GovParamsV1.Amino, _?: boolean): GovParamsV1 {
@@ -60,6 +81,12 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio,
+      proposal_cancel_dest,
+      expedited_voting_period,
+      expedited_threshold,
+      expedited_min_deposit,
+      min_deposit_ratio,
     } = data;
     return new GovParamsV1(
       Coins.fromAmino(min_deposit),
@@ -71,7 +98,15 @@ export class GovParamsV1 extends JSONSerializable<
       min_initial_deposit_ratio ?? '',
       burn_vote_quorum ?? false,
       burn_proposal_deposit_prevote ?? false,
-      burn_vote_veto ?? false
+      burn_vote_veto ?? false,
+      proposal_cancel_ratio ?? '',
+      proposal_cancel_dest ?? '',
+      expedited_voting_period
+        ? Duration.fromAmino(expedited_voting_period)
+        : undefined,
+      expedited_threshold ?? '',
+      expedited_min_deposit ? Coins.fromAmino(expedited_min_deposit) : [],
+      min_deposit_ratio ?? ''
     );
   }
 
@@ -87,6 +122,12 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio,
+      proposal_cancel_dest,
+      expedited_voting_period,
+      expedited_threshold,
+      expedited_min_deposit,
+      min_deposit_ratio,
     } = this;
 
     const res: GovParamsV1.Amino = {
@@ -104,6 +145,16 @@ export class GovParamsV1 extends JSONSerializable<
         ? burn_proposal_deposit_prevote
         : undefined,
       burn_vote_veto: burn_vote_veto ? burn_vote_veto : undefined,
+      proposal_cancel_ratio: proposal_cancel_ratio.toFixed() || undefined,
+      proposal_cancel_dest: proposal_cancel_dest || undefined,
+      expedited_voting_period: expedited_voting_period
+        ? expedited_voting_period.toAmino()
+        : undefined,
+      expedited_threshold: expedited_threshold.toFixed() || undefined,
+      expedited_min_deposit: expedited_min_deposit.toArray().length
+        ? expedited_min_deposit.toAmino()
+        : undefined,
+      min_deposit_ratio: min_deposit_ratio.toFixed() || undefined,
     };
 
     return res;
@@ -121,6 +172,12 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio,
+      proposal_cancel_dest,
+      expedited_voting_period,
+      expedited_threshold,
+      expedited_min_deposit,
+      min_deposit_ratio,
     } = data;
     return new GovParamsV1(
       Coins.fromData(min_deposit),
@@ -132,7 +189,15 @@ export class GovParamsV1 extends JSONSerializable<
       min_initial_deposit_ratio,
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
-      burn_vote_veto
+      burn_vote_veto,
+      proposal_cancel_ratio ?? '',
+      proposal_cancel_dest ?? '',
+      expedited_voting_period
+        ? Duration.fromData(expedited_voting_period)
+        : undefined,
+      expedited_threshold ?? '',
+      expedited_min_deposit ? Coins.fromData(expedited_min_deposit) : [],
+      min_deposit_ratio ?? ''
     );
   }
 
@@ -148,6 +213,12 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio,
+      proposal_cancel_dest,
+      expedited_voting_period,
+      expedited_threshold,
+      expedited_min_deposit,
+      min_deposit_ratio,
     } = this;
 
     const res: GovParamsV1.Data = {
@@ -164,6 +235,16 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio: proposal_cancel_ratio.toFixed() || undefined,
+      proposal_cancel_dest: proposal_cancel_dest || undefined,
+      expedited_voting_period: expedited_voting_period
+        ? expedited_voting_period.toData()
+        : undefined,
+      expedited_threshold: expedited_threshold.toFixed() || undefined,
+      expedited_min_deposit: expedited_min_deposit.toArray().length
+        ? expedited_min_deposit.toData()
+        : undefined,
+      min_deposit_ratio: min_deposit_ratio.toFixed() || undefined,
     };
 
     return res;
@@ -182,7 +263,17 @@ export class GovParamsV1 extends JSONSerializable<
       proto.minInitialDepositRatio,
       proto.burnVoteQuorum,
       proto.burnProposalDepositPrevote,
-      proto.burnVoteVeto
+      proto.burnVoteVeto,
+      proto.proposalCancelRatio ?? '',
+      proto.proposalCancelDest ?? '',
+      proto.expeditedVotingPeriod
+        ? Duration.fromProto(proto.expeditedVotingPeriod)
+        : undefined,
+      proto.expeditedThreshold ?? '',
+      proto.expeditedMinDeposit
+        ? Coins.fromProto(proto.expeditedMinDeposit)
+        : [],
+      proto.minDepositRatio ?? ''
     );
   }
 
@@ -198,6 +289,12 @@ export class GovParamsV1 extends JSONSerializable<
       burn_vote_quorum,
       burn_proposal_deposit_prevote,
       burn_vote_veto,
+      proposal_cancel_ratio,
+      proposal_cancel_dest,
+      expedited_voting_period,
+      expedited_threshold,
+      expedited_min_deposit,
+      min_deposit_ratio,
     } = this;
     return GovParamsV1_pb.fromPartial({
       minDeposit: min_deposit.toProto(),
@@ -212,6 +309,14 @@ export class GovParamsV1 extends JSONSerializable<
       burnVoteQuorum: burn_vote_quorum,
       burnProposalDepositPrevote: burn_proposal_deposit_prevote,
       burnVoteVeto: burn_vote_veto,
+      proposalCancelRatio: proposal_cancel_ratio.toFixed(),
+      proposalCancelDest: proposal_cancel_dest,
+      expeditedVotingPeriod: expedited_voting_period
+        ? expedited_voting_period.toProto()
+        : undefined,
+      expeditedThreshold: expedited_threshold.toFixed(),
+      expeditedMinDeposit: expedited_min_deposit.toProto(),
+      minDepositRatio: min_deposit_ratio.toFixed(),
     });
   }
 }
@@ -228,6 +333,12 @@ export namespace GovParamsV1 {
     burn_vote_quorum: boolean | undefined;
     burn_proposal_deposit_prevote: boolean | undefined;
     burn_vote_veto: boolean | undefined;
+    proposal_cancel_ratio: string | undefined;
+    proposal_cancel_dest: AccAddress | undefined;
+    expedited_voting_period: string | undefined;
+    expedited_threshold: string | undefined;
+    expedited_min_deposit: Coins.Amino | undefined;
+    min_deposit_ratio: string | undefined;
   }
 
   export interface Data {
@@ -242,6 +353,12 @@ export namespace GovParamsV1 {
     burn_vote_quorum: boolean;
     burn_proposal_deposit_prevote: boolean;
     burn_vote_veto: boolean;
+    proposal_cancel_ratio?: string | undefined;
+    proposal_cancel_dest?: AccAddress | undefined;
+    expedited_voting_period?: object | undefined;
+    expedited_threshold?: string | undefined;
+    expedited_min_deposit?: Coins.Data | undefined;
+    min_deposit_ratio?: string | undefined;
   }
 
   export type Proto = GovParamsV1_pb;

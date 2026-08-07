@@ -56,7 +56,7 @@ export class MsgCreateContinuousFundV1 extends JSONSerializable<
       expiry,
     } = this;
     return {
-      type: 'protocolpool/MsgCreateContinuousFund',
+      type: 'cosmos-sdk/pp/MsgCreateContinuousFund',
       authority,
       recipient,
       percentage,
@@ -144,7 +144,7 @@ export class MsgCreateContinuousFundV1 extends JSONSerializable<
 
 export namespace MsgCreateContinuousFundV1 {
   export interface Amino {
-    type: 'protocolpool/MsgCreateContinuousFund';
+    type: 'cosmos-sdk/pp/MsgCreateContinuousFund' | 'protocolpool/MsgCreateContinuousFund';
     authority: AccAddress;
     recipient: AccAddress;
     percentage: string;

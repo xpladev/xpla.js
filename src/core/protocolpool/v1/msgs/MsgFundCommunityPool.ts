@@ -45,7 +45,7 @@ export class MsgFundCommunityPoolV1 extends JSONSerializable<
       amount,
     } = this;
     return {
-      type: 'protocolpool/MsgFundCommunityPool',
+      type: 'cosmos-sdk/pp/MsgFundCommunityPool',
       depositor,
       amount: amount.toAmino(),
     };
@@ -112,7 +112,7 @@ export class MsgFundCommunityPoolV1 extends JSONSerializable<
 
 export namespace MsgFundCommunityPoolV1 {
   export interface Amino {
-    type: 'protocolpool/MsgFundCommunityPool';
+    type: 'cosmos-sdk/pp/MsgFundCommunityPool' | 'protocolpool/MsgFundCommunityPool';
     depositor: AccAddress;
     amount: Coins.Amino;
   }

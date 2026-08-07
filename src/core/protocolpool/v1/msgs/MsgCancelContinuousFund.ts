@@ -39,7 +39,7 @@ export class MsgCancelContinuousFundV1 extends JSONSerializable<
       recipient,
     } = this;
     return {
-      type: 'protocolpool/MsgCancelContinuousFund',
+      type: 'cosmos-sdk/pp/MsgCancelContinuousFund',
       authority,
       recipient,
     };
@@ -106,7 +106,7 @@ export class MsgCancelContinuousFundV1 extends JSONSerializable<
 
 export namespace MsgCancelContinuousFundV1 {
   export interface Amino {
-    type: 'protocolpool/MsgCancelContinuousFund';
+    type: 'cosmos-sdk/pp/MsgCancelContinuousFund' | 'protocolpool/MsgCancelContinuousFund';
     authority: AccAddress;
     recipient: AccAddress;
   }

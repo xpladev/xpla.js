@@ -55,7 +55,7 @@ export class MsgSubmitEvidence extends JSONSerializable<
   public toData(_isClassic?: boolean): MsgSubmitEvidence.Data {
     const { submitter, evidence } = this;
     return {
-      '@type': '/cosmos.bank.v1beta1.MsgSubmitEvidence',
+      '@type': '/cosmos.evidence.v1beta1.MsgSubmitEvidence',
       submitter,
       evidence,
     };
@@ -78,7 +78,7 @@ export class MsgSubmitEvidence extends JSONSerializable<
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/cosmos.bank.v1beta1.MsgSubmitEvidence',
+      typeUrl: '/cosmos.evidence.v1beta1.MsgSubmitEvidence',
       value: MsgSubmitEvidence_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -93,7 +93,7 @@ export class MsgSubmitEvidence extends JSONSerializable<
 
 export namespace MsgSubmitEvidence {
   export interface Amino {
-    type: 'bank/MsgSubmitEvidence' | 'cosmos-sdk/MsgSubmitEvidence';
+    type: 'cosmos-sdk/MsgSubmitEvidence' | 'bank/MsgSubmitEvidence';
     value: {
       submitter: AccAddress;
       evidence: Any | undefined;
@@ -101,7 +101,9 @@ export namespace MsgSubmitEvidence {
   }
 
   export interface Data {
-    '@type': '/cosmos.bank.v1beta1.MsgSubmitEvidence';
+    '@type':
+      | '/cosmos.evidence.v1beta1.MsgSubmitEvidence'
+      | '/cosmos.bank.v1beta1.MsgSubmitEvidence';
     submitter: AccAddress;
     evidence: Any | undefined;
   }
