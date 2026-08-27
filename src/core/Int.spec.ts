@@ -1,4 +1,4 @@
-import { Int, int } from './numeric';
+import { Int, int, UINT256_MAX } from './numeric';
 
 describe('Int', () => {
   it('tagged literal syntax', () => {
@@ -20,6 +20,19 @@ describe('Int', () => {
     const i = new Int('9999999999999999999');
     const i2 = i.mul(10).add(5);
     expect(i2.toString()).toEqual(i.toString() + '5');
+  });
+
+  it('supports uint256 max value', () => {
+    const max = new Int(UINT256_MAX);
+    expect(max.toString()).toEqual(UINT256_MAX);
+    expect(max.toHex()).toEqual(
+      '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    );
+  });
+
+  it('parses hexadecimal strings', () => {
+    const i = new Int('0xff');
+    expect(i.toString()).toEqual('255');
   });
 
   it('arithmetic', () => {

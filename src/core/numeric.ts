@@ -1,7 +1,12 @@
 import Decimal from 'decimal.js';
 
 export const DEC_PRECISION = 18;
-Decimal.set({ precision: 64, rounding: 3 });
+/** Decimal digits required to represent uint256 max (2^256 - 1). */
+export const INT_PRECISION = 78;
+export const UINT256_MAX =
+  '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
+Decimal.set({ precision: INT_PRECISION, rounding: 3 });
 
 export interface Numeric<T> {
   add(other: any): T;
@@ -133,13 +138,11 @@ export class Dec extends Decimal implements Numeric<Dec> {
   }
 }
 
-const _Int = Decimal.clone();
-
 /**
- * Represents Integer values. Used mainly to store integer values of [[Coin]] and [[Coins]].
+ * Represents Integer values. Used mainly to store integer values of [[Coin]] and [[Coins]],
+ * and EVM uint256 values (up to 2^256 - 1).
  *
- * Note: Do not use to work with values greater than 9999999999999999999. This
- * implementation is based on the `decimal.js` library, and returns Int values for only
+ * This implementation is based on the `decimal.js` library, and returns Int values for only
  * [[Int.add]], [[Int.sub]], [[Int.mul]], [[Int.div]], and [[Int.mod]]. For other
  * methods inherited from `Decimal`, you will need to convert back to `Int` to remain
  * compatible for submitting information that requires `Int` format back to the
@@ -153,7 +156,7 @@ const _Int = Decimal.clone();
  * const decimal = int.pow(3);
  * const int2 = new Int(decimal);
  */
-export class Int extends _Int implements Numeric<Numeric.Output> {
+export class Int extends Decimal implements Numeric<Numeric.Output> {
   constructor(arg?: Numeric.Input) {
     let _arg = (arg ?? 0).toString();
     if (_arg.includes(',')) {
