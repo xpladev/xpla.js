@@ -46,7 +46,7 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
     return {
       type: isClassic
         ? 'vesting/MsgCreatePeriodicVestingAccount'
-        : 'cosmos-sdk/MsgCreatePeriodVestAccount',
+        : 'cosmos-sdk/MsgCreatePeriodicVestingAccount',
       value: {
         from_address,
         to_address,

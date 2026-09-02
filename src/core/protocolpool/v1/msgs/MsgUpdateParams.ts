@@ -30,7 +30,7 @@ export class MsgUpdateProtocolPoolParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateProtocolPoolParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'cosmos-sdk/pp/MsgUpdateParams',
+      type: 'protocolpool/MsgUpdateParams',
       authority,
       params: params ? params.toAmino() : undefined,
     };

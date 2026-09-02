@@ -56,7 +56,7 @@ export class MsgCreateContinuousFundV1 extends JSONSerializable<
       expiry,
     } = this;
     return {
-      type: 'cosmos-sdk/pp/MsgCreateContinuousFund',
+      type: 'protocolpool/MsgCreateContinuousFund',
       authority,
       recipient,
       percentage,

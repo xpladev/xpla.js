@@ -39,7 +39,7 @@ export class MsgCancelContinuousFundV1 extends JSONSerializable<
       recipient,
     } = this;
     return {
-      type: 'cosmos-sdk/pp/MsgCancelContinuousFund',
+      type: 'protocolpool/MsgCancelContinuousFund',
       authority,
       recipient,
     };
