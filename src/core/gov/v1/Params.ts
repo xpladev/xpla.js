@@ -342,12 +342,12 @@ export namespace GovParamsV1 {
     burn_vote_quorum: boolean | undefined;
     burn_proposal_deposit_prevote: boolean | undefined;
     burn_vote_veto: boolean | undefined;
-    proposal_cancel_ratio: string | undefined;
-    proposal_cancel_dest: AccAddress | undefined;
-    expedited_voting_period: string | undefined;
-    expedited_threshold: string | undefined;
-    expedited_min_deposit: Coins.Amino | undefined;
-    min_deposit_ratio: string | undefined;
+    proposal_cancel_ratio?: string | undefined;
+    proposal_cancel_dest?: AccAddress | undefined;
+    expedited_voting_period?: string | undefined;
+    expedited_threshold?: string | undefined;
+    expedited_min_deposit?: Coins.Amino | undefined;
+    min_deposit_ratio?: string | undefined;
   }
 
   export interface Data {

@@ -193,14 +193,6 @@ import {
   MsgUnregisterVolunteerValidatorV1B1,
   MsgBurnV1B1,
 } from './xpla';
-import {
-  ProtocolPoolMsgV1,
-  MsgFundCommunityPoolV1,
-  MsgCommunityPoolSpendV1,
-  MsgCreateContinuousFundV1,
-  MsgCancelContinuousFundV1,
-  MsgUpdateProtocolPoolParamsV1,
-} from './protocolpool';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
@@ -233,8 +225,7 @@ export type Msg =
   | EvidenceMsg
   | Erc20MsgV1
   | EvmMsgV1
-  | XplaMsgV1B1
-  | ProtocolPoolMsgV1;
+  | XplaMsgV1B1;
 
 export namespace Msg {
   export type Amino =
@@ -260,8 +251,7 @@ export namespace Msg {
     | EvidenceMsg.Amino
     | Erc20MsgV1.Amino
     | EvmMsgV1.Amino
-    | XplaMsgV1B1.Amino
-    | ProtocolPoolMsgV1.Amino;
+    | XplaMsgV1B1.Amino;
 
   export type Data =
     | AuthMsgV1B1.Data
@@ -293,8 +283,7 @@ export namespace Msg {
     | EvidenceMsg.Data
     | Erc20MsgV1.Data
     | EvmMsgV1.Data
-    | XplaMsgV1B1.Data
-    | ProtocolPoolMsgV1.Data;
+    | XplaMsgV1B1.Data;
 
   export type Proto =
     | AuthMsgV1B1.Proto
@@ -326,8 +315,7 @@ export namespace Msg {
     | EvidenceMsg.Proto
     | Erc20MsgV1.Proto
     | EvmMsgV1.Proto
-    | XplaMsgV1B1.Proto
-    | ProtocolPoolMsgV1.Proto;
+    | XplaMsgV1B1.Proto;
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
@@ -633,23 +621,6 @@ export namespace Msg {
         return MsgRegisterVolunteerValidatorV1B1.fromAmino(data);
       case 'xpladev/MsgUnregisterVolunteerValidator':
         return MsgUnregisterVolunteerValidatorV1B1.fromAmino(data);
-
-      // protocolpool
-      case 'cosmos-sdk/pp/MsgFundCommunityPool':
-      case 'protocolpool/MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.fromAmino(data);
-      case 'cosmos-sdk/pp/MsgCommunityPoolSpend':
-      case 'protocolpool/MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.fromAmino(data);
-      case 'cosmos-sdk/pp/MsgCreateContinuousFund':
-      case 'protocolpool/MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.fromAmino(data);
-      case 'cosmos-sdk/pp/MsgCancelContinuousFund':
-      case 'protocolpool/MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.fromAmino(data);
-      case 'cosmos-sdk/pp/MsgUpdateParams':
-      case 'protocolpool/MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.fromAmino(data);
 
       default:
         throw Error(`not supported msg ${data['type']}`);
@@ -978,18 +949,6 @@ export namespace Msg {
       case '/xpla.burn.v1beta1.MsgBurn':
         return MsgBurnV1B1.fromData(data);
 
-      // protocolpool
-      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.fromData(data);
-
       default:
         throw Error(`not supported msg ${data['@type']}`);
     }
@@ -1317,18 +1276,6 @@ export namespace Msg {
         return MsgUnregisterVolunteerValidatorV1B1.unpackAny(proto);
       case '/xpla.burn.v1beta1.MsgBurn':
         return MsgBurnV1B1.unpackAny(proto);
-
-      // protocolpool
-      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.unpackAny(proto);
 
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);
