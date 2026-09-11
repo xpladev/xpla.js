@@ -29,7 +29,7 @@ export * from './consensus';
 export * from './distribution';
 
 // Evidence
-export * from './evidence/msgs';
+export * from './evidence';
 
 // ERC20
 export * from './erc20';
