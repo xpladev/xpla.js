@@ -1,3 +1,4 @@
+import { Duration } from '../../Duration';
 import { Timestamp } from '../../Timestamp';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
@@ -15,6 +16,7 @@ export class PeriodicAllowance extends JSONSerializable<
   PeriodicAllowance.Data,
   PeriodicAllowance.Proto
 > {
+  public period: Duration;
   public period_reset: Timestamp | undefined;
 
   public period_spend_limit: Coins;
@@ -22,19 +24,21 @@ export class PeriodicAllowance extends JSONSerializable<
 
   /**
    * @param basic basic allowance given per period
-   * @param period the time duration in which period_spend_limit coins can be spent before that allowance is reset
+   * @param period duration (numeric inputs are seconds); the time duration in which period_spend_limit coins can be spent before that allowance is reset
    * @param period_spend_limit the maximum number of coins that can be spent in the period
    * @param period_can_spend the number of coins left to be spent before the period_reset time
    * @param period_reset the time at which this period resets and a new one begins
    */
   constructor(
     public basic: BasicAllowance,
-    public period: number,
+    period: Duration | number,
     period_spend_limit: Coins.Input,
     period_can_spend: Coins.Input,
     period_reset: Timestamp.Input | undefined
   ) {
     super();
+    this.period =
+      period instanceof Duration ? period : Duration.fromString(`${period}s`);
     this.period_reset = Timestamp.from(period_reset);
 
     this.period_spend_limit = new Coins(period_spend_limit);
@@ -56,8 +60,11 @@ export class PeriodicAllowance extends JSONSerializable<
     } = data;
 
     return new PeriodicAllowance(
-      BasicAllowance.fromAmino(basic, isClassic),
-      Number.parseInt(period),
+      BasicAllowance.fromAmino(
+        { type: 'cosmos-sdk/BasicAllowance', value: basic },
+        isClassic
+      ),
+      Duration.fromAmino(period),
       Coins.fromAmino(period_spend_limit),
       Coins.fromAmino(period_can_spend),
       Timestamp.fromData(period_reset)
@@ -77,8 +84,8 @@ export class PeriodicAllowance extends JSONSerializable<
         ? 'feegrant/PeriodicAllowance'
         : 'cosmos-sdk/PeriodicAllowance',
       value: {
-        basic: basic.toAmino(isClassic),
-        period: period.toString(),
+        basic: basic.toAmino(isClassic).value,
+        period: period.toAmino(),
         period_spend_limit: period_spend_limit.toAmino(),
         period_can_spend: period_can_spend.toAmino(),
         period_reset: period_reset?.toAmino(),
@@ -98,8 +105,11 @@ export class PeriodicAllowance extends JSONSerializable<
       period_reset,
     } = proto;
     return new PeriodicAllowance(
-      BasicAllowance.fromData(basic),
-      Number.parseInt(period),
+      BasicAllowance.fromData({
+        '@type': '/cosmos.feegrant.v1beta1.BasicAllowance',
+        ...basic,
+      }),
+      Duration.fromString(period),
       Coins.fromData(period_spend_limit),
       Coins.fromData(period_can_spend),
       Timestamp.fromData(period_reset)
@@ -116,7 +126,10 @@ export class PeriodicAllowance extends JSONSerializable<
     } = this;
     return {
       '@type': '/cosmos.feegrant.v1beta1.PeriodicAllowance',
-      basic: basic.toData(),
+      basic: {
+        spend_limit: basic.toData().spend_limit,
+        expiration: basic.toData().expiration,
+      },
       period: period.toString(),
       period_spend_limit: period_spend_limit.toData(),
       period_can_spend: period_can_spend.toData(),
@@ -130,7 +143,7 @@ export class PeriodicAllowance extends JSONSerializable<
   ): PeriodicAllowance {
     return new PeriodicAllowance(
       BasicAllowance.fromProto(proto.basic as BasicAllowance.Proto),
-      proto.period?.seconds.toNumber() as number,
+      proto.period ? Duration.fromProto(proto.period) : new Duration(0),
       Coins.fromProto(proto.periodSpendLimit),
       Coins.fromProto(proto.periodCanSpend),
       Timestamp.fromProto(proto.periodReset)
@@ -148,7 +161,7 @@ export class PeriodicAllowance extends JSONSerializable<
 
     return PeriodicAllowance_pb.fromPartial({
       basic: basic.toProto(),
-      period: { seconds: period },
+      period: period.toProto(),
       periodCanSpend: period_can_spend.toProto(),
       periodReset: period_reset?.toProto(),
       periodSpendLimit: period_spend_limit.toProto(),
@@ -174,7 +187,7 @@ export namespace PeriodicAllowance {
   export interface Amino {
     type: 'feegrant/PeriodicAllowance' | 'cosmos-sdk/PeriodicAllowance';
     value: {
-      basic: BasicAllowance.Amino;
+      basic: BasicAllowance.Amino['value'];
       period: string;
       period_spend_limit: Coins.Amino;
       period_can_spend: Coins.Amino;
@@ -184,7 +197,7 @@ export namespace PeriodicAllowance {
 
   export interface Data {
     '@type': '/cosmos.feegrant.v1beta1.PeriodicAllowance';
-    basic: BasicAllowance.Data;
+    basic: Omit<BasicAllowance.Data, '@type'>;
     period: string;
     period_spend_limit: Coins.Data;
     period_can_spend: Coins.Data;

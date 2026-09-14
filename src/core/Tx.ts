@@ -1,3 +1,8 @@
+import {
+  ExtensionOptionData,
+  extensionOptionFromData,
+  extensionOptionToData,
+} from './ExtensionOptions';
 import { Timestamp } from './Timestamp';
 import {
   PublicKey,
@@ -188,8 +193,8 @@ export class TxBody {
       Number.parseInt(data.timeout_height),
       data.unordered,
       data.timeout_timestamp ? Timestamp.fromData(data.timeout_timestamp) : undefined,
-      data.extension_options,
-      data.non_critical_extension_options,
+      data.extension_options?.map(extensionOptionFromData),
+      data.non_critical_extension_options?.map(extensionOptionFromData),
     );
   }
 
@@ -200,8 +205,10 @@ export class TxBody {
       timeout_height: (this.timeout_height ?? 0).toFixed(),
       unordered: this.unordered ?? false,
       timeout_timestamp: this.timeout_timestamp?.toData(),
-      extension_options: this.extension_options,
-      non_critical_extension_options: this.non_critical_extension_options,
+      extension_options: this.extension_options?.map(extensionOptionToData),
+      non_critical_extension_options: this.non_critical_extension_options?.map(
+        extensionOptionToData
+      ),
     };
   }
 
@@ -241,8 +248,8 @@ export namespace TxBody {
     timeout_height: string;
     unordered?: boolean;
     timeout_timestamp?: string;
-    extension_options?: any[];
-    non_critical_extension_options?: any[];
+    extension_options?: ExtensionOptionData[];
+    non_critical_extension_options?: ExtensionOptionData[];
   }
   export type Proto = TxBody_pb;
 }

@@ -41,11 +41,35 @@ accepts the original `{ seconds, nanos }` object in `fromData()`, but `toData()`
 now emits a string. Invalid dates, fractional/out-of-range seconds and nanos, and
 RFC3339 fractions exceeding nine digits are rejected.
 
-Integer IBC packet timeouts, vesting timestamps and Duration values keep their
-existing types. RFC3339 parsing and formatting are implemented in xpla.js;
+Integer IBC packet timeouts and vesting timestamps keep their existing types. RFC3339 parsing and formatting are implemented in xpla.js;
 no custom Timestamp JSON helper is required from xpla.proto. SDK `toData()`
 continues to emit RFC3339 strings even though the underlying proto's `toJSON()`
 uses raw Timestamp objects.
+
+## Transaction and allowance serialization
+
+Amino sign documents include `unordered` when true and `timeout_timestamp` when
+present, preserving nanoseconds with the core's RFC3339Nano format. Amino signing
+rejects protobuf extension options, matching the core; use direct signing for
+transactions with extensions.
+
+`PeriodicAllowance.period` is now a `Duration`. Constructor numbers still mean
+seconds (including fractional seconds); property assignments should use
+`Duration.fromString('60s')`. Read `.period.seconds` and `.period.nanos` for the
+components, or `.period.toString()` for the duration. REST data uses duration
+strings such as `1.500000001s`; Amino uses total nanoseconds (`1500000001`). The
+nested `basic` object has no `@type` or Amino `type`/`value` wrapper.
+
+`TxBody` extension properties still contain protobuf `Any` objects. `fromData()`
+and `toData()` convert known Ethereum, Web3 and DynamicFee options to/from LCD
+JSON with `@type` and snake_case fields, including the legacy Ethermint types.
+Current DynamicFee JSON prices are decimals; legacy Ethermint prices are integers.
+
+Unknown types, or known types with additional wire fields, are preserved as
+`{ type_url, value }`, where `value` is base64. This raw representation supports
+SDK JSON round trips; it is not expanded LCD JSON. Unsupported expanded `@type`
+objects throw instead of silently losing their contents. Supply raw Any bytes
+for types without a supported JSON codec.
 
 ## License
 

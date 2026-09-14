@@ -40,11 +40,19 @@ export class SignDoc extends JSONSerializable<
   }
 
   public toAmino(isClassic?: boolean): SignDoc.Amino {
+    if (
+      this.tx_body.extension_options?.length ||
+      this.tx_body.non_critical_extension_options?.length
+    ) {
+      throw new Error(
+        'LEGACY_AMINO_JSON does not support protobuf extension options'
+      );
+    }
     const {
       chain_id,
       account_number,
       sequence,
-      tx_body: { memo, messages, timeout_height },
+      tx_body: { memo, messages, timeout_height, unordered, timeout_timestamp },
       auth_info: { fee, tip },
     } = this;
 
@@ -56,6 +64,8 @@ export class SignDoc extends JSONSerializable<
         timeout_height && timeout_height !== 0
           ? timeout_height.toString()
           : undefined,
+      unordered: unordered || undefined,
+      timeout_timestamp: timeout_timestamp?.toAmino(),
       fee: fee ? fee.toAmino() : undefined,
       tip: tip ? tip.toAmino() : undefined,
       msgs: messages.map(m => m.toAmino(isClassic)),
@@ -98,6 +108,8 @@ export namespace SignDoc {
     account_number: string;
     sequence: string;
     timeout_height?: string;
+    unordered?: boolean;
+    timeout_timestamp?: string;
     fee: Fee.Amino | undefined;
     tip: Tip.Amino | undefined;
     msgs: Msg.Amino[];
