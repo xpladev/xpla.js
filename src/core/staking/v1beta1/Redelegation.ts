@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Dec, Int } from '../../numeric';
 import { AccAddress, ValAddress } from '../../bech32';
@@ -167,6 +168,8 @@ export namespace RedelegationV1B1 {
     Entry.Data,
     Entry.Proto
   > {
+    public completion_time: Timestamp | undefined;
+
     /**
      *
      * @param initial_balance balance of delegation prior to initiating redelegation
@@ -179,9 +182,10 @@ export namespace RedelegationV1B1 {
       public balance: Int,
       public shares_dst: Dec,
       public creation_height: number,
-      public completion_time: Date
+      completion_time: Timestamp.Input | undefined
     ) {
       super();
+      this.completion_time = Timestamp.from(completion_time);
     }
 
     public toAmino(): Entry.Amino {
@@ -190,7 +194,7 @@ export namespace RedelegationV1B1 {
           initial_balance: this.initial_balance.toString(),
           shares_dst: this.shares_dst.toString(),
           creation_height: this.creation_height,
-          completion_time: this.completion_time.toISOString(),
+          completion_time: this.completion_time?.toAmino(),
         },
         balance: this.balance.toString(),
       };
@@ -211,7 +215,7 @@ export namespace RedelegationV1B1 {
         new Int(balance),
         new Dec(shares_dst),
         creation_height,
-        new Date(completion_time)
+        Timestamp.fromData(completion_time)
       );
     }
 
@@ -221,7 +225,7 @@ export namespace RedelegationV1B1 {
           initial_balance: this.initial_balance.toString(),
           shares_dst: this.shares_dst.toString(),
           creation_height: this.creation_height,
-          completion_time: this.completion_time.toISOString(),
+          completion_time: this.completion_time?.toData(),
         },
         balance: this.balance.toString(),
       };
@@ -242,7 +246,7 @@ export namespace RedelegationV1B1 {
         new Int(balance),
         new Dec(shares_dst),
         creation_height,
-        new Date(completion_time)
+        Timestamp.fromData(completion_time)
       );
     }
 
@@ -258,7 +262,7 @@ export namespace RedelegationV1B1 {
       return RedelegationEntryResponseV1B1_pb.fromPartial({
         balance: balance.toString(),
         redelegationEntry: RedelegationEntryV1B1_pb.fromPartial({
-          completionTime: completion_time,
+          completionTime: completion_time?.toProto(),
           creationHeight: creation_height,
           initialBalance: initial_balance.toString(),
           sharesDst: shares_dst.toString(),
@@ -275,7 +279,7 @@ export namespace RedelegationV1B1 {
         new Int(proto.balance),
         new Dec(redelegationEntryProto.sharesDst),
         redelegationEntryProto.creationHeight.toNumber(),
-        redelegationEntryProto.completionTime as Date
+        Timestamp.fromProto(redelegationEntryProto.completionTime)
       );
     }
   }
@@ -284,7 +288,7 @@ export namespace RedelegationV1B1 {
     export interface Amino {
       redelegation_entry: {
         creation_height: number;
-        completion_time: string;
+        completion_time: string | undefined;
         initial_balance: string;
         shares_dst: string;
       };
@@ -294,7 +298,7 @@ export namespace RedelegationV1B1 {
     export interface Data {
       redelegation_entry: {
         creation_height: number;
-        completion_time: string;
+        completion_time: string | undefined;
         initial_balance: string;
         shares_dst: string;
       };

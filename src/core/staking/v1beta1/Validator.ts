@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Dec, Int, Numeric } from '../../numeric';
 import { ValAddress } from '../../bech32';
@@ -22,6 +23,8 @@ export class ValidatorV1B1 extends JSONSerializable<
   ValidatorV1B1.Data,
   ValidatorV1B1.Proto
 > {
+  public unbonding_time: Timestamp | undefined;
+
   public tokens: Int;
   public delegator_shares: Dec;
   public min_self_delegation: Int;
@@ -49,11 +52,12 @@ export class ValidatorV1B1 extends JSONSerializable<
     delegator_shares: Numeric.Input,
     public description: ValidatorV1B1.Description,
     public unbonding_height: number,
-    public unbonding_time: Date,
+    unbonding_time: Timestamp.Input | undefined,
     public commission: ValidatorV1B1.Commission,
     min_self_delegation: Numeric.Input,
   ) {
     super();
+    this.unbonding_time = Timestamp.from(unbonding_time);
     this.tokens = new Int(tokens);
     this.delegator_shares = new Dec(delegator_shares);
     this.min_self_delegation = new Int(min_self_delegation);
@@ -69,7 +73,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       delegator_shares: this.delegator_shares.toFixed(),
       description: this.description,
       unbonding_height: this.unbonding_height.toFixed(),
-      unbonding_time: this.unbonding_time.toISOString(),
+      unbonding_time: this.unbonding_time?.toAmino(),
       commission: this.commission.toAmino(),
       min_self_delegation: this.min_self_delegation.toFixed(),
     };
@@ -85,7 +89,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       data.delegator_shares,
       ValidatorV1B1.Description.fromAmino(data.description),
       Number.parseInt(data.unbonding_height),
-      new Date(data.unbonding_time),
+      Timestamp.fromData(data.unbonding_time),
       ValidatorV1B1.Commission.fromAmino(data.commission),
       data.min_self_delegation,
     );
@@ -101,7 +105,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       delegator_shares: this.delegator_shares.toFixed(),
       description: this.description,
       unbonding_height: this.unbonding_height.toFixed(),
-      unbonding_time: this.unbonding_time.toISOString(),
+      unbonding_time: this.unbonding_time?.toData(),
       commission: this.commission.toData(),
       min_self_delegation: this.min_self_delegation.toFixed(),
     };
@@ -117,7 +121,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       data.delegator_shares,
       ValidatorV1B1.Description.fromData(data.description),
       Number.parseInt(data.unbonding_height),
-      new Date(data.unbonding_time),
+      Timestamp.fromData(data.unbonding_time),
       ValidatorV1B1.Commission.fromData(data.commission),
       data.min_self_delegation,
     );
@@ -149,7 +153,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       status,
       tokens: tokens.toFixed(0),
       unbondingHeight: unbonding_height,
-      unbondingTime: unbonding_time,
+      unbondingTime: unbonding_time?.toProto(),
     });
   }
 
@@ -166,7 +170,7 @@ export class ValidatorV1B1 extends JSONSerializable<
         data.description as ValidatorV1B1.Description.Proto
       ),
       data.unbondingHeight.toNumber(),
-      data.unbondingTime as Date,
+      Timestamp.fromProto(data.unbondingTime),
       ValidatorV1B1.Commission.fromProto(
         data.commission as ValidatorV1B1.Commission.Proto
       ),
@@ -187,7 +191,7 @@ export namespace ValidatorV1B1 {
     delegator_shares: string;
     description: Description.Amino;
     unbonding_height: string;
-    unbonding_time: string;
+    unbonding_time: string | undefined;
     commission: Commission.Amino;
     min_self_delegation: string;
   }
@@ -201,7 +205,7 @@ export namespace ValidatorV1B1 {
     delegator_shares: string;
     description: Description.Data;
     unbonding_height: string;
-    unbonding_time: string;
+    unbonding_time: string | undefined;
     commission: Commission.Data;
     min_self_delegation: string;
   }
@@ -408,42 +412,45 @@ export namespace ValidatorV1B1 {
     Commission.Data,
     Commission.Proto
   > {
+    public update_time: Timestamp | undefined;
+
     /**
      * @param commission_rates commission rates
      * @param update_time time at which commission was last updated
      */
     constructor(
       public commission_rates: CommissionRates,
-      public update_time: Date
+      update_time: Timestamp.Input | undefined
     ) {
       super();
+      this.update_time = Timestamp.from(update_time);
     }
 
     public toAmino(): Commission.Amino {
       return {
         commission_rates: this.commission_rates.toAmino(),
-        update_time: this.update_time.toISOString(),
+        update_time: this.update_time?.toAmino(),
       };
     }
 
     public static fromAmino(data: Commission.Amino): Commission {
       return new Commission(
         CommissionRates.fromAmino(data.commission_rates),
-        new Date(data.update_time)
+        Timestamp.fromData(data.update_time)
       );
     }
 
     public toData(): Commission.Data {
       return {
         commission_rates: this.commission_rates.toData(),
-        update_time: this.update_time.toISOString(),
+        update_time: this.update_time?.toData(),
       };
     }
 
     public static fromData(data: Commission.Data): Commission {
       return new Commission(
         CommissionRates.fromData(data.commission_rates),
-        new Date(data.update_time)
+        Timestamp.fromData(data.update_time)
       );
     }
 
@@ -451,7 +458,7 @@ export namespace ValidatorV1B1 {
       const { commission_rates, update_time } = this;
       return CommissionV1B1_pb.fromPartial({
         commissionRates: commission_rates.toProto(),
-        updateTime: update_time,
+        updateTime: update_time?.toProto(),
       });
     }
 
@@ -460,7 +467,7 @@ export namespace ValidatorV1B1 {
         CommissionRates.fromProto(
           proto.commissionRates as CommissionRates.Proto
         ),
-        proto.updateTime as Date
+        Timestamp.fromProto(proto.updateTime)
       );
     }
   }
@@ -468,12 +475,12 @@ export namespace ValidatorV1B1 {
   export namespace Commission {
     export interface Amino {
       commission_rates: CommissionRates.Amino;
-      update_time: string;
+      update_time: string | undefined;
     }
 
     export interface Data {
       commission_rates: CommissionRates.Data;
-      update_time: string;
+      update_time: string | undefined;
     }
 
     export type Proto = CommissionV1B1_pb;

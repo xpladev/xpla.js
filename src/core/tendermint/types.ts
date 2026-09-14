@@ -1,3 +1,4 @@
+import { Timestamp } from '../Timestamp';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../util/json';
 import { Convert } from '../../util/convert';
@@ -23,6 +24,8 @@ import Long from 'long';
 
 /** Header defines the structure of a Tendermint block header. */
 export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
+  public time: Timestamp | undefined;
+
   /**
    * @param total
    * @param hash
@@ -31,7 +34,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
     public version: Consensus | undefined,
     public chainId: string,
     public height: string,
-    public time: Date | undefined,
+    time: Timestamp.Input | undefined,
     public lastBlockId: BlockID | undefined,
     public lastCommitHash: string,
     public dataHash: string,
@@ -44,6 +47,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
     public proposerAddress: string
   ) {
     super();
+    this.time = Timestamp.from(time);
   }
 
   public static fromAmino(_: any): Header {
@@ -75,7 +79,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
       version ? Consensus.fromData(version) : undefined,
       chainId,
       height,
-      time ? new Date(time) : undefined,
+      time ? Timestamp.fromData(time) : undefined,
       lastBlockId ? BlockID.fromData(lastBlockId) : undefined,
       lastCommitHash,
       dataHash,
@@ -110,7 +114,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
       version: version?.toData(),
       chain_id: chainId,
       height,
-      time: time ? time.toISOString().replace(/\.000Z$/, 'Z') : undefined,
+      time: time?.toData(),
       last_block_id: lastBlockId ? lastBlockId.toData() : undefined,
       last_commit_hash: lastCommitHash,
       data_hash: dataHash,
@@ -146,7 +150,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
       version ? Consensus.fromProto(version) : undefined,
       chainId,
       height.toString(),
-      time,
+      Timestamp.fromProto(time),
       lastBlockId ? BlockID.fromProto(lastBlockId) : undefined,
       Convert.toBase64(lastCommitHash),
       Convert.toBase64(dataHash),
@@ -181,7 +185,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
       version: version?.toProto(),
       chainId,
       height: Long.fromString(height),
-      time,
+      time: time?.toProto(),
       lastBlockId: lastBlockId?.toProto(),
       lastCommitHash: Convert.fromBase64(lastCommitHash),
       dataHash: Convert.fromBase64(dataHash),
@@ -491,6 +495,8 @@ export class CommitSig extends JSONSerializable<
   CommitSig.Data,
   CommitSig.Proto
 > {
+  public timestamp: Timestamp | undefined;
+
   /**
    * @param blockIdFlag
    * @param validatorAddress
@@ -500,10 +506,11 @@ export class CommitSig extends JSONSerializable<
   constructor(
     public blockIdFlag: BlockIDFlag,
     public validatorAddress: string | undefined,
-    public timestamp: Date | undefined,
+    timestamp: Timestamp.Input | undefined,
     public signature: string | undefined
   ) {
     super();
+    this.timestamp = Timestamp.from(timestamp);
   }
 
   public static fromAmino(_: any): CommitSig {
@@ -519,7 +526,7 @@ export class CommitSig extends JSONSerializable<
     return new CommitSig(
       blockIDFlagFromJSON(block_id_flag),
       validator_address,
-      timestamp ? new Date(timestamp) : undefined,
+      timestamp ? Timestamp.fromData(timestamp) : undefined,
       signature
     );
   }
@@ -529,9 +536,7 @@ export class CommitSig extends JSONSerializable<
     const res: CommitSig.Data = {
       block_id_flag: blockIDFlagToJSON(blockIdFlag),
       validator_address: validatorAddress || '',
-      timestamp: timestamp
-        ? timestamp.toISOString().replace(/\.000Z$/, 'Z')
-        : undefined,
+      timestamp: timestamp?.toData(),
       signature: signature || '',
     };
     return res;
@@ -542,7 +547,7 @@ export class CommitSig extends JSONSerializable<
     return new CommitSig(
       blockIdFlag,
       Convert.toBase64(validatorAddress),
-      timestamp,
+      Timestamp.fromProto(timestamp),
       Convert.toBase64(signature),
     );
   }
@@ -554,7 +559,7 @@ export class CommitSig extends JSONSerializable<
       validatorAddress: validatorAddress
         ? Convert.fromBase64(validatorAddress)
         : undefined,
-      timestamp,
+      timestamp: timestamp?.toProto(),
       signature: signature
         ? Convert.fromBase64(signature)
         : undefined,

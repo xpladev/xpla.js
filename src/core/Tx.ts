@@ -1,3 +1,4 @@
+import { Timestamp } from './Timestamp';
 import {
   PublicKey,
   SimplePublicKey,
@@ -166,15 +167,19 @@ export namespace Tx {
 }
 
 export class TxBody {
+  public timeout_timestamp: Timestamp | undefined;
+
   constructor(
     public messages: Msg[],
     public memo?: string,
     public timeout_height?: number,
     public unordered?: boolean,
-    public timeout_timestamp?: Date,
+    timeout_timestamp?: Timestamp.Input,
     public extension_options?: Any[],
     public non_critical_extension_options?: Any[],
-  ) {}
+  ) {
+    this.timeout_timestamp = Timestamp.from(timeout_timestamp);
+  }
 
   public static fromData(data: TxBody.Data, isClassic?: boolean): TxBody {
     return new TxBody(
@@ -182,7 +187,7 @@ export class TxBody {
       data.memo,
       Number.parseInt(data.timeout_height),
       data.unordered,
-      data.timeout_timestamp ? new Date(data.timeout_timestamp) : undefined,
+      data.timeout_timestamp ? Timestamp.fromData(data.timeout_timestamp) : undefined,
       data.extension_options,
       data.non_critical_extension_options,
     );
@@ -194,7 +199,7 @@ export class TxBody {
       messages: this.messages.map(m => m.toData(isClassic)),
       timeout_height: (this.timeout_height ?? 0).toFixed(),
       unordered: this.unordered ?? false,
-      timeout_timestamp: this.timeout_timestamp?.toISOString(),
+      timeout_timestamp: this.timeout_timestamp?.toData(),
       extension_options: this.extension_options,
       non_critical_extension_options: this.non_critical_extension_options,
     };
@@ -206,7 +211,7 @@ export class TxBody {
       proto.memo,
       proto.timeoutHeight.toNumber(),
       proto.unordered,
-      proto.timeoutTimestamp,
+      Timestamp.fromProto(proto.timeoutTimestamp),
       proto.extensionOptions,
       proto.nonCriticalExtensionOptions,
     );
@@ -218,7 +223,7 @@ export class TxBody {
       messages: this.messages.map(m => m.packAny(isClassic)),
       timeoutHeight: this.timeout_height ?? 0,
       unordered: this.unordered ?? false,
-      timeoutTimestamp: this.timeout_timestamp,
+      timeoutTimestamp: this.timeout_timestamp?.toProto(),
       extensionOptions: this.extension_options,
       nonCriticalExtensionOptions: this.non_critical_extension_options,
     });

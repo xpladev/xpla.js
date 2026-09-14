@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
@@ -14,6 +15,8 @@ export class PeriodicAllowance extends JSONSerializable<
   PeriodicAllowance.Data,
   PeriodicAllowance.Proto
 > {
+  public period_reset: Timestamp | undefined;
+
   public period_spend_limit: Coins;
   public period_can_spend: Coins;
 
@@ -29,9 +32,10 @@ export class PeriodicAllowance extends JSONSerializable<
     public period: number,
     period_spend_limit: Coins.Input,
     period_can_spend: Coins.Input,
-    public period_reset: Date
+    period_reset: Timestamp.Input | undefined
   ) {
     super();
+    this.period_reset = Timestamp.from(period_reset);
 
     this.period_spend_limit = new Coins(period_spend_limit);
     this.period_can_spend = new Coins(period_can_spend);
@@ -56,7 +60,7 @@ export class PeriodicAllowance extends JSONSerializable<
       Number.parseInt(period),
       Coins.fromAmino(period_spend_limit),
       Coins.fromAmino(period_can_spend),
-      new Date(period_reset)
+      Timestamp.fromData(period_reset)
     );
   }
 
@@ -77,7 +81,7 @@ export class PeriodicAllowance extends JSONSerializable<
         period: period.toString(),
         period_spend_limit: period_spend_limit.toAmino(),
         period_can_spend: period_can_spend.toAmino(),
-        period_reset: period_reset.toISOString().replace(/\.000Z$/, 'Z'),
+        period_reset: period_reset?.toAmino(),
       },
     };
   }
@@ -98,7 +102,7 @@ export class PeriodicAllowance extends JSONSerializable<
       Number.parseInt(period),
       Coins.fromData(period_spend_limit),
       Coins.fromData(period_can_spend),
-      new Date(period_reset)
+      Timestamp.fromData(period_reset)
     );
   }
 
@@ -116,7 +120,7 @@ export class PeriodicAllowance extends JSONSerializable<
       period: period.toString(),
       period_spend_limit: period_spend_limit.toData(),
       period_can_spend: period_can_spend.toData(),
-      period_reset: period_reset.toISOString().replace(/\.000Z$/, 'Z'),
+      period_reset: period_reset?.toData(),
     };
   }
 
@@ -129,7 +133,7 @@ export class PeriodicAllowance extends JSONSerializable<
       proto.period?.seconds.toNumber() as number,
       Coins.fromProto(proto.periodSpendLimit),
       Coins.fromProto(proto.periodCanSpend),
-      proto.periodReset as Date
+      Timestamp.fromProto(proto.periodReset)
     );
   }
 
@@ -143,10 +147,10 @@ export class PeriodicAllowance extends JSONSerializable<
     } = this;
 
     return PeriodicAllowance_pb.fromPartial({
-      basic,
+      basic: basic.toProto(),
       period: { seconds: period },
       periodCanSpend: period_can_spend.toProto(),
-      periodReset: period_reset,
+      periodReset: period_reset?.toProto(),
       periodSpendLimit: period_spend_limit.toProto(),
     });
   }
@@ -174,7 +178,7 @@ export namespace PeriodicAllowance {
       period: string;
       period_spend_limit: Coins.Amino;
       period_can_spend: Coins.Amino;
-      period_reset: string;
+      period_reset: string | undefined;
     };
   }
 
@@ -184,7 +188,7 @@ export namespace PeriodicAllowance {
     period: string;
     period_spend_limit: Coins.Data;
     period_can_spend: Coins.Data;
-    period_reset: string;
+    period_reset: string | undefined;
   }
 
   export type Proto = PeriodicAllowance_pb;

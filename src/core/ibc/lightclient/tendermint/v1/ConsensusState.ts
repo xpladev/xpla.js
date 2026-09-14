@@ -1,3 +1,4 @@
+import { Timestamp } from '../../../../Timestamp';
 import { JSONSerializable } from '../../../../../util/json';
 import { Convert } from '../../../../../util/convert';
 import { MerkleRootV1 } from '../../../core/commitment';
@@ -9,17 +10,20 @@ import { ConsensusState as ConsensusStateV1_pb } from '@xpla/xpla.proto/ibc/ligh
  * and a possible frozen height.
  */
 export class ConsensusStateV1 extends JSONSerializable<any, ConsensusStateV1.Data, ConsensusStateV1.Proto> {
+  public timestamp: Timestamp | undefined;
+
   /**
    * @param timestamp
    * @param root
    * @param next_validators_hash base64 encoded
    */
   constructor(
-    public timestamp: Date | undefined,
+    timestamp: Timestamp.Input | undefined,
     public root: MerkleRootV1 | undefined,
     public next_validators_hash: string,
   ) {
     super();
+    this.timestamp = Timestamp.from(timestamp);
   }
 
   public static fromAmino(_: any): ConsensusStateV1 {
@@ -37,7 +41,7 @@ export class ConsensusStateV1 extends JSONSerializable<any, ConsensusStateV1.Dat
       next_validators_hash,
     } = data;
     return new ConsensusStateV1(
-      timestamp ? new Date(timestamp) : undefined,
+      timestamp ? Timestamp.fromData(timestamp) : undefined,
       root ? MerkleRootV1.fromData(root) : undefined,
       next_validators_hash,
     );
@@ -51,7 +55,7 @@ export class ConsensusStateV1 extends JSONSerializable<any, ConsensusStateV1.Dat
     } = this;
     return {
       '@type': '/ibc.lightclients.tendermint.v1.ConsensusState',
-      timestamp: timestamp?.toISOString(),
+      timestamp: timestamp?.toData(),
       root: root?.toData(),
       next_validators_hash,
     };
@@ -64,7 +68,7 @@ export class ConsensusStateV1 extends JSONSerializable<any, ConsensusStateV1.Dat
       nextValidatorsHash,
     } = proto;
     return new ConsensusStateV1(
-      timestamp ? new Date(timestamp) : undefined,
+      timestamp ? Timestamp.fromProto(timestamp) : undefined,
       root ? MerkleRootV1.fromProto(root) : undefined,
       Convert.toBase64(nextValidatorsHash),
     );
@@ -77,7 +81,7 @@ export class ConsensusStateV1 extends JSONSerializable<any, ConsensusStateV1.Dat
       next_validators_hash,
     } = this;
     return ConsensusStateV1_pb.fromPartial({
-      timestamp,
+      timestamp: timestamp?.toProto(),
       root: root?.toProto(),
       nextValidatorsHash: Convert.fromBase64(next_validators_hash),
     });

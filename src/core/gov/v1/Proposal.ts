@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { Coins } from '../../Coins';
 import { Int } from '../../numeric';
 import { JSONSerializable } from '../../../util/json';
@@ -21,6 +22,11 @@ export class ProposalV1 extends JSONSerializable<
   ProposalV1.Data,
   ProposalV1.Proto
 > {
+  public submit_time: Timestamp | undefined;
+  public deposit_end_time: Timestamp | undefined;
+  public voting_start_time: Timestamp | undefined;
+  public voting_end_time: Timestamp | undefined;
+
   /**
    *
    * @param id proposal's ID
@@ -44,11 +50,11 @@ export class ProposalV1 extends JSONSerializable<
     public messages: Msg[],
     public status: ProposalStatus,
     public final_tally_result: ProposalV1.FinalTallyResult,
-    public submit_time: Date,
-    public deposit_end_time: Date,
+    submit_time: Timestamp.Input | undefined,
+    deposit_end_time: Timestamp.Input | undefined,
     public total_deposit: Coins,
-    public voting_start_time: Date,
-    public voting_end_time: Date,
+    voting_start_time: Timestamp.Input | undefined,
+    voting_end_time: Timestamp.Input | undefined,
     public metadata: string,
     public title: string,
     public summary: string,
@@ -57,6 +63,10 @@ export class ProposalV1 extends JSONSerializable<
     public failed_reason: string = ''
   ) {
     super();
+    this.submit_time = Timestamp.from(submit_time);
+    this.deposit_end_time = Timestamp.from(deposit_end_time);
+    this.voting_start_time = Timestamp.from(voting_start_time);
+    this.voting_end_time = Timestamp.from(voting_end_time);
 
     //HACK: If the first message in messages is in legacy format and the content of summary is empty or the same as title, the description of the legacy content is imported into summary.
     if (
@@ -100,11 +110,11 @@ export class ProposalV1 extends JSONSerializable<
         abstain: new Int(final_tally_result.abstain || 0),
         no_with_veto: new Int(final_tally_result.no_with_veto || 0),
       },
-      new Date(submit_time),
-      new Date(deposit_end_time),
+      Timestamp.fromData(submit_time),
+      Timestamp.fromData(deposit_end_time),
       Coins.fromAmino(total_deposit),
-      new Date(voting_start_time),
-      new Date(voting_end_time),
+      Timestamp.fromData(voting_start_time),
+      Timestamp.fromData(voting_end_time),
       metadata,
       title,
       summary,
@@ -135,11 +145,11 @@ export class ProposalV1 extends JSONSerializable<
         abstain: final_tally_result.abstain.toFixed(),
         no_with_veto: final_tally_result.no_with_veto.toFixed(),
       },
-      submit_time: this.submit_time.toISOString(),
-      deposit_end_time: this.deposit_end_time.toISOString(),
+      submit_time: this.submit_time?.toAmino(),
+      deposit_end_time: this.deposit_end_time?.toAmino(),
       total_deposit: this.total_deposit.toAmino(),
-      voting_start_time: this.voting_start_time.toISOString(),
-      voting_end_time: this.voting_end_time.toISOString(),
+      voting_start_time: this.voting_start_time?.toAmino(),
+      voting_end_time: this.voting_end_time?.toAmino(),
       metadata: this.metadata,
       title: this.title,
       summary: this.summary,
@@ -181,11 +191,11 @@ export class ProposalV1 extends JSONSerializable<
         abstain: new Int(final_tally_result?.abstain || 0),
         no_with_veto: new Int(final_tally_result?.no_with_veto || 0),
       },
-      new Date(submit_time),
-      new Date(deposit_end_time),
+      Timestamp.fromData(submit_time),
+      Timestamp.fromData(deposit_end_time),
       Coins.fromData(total_deposit),
-      new Date(voting_start_time),
-      new Date(voting_end_time),
+      Timestamp.fromData(voting_start_time),
+      Timestamp.fromData(voting_end_time),
       metadata,
       title,
       summary,
@@ -217,11 +227,11 @@ export class ProposalV1 extends JSONSerializable<
         abstain: final_tally_result.abstain.toString(),
         no_with_veto: final_tally_result.no_with_veto.toString(),
       },
-      submit_time: this.submit_time.toISOString(),
-      deposit_end_time: this.deposit_end_time.toISOString(),
+      submit_time: this.submit_time?.toData(),
+      deposit_end_time: this.deposit_end_time?.toData(),
       total_deposit: this.total_deposit.toData(),
-      voting_start_time: this.voting_start_time.toISOString(),
-      voting_end_time: this.voting_end_time.toISOString(),
+      voting_start_time: this.voting_start_time?.toData(),
+      voting_end_time: this.voting_end_time?.toData(),
       metadata: this.metadata,
       title: this.title,
       summary: this.summary,
@@ -245,11 +255,11 @@ export class ProposalV1 extends JSONSerializable<
         abstain: new Int(data.finalTallyResult?.abstainCount ?? 0),
         no_with_veto: new Int(data.finalTallyResult?.noWithVetoCount ?? 0),
       },
-      data.submitTime as Date,
-      data.depositEndTime as Date,
+      Timestamp.fromProto(data.submitTime),
+      Timestamp.fromProto(data.depositEndTime),
       Coins.fromProto(data.totalDeposit),
-      data.votingStartTime as Date,
-      data.votingEndTime as Date,
+      Timestamp.fromProto(data.votingStartTime),
+      Timestamp.fromProto(data.votingEndTime),
       data.metadata,
       data.title,
       data.summary,
@@ -285,11 +295,11 @@ export class ProposalV1 extends JSONSerializable<
       messages: this.messages.map(m => m.packAny()),
       status,
       finalTallyResult: ftr,
-      submitTime: this.submit_time,
-      depositEndTime: this.deposit_end_time,
+      submitTime: this.submit_time?.toProto(),
+      depositEndTime: this.deposit_end_time?.toProto(),
       totalDeposit: this.total_deposit.toProto(),
-      votingEndTime: this.voting_end_time,
-      votingStartTime: this.voting_start_time,
+      votingEndTime: this.voting_end_time?.toProto(),
+      votingStartTime: this.voting_start_time?.toProto(),
       metadata: this.metadata,
       title: this.title,
       summary: this.summary,
@@ -321,11 +331,11 @@ export namespace ProposalV1 {
       no: string;
       no_with_veto: string;
     };
-    submit_time: string;
-    deposit_end_time: string;
+    submit_time: string | undefined;
+    deposit_end_time: string | undefined;
     total_deposit: Coins.Amino;
-    voting_start_time: string;
-    voting_end_time: string;
+    voting_start_time: string | undefined;
+    voting_end_time: string | undefined;
     metadata: string;
     title: string;
     summary: string;
@@ -344,11 +354,11 @@ export namespace ProposalV1 {
       no: string;
       no_with_veto: string;
     };
-    submit_time: string;
-    deposit_end_time: string;
+    submit_time: string | undefined;
+    deposit_end_time: string | undefined;
     total_deposit: Coins.Data;
-    voting_start_time: string;
-    voting_end_time: string;
+    voting_start_time: string | undefined;
+    voting_end_time: string | undefined;
     metadata: string;
     title: string;
     summary: string;

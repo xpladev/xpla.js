@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { ValidatorV1B1 } from './Validator';
 import { Int, Dec } from '../../numeric';
 import { ValConsPublicKey } from '../../PublicKey';
@@ -53,14 +54,14 @@ describe('Validator', () => {
         security_contact: 'x@x.com',
       },
       unbonding_height: 0,
-      unbonding_time: new Date('1970-01-01T00:00:00Z'),
+      unbonding_time: Timestamp.fromString('1970-01-01T00:00:00Z'),
       commission: {
         commission_rates: {
           rate: new Dec('0.2'),
           max_rate: new Dec('0.25'),
           max_change_rate: new Dec('0.01'),
         },
-        update_time: new Date('2019-12-01T03:28:34.024363013Z'),
+        update_time: Timestamp.fromString('2019-12-01T03:28:34.024363013Z'),
       },
       min_self_delegation: new Int(1),
     });

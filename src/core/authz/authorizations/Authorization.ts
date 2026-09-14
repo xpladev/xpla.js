@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { GenericAuthorization } from './GenericAuthorization';
@@ -11,13 +12,16 @@ export class AuthorizationGrant extends JSONSerializable<
   AuthorizationGrant.Data,
   AuthorizationGrant.Proto
 > {
+  public expiration: Timestamp | undefined;
+
   constructor(
     public authorization: Authorization,
-    public expiration: Date,
+    expiration: Timestamp.Input | undefined,
     public granter: AccAddress | undefined,
     public grantee: AccAddress | undefined
   ) {
     super();
+    this.expiration = Timestamp.from(expiration);
   }
 
   public static fromAmino(
@@ -27,7 +31,7 @@ export class AuthorizationGrant extends JSONSerializable<
     const { authorization, expiration, granter, grantee } = data;
     return new AuthorizationGrant(
       Authorization.fromAmino(authorization, isClassic),
-      new Date(expiration),
+      Timestamp.fromData(expiration),
       granter,
       grantee
     );
@@ -37,7 +41,7 @@ export class AuthorizationGrant extends JSONSerializable<
     const { authorization, expiration, granter, grantee } = this;
     return {
       authorization: authorization.toAmino(isClassic),
-      expiration: expiration.toISOString().replace(/\.000Z$/, 'Z'),
+      expiration: expiration?.toAmino(),
       granter,
       grantee,
     };
@@ -50,7 +54,7 @@ export class AuthorizationGrant extends JSONSerializable<
     const { authorization, expiration, granter, grantee } = data;
     return new AuthorizationGrant(
       Authorization.fromData(authorization, isClassic),
-      new Date(expiration),
+      Timestamp.fromData(expiration),
       granter,
       grantee
     );
@@ -60,7 +64,7 @@ export class AuthorizationGrant extends JSONSerializable<
     const { authorization, expiration, granter, grantee } = this;
     return {
       authorization: authorization.toData(isClassic),
-      expiration: expiration.toISOString().replace(/\.000Z$/, 'Z'),
+      expiration: expiration?.toData(),
       granter,
       grantee,
     };
@@ -72,7 +76,7 @@ export class AuthorizationGrant extends JSONSerializable<
   ): AuthorizationGrant {
     return new AuthorizationGrant(
       Authorization.fromProto(proto.authorization as Any, isClassic),
-      proto.expiration as Date,
+      Timestamp.fromProto(proto.expiration),
       proto.granter,
       proto.grantee
     );
@@ -82,7 +86,7 @@ export class AuthorizationGrant extends JSONSerializable<
     const { authorization, expiration, granter, grantee } = this;
     return Grant_pb.fromPartial({
       authorization: authorization.packAny(isClassic),
-      expiration,
+      expiration: expiration?.toProto(),
       granter,
       grantee,
     });
@@ -92,14 +96,14 @@ export class AuthorizationGrant extends JSONSerializable<
 export namespace AuthorizationGrant {
   export interface Amino {
     authorization: Authorization.Amino;
-    expiration: string;
+    expiration: string | undefined;
     granter: string | undefined;
     grantee: string | undefined;
   }
 
   export interface Data {
     authorization: Authorization.Data;
-    expiration: string;
+    expiration: string | undefined;
     granter: string | undefined;
     grantee: string | undefined;
   }

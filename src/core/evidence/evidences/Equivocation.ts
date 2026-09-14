@@ -3,6 +3,7 @@ import Long from 'long';
 import { JSONSerializable } from '../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Equivocation as Equivocation_pb } from '@xpla/xpla.proto/cosmos/evidence/v1beta1/evidence';
+import { Timestamp } from '../../Timestamp';
 
 /**
  * Equivocation implements the Evidence interface and defines evidence of
@@ -13,6 +14,7 @@ export class Equivocation extends JSONSerializable<
   Equivocation.Data,
   Equivocation.Proto
 > {
+  public time: Timestamp | undefined;
   public height: Long;
   public power: Long;
 
@@ -24,11 +26,12 @@ export class Equivocation extends JSONSerializable<
    */
   constructor(
     height: string | number | Long,
-    public time: Date | undefined,
+    time: Timestamp.Input | undefined,
     power: string | number | Long,
     public consensus_address: string
   ) {
     super();
+    this.time = Timestamp.from(time);
     this.height = Long.fromValue(height);
     this.power = Long.fromValue(power);
   }
@@ -42,7 +45,7 @@ export class Equivocation extends JSONSerializable<
     } = data;
     return new Equivocation(
       height,
-      time ? new Date(time) : undefined,
+      time ? Timestamp.fromAmino(time) : undefined,
       power,
       consensus_address
     );
@@ -54,7 +57,7 @@ export class Equivocation extends JSONSerializable<
       type: 'cosmos-sdk/Equivocation',
       value: {
         height: height.toString(),
-        time: time?.toISOString().replace(/\.000Z$/, 'Z') ?? undefined,
+        time: time?.toAmino(),
         power: power.toString(),
         consensus_address,
       },
@@ -68,7 +71,7 @@ export class Equivocation extends JSONSerializable<
     const { height, time, power, consensus_address } = data;
     return new Equivocation(
       height,
-      time ? new Date(time) : undefined,
+      time ? Timestamp.fromString(time) : undefined,
       power,
       consensus_address
     );
@@ -79,7 +82,7 @@ export class Equivocation extends JSONSerializable<
     return {
       '@type': '/cosmos.evidence.v1beta1.Equivocation',
       height: height.toString(),
-      time: time?.toISOString().replace(/\.000Z$/, 'Z') ?? undefined,
+      time: time?.toString(),
       power: power.toString(),
       consensus_address,
     };
@@ -91,7 +94,7 @@ export class Equivocation extends JSONSerializable<
   ): Equivocation {
     return new Equivocation(
       proto.height,
-      proto.time ?? undefined,
+      proto.time ? Timestamp.fromProto(proto.time) : undefined,
       proto.power,
       proto.consensusAddress
     );
@@ -101,7 +104,7 @@ export class Equivocation extends JSONSerializable<
     const { height, time, power, consensus_address } = this;
     return Equivocation_pb.fromPartial({
       height,
-      time,
+      time: time?.toProto(),
       power,
       consensusAddress: consensus_address,
     });
@@ -115,10 +118,7 @@ export class Equivocation extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, isClassic?: boolean): Equivocation {
-    return Equivocation.fromProto(
-      Equivocation_pb.decode(msgAny.value),
-      isClassic
-    );
+    return Equivocation.fromProto(Equivocation_pb.decode(msgAny.value), isClassic);
   }
 }
 
