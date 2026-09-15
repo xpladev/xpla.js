@@ -243,14 +243,14 @@ export class WasmAPI extends BaseAPI {
       throw new Error('Not supported for the network');
     }
     return this.c
-      .get<{ result: QueryResult.Data }>(
+      .get<{ data: string | null }>(
         `/cosmwasm/wasm/v1/contract/${contractAddress}/raw/${
           Convert.toBase64(Convert.fromUTF8(query_data))
         }`,
         params
       )
-      .then(({ result: d }) => ({
-        data: Convert.toUTF8(Convert.fromBase64(d.data)),
+      .then(d => ({
+        data: Convert.toUTF8(Convert.fromBase64(d.data ?? '')),
       }));
   }
 
@@ -263,13 +263,13 @@ export class WasmAPI extends BaseAPI {
       throw new Error('Not supported for the network');
     }
     return this.c
-      .get<{ result: QueryResult.Data }>(
+      .get<QueryResult.Data>(
         `/cosmwasm/wasm/v1/contract/${contractAddress}/smart/${
           Convert.toBase64(Convert.fromUTF8(JSON.stringify(query_data)))
         }`,
         params
       )
-      .then(({ result: d }) => ({
+      .then(d => ({
         data: d.data,
       }));
   }

@@ -73,8 +73,8 @@ export class EVMRequester {
     // Handle Object
     if (obj instanceof Object) {
       copy = {};
-      for (const attr in obj) {
-        if (obj[attr]) copy[attr] = EVMRequester.deepCopy(obj[attr]);
+      for (const attr of Object.keys(obj)) {
+        copy[attr] = EVMRequester.deepCopy(obj[attr]);
       }
       return copy;
     }
