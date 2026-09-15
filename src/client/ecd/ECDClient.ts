@@ -157,7 +157,8 @@ export class ECDClient {
                 data.push(buff);
               }
 
-              const len = param.length.toString(16);
+              const buff = Convert.fromUTF8(param);
+              const len = buff.length.toString(16);
               {
                 const buff = Convert.fromHex(len);
                 if (buff.length < 32) {
@@ -168,7 +169,6 @@ export class ECDClient {
                 dynoffset += 32;
               }
 
-              const buff = Convert.fromUTF8(param);
               dyndata.push(buff);
               dynoffset += buff.length;
               if (buff.length % 32 > 0) {
