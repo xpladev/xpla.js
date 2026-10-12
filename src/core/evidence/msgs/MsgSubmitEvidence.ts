@@ -3,9 +3,11 @@ import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgSubmitEvidence as MsgSubmitEvidence_pb } from '@xpla/xpla.proto/cosmos/evidence/v1beta1/tx';
+import { Evidence } from '../evidences';
 
 /**
- * A basic message for sending [[Coins]] between Xpla accounts.
+ * MsgSubmitEvidence represents a message that supports submitting arbitrary
+ * Evidence of misbehavior such as equivocation.
  */
 export class MsgSubmitEvidence extends JSONSerializable<
   MsgSubmitEvidence.Amino,
@@ -13,22 +15,27 @@ export class MsgSubmitEvidence extends JSONSerializable<
   MsgSubmitEvidence.Proto
 > {
   /**
-   * @param from_address sender's address
-   * @param to_address recipient's address
-   * @param amount value of the transaction
+   * @param submitter signer account address of evidence
+   * @param evidence evidence of misbehavior
    */
-  constructor(public submitter: AccAddress, public evidence?: Any | undefined) {
+  constructor(
+    public submitter: AccAddress,
+    public evidence: Evidence | undefined
+  ) {
     super();
   }
 
   public static fromAmino(
     data: MsgSubmitEvidence.Amino,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgSubmitEvidence {
     const {
       value: { submitter, evidence },
     } = data;
-    return new MsgSubmitEvidence(submitter, evidence);
+    return new MsgSubmitEvidence(
+      submitter,
+      evidence ? Evidence.fromAmino(evidence, isClassic) : undefined
+    );
   }
 
   public toAmino(isClassic?: boolean): MsgSubmitEvidence.Amino {
@@ -39,46 +46,54 @@ export class MsgSubmitEvidence extends JSONSerializable<
         : 'cosmos-sdk/MsgSubmitEvidence',
       value: {
         submitter,
-        evidence,
+        evidence: evidence?.toAmino(isClassic),
       },
     };
   }
 
   public static fromData(
     data: MsgSubmitEvidence.Data,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgSubmitEvidence {
     const { submitter, evidence } = data;
-    return new MsgSubmitEvidence(submitter, evidence);
+    return new MsgSubmitEvidence(
+      submitter,
+      evidence ? Evidence.fromData(evidence, isClassic) : undefined
+    );
   }
 
-  public toData(_isClassic?: boolean): MsgSubmitEvidence.Data {
+  public toData(isClassic?: boolean): MsgSubmitEvidence.Data {
     const { submitter, evidence } = this;
     return {
-      '@type': '/cosmos.bank.v1beta1.MsgSubmitEvidence',
+      '@type': '/cosmos.evidence.v1beta1.MsgSubmitEvidence',
       submitter,
-      evidence,
+      evidence: evidence?.toData(isClassic),
     };
   }
 
   public static fromProto(
     proto: MsgSubmitEvidence.Proto,
-    _isClassic?: boolean
+    isClassic?: boolean
   ): MsgSubmitEvidence {
-    return new MsgSubmitEvidence(proto.submitter, proto.evidence);
+    return new MsgSubmitEvidence(
+      proto.submitter,
+      proto.evidence
+        ? Evidence.fromProto(proto.evidence as Any, isClassic)
+        : undefined
+    );
   }
 
-  public toProto(_isClassic?: boolean): MsgSubmitEvidence.Proto {
+  public toProto(isClassic?: boolean): MsgSubmitEvidence.Proto {
     const { submitter, evidence } = this;
     return MsgSubmitEvidence_pb.fromPartial({
       submitter,
-      evidence,
+      evidence: evidence?.packAny(isClassic),
     });
   }
 
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/cosmos.bank.v1beta1.MsgSubmitEvidence',
+      typeUrl: '/cosmos.evidence.v1beta1.MsgSubmitEvidence',
       value: MsgSubmitEvidence_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
@@ -93,17 +108,19 @@ export class MsgSubmitEvidence extends JSONSerializable<
 
 export namespace MsgSubmitEvidence {
   export interface Amino {
-    type: 'bank/MsgSubmitEvidence' | 'cosmos-sdk/MsgSubmitEvidence';
+    type: 'cosmos-sdk/MsgSubmitEvidence' | 'bank/MsgSubmitEvidence';
     value: {
       submitter: AccAddress;
-      evidence: Any | undefined;
+      evidence?: Evidence.Amino;
     };
   }
 
   export interface Data {
-    '@type': '/cosmos.bank.v1beta1.MsgSubmitEvidence';
+    '@type':
+      | '/cosmos.evidence.v1beta1.MsgSubmitEvidence'
+      | '/cosmos.bank.v1beta1.MsgSubmitEvidence';
     submitter: AccAddress;
-    evidence: Any | undefined;
+    evidence?: Evidence.Data;
   }
 
   export type Proto = MsgSubmitEvidence_pb;

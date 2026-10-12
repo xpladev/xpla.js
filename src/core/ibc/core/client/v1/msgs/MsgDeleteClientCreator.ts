@@ -78,7 +78,7 @@ export class MsgDeleteClientCreatorV1 extends JSONSerializable<
 
   public packAny(_?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ibc.core.client.v1.MsgUpgradeClient',
+      typeUrl: '/ibc.core.client.v1.MsgDeleteClientCreator',
       value: MsgDeleteClientCreatorV1_pb.encode(this.toProto()).finish(),
     });
   }

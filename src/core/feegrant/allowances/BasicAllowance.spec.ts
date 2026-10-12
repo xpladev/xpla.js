@@ -1,7 +1,7 @@
 import { Coins } from '../../Coins';
 import { BasicAllowance } from './BasicAllowance';
 
-const now = new Date();
+const now = new Date('2024-01-01T00:00:00.120Z');
 
 describe('BasicAllowance', () => {
   it('amino type', () => {
@@ -18,11 +18,12 @@ describe('BasicAllowance', () => {
     expect(ba.toData().spend_limit).toEqual(new Coins('1000uluna').toData());
     expect(ba.toData().expiration).toEqual(now.toISOString());
     expect(ba.toProto().spendLimit).toEqual(new Coins('1000uluna').toProto());
-    expect(ba.toProto().expiration).toEqual(now);
+    expect(ba.toProto().expiration?.seconds.toString()).toBe('1704067200');
+    expect(ba.toProto().expiration?.nanos).toBe(120000000);
     expect(ba.toAmino().value.spend_limit).toEqual(
       new Coins('1000uluna').toAmino()
     );
-    expect(ba.toAmino().value.expiration).toEqual(now.toISOString());
+    expect(ba.toAmino().value.expiration).toBe('2024-01-01T00:00:00.12Z');
   });
 
   it('spend_limit only', () => {
@@ -39,7 +40,6 @@ describe('BasicAllowance', () => {
   });
 
   it('expiration only', () => {
-    const now = new Date();
     const ba = new BasicAllowance(undefined, now);
 
     expect(ba.toData().spend_limit).toEqual(undefined);
@@ -47,9 +47,10 @@ describe('BasicAllowance', () => {
       now.toISOString().replace(/\.000Z$/, 'Z')
     );
     expect(ba.toProto().spendLimit).toHaveLength(0);
-    expect(ba.toProto().expiration).toEqual(now);
+    expect(ba.toProto().expiration?.seconds.toString()).toBe('1704067200');
+    expect(ba.toProto().expiration?.nanos).toBe(120000000);
     expect(ba.toAmino().value.spend_limit).toBeUndefined();
-    expect(ba.toAmino().value.expiration).toEqual(now.toISOString());
+    expect(ba.toAmino().value.expiration).toBe('2024-01-01T00:00:00.12Z');
   });
 
   it('spend_limit has zero amount', () => {

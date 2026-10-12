@@ -40,7 +40,7 @@ const DEFAULT_ECD_OPTIONS: Partial<ECDClientConfig> = {};
  *
  * const URL = "https://cube-evm-rpc.xpla.dev";
  * const chainID = "cube_47-5";
- * 
+ *
  * const ecd = new ECDClient({
  *   chainID,
  *   URL,
@@ -123,7 +123,7 @@ export class ECDClient {
           case 'bignumber':
           case 'address':
             {
-              let hex = Numeric.parse(param).toHex();
+              const hex = Numeric.parse(param).toHex();
               const buff = Convert.fromHex(hex);
               if (buff.length < 32) {
                 const pad = new Uint8Array(32 - buff.length);
@@ -157,7 +157,8 @@ export class ECDClient {
                 data.push(buff);
               }
 
-              const len = param.length.toString(16);
+              const buff = Convert.fromUTF8(param);
+              const len = buff.length.toString(16);
               {
                 const buff = Convert.fromHex(len);
                 if (buff.length < 32) {
@@ -168,7 +169,6 @@ export class ECDClient {
                 dynoffset += 32;
               }
 
-              const buff = Convert.fromUTF8(param);
               dyndata.push(buff);
               dynoffset += buff.length;
               if (buff.length % 32 > 0) {
@@ -252,7 +252,9 @@ export class ECDClient {
 
           case 'bignumber':
             {
-              const bn = Numeric.parse(Convert.toHex(buff));
+              const bn = Numeric.parse(
+                ECDClient.decimalFromHex(Convert.toHex(buff))
+              );
               params.push(bn);
             }
             break;
@@ -278,7 +280,9 @@ export class ECDClient {
                 Convert.toHex(data.subarray(pos, pos + 32)),
                 16
               );
-              const str = Convert.toUTF8(data.subarray(pos + 32, pos + 32 + len));
+              const str = Convert.toUTF8(
+                data.subarray(pos + 32, pos + 32 + len)
+              );
               params.push(str);
             }
             break;
@@ -357,8 +361,6 @@ export class ECDClient {
         peerCount: null,
         protocolVersion: null,
         syncing: null,
-        mining: null,
-        hashrate: 0,
         gasPrice: 0,
         blockNumber: 0,
       };
@@ -408,20 +410,6 @@ export class ECDClient {
             throw this.apiRequester.getError(response);
           }
           info.syncing = response.result;
-          return this.apiRequester.post(this.config.id, 'eth_mining', []);
-        })
-        .then(response => {
-          if (this.apiRequester.isError(response)) {
-            throw this.apiRequester.getError(response);
-          }
-          info.mining = response.result;
-          return this.apiRequester.post(this.config.id, 'eth_hashrate', []);
-        })
-        .then(response => {
-          if (this.apiRequester.isError(response)) {
-            throw this.apiRequester.getError(response);
-          }
-          info.hashrate = parseInt(response.result, 16);
           return this.apiRequester.post(this.config.id, 'eth_gasPrice', []);
         })
         .then(response => {

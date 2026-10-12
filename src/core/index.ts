@@ -13,6 +13,7 @@ export * from './TxInfo';
 export * from './ValidatorSet';
 export * from './Deposit';
 export * from './Duration';
+export * from './Timestamp';
 export * from './SignatureV2';
 export * from './MultiSignature';
 
@@ -29,7 +30,7 @@ export * from './consensus';
 export * from './distribution';
 
 // Evidence
-export * from './evidence/msgs';
+export * from './evidence';
 
 // ERC20
 export * from './erc20';

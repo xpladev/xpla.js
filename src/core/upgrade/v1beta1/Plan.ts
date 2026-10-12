@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Plan as PlanV1B1_pb } from '@xpla/xpla.proto/cosmos/upgrade/v1beta1/upgrade';
 
@@ -10,7 +11,7 @@ export class PlanV1B1 extends JSONSerializable<
   PlanV1B1.Proto
 > {
   public name: string;
-  public time?: Date;
+  public time?: Timestamp;
   public height: string;
   public info: string;
   public upgraded_client_state?: any;
@@ -23,14 +24,14 @@ export class PlanV1B1 extends JSONSerializable<
    */
   constructor(
     name: string,
-    time: Date | undefined,
+    time: Timestamp.Input | undefined,
     height: string,
     info: string,
     upgraded_client_state: any
   ) {
     super();
     this.name = name;
-    this.time = time;
+    this.time = Timestamp.from(time);
     this.height = height;
     this.info = info;
     this.upgraded_client_state = upgraded_client_state;
@@ -40,7 +41,7 @@ export class PlanV1B1 extends JSONSerializable<
     const { name, time, height, info, upgraded_client_state } = data;
     return new PlanV1B1(
       name,
-      time ? new Date(time) : undefined,
+      time ? Timestamp.fromData(time) : undefined,
       height,
       info,
       upgraded_client_state
@@ -51,7 +52,7 @@ export class PlanV1B1 extends JSONSerializable<
     const { name, time, height, info, upgraded_client_state } = this;
     const res: PlanV1B1.Amino = {
       name,
-      time: time ? time.toISOString().replace(/\.000Z$/, 'Z') : undefined,
+      time: time?.toAmino(),
       height,
       info,
       upgraded_client_state,
@@ -63,7 +64,7 @@ export class PlanV1B1 extends JSONSerializable<
     const { name, time, height, info, upgraded_client_state } = data;
     return new PlanV1B1(
       name,
-      time ? new Date(time) : undefined,
+      time ? Timestamp.fromData(time) : undefined,
       height,
       info,
       upgraded_client_state
@@ -74,7 +75,7 @@ export class PlanV1B1 extends JSONSerializable<
     const { name, time, height, info, upgraded_client_state } = this;
     const res: PlanV1B1.Data = {
       name,
-      time: time ? time.toISOString().replace(/\.000Z$/, 'Z') : undefined,
+      time: time?.toData(),
       height,
       info,
       upgraded_client_state,
@@ -85,7 +86,7 @@ export class PlanV1B1 extends JSONSerializable<
   public static fromProto(proto: PlanV1B1.Proto): PlanV1B1 {
     return new PlanV1B1(
       proto.name,
-      undefined,
+      Timestamp.fromProto(proto.time),
       proto.height.toString(),
       proto.info,
       undefined
@@ -96,7 +97,7 @@ export class PlanV1B1 extends JSONSerializable<
     const { name, time, height, info, upgraded_client_state } = this;
     return PlanV1B1_pb.fromPartial({
       name,
-      time,
+      time: time?.toProto(),
       height: height,
       info,
       upgradedClientState: upgraded_client_state,

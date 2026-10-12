@@ -1,5 +1,7 @@
 import { BaseAPI } from './BaseAPI';
-import { Dec, ValConsAddress } from '../../../core';
+import { Dec } from '../../../core/numeric';
+import { ValConsAddress } from '../../../core/bech32';
+import { Timestamp } from '../../../core/Timestamp';
 import { APIParams, CosmosParams, Pagination } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
 
@@ -41,7 +43,7 @@ export interface SigningInfo {
   index_offset: number;
 
   /** If the current validator is jailed, this value represents when they can submit a [[MsgUnjail]] to unjail themselves. */
-  jailed_until: Date;
+  jailed_until: Timestamp;
 
   /** Whether or not the validator is "tombstoned", meaning they are forever barred from joining the validator process. */
   tombstoned: boolean;
@@ -84,7 +86,7 @@ export class SlashingAPI extends BaseAPI {
         address: d.address,
         start_height: Number.parseInt(d.start_height),
         index_offset: Number.parseInt(d.index_offset),
-        jailed_until: new Date(d.jailed_until),
+        jailed_until: Timestamp.fromString(d.jailed_until),
         tombstoned: d.tombstoned,
         missed_blocks_counter: Number.parseInt(d.missed_blocks_counter),
       }));
@@ -101,7 +103,7 @@ export class SlashingAPI extends BaseAPI {
           address: x.address,
           start_height: Number.parseInt(x.start_height),
           index_offset: Number.parseInt(x.index_offset),
-          jailed_until: new Date(x.jailed_until),
+          jailed_until: Timestamp.fromString(x.jailed_until),
           tombstoned: x.tombstoned,
           missed_blocks_counter: Number.parseInt(x.missed_blocks_counter),
         }))

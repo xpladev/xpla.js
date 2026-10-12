@@ -1,3 +1,4 @@
+import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Int } from '../../numeric';
 import { AccAddress, ValAddress } from '../../bech32';
@@ -110,6 +111,8 @@ export namespace UnbondingDelegationV1B1 {
     Entry.Data,
     Entry.Proto
   > {
+    public completion_time: Timestamp | undefined;
+
     /**
      * Note that the size of the undelegation is `initial_balance - balance`
      * @param initial_balance balance of delegation prior to initiating unbond
@@ -121,9 +124,10 @@ export namespace UnbondingDelegationV1B1 {
       public initial_balance: Int,
       public balance: Int,
       public creation_height: number,
-      public completion_time: Date
+      completion_time: Timestamp.Input | undefined
     ) {
       super();
+      this.completion_time = Timestamp.from(completion_time);
     }
 
     public toAmino(): Entry.Amino {
@@ -131,7 +135,7 @@ export namespace UnbondingDelegationV1B1 {
         initial_balance: this.initial_balance.toString(),
         balance: this.balance.toString(),
         creation_height: this.creation_height.toFixed(),
-        completion_time: this.completion_time.toISOString(),
+        completion_time: this.completion_time?.toAmino(),
       };
     }
 
@@ -142,7 +146,7 @@ export namespace UnbondingDelegationV1B1 {
         new Int(initial_balance),
         new Int(balance),
         Number.parseInt(creation_height),
-        new Date(completion_time)
+        Timestamp.fromData(completion_time)
       );
     }
 
@@ -151,7 +155,7 @@ export namespace UnbondingDelegationV1B1 {
         initial_balance: this.initial_balance.toString(),
         balance: this.balance.toString(),
         creation_height: this.creation_height.toFixed(),
-        completion_time: this.completion_time.toISOString(),
+        completion_time: this.completion_time?.toData(),
       };
     }
 
@@ -162,7 +166,7 @@ export namespace UnbondingDelegationV1B1 {
         new Int(initial_balance),
         new Int(balance),
         Number.parseInt(creation_height),
-        new Date(completion_time)
+        Timestamp.fromData(completion_time)
       );
     }
 
@@ -171,7 +175,7 @@ export namespace UnbondingDelegationV1B1 {
         this;
       return UnbondingDelegationEntryV1B1_pb.fromPartial({
         balance: balance.toString(),
-        completionTime: completion_time,
+        completionTime: completion_time?.toProto(),
         creationHeight: creation_height,
         initialBalance: initial_balance.toString(),
       });
@@ -182,7 +186,7 @@ export namespace UnbondingDelegationV1B1 {
         new Int(proto.initialBalance),
         new Int(proto.balance),
         proto.creationHeight.toNumber(),
-        proto.completionTime as Date
+        Timestamp.fromProto(proto.completionTime)
       );
     }
   }
@@ -192,14 +196,14 @@ export namespace UnbondingDelegationV1B1 {
       initial_balance: string;
       balance: string;
       creation_height: string;
-      completion_time: string;
+      completion_time: string | undefined;
     }
 
     export interface Data {
       initial_balance: string;
       balance: string;
       creation_height: string;
-      completion_time: string;
+      completion_time: string | undefined;
     }
 
     export type Proto = UnbondingDelegationEntryV1B1_pb;

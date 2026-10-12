@@ -1,4 +1,10 @@
 import {
+  ExtensionOptionData,
+  extensionOptionFromData,
+  extensionOptionToData,
+} from './ExtensionOptions';
+import { Timestamp } from './Timestamp';
+import {
   PublicKey,
   SimplePublicKey,
   LegacyAminoMultisigPublicKey,
@@ -166,15 +172,19 @@ export namespace Tx {
 }
 
 export class TxBody {
+  public timeout_timestamp: Timestamp | undefined;
+
   constructor(
     public messages: Msg[],
     public memo?: string,
     public timeout_height?: number,
     public unordered?: boolean,
-    public timeout_timestamp?: Date,
+    timeout_timestamp?: Timestamp.Input,
     public extension_options?: Any[],
     public non_critical_extension_options?: Any[],
-  ) {}
+  ) {
+    this.timeout_timestamp = Timestamp.from(timeout_timestamp);
+  }
 
   public static fromData(data: TxBody.Data, isClassic?: boolean): TxBody {
     return new TxBody(
@@ -182,9 +192,9 @@ export class TxBody {
       data.memo,
       Number.parseInt(data.timeout_height),
       data.unordered,
-      data.timeout_timestamp ? new Date(data.timeout_timestamp) : undefined,
-      data.extension_options,
-      data.non_critical_extension_options,
+      data.timeout_timestamp ? Timestamp.fromData(data.timeout_timestamp) : undefined,
+      data.extension_options?.map(extensionOptionFromData),
+      data.non_critical_extension_options?.map(extensionOptionFromData),
     );
   }
 
@@ -194,9 +204,11 @@ export class TxBody {
       messages: this.messages.map(m => m.toData(isClassic)),
       timeout_height: (this.timeout_height ?? 0).toFixed(),
       unordered: this.unordered ?? false,
-      timeout_timestamp: this.timeout_timestamp?.toISOString(),
-      extension_options: this.extension_options,
-      non_critical_extension_options: this.non_critical_extension_options,
+      timeout_timestamp: this.timeout_timestamp?.toData(),
+      extension_options: this.extension_options?.map(extensionOptionToData),
+      non_critical_extension_options: this.non_critical_extension_options?.map(
+        extensionOptionToData
+      ),
     };
   }
 
@@ -206,7 +218,7 @@ export class TxBody {
       proto.memo,
       proto.timeoutHeight.toNumber(),
       proto.unordered,
-      proto.timeoutTimestamp,
+      Timestamp.fromProto(proto.timeoutTimestamp),
       proto.extensionOptions,
       proto.nonCriticalExtensionOptions,
     );
@@ -218,7 +230,7 @@ export class TxBody {
       messages: this.messages.map(m => m.packAny(isClassic)),
       timeoutHeight: this.timeout_height ?? 0,
       unordered: this.unordered ?? false,
-      timeoutTimestamp: this.timeout_timestamp,
+      timeoutTimestamp: this.timeout_timestamp?.toProto(),
       extensionOptions: this.extension_options,
       nonCriticalExtensionOptions: this.non_critical_extension_options,
     });
@@ -236,8 +248,8 @@ export namespace TxBody {
     timeout_height: string;
     unordered?: boolean;
     timeout_timestamp?: string;
-    extension_options?: any[];
-    non_critical_extension_options?: any[];
+    extension_options?: ExtensionOptionData[];
+    non_critical_extension_options?: ExtensionOptionData[];
   }
   export type Proto = TxBody_pb;
 }

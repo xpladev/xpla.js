@@ -78,7 +78,7 @@ export class MsgSoftwareUpgradeV1B1 extends JSONSerializable<
     const { authority, plan } = this;
     return MsgSoftwareUpgradeV1B1_pb.fromPartial({
       authority,
-      plan,
+      plan: plan?.toProto(),
     });
   }
 

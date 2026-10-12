@@ -132,8 +132,9 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
 export namespace MsgCreatePeriodicVestingAccountV1B1 {
   export interface Amino {
     type:
-      | 'vesting/MsgCreatePeriodicVestingAccount'
-      | 'cosmos-sdk/MsgCreatePeriodicVestingAccount';
+      | 'cosmos-sdk/MsgCreatePeriodVestAccount'
+      | 'cosmos-sdk/MsgCreatePeriodicVestingAccount'
+      | 'vesting/MsgCreatePeriodicVestingAccount';
     value: {
       from_address: AccAddress;
       to_address: AccAddress;

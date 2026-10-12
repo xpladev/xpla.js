@@ -95,7 +95,7 @@ export class IbcTransferAPI extends BaseAPI {
     params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Coins> {
     return await this.c.get<{ amount: { amount: string, denom: string } }>(
-      `/ibc/apps/transfer/v1/denoms/${denom}/total_escrow`,
+      `/ibc/apps/transfer/v1/total_escrow/${encodeURIComponent(denom)}`,
       params
     )
     .then(d => Coins.fromData([d.amount]));

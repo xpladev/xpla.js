@@ -110,13 +110,13 @@ export class Duration extends JSONSerializable<
     } else if (str.endsWith('s')) {
       dec = new Dec(str.substring(0, str.length - 1));
     } else if (str.endsWith('m')) {
-      dec = new Dec(str.substring(0, str.length - 2));
+      dec = new Dec(str.substring(0, str.length - 1));
       dec = dec.mul(60);
     } else if (str.endsWith('h')) {
-      dec = new Dec(str.substring(0, str.length - 2));
+      dec = new Dec(str.substring(0, str.length - 1));
       dec = dec.mul(60 * 60);
     } else if (str.endsWith('d')) {
-      dec = new Dec(str.substring(0, str.length - 2));
+      dec = new Dec(str.substring(0, str.length - 1));
       dec = dec.mul(60 * 60 * 24);
     } else {
       throw new Error(`failed to parse to Duration: ${str}`);

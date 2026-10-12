@@ -184,6 +184,7 @@ import {
   MsgRegisterCounterpartyV2,
 } from './ibc/core/client';
 import { CrisisMsg, MsgVerifyInvariant } from './crisis';
+import { EvidenceMsg, MsgSubmitEvidence } from './evidence/msgs';
 import {
   XplaMsgV1B1,
   MsgFundRewardPoolV1B1,
@@ -192,14 +193,6 @@ import {
   MsgUnregisterVolunteerValidatorV1B1,
   MsgBurnV1B1,
 } from './xpla';
-import {
-  ProtocolPoolMsgV1,
-  MsgFundCommunityPoolV1,
-  MsgCommunityPoolSpendV1,
-  MsgCreateContinuousFundV1,
-  MsgCancelContinuousFundV1,
-  MsgUpdateProtocolPoolParamsV1,
-} from './protocolpool';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
 export type Msg =
@@ -229,10 +222,10 @@ export type Msg =
   | IbcChannelMsgV1
   | IbcChannelMsgV2
   | CrisisMsg
+  | EvidenceMsg
   | Erc20MsgV1
   | EvmMsgV1
-  | XplaMsgV1B1
-  | ProtocolPoolMsgV1;
+  | XplaMsgV1B1;
 
 export namespace Msg {
   export type Amino =
@@ -255,10 +248,10 @@ export namespace Msg {
     | WasmMsgV1.Amino
     | IbcTransferMsgV1.Amino
     | CrisisMsg.Amino
+    | EvidenceMsg.Amino
     | Erc20MsgV1.Amino
     | EvmMsgV1.Amino
-    | XplaMsgV1B1.Amino
-    | ProtocolPoolMsgV1.Amino;
+    | XplaMsgV1B1.Amino;
 
   export type Data =
     | AuthMsgV1B1.Data
@@ -287,10 +280,10 @@ export namespace Msg {
     | IbcChannelMsgV1.Data
     | IbcChannelMsgV2.Data
     | CrisisMsg.Data
+    | EvidenceMsg.Data
     | Erc20MsgV1.Data
     | EvmMsgV1.Data
-    | XplaMsgV1B1.Data
-    | ProtocolPoolMsgV1.Data;
+    | XplaMsgV1B1.Data;
 
   export type Proto =
     | AuthMsgV1B1.Proto
@@ -319,10 +312,10 @@ export namespace Msg {
     | IbcChannelMsgV1.Proto
     | IbcChannelMsgV2.Proto
     | CrisisMsg.Proto
+    | EvidenceMsg.Proto
     | Erc20MsgV1.Proto
     | EvmMsgV1.Proto
-    | XplaMsgV1B1.Proto
-    | ProtocolPoolMsgV1.Proto;
+    | XplaMsgV1B1.Proto;
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
@@ -376,12 +369,18 @@ export namespace Msg {
       case 'distribution/MsgCommunityPoolSpend':
       case 'cosmos-sdk/distr/MsgCommunityPoolSpend':
         return MsgCommunityPoolSpendV1B1.fromAmino(data, isClassic);
-      case 'distribution/MsgDepositValidatorRewardsPool':
+      case 'cosmos-sdk/distr/MsgDepositValRewards':
       case 'cosmos-sdk/distr/MsgDepositValidatorRewardsPool':
+      case 'distribution/MsgDepositValidatorRewardsPool':
         return MsgDepositValidatorRewardsPoolV1B1.fromAmino(data, isClassic);
-      case 'distribution/MsgUpdateParams':
       case 'cosmos-sdk/distribution/MsgUpdateParams':
+      case 'distribution/MsgUpdateParams':
         return MsgUpdateDistributionParamsV1B1.fromAmino(data, isClassic);
+
+      // evidence
+      case 'cosmos-sdk/MsgSubmitEvidence':
+      case 'bank/MsgSubmitEvidence':
+        return MsgSubmitEvidence.fromAmino(data, isClassic);
 
       // feegrant
       case 'feegrant/MsgGrantAllowance':
@@ -527,11 +526,13 @@ export namespace Msg {
       case 'vesting/MsgCreateVestingAccount':
       case 'cosmos-sdk/MsgCreateVestingAccount':
         return MsgCreateVestingAccountV1B1.fromAmino(data, isClassic);
-      case 'vesting/MsgCreatePermanentLockedAccount':
+      case 'cosmos-sdk/MsgCreatePermLockedAccount':
       case 'cosmos-sdk/MsgCreatePermanentLockedAccount':
+      case 'vesting/MsgCreatePermanentLockedAccount':
         return MsgCreatePermanentLockedAccountV1B1.fromAmino(data, isClassic);
-      case 'vesting/MsgCreatePeriodicVestingAccount':
+      case 'cosmos-sdk/MsgCreatePeriodVestAccount':
       case 'cosmos-sdk/MsgCreatePeriodicVestingAccount':
+      case 'vesting/MsgCreatePeriodicVestingAccount':
         return MsgCreatePeriodicVestingAccountV1B1.fromAmino(data, isClassic);
 
       // upgrade
@@ -588,12 +589,18 @@ export namespace Msg {
       case 'cosmos-sdk/MsgVerifyInvariant':
         return MsgVerifyInvariant.fromAmino(data, isClassic);
 
+      // xpla
+      case 'xpladev/MsgBurn':
+        return MsgBurnV1B1.fromAmino(data);
+
       // erc20
       case 'ethermint/MsgConvertCoin':
       case 'evmos/MsgConvertCoin':
+      case 'evm/MsgConvertCoin':
         return MsgConvertCoinV1.fromAmino(data);
       case 'ethermint/MsgConvertERC20':
       case 'evmos/MsgConvertERC20':
+      case 'evm/MsgConvertERC20':
         return MsgConvertERC20V1.fromAmino(data);
       case 'ethermint/erc20/MsgUpdateParams':
       case 'evmos/erc20/MsgUpdateParams':
@@ -620,18 +627,6 @@ export namespace Msg {
         return MsgRegisterVolunteerValidatorV1B1.fromAmino(data);
       case 'xpladev/MsgUnregisterVolunteerValidator':
         return MsgUnregisterVolunteerValidatorV1B1.fromAmino(data);
-
-      // protocolpool
-      case 'protocolpool/MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.fromAmino(data);
-      case 'protocolpool/MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.fromAmino(data);
-      case 'protocolpool/MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.fromAmino(data);
-      case 'protocolpool/MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.fromAmino(data);
-      case 'protocolpool/MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.fromAmino(data);
 
       default:
         throw Error(`not supported msg ${data['type']}`);
@@ -804,6 +799,8 @@ export namespace Msg {
         return MsgStoreCodeV1.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgInstantiateContract':
         return MsgInstantiateContractV1.fromData(data, isClassic);
+      case '/cosmwasm.wasm.v1.MsgInstantiateContract2':
+        return MsgInstantiateContract2V1.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgExecuteContract':
         return MsgExecuteContractV1.fromData(data, isClassic);
       case '/cosmwasm.wasm.v1.MsgMigrateContract':
@@ -923,12 +920,19 @@ export namespace Msg {
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
         return MsgVerifyInvariant.fromData(data, isClassic);
 
+      // evidence
+      case '/cosmos.evidence.v1beta1.MsgSubmitEvidence':
+      case '/cosmos.bank.v1beta1.MsgSubmitEvidence':
+        return MsgSubmitEvidence.fromData(data, isClassic);
+
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
+      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
         return MsgConvertCoinV1.fromData(data);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
+      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
         return MsgConvertERC20V1.fromData(data);
 
       // evm
@@ -952,18 +956,6 @@ export namespace Msg {
         return MsgUnregisterVolunteerValidatorV1B1.fromData(data);
       case '/xpla.burn.v1beta1.MsgBurn':
         return MsgBurnV1B1.fromData(data);
-
-      // protocolpool
-      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.fromData(data);
-      case '/cosmos.protocolpool.v1.MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.fromData(data);
 
       default:
         throw Error(`not supported msg ${data['@type']}`);
@@ -1137,6 +1129,8 @@ export namespace Msg {
         return MsgStoreCodeV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgInstantiateContract':
         return MsgInstantiateContractV1.unpackAny(proto, isClassic);
+      case '/cosmwasm.wasm.v1.MsgInstantiateContract2':
+        return MsgInstantiateContract2V1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgExecuteContract':
         return MsgExecuteContractV1.unpackAny(proto, isClassic);
       case '/cosmwasm.wasm.v1.MsgMigrateContract':
@@ -1256,12 +1250,19 @@ export namespace Msg {
       case '/cosmos.crisis.v1beta1.MsgVerifyInvariant':
         return MsgVerifyInvariant.unpackAny(proto, isClassic);
 
+      // evidence
+      case '/cosmos.evidence.v1beta1.MsgSubmitEvidence':
+      case '/cosmos.bank.v1beta1.MsgSubmitEvidence':
+        return MsgSubmitEvidence.unpackAny(proto, isClassic);
+
       // erc20
       case '/ethermint.erc20.v1.MsgConvertCoin':
       case '/evmos.erc20.v1.MsgConvertCoin':
+      case '/cosmos.evm.erc20.v1.MsgConvertCoin':
         return MsgConvertCoinV1.unpackAny(proto);
       case '/ethermint.erc20.v1.MsgConvertERC20':
       case '/evmos.erc20.v1.MsgConvertERC20':
+      case '/cosmos.evm.erc20.v1.MsgConvertERC20':
         return MsgConvertERC20V1.unpackAny(proto);
 
       // evm
@@ -1285,18 +1286,6 @@ export namespace Msg {
         return MsgUnregisterVolunteerValidatorV1B1.unpackAny(proto);
       case '/xpla.burn.v1beta1.MsgBurn':
         return MsgBurnV1B1.unpackAny(proto);
-
-      // protocolpool
-      case '/cosmos.protocolpool.v1.MsgFundCommunityPool':
-        return MsgFundCommunityPoolV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCommunityPoolSpend':
-        return MsgCommunityPoolSpendV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCreateContinuousFund':
-        return MsgCreateContinuousFundV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgCancelContinuousFund':
-        return MsgCancelContinuousFundV1.unpackAny(proto);
-      case '/cosmos.protocolpool.v1.MsgUpdateParams':
-        return MsgUpdateProtocolPoolParamsV1.unpackAny(proto);
 
       default:
         throw Error(`not supported msg ${proto.typeUrl}`);

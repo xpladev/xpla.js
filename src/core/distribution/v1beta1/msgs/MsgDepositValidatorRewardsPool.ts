@@ -46,7 +46,7 @@ export class MsgDepositValidatorRewardsPoolV1B1 extends JSONSerializable<
     return {
       type: isClassic
         ? 'distribution/MsgDepositValidatorRewardsPool'
-        : 'cosmos-sdk/distr/MsgDepositValidatorRewardsPool',
+        : 'cosmos-sdk/distr/MsgDepositValRewards',
       value: {
         depositor,
         validator_address: validatorAddress,
@@ -120,8 +120,9 @@ export class MsgDepositValidatorRewardsPoolV1B1 extends JSONSerializable<
 export namespace MsgDepositValidatorRewardsPoolV1B1 {
   export interface Amino {
     type:
-      | 'distribution/MsgDepositValidatorRewardsPool'
-      | 'cosmos-sdk/distr/MsgDepositValidatorRewardsPool';
+      | 'cosmos-sdk/distr/MsgDepositValRewards'
+      | 'cosmos-sdk/distr/MsgDepositValidatorRewardsPool'
+      | 'distribution/MsgDepositValidatorRewardsPool';
     value: {
       depositor: AccAddress;
       validator_address: ValAddress;
