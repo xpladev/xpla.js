@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { Timestamp } from '../../Timestamp';
 import { Coins } from '../../Coins';
 import { Int } from '../../numeric';
@@ -27,6 +28,7 @@ export class ProposalV1 extends JSONSerializable<
   public voting_start_time: Timestamp | undefined;
   public voting_end_time: Timestamp | undefined;
 
+  public id: Int64;
   /**
    *
    * @param id proposal's ID
@@ -45,8 +47,9 @@ export class ProposalV1 extends JSONSerializable<
    * @param expedited defines if the proposal is expedited
    * @param failed_reason defines the reason why the proposal failed
    */
+
   constructor(
-    public id: number,
+    id: Int64Input,
     public messages: Msg[],
     public status: ProposalStatus,
     public final_tally_result: ProposalV1.FinalTallyResult,
@@ -63,6 +66,7 @@ export class ProposalV1 extends JSONSerializable<
     public failed_reason: string = ''
   ) {
     super();
+    this.id = parseInt64(id);
     this.submit_time = Timestamp.from(submit_time);
     this.deposit_end_time = Timestamp.from(deposit_end_time);
     this.voting_start_time = Timestamp.from(voting_start_time);
@@ -101,7 +105,7 @@ export class ProposalV1 extends JSONSerializable<
     } = data;
 
     return new ProposalV1(
-      Number.parseInt(id),
+      id,
       messages.map(m => Msg.fromAmino(m)),
       status,
       {
@@ -182,7 +186,7 @@ export class ProposalV1 extends JSONSerializable<
     } = data;
 
     return new ProposalV1(
-      Number.parseInt(id),
+      id,
       messages.map(m => Msg.fromData(m)),
       proposalStatusFromJSON(status),
       {
@@ -246,7 +250,7 @@ export class ProposalV1 extends JSONSerializable<
     _isClassic?: boolean
   ): ProposalV1 {
     return new ProposalV1(
-      data.id.toNumber(),
+      data.id,
       data.messages.map(m => Msg.fromProto(m)),
       data.status,
       {
@@ -291,7 +295,7 @@ export class ProposalV1 extends JSONSerializable<
     }
 
     return ProposalV1_pb.fromPartial({
-      id: this.id,
+      id: this.id.toString(),
       messages: this.messages.map(m => m.packAny()),
       status,
       finalTallyResult: ftr,

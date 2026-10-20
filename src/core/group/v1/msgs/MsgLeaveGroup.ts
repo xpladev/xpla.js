@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,12 +9,18 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
   MsgLeaveGroupV1.Data,
   MsgLeaveGroupV1.Proto
 > {
+  public group_id: Int64;
   /**
    * @param address is the account address of the group member
    * @param group_id is the unique ID of the group
    */
-  constructor(public address: AccAddress, public group_id: number) {
+
+  constructor(
+    public address: AccAddress,
+    group_id: Int64Input
+  ) {
     super();
+    this.group_id = parseInt64(group_id);
   }
 
   public static fromAmino(
@@ -24,13 +30,15 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
     const {
       value: { address, group_id },
     } = data;
-    return new MsgLeaveGroupV1(address, Number.parseInt(group_id));
+    return new MsgLeaveGroupV1(address, group_id);
   }
 
   public toAmino(isClassic?: boolean): MsgLeaveGroupV1.Amino {
     const { address, group_id } = this;
     return {
-      type: isClassic ? 'group/MsgLeaveGroup' : 'cosmos-sdk/group/MsgLeaveGroup',
+      type: isClassic
+        ? 'group/MsgLeaveGroup'
+        : 'cosmos-sdk/group/MsgLeaveGroup',
       value: {
         address,
         group_id: group_id.toFixed(),
@@ -43,7 +51,7 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgLeaveGroupV1 {
     const { address, group_id } = data;
-    return new MsgLeaveGroupV1(address, Number.parseInt(group_id));
+    return new MsgLeaveGroupV1(address, group_id);
   }
 
   public toData(_isClassic?: boolean): MsgLeaveGroupV1.Data {
@@ -59,14 +67,14 @@ export class MsgLeaveGroupV1 extends JSONSerializable<
     proto: MsgLeaveGroupV1.Proto,
     _isClassic?: boolean
   ): MsgLeaveGroupV1 {
-    return new MsgLeaveGroupV1(proto.address, proto.groupId.toNumber());
+    return new MsgLeaveGroupV1(proto.address, proto.groupId);
   }
 
   public toProto(_isClassic?: boolean): MsgLeaveGroupV1.Proto {
     const { address, group_id } = this;
     return MsgLeaveGroupV1_pb.fromPartial({
       address,
-      groupId: group_id,
+      groupId: group_id.toString(),
     });
   }
 

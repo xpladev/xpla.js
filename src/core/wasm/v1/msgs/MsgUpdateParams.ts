@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
+import { CodesParamsV1 } from '../Params';
 import { AccessConfig, AccessType } from '../AccessConfig';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { Params } from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
+import {
+  Params,
+  accessTypeToJSON,
+} from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 import { MsgUpdateParams as MsgUpdateWasmParamsV1_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/tx';
 
 export class MsgUpdateWasmParamsV1 extends JSONSerializable<
@@ -23,13 +26,22 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
     data: MsgUpdateWasmParamsV1.Amino,
     _isClassic?: boolean
   ): MsgUpdateWasmParamsV1 {
-    const {
-      value: { authority, codeUploadAccess, instantiateDefaultPermission },
-    } = data;
+    const value = data.value;
+    const params =
+      'params' in value
+        ? CodesParamsV1.fromAmino(value.params)
+        : new CodesParamsV1(
+            value.codeUploadAccess instanceof AccessConfig
+              ? value.codeUploadAccess
+              : value.codeUploadAccess
+                ? AccessConfig.fromAmino(value.codeUploadAccess)
+                : undefined,
+            value.instantiateDefaultPermission
+          );
     return new MsgUpdateWasmParamsV1(
-      authority,
-      codeUploadAccess,
-      instantiateDefaultPermission
+      value.authority,
+      params.code_upload_access,
+      params.instantiate_default_permission
     );
   }
 
@@ -39,8 +51,10 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
       type: 'wasm/MsgUpdateParams',
       value: {
         authority,
-        codeUploadAccess,
-        instantiateDefaultPermission,
+        params: new CodesParamsV1(
+          codeUploadAccess,
+          instantiateDefaultPermission
+        ).toAmino(),
       },
     };
   }
@@ -49,11 +63,25 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
     data: MsgUpdateWasmParamsV1.Data,
     _isClassic?: boolean
   ): MsgUpdateWasmParamsV1 {
-    const { authority, codeUploadAccess, instantiateDefaultPermission } = data;
+    const value = data;
+    const params =
+      'params' in value
+        ? CodesParamsV1.fromData({
+            ...value.params,
+            '@type': '/cosmwasm.wasm.v1.Params',
+          })
+        : new CodesParamsV1(
+            value.codeUploadAccess instanceof AccessConfig
+              ? value.codeUploadAccess
+              : value.codeUploadAccess
+                ? AccessConfig.fromData(value.codeUploadAccess)
+                : undefined,
+            value.instantiateDefaultPermission
+          );
     return new MsgUpdateWasmParamsV1(
-      authority,
-      codeUploadAccess,
-      instantiateDefaultPermission
+      value.authority,
+      params.code_upload_access,
+      params.instantiate_default_permission
     );
   }
 
@@ -62,8 +90,12 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
     return {
       '@type': '/cosmwasm.wasm.v1.MsgUpdateParams',
       authority,
-      codeUploadAccess,
-      instantiateDefaultPermission,
+      params: {
+        code_upload_access: codeUploadAccess?.toData(),
+        instantiate_default_permission: accessTypeToJSON(
+          instantiateDefaultPermission
+        ),
+      },
     };
   }
 
@@ -110,21 +142,20 @@ export class MsgUpdateWasmParamsV1 extends JSONSerializable<
 }
 
 export namespace MsgUpdateWasmParamsV1 {
-  export interface Amino {
-    type: 'wasm/MsgUpdateParams';
-    value: {
-      authority: AccAddress;
-      codeUploadAccess: AccessConfig | undefined;
-      instantiateDefaultPermission: AccessType;
-    };
-  }
-
-  export interface Data {
-    '@type': '/cosmwasm.wasm.v1.MsgUpdateParams';
-    authority: AccAddress;
-    codeUploadAccess: AccessConfig | undefined;
+  /** Input compatibility for SDK versions that flattened Params. */
+  export interface LegacyParams {
+    codeUploadAccess: AccessConfig | AccessConfig.Data | undefined;
     instantiateDefaultPermission: AccessType;
   }
-
+  export interface Amino {
+    type: 'wasm/MsgUpdateParams';
+    value: { authority: AccAddress } & (
+      { params: CodesParamsV1.Amino } | LegacyParams
+    );
+  }
+  export type Data = {
+    '@type': '/cosmwasm.wasm.v1.MsgUpdateParams';
+    authority: AccAddress;
+  } & ({ params: Omit<CodesParamsV1.Data, '@type'> } | LegacyParams);
   export type Proto = MsgUpdateWasmParamsV1_pb;
 }

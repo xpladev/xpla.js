@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,17 +9,20 @@ export class MsgUpdateGroupMetadataV1 extends JSONSerializable<
   MsgUpdateGroupMetadataV1.Data,
   MsgUpdateGroupMetadataV1.Proto
 > {
+  public group_id: Int64;
   /**
    * @param authority
    * @param send_enabled is the list of entries to add or update
    * @param use_default_for is a list of denoms that should use the params.default_send_enabled value
    */
+
   constructor(
     public admin: AccAddress,
-    public group_id: number,
+    group_id: Int64Input,
     public metadata: string
   ) {
     super();
+    this.group_id = parseInt64(group_id);
   }
 
   public static fromAmino(
@@ -29,11 +32,7 @@ export class MsgUpdateGroupMetadataV1 extends JSONSerializable<
     const {
       value: { admin, group_id, metadata },
     } = data;
-    return new MsgUpdateGroupMetadataV1(
-      admin,
-      Number.parseInt(group_id),
-      metadata
-    );
+    return new MsgUpdateGroupMetadataV1(admin, group_id, metadata);
   }
 
   public toAmino(isClassic?: boolean): MsgUpdateGroupMetadataV1.Amino {
@@ -55,11 +54,7 @@ export class MsgUpdateGroupMetadataV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgUpdateGroupMetadataV1 {
     const { admin, group_id, metadata } = data;
-    return new MsgUpdateGroupMetadataV1(
-      admin,
-      Number.parseInt(group_id),
-      metadata
-    );
+    return new MsgUpdateGroupMetadataV1(admin, group_id, metadata);
   }
 
   public toData(_isClassic?: boolean): MsgUpdateGroupMetadataV1.Data {
@@ -78,7 +73,7 @@ export class MsgUpdateGroupMetadataV1 extends JSONSerializable<
   ): MsgUpdateGroupMetadataV1 {
     return new MsgUpdateGroupMetadataV1(
       proto.admin,
-      proto.groupId.toNumber(),
+      proto.groupId,
       proto.metadata
     );
   }
@@ -87,7 +82,7 @@ export class MsgUpdateGroupMetadataV1 extends JSONSerializable<
     const { admin, group_id, metadata } = this;
     return MsgUpdateGroupMetadataV1_pb.fromPartial({
       admin,
-      groupId: group_id,
+      groupId: group_id.toString(),
       metadata,
     });
   }

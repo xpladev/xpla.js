@@ -10,7 +10,7 @@ import { EvmWallet } from './EvmWallet';
 import { Key } from '../../key';
 import { Coins, EvmAddress } from '../../core';
 import { Numeric } from '../../core/numeric';
-import { encode as eip55 } from 'eip55';
+import { checksumEvmAddress as eip55 } from '../../core/eip55';
 import { Convert } from '../../util/convert';
 
 export interface ECDClientConfig {
@@ -62,12 +62,12 @@ export class ECDClient {
     }
     const add = (x: string, y: string): string => {
         let c = 0;
-        let r = [];
-        let lx = x.split('').map(Number);
-        let ly = y.split('').map(Number);
+        const r = [];
+        const lx = x.split('').map(Number);
+        const ly = y.split('').map(Number);
         while(lx.length || ly.length) {
             const s = (lx.pop() || 0) + (ly.pop() || 0) + c;
-            r.unshift(s < 10 ? s : s - 10); 
+            r.unshift(s < 10 ? s : s - 10);
             c = s < 10 ? 0 : 1;
         }
         if(c) r.unshift(c);
@@ -228,7 +228,8 @@ export class ECDClient {
         let message = 'Unknown Error';
         if (e instanceof Error) message = e.message;
         throw new Error(
-          'Cannot parse params: ' + idx + ' type ' + type + '\n' + message
+          'Cannot parse params: ' + idx + ' type ' + type + '\n' + message,
+          { cause: e }
         );
       }
       ++idx;
@@ -307,7 +308,8 @@ export class ECDClient {
         if (e instanceof Error) message = e.message;
         idx /= 32;
         throw new Error(
-          'Cannot parse params: ' + idx + ' type ' + type + '\n' + message
+          'Cannot parse params: ' + idx + ' type ' + type + '\n' + message,
+          { cause: e }
         );
       }
       idx += 32;

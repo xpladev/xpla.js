@@ -158,8 +158,12 @@ export class WebSocketClient extends EventEmitter {
    */
   destroy() {
     this.shouldAttemptReconnect = false;
-    this.reconnectTimeoutId && clearTimeout(this.reconnectTimeoutId);
-    this.socket && this.socket.close();
+    if (this.reconnectTimeoutId) {
+      clearTimeout(this.reconnectTimeoutId);
+    }
+    if (this.socket) {
+      this.socket.close();
+    }
   }
 
   start() {
@@ -215,7 +219,9 @@ export class WebSocketClient extends EventEmitter {
         this._reconnectCount--;
       }
 
-      this.reconnectTimeoutId && clearTimeout(this.reconnectTimeoutId);
+      if (this.reconnectTimeoutId) {
+        clearTimeout(this.reconnectTimeoutId);
+      }
       this.reconnectTimeoutId = setTimeout(() => {
         this.emit('reconnect');
         this.start();

@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { UnpinCodesProposal as UnpinCodesProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal_legacy';
@@ -11,17 +12,20 @@ export class UnpinCodesProposal extends JSONSerializable<
   UnpinCodesProposal.Data,
   UnpinCodesProposal.Proto
 > {
+  public code_ids: Int64[];
   /**
    * @param title a short summary
    * @param description a human readable text
    * @param code_ids the address of the smart code_ids
    */
+
   constructor(
     public title: string,
     public description: string,
-    public code_ids: number[]
+    code_ids: Int64Input[]
   ) {
     super();
+    this.code_ids = code_ids.map(parseInt64);
   }
 
   public static fromAmino(
@@ -34,11 +38,7 @@ export class UnpinCodesProposal extends JSONSerializable<
     const {
       value: { title, description, code_ids },
     } = data;
-    return new UnpinCodesProposal(
-      title,
-      description,
-      code_ids.map(Number.parseInt)
-    );
+    return new UnpinCodesProposal(title, description, code_ids);
   }
 
   public toAmino(isClassic?: boolean): UnpinCodesProposal.Amino {
@@ -66,7 +66,7 @@ export class UnpinCodesProposal extends JSONSerializable<
     return new UnpinCodesProposal(
       proto.title,
       proto.description,
-      proto.codeIds.map(codeId => codeId.toNumber())
+      proto.codeIds.map(codeId => codeId)
     );
   }
 
@@ -78,7 +78,7 @@ export class UnpinCodesProposal extends JSONSerializable<
     return UnpinCodesProposal_pb.fromPartial({
       title,
       description,
-      codeIds: code_ids,
+      codeIds: code_ids.map(value => value.toFixed()),
     });
   }
   public packAny(isClassic?: boolean): Any {
@@ -112,11 +112,7 @@ export class UnpinCodesProposal extends JSONSerializable<
       throw new Error('Not supported for the network');
     }
     const { title, description, code_ids } = data;
-    return new UnpinCodesProposal(
-      title,
-      description,
-      code_ids.map(Number.parseInt)
-    );
+    return new UnpinCodesProposal(title, description, code_ids);
   }
 
   public toData(isClassic?: boolean): UnpinCodesProposal.Data {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { SendAuthorization as SendAuthorization_pb } from '@xpla/xpla.proto/cosmos/bank/v1beta1/authz';

@@ -50,19 +50,19 @@ export namespace Numeric {
     let _value = value.toString();
     if (_value.startsWith('-') || _value.startsWith('+'))
       _value = _value.slice(1);
-    if (/^[0-9\,]+(\.[0-9\,]*)?(e[\-\+]?[0-9]+)?$/.test(_value))
+    if (/^[0-9,]+(\.[0-9,]*)?(e[-+]?[0-9]+)?$/.test(_value))
       return true;
     if (_value.startsWith('0x')) {
       _value = _value.slice(2);
-      return /^[0-9a-fA-F\,]+(\.[0-9a-fA-F\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+      return /^[0-9a-fA-F,]+(\.[0-9a-fA-F,]*)?(p[-+]?[0-9]+)?$/.test(_value);
     }
     if (_value.startsWith('0o')) {
       _value = _value.slice(2);
-      return /^[0-7\,]+(\.[0-7\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+      return /^[0-7,]+(\.[0-7,]*)?(p[-+]?[0-9]+)?$/.test(_value);
     }
     if (_value.startsWith('0b')) {
       _value = _value.slice(2);
-      return /^[01\,]+(\.[01\,]*)?(p[\-\+]?[0-9]+)?$/.test(_value);
+      return /^[01,]+(\.[01,]*)?(p[-+]?[0-9]+)?$/.test(_value);
     }
     return false;
   }
@@ -108,6 +108,19 @@ export class Dec extends Decimal implements Numeric<Dec> {
   // type conversion
   public toInt(): Int {
     return new Int(this);
+  }
+
+  /**
+   * Whether this value is an integer within JavaScript's safe integer range.
+   * Fractional values, NaN, and infinities return false. Checks the stored value,
+   * not its rounded string representation or the result of toNumber().
+   */
+  public isSafeInteger(): boolean {
+    return (
+      this.isInteger() &&
+      this.gte(Number.MIN_SAFE_INTEGER) &&
+      this.lte(Number.MAX_SAFE_INTEGER)
+    );
   }
 
   // arithmetic
@@ -180,6 +193,19 @@ export class Int extends Decimal implements Numeric<Numeric.Output> {
   // type conversion
   public toDec(): Dec {
     return new Dec(this);
+  }
+
+  /**
+   * Whether this value can be converted to a JavaScript safe integer without loss.
+   * Checks the stored value before conversion; does not guarantee that subsequent
+   * number arithmetic stays within the safe range or recover earlier input loss.
+   */
+  public isSafeInteger(): boolean {
+    return (
+      this.isInteger() &&
+      this.gte(Number.MIN_SAFE_INTEGER) &&
+      this.lte(Number.MAX_SAFE_INTEGER)
+    );
   }
 
   // artihmetic

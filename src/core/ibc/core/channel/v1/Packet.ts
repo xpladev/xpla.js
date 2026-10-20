@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../../util/int64';
 import { JSONSerializable } from '../../../../../util/json';
 import { Convert } from '../../../../../util/convert';
 import { HeightV1 } from '../../client/v1/Height';
@@ -9,6 +10,8 @@ export class PacketV1 extends JSONSerializable<
   PacketV1.Data,
   PacketV1.Proto
 > {
+  public sequence: Int64;
+  public timeout_timestamp: Int64;
   /**
    * @param sequence number corresponds to the order of sends and receives, where a Packet with an earlier sequence number must be sent and received before a Packet with a later sequence number.
    * @param source_port identifies the port on the sending chain.
@@ -19,17 +22,20 @@ export class PacketV1 extends JSONSerializable<
    * @param timeout_height block height after which the packet times out
    * @param timeout_timestamp block timestamp (in nanoseconds) after which the packet times out
    */
+
   constructor(
-    public sequence: number,
+    sequence: Int64Input,
     public source_port: string,
     public source_channel: string,
     public destination_port: string,
     public destination_channel: string,
     public data: string,
     public timeout_height: HeightV1 | undefined,
-    public timeout_timestamp: number
+    timeout_timestamp: Int64Input
   ) {
     super();
+    this.sequence = parseInt64(sequence);
+    this.timeout_timestamp = parseInt64(timeout_timestamp);
   }
 
   public static fromAmino(_data: PacketV1.Amino): PacketV1 {
@@ -67,14 +73,14 @@ export class PacketV1 extends JSONSerializable<
       timeout_timestamp,
     } = this;
     const res: PacketV1.Amino = {
-      sequence,
+      sequence: sequence.toString(),
       source_port,
       source_channel,
       destination_port,
       destination_channel,
       data,
       timeout_height: timeout_height ? timeout_height.toAmino() : undefined,
-      timeout_timestamp,
+      timeout_timestamp: timeout_timestamp.toString(),
     };
     return res;
   }
@@ -98,7 +104,7 @@ export class PacketV1 extends JSONSerializable<
       destination_channel,
       data,
       timeout_height ? HeightV1.fromData(timeout_height) : undefined,
-      Number.parseInt(timeout_timestamp)
+      timeout_timestamp
     );
   }
 
@@ -114,7 +120,7 @@ export class PacketV1 extends JSONSerializable<
       timeout_timestamp,
     } = this;
     const res: PacketV1.Data = {
-      sequence,
+      sequence: sequence.toString(),
       source_port,
       source_channel,
       destination_port,
@@ -128,14 +134,14 @@ export class PacketV1 extends JSONSerializable<
 
   public static fromProto(proto: PacketV1.Proto): PacketV1 {
     return new PacketV1(
-      proto.sequence.toNumber(),
+      proto.sequence,
       proto.sourcePort,
       proto.sourceChannel,
       proto.destinationPort,
       proto.destinationChannel,
       Convert.toBase64(proto.data),
       proto.timeoutHeight ? HeightV1.fromProto(proto.timeoutHeight) : undefined,
-      proto.timeoutTimestamp.toNumber()
+      proto.timeoutTimestamp
     );
   }
 
@@ -151,32 +157,32 @@ export class PacketV1 extends JSONSerializable<
       timeout_timestamp,
     } = this;
     return PacketV1_pb.fromPartial({
-      sequence,
+      sequence: sequence.toString(),
       sourcePort: source_port,
       sourceChannel: source_channel,
       destinationPort: destination_port,
       destinationChannel: destination_channel,
       data: Convert.fromBase64(data),
       timeoutHeight: timeout_height ? timeout_height.toProto() : undefined,
-      timeoutTimestamp: timeout_timestamp,
+      timeoutTimestamp: timeout_timestamp.toString(),
     });
   }
 }
 
 export namespace PacketV1 {
   export interface Amino {
-    sequence: number;
+    sequence: string;
     source_port: string;
     source_channel: string;
     destination_port: string;
     destination_channel: string;
     data: string;
     timeout_height?: HeightV1.Amino;
-    timeout_timestamp: number;
+    timeout_timestamp: string;
   }
 
   export interface Data {
-    sequence: number;
+    sequence: string;
     source_port: string;
     source_channel: string;
     destination_port: string;

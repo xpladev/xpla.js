@@ -82,10 +82,7 @@ export * from './v2/msgs/MsgTimeout';
 export * from './v2/msgs/MsgAcknowledgement';
 
 export type IbcChannelMsgV2 =
-  | MsgSendPacketV2
-  | MsgRecvPacketV2
-  | MsgTimeoutV2
-  | MsgAcknowledgementV2;
+  MsgSendPacketV2 | MsgRecvPacketV2 | MsgTimeoutV2 | MsgAcknowledgementV2;
 
 export namespace IbcChannelMsgV2 {
   export type Data =
@@ -101,18 +98,12 @@ export namespace IbcChannelMsgV2 {
     | MsgAcknowledgementV2.Proto;
 }
 
-export type IbcChannelMsg =
-  | IbcChannelMsgV1
-  | IbcChannelMsgV2;
+export type IbcChannelMsg = IbcChannelMsgV1 | IbcChannelMsgV2;
 
 export namespace IbcChannelMsg {
-  export type Data =
-    | IbcChannelMsgV1.Data
-    | IbcChannelMsgV2.Data;
+  export type Data = IbcChannelMsgV1.Data | IbcChannelMsgV2.Data;
 
-  export type Proto =
-    | IbcChannelMsgV1.Proto
-    | IbcChannelMsgV2.Proto;
+  export type Proto = IbcChannelMsgV1.Proto | IbcChannelMsgV2.Proto;
 }
 
 export {
@@ -127,4 +118,4 @@ export {
   MsgRecvPacketV2 as MsgRecvPacket,
   MsgTimeoutV2 as MsgTimeout,
   MsgAcknowledgementV2 as MsgAcknowledgement,
-}
+};

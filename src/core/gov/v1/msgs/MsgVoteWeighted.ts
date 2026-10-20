@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { WeightedVoteOptionV1 } from '../Vote';
@@ -13,19 +13,22 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
   MsgVoteWeightedV1.Data,
   MsgVoteWeightedV1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id defines the unique id of the proposal
    * @param voter is the voter address for the proposal
    * @param options defines the weighted vote options
    * @param metadata is any arbitrary metadata attached to the VoteWeighted
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public voter: AccAddress,
     public options: WeightedVoteOptionV1[],
     public metadata: string
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -36,7 +39,7 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
       value: { proposal_id, voter, options, metadata },
     } = data;
     return new MsgVoteWeightedV1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(o => WeightedVoteOptionV1.fromAmino(o)),
       metadata
@@ -62,7 +65,7 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
   ): MsgVoteWeightedV1 {
     const { proposal_id, voter, options, metadata } = data;
     return new MsgVoteWeightedV1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(o => WeightedVoteOptionV1.fromData(o)),
       metadata
@@ -85,7 +88,7 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgVoteWeightedV1 {
     return new MsgVoteWeightedV1(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.voter,
       proto.options.map(o => WeightedVoteOptionV1.fromProto(o)),
       proto.metadata
@@ -95,7 +98,7 @@ export class MsgVoteWeightedV1 extends JSONSerializable<
   public toProto(_isClassic?: boolean): MsgVoteWeightedV1.Proto {
     const { proposal_id, voter, options, metadata } = this;
     return MsgVoteWeightedV1_pb.fromPartial({
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       voter,
       options: options.map(o => o.toProto()),
       metadata,

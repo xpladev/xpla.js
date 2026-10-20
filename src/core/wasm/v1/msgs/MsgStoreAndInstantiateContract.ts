@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable, removeNull } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
@@ -125,11 +124,11 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
       proto.unpinCode,
       proto.admin,
       proto.label,
-      proto.msg,
+      JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds),
       proto.source,
       proto.builder,
-      Convert.toHex(proto.codeHash),
+      Convert.toHex(proto.codeHash)
     );
   }
 
@@ -154,7 +153,9 @@ export class MsgStoreAndInstantiateContractV1 extends JSONSerializable<
       unpinCode: unpin_code,
       admin,
       label,
-      msg: Convert.fromUTF8(JSON.stringify(msg)),
+      msg: Convert.fromUTF8(
+        typeof msg === 'string' ? msg : JSON.stringify(msg)
+      ),
       funds: funds.toIntCoins().toProto(),
       source,
       builder,

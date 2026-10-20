@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Msg } from '../../../Msg';
+import { AnyData, anyFromData } from '../../../../util/any';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -52,7 +53,7 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
       group_policy_address,
       proposers,
       metadata,
-      messages,
+      messages.map(m => Msg.fromAmino(m).packAny()),
       exec,
       title,
       summary
@@ -77,7 +78,7 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
         group_policy_address,
         proposers,
         metadata,
-        messages,
+        messages: messages.map(m => Msg.fromProto(m).toAmino(isClassic)),
         exec,
         title,
         summary,
@@ -102,7 +103,9 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
       group_policy_address,
       proposers,
       metadata,
-      messages,
+      messages.map(m =>
+        'typeUrl' in m ? anyFromData(m)! : Msg.fromData(m).packAny()
+      ),
       exec,
       title,
       summary
@@ -124,7 +127,7 @@ export class MsgGroupSubmitProposalV1 extends JSONSerializable<
       group_policy_address,
       proposers,
       metadata,
-      messages,
+      messages: messages.map(m => Msg.fromProto(m).toData()),
       exec,
       title,
       summary,
@@ -194,7 +197,7 @@ export namespace MsgGroupSubmitProposalV1 {
       group_policy_address: AccAddress;
       proposers: AccAddress[];
       metadata: string;
-      messages: Any[];
+      messages: Msg.Amino[];
       exec: Exec;
       title: string;
       summary: string;
@@ -206,7 +209,7 @@ export namespace MsgGroupSubmitProposalV1 {
     group_policy_address: AccAddress;
     proposers: AccAddress[];
     metadata: string;
-    messages: Any[];
+    messages: (Msg.Data | AnyData | Any)[];
     exec: Exec;
     title: string;
     summary: string;

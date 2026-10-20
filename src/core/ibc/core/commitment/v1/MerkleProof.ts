@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../util/json';
 import { MerkleProof as MerkleProofV1_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';
 import { CommitmentProof } from '@xpla/xpla.proto/cosmos/ics23/v1/proofs';

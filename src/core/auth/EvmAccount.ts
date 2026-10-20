@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { PublicKey } from '../PublicKey';
 import { EvmAddress } from '../eip55';
@@ -11,6 +11,8 @@ export class EvmAccount extends JSONSerializable<
   EvmAccount.Data,
   EvmAccount.Proto
 > {
+  public nonce: Int64;
+
   /**
    * Creates a new Account object, holding information about a basic account.
    *
@@ -19,17 +21,18 @@ export class EvmAccount extends JSONSerializable<
    */
   constructor(
     public address: EvmAddress,
-    public nonce: number,
-    public code_hash?: string,
+    nonce: Int64Input,
+    public code_hash?: string
   ) {
     super();
+    this.nonce = parseInt64(nonce);
   }
 
-  public getAccountNumber(): number {
-    return 0;
+  public getAccountNumber(): Int64 {
+    return parseInt64(0);
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.nonce;
   }
 
@@ -58,13 +61,13 @@ export class EvmAccount extends JSONSerializable<
       value: { address, nonce, code_hash },
     } = data;
 
-    return new EvmAccount(address || '', Number.parseInt(nonce) || 0, code_hash);
+    return new EvmAccount(address || '', nonce ?? '0', code_hash);
   }
 
   public static fromData(data: EvmAccount.Data, _?: boolean): EvmAccount {
     const { address, nonce, code_hash } = data;
 
-    return new EvmAccount(address || '', Number.parseInt(nonce) || 0, code_hash);
+    return new EvmAccount(address || '', nonce ?? '0', code_hash);
   }
 
   public toData(_?: boolean): EvmAccount.Data {
@@ -117,8 +120,7 @@ export namespace EvmAccount {
 
   export interface Data extends DataValue {
     '@type':
-      | '/cosmos.auth.v1beta1.BaseAccount'
-      | '/ethermint.types.v1.EthAccount';
+      '/cosmos.auth.v1beta1.BaseAccount' | '/ethermint.types.v1.EthAccount';
   }
 
   export type Proto = any;

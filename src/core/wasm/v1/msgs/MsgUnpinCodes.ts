@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,12 +9,18 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
   MsgUnpinCodesV1.Data,
   MsgUnpinCodesV1.Proto
 > {
+  public code_ids: Int64[];
   /**
    * @param authority is the address of the governance account
    * @param code_ids references the new WASM codes
    */
-  constructor(public authority: AccAddress, public code_ids: number[]) {
+
+  constructor(
+    public authority: AccAddress,
+    code_ids: Int64Input[]
+  ) {
     super();
+    this.code_ids = code_ids.map(parseInt64);
   }
 
   public static fromAmino(
@@ -24,10 +30,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
     const {
       value: { authority, code_ids },
     } = data;
-    return new MsgUnpinCodesV1(
-      authority,
-      code_ids.map(Number.parseInt)
-    );
+    return new MsgUnpinCodesV1(authority, code_ids);
   }
 
   public toAmino(_isClassic?: boolean): MsgUnpinCodesV1.Amino {
@@ -47,7 +50,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
   ): MsgUnpinCodesV1 {
     return new MsgUnpinCodesV1(
       proto.authority,
-      proto.codeIds.map(x => x.toNumber())
+      proto.codeIds.map(x => x)
     );
   }
 
@@ -55,7 +58,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
     const { authority, code_ids } = this;
     return MsgUnpinCodesV1_pb.fromPartial({
       authority,
-      codeIds: code_ids,
+      codeIds: code_ids.map(value => value.toFixed()),
     });
   }
 
@@ -78,10 +81,7 @@ export class MsgUnpinCodesV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgUnpinCodesV1 {
     const { authority, code_ids } = data;
-    return new MsgUnpinCodesV1(
-      authority,
-      code_ids.map(Number.parseInt)
-    );
+    return new MsgUnpinCodesV1(authority, code_ids);
   }
 
   public toData(_isClassic?: boolean): MsgUnpinCodesV1.Data {

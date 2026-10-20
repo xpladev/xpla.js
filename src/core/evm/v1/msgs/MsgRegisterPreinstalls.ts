@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgRegisterPreinstalls as MsgRegisterPreinstallsV1_pb } from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';
@@ -41,7 +40,7 @@ export class MsgRegisterPreinstallsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgRegisterPreinstallsV1.Amino {
     const { authority, preinstalls } = this;
     return {
-      type: 'cosmos/evm/MsgRegisterPreinstalls',
+      type: 'cosmos/evm/x/vm/MsgRegisterPreinstalls',
       value: {
         authority,
         preinstalls: preinstalls.map(p => Preinstall.toJSON(p)),
@@ -109,7 +108,8 @@ export namespace MsgRegisterPreinstallsV1 {
     type:
       | 'ethermint/MsgRegisterPreinstalls'
       | 'evm/MsgRegisterPreinstalls'
-      | 'cosmos/evm/MsgRegisterPreinstalls';
+      | 'cosmos/evm/MsgRegisterPreinstalls'
+      | 'cosmos/evm/x/vm/MsgRegisterPreinstalls';
     value: {
       authority: string;
       preinstalls: any[];

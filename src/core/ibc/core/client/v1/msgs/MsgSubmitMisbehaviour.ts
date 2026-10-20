@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -25,7 +25,10 @@ export class MsgSubmitMisbehaviourV1 extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, _isClassic?: boolean): MsgSubmitMisbehaviourV1 {
+  public static fromAmino(
+    _: any,
+    _isClassic?: boolean
+  ): MsgSubmitMisbehaviourV1 {
     throw new Error('Amino not supported');
   }
 
@@ -38,7 +41,11 @@ export class MsgSubmitMisbehaviourV1 extends JSONSerializable<
     _?: boolean
   ): MsgSubmitMisbehaviourV1 {
     const { client_id, misbehaviour, signer } = data;
-    return new MsgSubmitMisbehaviourV1(client_id, misbehaviour, signer);
+    return new MsgSubmitMisbehaviourV1(
+      client_id,
+      anyFromData(misbehaviour),
+      signer
+    );
   }
 
   public toData(_?: boolean): MsgSubmitMisbehaviourV1.Data {
@@ -46,7 +53,7 @@ export class MsgSubmitMisbehaviourV1 extends JSONSerializable<
     return {
       '@type': '/ibc.core.client.v1.MsgSubmitMisbehaviour',
       client_id,
-      misbehaviour,
+      misbehaviour: anyToData(misbehaviour),
       signer,
     };
   }

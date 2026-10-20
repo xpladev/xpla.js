@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Dec, Int, Numeric } from '../../numeric';
@@ -9,6 +10,8 @@ import {
   Commission as CommissionV1B1_pb,
   CommissionRates as CommissionRatesV1B1_pb,
   BondStatus,
+  bondStatusFromJSON,
+  bondStatusToJSON,
 } from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 
@@ -29,6 +32,7 @@ export class ValidatorV1B1 extends JSONSerializable<
   public delegator_shares: Dec;
   public min_self_delegation: Int;
 
+  public unbonding_height: Int64;
   /**
    *
    * @param operator_address validator's operator address
@@ -43,6 +47,7 @@ export class ValidatorV1B1 extends JSONSerializable<
    * @param commission validator commission
    * @param min_self_delegation minimum self delegation
    */
+
   constructor(
     public operator_address: ValAddress,
     public consensus_pubkey: ValConsPublicKey,
@@ -51,12 +56,13 @@ export class ValidatorV1B1 extends JSONSerializable<
     tokens: Numeric.Input,
     delegator_shares: Numeric.Input,
     public description: ValidatorV1B1.Description,
-    public unbonding_height: number,
+    unbonding_height: Int64Input,
     unbonding_time: Timestamp.Input | undefined,
     public commission: ValidatorV1B1.Commission,
-    min_self_delegation: Numeric.Input,
+    min_self_delegation: Numeric.Input
   ) {
     super();
+    this.unbonding_height = parseInt64(unbonding_height);
     this.unbonding_time = Timestamp.from(unbonding_time);
     this.tokens = new Int(tokens);
     this.delegator_shares = new Dec(delegator_shares);
@@ -84,14 +90,14 @@ export class ValidatorV1B1 extends JSONSerializable<
       data.operator_address,
       ValConsPublicKey.fromAmino(data.consensus_pubkey),
       data.jailed || false,
-      data.status || 0,
+      bondStatusFromJSON(data.status ?? 0),
       data.tokens,
       data.delegator_shares,
       ValidatorV1B1.Description.fromAmino(data.description),
-      Number.parseInt(data.unbonding_height),
+      data.unbonding_height,
       Timestamp.fromData(data.unbonding_time),
       ValidatorV1B1.Commission.fromAmino(data.commission),
-      data.min_self_delegation,
+      data.min_self_delegation
     );
   }
 
@@ -100,7 +106,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       operator_address: this.operator_address,
       consensus_pubkey: this.consensus_pubkey.toData(),
       jailed: this.jailed,
-      status: this.status,
+      status: bondStatusToJSON(this.status),
       tokens: this.tokens.toFixed(),
       delegator_shares: this.delegator_shares.toFixed(),
       description: this.description,
@@ -116,14 +122,14 @@ export class ValidatorV1B1 extends JSONSerializable<
       data.operator_address,
       ValConsPublicKey.fromData(data.consensus_pubkey),
       data.jailed || false,
-      data.status || 0,
+      bondStatusFromJSON(data.status ?? 0),
       data.tokens,
       data.delegator_shares,
       ValidatorV1B1.Description.fromData(data.description),
-      Number.parseInt(data.unbonding_height),
+      data.unbonding_height,
       Timestamp.fromData(data.unbonding_time),
       ValidatorV1B1.Commission.fromData(data.commission),
-      data.min_self_delegation,
+      data.min_self_delegation
     );
   }
 
@@ -152,7 +158,7 @@ export class ValidatorV1B1 extends JSONSerializable<
       operatorAddress: operator_address,
       status,
       tokens: tokens.toFixed(0),
-      unbondingHeight: unbonding_height,
+      unbondingHeight: unbonding_height.toString(),
       unbondingTime: unbonding_time?.toProto(),
     });
   }
@@ -169,12 +175,12 @@ export class ValidatorV1B1 extends JSONSerializable<
       ValidatorV1B1.Description.fromProto(
         data.description as ValidatorV1B1.Description.Proto
       ),
-      data.unbondingHeight.toNumber(),
+      data.unbondingHeight,
       Timestamp.fromProto(data.unbondingTime),
       ValidatorV1B1.Commission.fromProto(
         data.commission as ValidatorV1B1.Commission.Proto
       ),
-      data.minSelfDelegation,
+      data.minSelfDelegation
     );
   }
 }
@@ -200,7 +206,7 @@ export namespace ValidatorV1B1 {
     operator_address: ValAddress;
     consensus_pubkey: ValConsPublicKey.Data;
     jailed: boolean;
-    status: BondStatus;
+    status: string | BondStatus;
     tokens: string;
     delegator_shares: string;
     description: Description.Data;
@@ -376,7 +382,7 @@ export namespace ValidatorV1B1 {
       return new CommissionRates(
         new Dec(proto.rate).div(dec18),
         new Dec(proto.maxRate).div(dec18),
-        new Dec(proto.maxChangeRate).div(dec18),
+        new Dec(proto.maxChangeRate).div(dec18)
       );
     }
 

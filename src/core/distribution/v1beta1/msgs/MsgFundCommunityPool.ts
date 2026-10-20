@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Coins } from '../../../Coins';
@@ -62,7 +61,7 @@ export class MsgFundCommunityPoolV1B1 extends JSONSerializable<
 
   public static fromProto(
     proto: MsgFundCommunityPoolV1B1.Proto,
-    _isClassic?: Boolean
+    _isClassic?: boolean
   ): MsgFundCommunityPoolV1B1 {
     return new MsgFundCommunityPoolV1B1(
       proto.depositor,

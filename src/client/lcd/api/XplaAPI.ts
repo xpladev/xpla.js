@@ -1,3 +1,4 @@
+import { Int64Input, parseInt64 } from '../../../util/int64';
 import { Coins, RewardParamsV1B1 } from '../../../core';
 import { APIParams, CosmosParams } from '../APIRequester';
 import { LCDClient } from '../LCDClient';
@@ -9,31 +10,47 @@ export class XplaAPI extends BaseAPI {
     super(lcd.apiRequester);
   }
 
-  public async rewardPool(params: APIParams | CosmosParams = {}): Promise<Coins> {
-    return this.c.get<{ pool: any[] }>('/xpla/reward/v1beta1/pool', params)
+  public async rewardPool(
+    params: APIParams | CosmosParams = {}
+  ): Promise<Coins> {
+    return this.c
+      .get<{ pool: any[] }>('/xpla/reward/v1beta1/pool', params)
       .then(d => Coins.fromData(d.pool));
   }
 
-  public async volunteerValidators(params: APIParams | CosmosParams = {}): Promise<string[]> {
-    return this.c.get<{ volunteer_validators: string[] }>('/xpla/volunteer/v1beta1/validators', params)
+  public async volunteerValidators(
+    params: APIParams | CosmosParams = {}
+  ): Promise<string[]> {
+    return this.c
+      .get<{ volunteer_validators: string[] }>(
+        '/xpla/volunteer/v1beta1/validators',
+        params
+      )
       .then(d => d.volunteer_validators);
   }
 
   public async burnOngoingProposal(
-    proposal_id: number,
-    params: APIParams | CosmosParams = {},
+    proposal_id: Int64Input,
+    params: APIParams | CosmosParams = {}
   ): Promise<BurnProposal> {
-    params = { ...params, proposal_id };
-    return this.c.get<BurnProposal.Data>(`/xpla/burn/v1beta1/ongoing_proposal`, params)
+    params = { ...params, proposal_id: parseInt64(proposal_id).toFixed() };
+    return this.c
+      .get<BurnProposal.Data>(`/xpla/burn/v1beta1/ongoing_proposal`, params)
       .then(d => {
         const b = BurnProposal.fromData(d);
-        b.proposal_id = proposal_id;
+        b.proposal_id = parseInt64(proposal_id);
         return b;
       });
   }
 
-  public async burnOngoingProposals(params: APIParams | CosmosParams = {}): Promise<BurnProposal[]> {
-    return this.c.get<{ proposals: BurnProposal.Data[] }>('/xpla/burn/v1beta1/ongoing_proposals', params)
+  public async burnOngoingProposals(
+    params: APIParams | CosmosParams = {}
+  ): Promise<BurnProposal[]> {
+    return this.c
+      .get<{ proposals: BurnProposal.Data[] }>(
+        '/xpla/burn/v1beta1/ongoing_proposals',
+        params
+      )
       .then(d => d.proposals.map(p => BurnProposal.fromData(p)));
   }
 

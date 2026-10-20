@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { Consensus as Consensus_pb } from '@xpla/xpla.proto/tendermint/version/types';
 import { App as App_pb } from '@xpla/xpla.proto/tendermint/version/types';
@@ -13,12 +13,17 @@ export class Consensus extends JSONSerializable<
   Consensus.Data,
   Consensus.Proto
 > {
+  public block: Int64;
+  public app: Int64;
   /**
    * @param block
    * @param app
    */
-  constructor(public block: number, public app: number) {
+
+  constructor(block: Int64Input, app: Int64Input) {
     super();
+    this.block = parseInt64(block);
+    this.app = parseInt64(app);
   }
 
   public static fromAmino(_: any): Consensus {
@@ -31,7 +36,7 @@ export class Consensus extends JSONSerializable<
 
   public static fromData(data: Consensus.Data): Consensus {
     const { block, app } = data;
-    return new Consensus(Number.parseInt(block), Number.parseInt(app));
+    return new Consensus(block, app);
   }
 
   public toData(): Consensus.Data {
@@ -44,14 +49,14 @@ export class Consensus extends JSONSerializable<
   }
 
   public static fromProto(proto: Consensus.Proto): Consensus {
-    return new Consensus(proto.block.toNumber(), proto.app.toNumber());
+    return new Consensus(proto.block, proto.app);
   }
 
   public toProto(): Consensus.Proto {
     const { block, app } = this;
     return Consensus_pb.fromPartial({
-      block,
-      app,
+      block: block.toString(),
+      app: app.toString(),
     });
   }
 }
@@ -71,12 +76,18 @@ export namespace Consensus {
  * state transition machine.
  */
 export class App extends JSONSerializable<any, App.Data, App.Proto> {
+  public protocol: Int64;
   /**
    * @param protocol
    * @param software
    */
-  constructor(public protocol: number, public software: string) {
+
+  constructor(
+    protocol: Int64Input,
+    public software: string
+  ) {
     super();
+    this.protocol = parseInt64(protocol);
   }
 
   public static fromAmino(_: any): App {
@@ -89,7 +100,7 @@ export class App extends JSONSerializable<any, App.Data, App.Proto> {
 
   public static fromData(data: App.Data): App {
     const { protocol, software } = data;
-    return new App(Number.parseInt(protocol), software);
+    return new App(protocol, software);
   }
 
   public toData(): App.Data {
@@ -102,13 +113,13 @@ export class App extends JSONSerializable<any, App.Data, App.Proto> {
   }
 
   public static fromProto(proto: App.Proto): App {
-    return new App(proto.protocol.toNumber(), proto.software);
+    return new App(proto.protocol, proto.software);
   }
 
   public toProto(): App.Proto {
     const { protocol, software } = this;
     return App_pb.fromPartial({
-      protocol,
+      protocol: protocol.toString(),
       software: software,
     });
   }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Coin } from '../../../Coin';
 import { AccAddress } from '../../../bech32';
@@ -42,7 +41,7 @@ export class MsgConvertCoinV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgConvertCoinV1.Amino {
     const { coin, receiver, sender } = this;
     return {
-      type: 'evm/MsgConvertCoin',
+      type: 'cosmos/evm/x/erc20/MsgConvertCoin',
       value: {
         coin: coin ? coin.toAmino() : undefined,
         receiver,
@@ -102,7 +101,11 @@ export class MsgConvertCoinV1 extends JSONSerializable<
 
 export namespace MsgConvertCoinV1 {
   export interface Amino {
-    type: 'ethermint/MsgConvertCoin' | 'evmos/MsgConvertCoin' | 'evm/MsgConvertCoin';
+    type:
+      | 'ethermint/MsgConvertCoin'
+      | 'evmos/MsgConvertCoin'
+      | 'evm/MsgConvertCoin'
+      | 'cosmos/evm/x/erc20/MsgConvertCoin';
     value: {
       coin: Coin.Amino | undefined;
       receiver: AccAddress;

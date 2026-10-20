@@ -38,7 +38,7 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateEvmParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'evm/MsgUpdateParams',
+      type: 'cosmos/evm/x/vm/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -103,7 +103,10 @@ export class MsgUpdateEvmParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateEvmParamsV1 {
   export interface Amino {
-    type: 'ethermint/x/evm/MsgUpdateParams' | 'evm/MsgUpdateParams';
+    type:
+      | 'ethermint/x/evm/MsgUpdateParams'
+      | 'evm/MsgUpdateParams'
+      | 'cosmos/evm/x/vm/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: EvmParamsV1.Amino | undefined;
@@ -112,8 +115,7 @@ export namespace MsgUpdateEvmParamsV1 {
 
   export interface Data {
     '@type':
-      | '/ethermint.evm.v1.MsgUpdateParams'
-      | '/cosmos.evm.vm.v1.MsgUpdateParams';
+      '/ethermint.evm.v1.MsgUpdateParams' | '/cosmos.evm.vm.v1.MsgUpdateParams';
     authority: AccAddress;
     params: EvmParamsV1.Data | undefined;
   }

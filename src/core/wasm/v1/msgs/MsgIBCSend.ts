@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { Int, Numeric } from '../../../../core/numeric';
@@ -24,7 +23,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
     public channel: string,
     timeout_height: Numeric.Input,
     timeout_timestamp: Numeric.Input,
-    data: Uint8Array | number[] | string,
+    data: Uint8Array | number[] | string
   ) {
     super();
     this.timeout_height = new Int(timeout_height);
@@ -33,29 +32,14 @@ export class MsgIBCSendV1 extends JSONSerializable<
   }
 
   public static fromAmino(
-    data_: MsgIBCSendV1.Amino,
+    _data: MsgIBCSendV1.Amino,
     _isClassic?: boolean
   ): MsgIBCSendV1 {
-    const {
-      channel, timeout_height, timeout_timestamp, data,
-    } = data_;
-    return new MsgIBCSendV1(
-      channel ?? '',
-      timeout_height ?? 0,
-      timeout_timestamp ?? 0,
-      data ?? [],
-    );
+    throw new Error('Amino not supported');
   }
 
   public toAmino(_isClassic?: boolean): MsgIBCSendV1.Amino {
-    const { channel, timeout_height, timeout_timestamp, data } = this;
-    return {
-      type: undefined,
-      channel: channel.length > 0 ? channel : undefined,
-      timeout_height: timeout_height.gt(0) ? timeout_height.toFixed() : undefined,
-      timeout_timestamp: timeout_timestamp.gt(0) ? timeout_timestamp.toFixed() : undefined,
-      data: data.length > 0 ? Convert.toBase64(data) : undefined,
-    };
+    throw new Error('Amino not supported');
   }
 
   public static fromProto(
@@ -66,7 +50,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
       proto.channel,
       proto.timeoutHeight.toString(),
       proto.timeoutTimestamp.toString(),
-      proto.data,
+      proto.data
     );
   }
 
@@ -99,12 +83,7 @@ export class MsgIBCSendV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgIBCSendV1 {
     const { channel, timeout_height, timeout_timestamp, data } = data_;
-    return new MsgIBCSendV1(
-      channel,
-      timeout_height,
-      timeout_timestamp,
-      data,
-    );
+    return new MsgIBCSendV1(channel, timeout_height, timeout_timestamp, data);
   }
 
   public toData(_isClassic?: boolean): MsgIBCSendV1.Data {

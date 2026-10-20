@@ -597,24 +597,32 @@ export namespace Msg {
       case 'ethermint/MsgConvertCoin':
       case 'evmos/MsgConvertCoin':
       case 'evm/MsgConvertCoin':
+      case 'cosmos/evm/x/erc20/MsgConvertCoin':
         return MsgConvertCoinV1.fromAmino(data);
       case 'ethermint/MsgConvertERC20':
       case 'evmos/MsgConvertERC20':
       case 'evm/MsgConvertERC20':
+      case 'cosmos/evm/MsgConvertERC20':
         return MsgConvertERC20V1.fromAmino(data);
       case 'ethermint/erc20/MsgUpdateParams':
       case 'evmos/erc20/MsgUpdateParams':
+      case 'evm/erc20/MsgUpdateParams':
+      case 'cosmos/evm/x/erc20/MsgUpdateParams':
         return MsgUpdateERC20ParamsV1.fromAmino(data);
 
       // evm
       case 'ethermint/MsgEthereumTx':
       case 'evm/MsgEthereumTx':
+      case 'cosmos/evm/MsgEthereumTx':
         return MsgEthereumTxV1.fromAmino(data);
       case 'ethermint/MsgRegisterPreinstalls':
       case 'evm/MsgRegisterPreinstalls':
+      case 'cosmos/evm/MsgRegisterPreinstalls':
+      case 'cosmos/evm/x/vm/MsgRegisterPreinstalls':
         return MsgRegisterPreinstallsV1.fromAmino(data);
       case 'ethermint/x/evm/MsgUpdateParams':
       case 'evm/MsgUpdateParams':
+      case 'cosmos/evm/x/vm/MsgUpdateParams':
         return MsgUpdateEvmParamsV1.fromAmino(data);
 
       // xpla
@@ -934,6 +942,8 @@ export namespace Msg {
       case '/evmos.erc20.v1.MsgConvertERC20':
       case '/cosmos.evm.erc20.v1.MsgConvertERC20':
         return MsgConvertERC20V1.fromData(data);
+      case '/cosmos.evm.erc20.v1.MsgUpdateParams':
+        return MsgUpdateERC20ParamsV1.fromData(data);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':
@@ -1264,6 +1274,8 @@ export namespace Msg {
       case '/evmos.erc20.v1.MsgConvertERC20':
       case '/cosmos.evm.erc20.v1.MsgConvertERC20':
         return MsgConvertERC20V1.unpackAny(proto);
+      case '/cosmos.evm.erc20.v1.MsgUpdateParams':
+        return MsgUpdateERC20ParamsV1.unpackAny(proto);
 
       // evm
       case '/ethermint.evm.v1.MsgEthereumTx':

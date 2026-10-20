@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Coins } from '../../../Coins';
 import { AccAddress } from '../../../bech32';
@@ -11,18 +12,21 @@ export class BurnProposal extends JSONSerializable<
   BurnProposal.Proto
 > {
   public amount: Coins;
+  public proposal_id: Int64 | undefined;
 
   /**
-   * @param proposal_id 
-   * @param proposer 
-   * @param amount 
+   * @param proposal_id
+   * @param proposer
+   * @param amount
    */
   constructor(
-    public proposal_id: number | undefined,
+    proposal_id: Int64Input | undefined,
     public proposer: AccAddress,
-    amount: Coins.Input,
+    amount: Coins.Input
   ) {
     super();
+    this.proposal_id =
+      proposal_id === undefined ? undefined : parseInt64(proposal_id);
     this.amount = new Coins(amount);
   }
 
@@ -31,27 +35,13 @@ export class BurnProposal extends JSONSerializable<
     _isClassic?: boolean
   ): BurnProposal {
     const {
-      value: {
-        proposal_id,
-        proposer,
-        amount,
-      },
+      value: { proposal_id, proposer, amount },
     } = data;
-    return new BurnProposal(
-      proposal_id ? Number.parseInt(proposal_id) : undefined,
-      proposer,
-      Coins.fromAmino(amount),
-    );
+    return new BurnProposal(proposal_id, proposer, Coins.fromAmino(amount));
   }
 
-  public toAmino(
-    _isClassic?: boolean
-  ): BurnProposal.Amino {
-    const {
-      proposal_id,
-      proposer,
-      amount,
-    } = this;
+  public toAmino(_isClassic?: boolean): BurnProposal.Amino {
+    const { proposal_id, proposer, amount } = this;
     return {
       type: 'xpla/BurnProposal',
       value: {
@@ -66,24 +56,12 @@ export class BurnProposal extends JSONSerializable<
     proto: BurnProposal.Data,
     _isClassic?: boolean
   ): BurnProposal {
-    const {
-      proposal_id,
-      proposer,
-      amount,
-    } = proto;
-    return new BurnProposal(
-      proposal_id ? Number.parseInt(proposal_id) : undefined,
-      proposer,
-      Coins.fromData(amount),
-    );
+    const { proposal_id, proposer, amount } = proto;
+    return new BurnProposal(proposal_id, proposer, Coins.fromData(amount));
   }
 
   public toData(_isClassic?: boolean): BurnProposal.Data {
-    const {
-      proposal_id,
-      proposer,
-      amount,
-    } = this;
+    const { proposal_id, proposer, amount } = this;
     return {
       '@type': '/xpla.burn.v1beta1.BurnProposal',
       proposal_id: proposal_id?.toString(),
@@ -97,20 +75,14 @@ export class BurnProposal extends JSONSerializable<
     _isClassic?: boolean
   ): BurnProposal {
     return new BurnProposal(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.proposer,
-      Coins.fromProto(proto.amount),
+      Coins.fromProto(proto.amount)
     );
   }
 
-  public toProto(
-    _isClassic?: boolean
-  ): BurnProposal.Proto {
-    const {
-      proposal_id,
-      proposer,
-      amount,
-    } = this;
+  public toProto(_isClassic?: boolean): BurnProposal.Proto {
+    const { proposal_id, proposer, amount } = this;
     return BurnProposal_pb.fromPartial({
       proposalId: proposal_id?.toString(),
       proposer,
@@ -121,16 +93,11 @@ export class BurnProposal extends JSONSerializable<
   public packAny(isClassic?: boolean): Any {
     return Any.fromPartial({
       typeUrl: '/xpla.burn.v1beta1.BurnProposal',
-      value: BurnProposal_pb.encode(
-        this.toProto(isClassic)
-      ).finish(),
+      value: BurnProposal_pb.encode(this.toProto(isClassic)).finish(),
     });
   }
 
-  public static unpackAny(
-    msgAny: Any,
-    isClassic?: boolean,
-  ): BurnProposal {
+  public static unpackAny(msgAny: Any, isClassic?: boolean): BurnProposal {
     return BurnProposal.fromProto(
       BurnProposal_pb.decode(msgAny.value),
       isClassic

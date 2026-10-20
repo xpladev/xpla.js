@@ -1,3 +1,4 @@
+import { Int64Input, Int64 } from '../../util/int64';
 import { LCDClient } from './LCDClient';
 import { Key } from '../../key';
 import { CreateTxOptions } from '../lcd/api/TxAPI';
@@ -6,11 +7,14 @@ import { SignMode as SignModeV2 } from '@xpla/xpla.proto/cosmos/tx/signing/v1bet
 import { Coins, Fee } from '../../core';
 
 export class Wallet {
-  constructor(public lcd: LCDClient, public key: Key) {}
+  constructor(
+    public lcd: LCDClient,
+    public key: Key
+  ) {}
 
   public accountNumberAndSequence(): Promise<{
-    account_number: number;
-    sequence: number;
+    account_number: Int64;
+    sequence: Int64;
   }> {
     return this.lcd.auth.accountInfo(this.key.accAddress).then(d => {
       return {
@@ -20,13 +24,13 @@ export class Wallet {
     });
   }
 
-  public accountNumber(): Promise<number> {
+  public accountNumber(): Promise<Int64> {
     return this.lcd.auth.accountInfo(this.key.accAddress).then(d => {
       return d.getAccountNumber();
     });
   }
 
-  public sequence(): Promise<number> {
+  public sequence(): Promise<Int64> {
     return this.lcd.auth.accountInfo(this.key.accAddress).then(d => {
       return d.getSequenceNumber();
     });
@@ -34,7 +38,7 @@ export class Wallet {
 
   public async createTx(
     options: CreateTxOptions & {
-      sequence?: number;
+      sequence?: Int64Input;
     }
   ): Promise<Tx> {
     return this.lcd.tx.create(
@@ -51,8 +55,8 @@ export class Wallet {
 
   public async createAndSignTx(
     options: CreateTxOptions & {
-      sequence?: number;
-      accountNumber?: number;
+      sequence?: Int64Input;
+      accountNumber?: Int64Input;
       signMode?: SignModeV2;
     }
   ): Promise<Tx> {
@@ -87,31 +91,31 @@ export class Wallet {
         },
         this.lcd.config.isClassic
       );
-    }
-    else {
+    } else {
       const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
       const gasAdjustment =
         options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
-      const feeDenoms = options.feeDenoms ?? [ 'axpla' ];
+      const feeDenoms = options.feeDenoms ?? ['axpla'];
       let gasPricesCoins: Coins | undefined;
-  
+
       if (gasPrices) {
         gasPricesCoins = new Coins(gasPrices);
-  
+
         if (feeDenoms) {
           const gasPricesCoinsFiltered = gasPricesCoins.filter(c =>
             feeDenoms.includes(c.denom)
           );
-  
+
           if (gasPricesCoinsFiltered.toArray().length > 0) {
             gasPricesCoins = gasPricesCoinsFiltered;
           }
         }
       }
 
-      options.fee = new Fee(200000, gasPricesCoins
-        ? gasPricesCoins.mul(200000).toIntCeilCoins()
-        : '0axpla');
+      options.fee = new Fee(
+        200000,
+        gasPricesCoins ? gasPricesCoins.mul(200000).toIntCeilCoins() : '0axpla'
+      );
       tx = await this.createTx(options);
       tx = await this.key.signTx(
         tx,
@@ -123,7 +127,7 @@ export class Wallet {
         },
         this.lcd.config.isClassic
       );
-  
+
       const gas = await this.lcd.tx.estimateGas(tx, { gasAdjustment });
       const feeAmount = gasPricesCoins
         ? gasPricesCoins.mul(gas).toIntCeilCoins()

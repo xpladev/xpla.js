@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,12 +9,18 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
   MsgGroupWithdrawProposalV1.Data,
   MsgGroupWithdrawProposalV1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal is the unique ID of the proposal
    * @param address is the admin of the group policy or one of the proposer of the proposal
    */
-  constructor(public proposal_id: number, public address: AccAddress) {
+
+  constructor(
+    proposal_id: Int64Input,
+    public address: AccAddress
+  ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -24,10 +30,7 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
     const {
       value: { proposal_id, address },
     } = data;
-    return new MsgGroupWithdrawProposalV1(
-      Number.parseInt(proposal_id),
-      address
-    );
+    return new MsgGroupWithdrawProposalV1(proposal_id, address);
   }
 
   public toAmino(isClassic?: boolean): MsgGroupWithdrawProposalV1.Amino {
@@ -48,10 +51,7 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgGroupWithdrawProposalV1 {
     const { proposal_id, address } = data;
-    return new MsgGroupWithdrawProposalV1(
-      Number.parseInt(proposal_id),
-      address
-    );
+    return new MsgGroupWithdrawProposalV1(proposal_id, address);
   }
 
   public toData(_isClassic?: boolean): MsgGroupWithdrawProposalV1.Data {
@@ -67,16 +67,13 @@ export class MsgGroupWithdrawProposalV1 extends JSONSerializable<
     proto: MsgGroupWithdrawProposalV1.Proto,
     _isClassic?: boolean
   ): MsgGroupWithdrawProposalV1 {
-    return new MsgGroupWithdrawProposalV1(
-      proto.proposalId.toNumber(),
-      proto.address
-    );
+    return new MsgGroupWithdrawProposalV1(proto.proposalId, proto.address);
   }
 
   public toProto(_isClassic?: boolean): MsgGroupWithdrawProposalV1.Proto {
     const { proposal_id, address } = this;
     return MsgGroupWithdrawProposalV1_pb.fromPartial({
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       address,
     });
   }

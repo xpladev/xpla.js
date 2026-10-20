@@ -1,3 +1,4 @@
+import { Int64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { PublicKey } from '../PublicKey';
@@ -26,11 +27,11 @@ export class DelayedVestingAccount extends JSONSerializable<
     super();
   }
 
-  public getAccountNumber(): number {
+  public getAccountNumber(): Int64 {
     return this.base_vesting_account.getAccountNumber();
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.base_vesting_account.getSequenceNumber();
   }
 

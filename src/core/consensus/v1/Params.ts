@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Int, Numeric } from '../../../core/numeric';
 import { Duration } from '../../../core/Duration';
@@ -120,7 +119,7 @@ export class EvidenceParams extends JSONSerializable<
     const { max_age_num_blocks, max_age_duration, max_bytes } = data;
     return new EvidenceParams(
       max_age_num_blocks ?? 0,
-      Duration.fromString(max_age_duration ?? '0s'),
+      Duration.fromAmino(max_age_duration ?? '0'),
       max_bytes ?? 0
     );
   }
@@ -441,10 +440,7 @@ export class ABCIParams extends JSONSerializable<
     this.voteExtensionsEnableHeight = new Int(voteExtensionsEnableHeight);
   }
 
-  public static fromAmino(
-    data: ABCIParams.Amino,
-    _?: boolean
-  ): ABCIParams {
+  public static fromAmino(data: ABCIParams.Amino, _?: boolean): ABCIParams {
     const { vote_extensions_enable_height } = data;
     return new ABCIParams(vote_extensions_enable_height ?? 0);
   }
@@ -473,10 +469,7 @@ export class ABCIParams extends JSONSerializable<
     return res;
   }
 
-  public static fromProto(
-    proto: ABCIParams.Proto,
-    _?: boolean
-  ): ABCIParams {
+  public static fromProto(proto: ABCIParams.Proto, _?: boolean): ABCIParams {
     return new ABCIParams(proto.voteExtensionsEnableHeight.toString());
   }
 
@@ -526,7 +519,7 @@ export class ConsensusParams extends JSONSerializable<
       evidence ? EvidenceParams.fromAmino(evidence) : undefined,
       validator ? ValidatorParams.fromAmino(validator) : undefined,
       version ? VersionParams.fromAmino(version) : undefined,
-      abci ? ABCIParams.fromAmino(abci) : undefined,
+      abci ? ABCIParams.fromAmino(abci) : undefined
     );
   }
 
@@ -552,7 +545,7 @@ export class ConsensusParams extends JSONSerializable<
       evidence ? EvidenceParams.fromData(evidence) : undefined,
       validator ? ValidatorParams.fromData(validator) : undefined,
       version ? VersionParams.fromData(version) : undefined,
-      abci ? ABCIParams.fromData(abci) : undefined,
+      abci ? ABCIParams.fromData(abci) : undefined
     );
   }
 
@@ -579,7 +572,7 @@ export class ConsensusParams extends JSONSerializable<
       proto.evidence ? EvidenceParams.fromProto(proto.evidence) : undefined,
       proto.validator ? ValidatorParams.fromProto(proto.validator) : undefined,
       proto.version ? VersionParams.fromProto(proto.version) : undefined,
-      proto.abci ? ABCIParams.fromProto(proto.abci) : undefined,
+      proto.abci ? ABCIParams.fromProto(proto.abci) : undefined
     );
   }
 

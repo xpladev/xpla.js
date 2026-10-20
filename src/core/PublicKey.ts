@@ -5,10 +5,10 @@ import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { PubKey as PubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/secp256k1/keys';
 import { PubKey as ValConsPubKey_pb } from '@xpla/xpla.proto/cosmos/crypto/ed25519/keys';
 import { bech32 } from 'bech32';
-import { encode as eip55 } from 'eip55';
-import * as secp256k1 from '@noble/secp256k1';
-import { keccak_256 } from '@noble/hashes/sha3';
-import { sha256 } from '@noble/hashes/sha256';
+import { checksumEvmAddress as eip55 } from './eip55';
+import { secp256k1 } from '@noble/curves/secp256k1.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { sha256 } from '@noble/hashes/sha2.js';
 
 // As discussed in https://github.com/binance-chain/javascript-sdk/issues/163
 // Prefixes listed here: https://github.com/tendermint/tendermint/blob/d419fffe18531317c28c29a292ad7d253f6cafdf/docs/spec/blockchain/encoding.md#public-key-cryptography
@@ -17,11 +17,11 @@ import { sha256 } from '@noble/hashes/sha256';
 //   'eb5ae987' + '21' /* fixed length */,
 // );
 const pubkeyAminoPrefixEd25519 = Convert.fromHex(
-  '1624de64' + '20' /* fixed length */,
+  '1624de64' + '20' /* fixed length */
 );
 /** See https://github.com/tendermint/tendermint/commit/38b401657e4ad7a7eeb3c30a3cbf512037df3740 */
 const pubkeyAminoPrefixMultisigThreshold = Convert.fromHex(
-  '22c1f7e2' /* variable length not included */,
+  '22c1f7e2' /* variable length not included */
 );
 
 const encodeUvarint = (value: number | string): number[] => {
@@ -34,29 +34,8 @@ const encodeUvarint = (value: number | string): number[] => {
   return [checked];
 };
 
-const isHexPrefixed = (str: string): boolean => {
-  if (typeof str !== 'string') {
-    throw new Error(
-      `[isHexPrefixed] input must be type 'string', received type ${typeof str}`
-    );
-  }
-
-  return str.startsWith('0x');
-};
-
-const stripHexPrefix = (str: string): string => {
-  if (typeof str !== 'string')
-    throw new Error(
-      `[stripHexPrefix] input must be type 'string', received ${typeof str}`
-    );
-
-  return isHexPrefixed(str) ? str.slice(2) : str;
-};
-
 export type PublicKey =
-  | SimplePublicKey
-  | LegacyAminoMultisigPublicKey
-  | ValConsPublicKey;
+  SimplePublicKey | LegacyAminoMultisigPublicKey | ValConsPublicKey;
 
 export namespace PublicKey {
   export type Amino =
@@ -108,7 +87,11 @@ export namespace PublicKey {
     throw new Error(`Pubkey type ${typeUrl} not recognized`);
   }
 
-  export async function verify(pubkey: PublicKey, payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
+  export async function verify(
+    pubkey: PublicKey,
+    payload: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> {
     return pubkey.verify(payload, signature);
   }
 
@@ -123,7 +106,7 @@ export namespace PublicKey {
   }
 
   export function rawToAddress(raw: Uint8Array, prefix?: string): string {
-		const words = bech32.toWords(raw);
+    const words = bech32.toWords(raw);
     const address = bech32.encode(prefix ?? 'xpla', words);
     return address;
   }
@@ -134,14 +117,13 @@ export class SimplePublicKey extends JSONSerializable<
   SimplePublicKey.Data,
   SimplePublicKey.Proto
 > {
-  public key: string;  // base64
+  public key: string; // base64
 
   constructor(key: Uint8Array | string) {
     super();
     if (typeof key === 'string') {
       this.key = key;
-    }
-    else {
+    } else {
       this.key = Convert.toBase64(key);
     }
   }
@@ -195,10 +177,10 @@ export class SimplePublicKey extends JSONSerializable<
 
   public rawAddress(): Uint8Array {
     const pubkeyData = Convert.fromBase64(this.key);
-		const x0 = secp256k1.Point.fromHex(pubkeyData).toRawBytes(false);
+    const x0 = secp256k1.Point.fromBytes(pubkeyData).toBytes(false);
 
-		const x1 = keccak_256(x0.slice(1));
-		const x2 = x1.slice(12);
+    const x1 = keccak_256(x0.slice(1));
+    const x2 = x1.slice(12);
 
     return x2;
   }
@@ -219,12 +201,28 @@ export class SimplePublicKey extends JSONSerializable<
     return eip55('0x' + Convert.toHex(this.rawAddress()));
   }
 
-  public async verify(payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
-    return secp256k1.verify(
-      signature,
-      keccak_256(payload),
-      Convert.fromBase64(this.key),
-    );
+  public async verify(
+    payload: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> {
+    // Preserve the legacy verifier's compact/DER support and false-on-invalid contract.
+    try {
+      let format: 'compact' | 'der' = 'compact';
+      try {
+        secp256k1.Signature.fromBytes(signature, 'der');
+        format = 'der';
+      } catch {
+        // Legacy signatures may instead contain the raw 32-byte r and s values.
+      }
+      return secp256k1.verify(
+        signature,
+        keccak_256(payload),
+        Convert.fromBase64(this.key),
+        { prehash: false, format }
+      );
+    } catch {
+      return false;
+    }
   }
 }
 
@@ -249,7 +247,10 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
   LegacyAminoMultisigPublicKey.Data,
   LegacyAminoMultisigPublicKey.Proto
 > {
-  constructor(public threshold: number, public pubkeys: SimplePublicKey[]) {
+  constructor(
+    public threshold: number,
+    public pubkeys: SimplePublicKey[]
+  ) {
     super();
   }
 
@@ -353,8 +354,13 @@ export class LegacyAminoMultisigPublicKey extends JSONSerializable<
     );
   }
 
-  public async verify(_payload: Uint8Array, _signature: Uint8Array): Promise<boolean> {
-    throw new Error('Could not verify: LegacyAminoMultisigPublicKey cannot be used to verify');
+  public async verify(
+    _payload: Uint8Array,
+    _signature: Uint8Array
+  ): Promise<boolean> {
+    throw new Error(
+      'Could not verify: LegacyAminoMultisigPublicKey cannot be used to verify'
+    );
   }
 }
 
@@ -410,9 +416,7 @@ export class ValConsPublicKey extends JSONSerializable<
   public static fromProto(
     pubkeyProto: ValConsPublicKey.Proto
   ): ValConsPublicKey {
-    return new ValConsPublicKey(
-      Convert.toBase64(pubkeyProto.key)
-    );
+    return new ValConsPublicKey(Convert.toBase64(pubkeyProto.key));
   }
 
   public toProto(): ValConsPublicKey.Proto {
@@ -463,8 +467,13 @@ export class ValConsPublicKey extends JSONSerializable<
     return eip55('0x' + Convert.toHex(this.rawAddress()));
   }
 
-  public async verify(_payload: Uint8Array, _signature: Uint8Array): Promise<boolean> {
-    throw new Error('Could not verify: ValConsPublicKey cannot be used to verify');
+  public async verify(
+    _payload: Uint8Array,
+    _signature: Uint8Array
+  ): Promise<boolean> {
+    throw new Error(
+      'Could not verify: ValConsPublicKey cannot be used to verify'
+    );
   }
 }
 

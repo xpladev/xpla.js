@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { BaseAPI } from './BaseAPI';
 import { Plan } from '../../../core';
 import { APIParams, CosmosParams, PaginationOptions } from '../APIRequester';
@@ -5,7 +6,7 @@ import { LCDClient } from '../LCDClient';
 
 export interface ModuleVersion {
   name: string;
-  version: number;
+  version: Int64;
 }
 
 export namespace ModuleVersion {
@@ -27,19 +28,21 @@ export class UpgradeAPI extends BaseAPI {
   public async appliedPlan(
     name: string,
     params: Partial<PaginationOptions & APIParams> = {}
-  ): Promise<number> {
+  ): Promise<Int64> {
     return this.c
       .get<{ height: string }>(
         `/cosmos/upgrade/v1beta1/applied_plan/${name}`,
         params
       )
-      .then(d => Number.parseInt(d.height));
+      .then(d => parseInt64(d.height));
   }
 
   /**
    * Look up the current plan
    */
-  public async currentPlan(params: APIParams | CosmosParams = {}): Promise<Plan | null> {
+  public async currentPlan(
+    params: APIParams | CosmosParams = {}
+  ): Promise<Plan | null> {
     if (this.lcd.config.isClassic) {
       throw new Error('Not supported for the network');
     }
@@ -65,7 +68,7 @@ export class UpgradeAPI extends BaseAPI {
       }>(`/cosmos/upgrade/v1beta1/module_versions`, params)
       .then(d =>
         d.module_versions.map(mv => {
-          return { name: mv.name, version: Number.parseInt(mv.version) };
+          return { name: mv.name, version: parseInt64(mv.version) };
         })
       );
   }
@@ -74,7 +77,13 @@ export class UpgradeAPI extends BaseAPI {
     return this.c.get('/cosmos/upgrade/v1beta1/authority', params);
   }
 
-  public async upgradedConsensusState(height: number, params: APIParams | CosmosParams = {}): Promise<any> {
-    return this.c.get(`/cosmos/upgrade/v1beta1/upgraded_consensus_state/${height}`, params);
+  public async upgradedConsensusState(
+    height: Int64Input,
+    params: APIParams | CosmosParams = {}
+  ): Promise<any> {
+    return this.c.get(
+      `/cosmos/upgrade/v1beta1/upgraded_consensus_state/${height}`,
+      params
+    );
   }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
 import { AccAddress } from '../../../../../bech32';
@@ -53,8 +53,8 @@ export class MsgUpgradeClientV1 extends JSONSerializable<
     } = data;
     return new MsgUpgradeClientV1(
       client_id,
-      client_state,
-      consensus_state,
+      anyFromData(client_state),
+      anyFromData(consensus_state),
       proof_upgrade_client,
       proof_upgrade_consensus_state,
       signer
@@ -73,8 +73,8 @@ export class MsgUpgradeClientV1 extends JSONSerializable<
     return {
       '@type': '/ibc.core.client.v1.MsgUpgradeClient',
       client_id,
-      client_state,
-      consensus_state,
+      client_state: anyToData(client_state),
+      consensus_state: anyToData(consensus_state),
       proof_upgrade_client,
       proof_upgrade_consensus_state,
       signer,
@@ -110,7 +110,7 @@ export class MsgUpgradeClientV1 extends JSONSerializable<
       consensusState: consensus_state,
       proofUpgradeClient: Convert.fromBase64(proof_upgrade_client),
       proofUpgradeConsensusState: Convert.fromBase64(
-        proof_upgrade_consensus_state,
+        proof_upgrade_consensus_state
       ),
       signer: signer,
     });
@@ -124,7 +124,9 @@ export class MsgUpgradeClientV1 extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgUpgradeClientV1 {
-    return MsgUpgradeClientV1.fromProto(MsgUpgradeClientV1_pb.decode(msgAny.value));
+    return MsgUpgradeClientV1.fromProto(
+      MsgUpgradeClientV1_pb.decode(msgAny.value)
+    );
   }
 }
 

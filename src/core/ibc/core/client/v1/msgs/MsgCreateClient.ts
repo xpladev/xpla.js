@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -19,7 +19,7 @@ export class MsgCreateClientV1 extends JSONSerializable<
   constructor(
     public client_state: any | undefined,
     public consensus_state: any | undefined,
-    public signer: AccAddress,
+    public signer: AccAddress
   ) {
     super();
   }
@@ -37,15 +37,19 @@ export class MsgCreateClientV1 extends JSONSerializable<
     _?: boolean
   ): MsgCreateClientV1 {
     const { client_state, consensus_state, signer } = data;
-    return new MsgCreateClientV1(client_state, consensus_state, signer);
+    return new MsgCreateClientV1(
+      anyFromData(client_state),
+      anyFromData(consensus_state),
+      signer
+    );
   }
 
   public toData(_?: boolean): MsgCreateClientV1.Data {
     const { client_state, consensus_state, signer } = this;
     return {
       '@type': '/ibc.core.client.v1.MsgCreateClient',
-      client_state,
-      consensus_state,
+      client_state: anyToData(client_state),
+      consensus_state: anyToData(consensus_state),
       signer,
     };
   }
@@ -78,7 +82,9 @@ export class MsgCreateClientV1 extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgCreateClientV1 {
-    return MsgCreateClientV1.fromProto(MsgCreateClientV1_pb.decode(msgAny.value));
+    return MsgCreateClientV1.fromProto(
+      MsgCreateClientV1_pb.decode(msgAny.value)
+    );
   }
 }
 

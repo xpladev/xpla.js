@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Coin } from '../../../Coin';
 import { AccAddress, ValAddress } from '../../../bech32';
@@ -15,18 +15,21 @@ export class MsgCancelUnbondingDelegationV1B1 extends JSONSerializable<
   MsgCancelUnbondingDelegationV1B1.Data,
   MsgCancelUnbondingDelegationV1B1.Proto
 > {
+  public creation_height: Int64;
   /**
    * @param delegator_address delegator's account address
    * @param validator_address validator's operator address
    * @param amount Luna to be undelegated
    */
+
   constructor(
     public delegator_address: AccAddress,
     public validator_address: ValAddress,
     public amount: Coin | undefined,
-    public creation_height: number
+    creation_height: Int64Input
   ) {
     super();
+    this.creation_height = parseInt64(creation_height);
   }
 
   public static fromAmino(
@@ -40,7 +43,7 @@ export class MsgCancelUnbondingDelegationV1B1 extends JSONSerializable<
       delegator_address,
       validator_address,
       amount ? Coin.fromAmino(amount) : undefined,
-      Number.parseInt(creation_height)
+      creation_height
     );
   }
 
@@ -68,7 +71,7 @@ export class MsgCancelUnbondingDelegationV1B1 extends JSONSerializable<
       proto.delegatorAddress,
       proto.validatorAddress,
       proto.amount ? Coin.fromProto(proto.amount as Coin.Proto) : undefined,
-      proto.creationHeight.toNumber()
+      proto.creationHeight
     );
   }
 
@@ -79,7 +82,7 @@ export class MsgCancelUnbondingDelegationV1B1 extends JSONSerializable<
       delegatorAddress: delegator_address,
       validatorAddress: validator_address,
       amount: amount ? amount.toProto() : undefined,
-      creationHeight: creation_height,
+      creationHeight: creation_height.toString(),
     });
   }
 
@@ -112,7 +115,7 @@ export class MsgCancelUnbondingDelegationV1B1 extends JSONSerializable<
       delegator_address,
       validator_address,
       amount ? Coin.fromData(amount) : undefined,
-      Number.parseInt(creation_height)
+      creation_height
     );
   }
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Coins } from '../../../Coins';
 import { AccAddress } from '../../../bech32';
@@ -15,19 +15,22 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
 > {
   public amount: Coins;
 
+  public end_time: Int64;
   /**
    * @param from_address sender's address
    * @param to_address recipient's address
    * @param amount value of the transaction
    */
+
   constructor(
     public from_address: AccAddress,
     public to_address: AccAddress,
     amount: Coins.Input,
-    public end_time: number,
+    end_time: Int64Input,
     public delayed: boolean
   ) {
     super();
+    this.end_time = parseInt64(end_time);
     this.amount = new Coins(amount);
   }
 
@@ -42,7 +45,7 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
       from_address,
       to_address,
       Coins.fromAmino(amount),
-      Number.parseInt(end_time),
+      end_time,
       delayed
     );
   }
@@ -73,7 +76,7 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
       from_address,
       to_address,
       Coins.fromData(amount),
-      Number.parseInt(end_time),
+      end_time,
       delayed
     );
   }
@@ -98,7 +101,7 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
       proto.fromAddress,
       proto.toAddress,
       Coins.fromProto(proto.amount),
-      proto.endTime.toNumber(),
+      proto.endTime,
       proto.delayed
     );
   }
@@ -109,7 +112,7 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
       fromAddress: from_address,
       toAddress: to_address,
       amount: amount.toProto(),
-      endTime: end_time,
+      endTime: end_time.toString(),
       delayed,
     });
   }
@@ -140,8 +143,7 @@ export class MsgCreateVestingAccountV1B1 extends JSONSerializable<
 export namespace MsgCreateVestingAccountV1B1 {
   export interface Amino {
     type:
-      | 'vesting/MsgCreateVestingAccount'
-      | 'cosmos-sdk/MsgCreateVestingAccount';
+      'vesting/MsgCreateVestingAccount' | 'cosmos-sdk/MsgCreateVestingAccount';
     value: {
       from_address: AccAddress;
       to_address: AccAddress;

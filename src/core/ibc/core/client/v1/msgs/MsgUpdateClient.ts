@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -19,7 +19,7 @@ export class MsgUpdateClientV1 extends JSONSerializable<
   constructor(
     public client_id: string,
     public client_message: any | undefined,
-    public signer: AccAddress,
+    public signer: AccAddress
   ) {
     super();
   }
@@ -37,7 +37,11 @@ export class MsgUpdateClientV1 extends JSONSerializable<
     _?: boolean
   ): MsgUpdateClientV1 {
     const { client_id, client_message, signer } = data;
-    return new MsgUpdateClientV1(client_id, client_message, signer);
+    return new MsgUpdateClientV1(
+      client_id,
+      anyFromData(client_message),
+      signer
+    );
   }
 
   public toData(_?: boolean): MsgUpdateClientV1.Data {
@@ -45,7 +49,7 @@ export class MsgUpdateClientV1 extends JSONSerializable<
     return {
       '@type': '/ibc.core.client.v1.MsgUpdateClient',
       client_id,
-      client_message,
+      client_message: anyToData(client_message),
       signer,
     };
   }
@@ -78,7 +82,9 @@ export class MsgUpdateClientV1 extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgUpdateClientV1 {
-    return MsgUpdateClientV1.fromProto(MsgUpdateClientV1_pb.decode(msgAny.value));
+    return MsgUpdateClientV1.fromProto(
+      MsgUpdateClientV1_pb.decode(msgAny.value)
+    );
   }
 }
 

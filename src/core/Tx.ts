@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../util/int64';
 import {
   ExtensionOptionData,
   extensionOptionFromData,
@@ -46,7 +47,7 @@ export class Tx {
       new TxBody(
         data.value.msg.map(m => Msg.fromAmino(m, isClassic)),
         data.value.memo,
-        Number.parseInt(data.value.timeout_height)
+        data.value.timeout_height
       ),
       new AuthInfo([], Fee.fromAmino(data.value.fee)),
       signatures.map(s => s.data.single?.signature ?? '')
@@ -174,15 +175,18 @@ export namespace Tx {
 export class TxBody {
   public timeout_timestamp: Timestamp | undefined;
 
+  public timeout_height?: Int64;
   constructor(
     public messages: Msg[],
     public memo?: string,
-    public timeout_height?: number,
+    timeout_height?: Int64Input,
     public unordered?: boolean,
     timeout_timestamp?: Timestamp.Input,
     public extension_options?: Any[],
-    public non_critical_extension_options?: Any[],
+    public non_critical_extension_options?: Any[]
   ) {
+    this.timeout_height =
+      timeout_height === undefined ? undefined : parseInt64(timeout_height);
     this.timeout_timestamp = Timestamp.from(timeout_timestamp);
   }
 
@@ -190,11 +194,13 @@ export class TxBody {
     return new TxBody(
       data.messages.map(m => Msg.fromData(m, isClassic)),
       data.memo,
-      Number.parseInt(data.timeout_height),
+      data.timeout_height,
       data.unordered,
-      data.timeout_timestamp ? Timestamp.fromData(data.timeout_timestamp) : undefined,
+      data.timeout_timestamp
+        ? Timestamp.fromData(data.timeout_timestamp)
+        : undefined,
       data.extension_options?.map(extensionOptionFromData),
-      data.non_critical_extension_options?.map(extensionOptionFromData),
+      data.non_critical_extension_options?.map(extensionOptionFromData)
     );
   }
 
@@ -216,11 +222,11 @@ export class TxBody {
     return new TxBody(
       proto.messages.map(m => Msg.fromProto(m, isClassic)),
       proto.memo,
-      proto.timeoutHeight.toNumber(),
+      proto.timeoutHeight,
       proto.unordered,
       Timestamp.fromProto(proto.timeoutTimestamp),
       proto.extensionOptions,
-      proto.nonCriticalExtensionOptions,
+      proto.nonCriticalExtensionOptions
     );
   }
 
@@ -228,7 +234,7 @@ export class TxBody {
     return TxBody_pb.fromPartial({
       memo: this.memo,
       messages: this.messages.map(m => m.packAny(isClassic)),
-      timeoutHeight: this.timeout_height ?? 0,
+      timeoutHeight: (this.timeout_height ?? 0).toString(),
       unordered: this.unordered ?? false,
       timeoutTimestamp: this.timeout_timestamp?.toProto(),
       extensionOptions: this.extension_options,
@@ -310,16 +316,19 @@ export namespace AuthInfo {
 }
 
 export class SignerInfo {
+  public sequence: Int64;
   constructor(
     public public_key: PublicKey,
-    public sequence: number,
+    sequence: Int64Input,
     public mode_info: ModeInfo
-  ) {}
+  ) {
+    this.sequence = parseInt64(sequence);
+  }
 
   public static fromData(data: SignerInfo.Data): SignerInfo {
     return new SignerInfo(
       PublicKey.fromData(data.public_key ?? new SimplePublicKey('').toData()),
-      Number.parseInt(data.sequence),
+      data.sequence,
       ModeInfo.fromData(data.mode_info)
     );
   }
@@ -336,7 +345,7 @@ export class SignerInfo {
   public static fromProto(proto: SignerInfo.Proto): SignerInfo {
     return new SignerInfo(
       PublicKey.fromProto(proto.publicKey ?? new SimplePublicKey('').packAny()),
-      proto.sequence.toNumber(),
+      proto.sequence,
       ModeInfo.fromProto(proto.modeInfo as ModeInfo_pb)
     );
   }
@@ -346,7 +355,7 @@ export class SignerInfo {
     return SignerInfo_pb.fromPartial({
       modeInfo: mode_info.toProto(),
       publicKey: public_key?.packAny(),
-      sequence: sequence,
+      sequence: sequence.toString(),
     });
   }
 }

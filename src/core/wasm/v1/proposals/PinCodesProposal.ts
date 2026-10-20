@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { PinCodesProposal as PinCodesProposal_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal_legacy';
@@ -11,17 +12,20 @@ export class PinCodesProposal extends JSONSerializable<
   PinCodesProposal.Data,
   PinCodesProposal.Proto
 > {
+  public code_ids: Int64[];
   /**
    * @param title a short summary
    * @param description a human readable text
    * @param code_ids the address of the smart code_ids
    */
+
   constructor(
     public title: string,
     public description: string,
-    public code_ids: number[]
+    code_ids: Int64Input[]
   ) {
     super();
+    this.code_ids = code_ids.map(parseInt64);
   }
 
   public static fromAmino(
@@ -34,11 +38,7 @@ export class PinCodesProposal extends JSONSerializable<
     const {
       value: { title, description, code_ids },
     } = data;
-    return new PinCodesProposal(
-      title,
-      description,
-      code_ids.map(Number.parseInt)
-    );
+    return new PinCodesProposal(title, description, code_ids);
   }
 
   public toAmino(isClassic?: boolean): PinCodesProposal.Amino {
@@ -66,7 +66,7 @@ export class PinCodesProposal extends JSONSerializable<
     return new PinCodesProposal(
       proto.title,
       proto.description,
-      proto.codeIds.map(codeId => codeId.toNumber())
+      proto.codeIds.map(codeId => codeId)
     );
   }
 
@@ -78,7 +78,7 @@ export class PinCodesProposal extends JSONSerializable<
     return PinCodesProposal_pb.fromPartial({
       title,
       description,
-      codeIds: code_ids,
+      codeIds: code_ids.map(value => value.toFixed()),
     });
   }
   public packAny(isClassic?: boolean): Any {
@@ -109,11 +109,7 @@ export class PinCodesProposal extends JSONSerializable<
       throw new Error('Not supported for the network');
     }
     const { title, description, code_ids } = data;
-    return new PinCodesProposal(
-      title,
-      description,
-      code_ids.map(Number.parseInt)
-    );
+    return new PinCodesProposal(title, description, code_ids);
   }
 
   public toData(isClassic?: boolean): PinCodesProposal.Data {

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -13,17 +13,20 @@ export class MsgVoteV1B1 extends JSONSerializable<
   MsgVoteV1B1.Data,
   MsgVoteV1B1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id ID of proposal to vote on
    * @param voter voter's account address
    * @param option one of voting options
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public voter: AccAddress,
     public option: VoteOption
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -33,7 +36,7 @@ export class MsgVoteV1B1 extends JSONSerializable<
     const {
       value: { proposal_id, voter, option },
     } = data;
-    return new MsgVoteV1B1(Number.parseInt(proposal_id), voter, option);
+    return new MsgVoteV1B1(proposal_id, voter, option);
   }
 
   public toAmino(isClassic?: boolean): MsgVoteV1B1.Amino {
@@ -53,7 +56,7 @@ export class MsgVoteV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgVoteV1B1 {
     const { proposal_id, voter, option } = data;
-    return new MsgVoteV1B1(Number.parseInt(proposal_id), voter, option);
+    return new MsgVoteV1B1(proposal_id, voter, option);
   }
 
   public toData(_isClassic?: boolean): MsgVoteV1B1.Data {
@@ -70,18 +73,14 @@ export class MsgVoteV1B1 extends JSONSerializable<
     proto: MsgVoteV1B1.Proto,
     _isClassic?: boolean
   ): MsgVoteV1B1 {
-    return new MsgVoteV1B1(
-      proto.proposalId.toNumber(),
-      proto.voter,
-      proto.option
-    );
+    return new MsgVoteV1B1(proto.proposalId, proto.voter, proto.option);
   }
 
   public toProto(_isClassic?: boolean): MsgVoteV1B1.Proto {
     const { proposal_id, voter, option } = this;
     return MsgVoteV1B1_pb.fromPartial({
       option,
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       voter,
     });
   }

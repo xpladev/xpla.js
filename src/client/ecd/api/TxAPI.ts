@@ -1,3 +1,4 @@
+import { Int64Input } from '../../../util/int64';
 import { EvmAPI } from './BaseAPI';
 import { EvmAddress } from '../../../core/eip55';
 import { EvmTx, EvmTxInfo, EvmMessage } from '../msgs/EvmTx';
@@ -7,8 +8,12 @@ import { ECDClient } from '../ECDClient';
 import { EvmWallet } from '../EvmWallet';
 import { Key, RawKey } from '../../../key';
 import RLP from 'rlp';
-import * as secp256k1 from '@noble/secp256k1';
-import { keccak_256 } from '@noble/hashes/sha3';
+import { secp256k1 } from '@noble/curves/secp256k1.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+
+// RLP integers use minimal big-endian bytes; zero is the empty byte string.
+const rlpInteger = (value: string | undefined): Uint8Array =>
+  Convert.unpadBytes(Convert.fromHex(value ?? '0'));
 
 export interface CreateEvmTxOptions {
   msgs: EvmMessage[];
@@ -74,17 +79,17 @@ export class EvmTxAPI extends EvmAPI {
     if (params.value) tx.value = Numeric.parse(params.value);
     if (params.data)
       tx.data = Convert.fromHex(
-        params.data.indexOf('0x') == 0 ? params.data.substring(2) : params.data,
+        params.data.indexOf('0x') == 0 ? params.data.substring(2) : params.data
       );
     if (params.type) tx.type = Numeric.parse(params.type).toNumber();
     if (params.v) tx.v = Numeric.parse(params.v).toNumber();
     if (params.r)
       tx.r = Convert.fromHex(
-        params.r.indexOf('0x') == 0 ? params.r.substring(2) : params.r,
+        params.r.indexOf('0x') == 0 ? params.r.substring(2) : params.r
       );
     if (params.s)
       tx.s = Convert.fromHex(
-        params.s.indexOf('0x') == 0 ? params.s.substring(2) : params.s,
+        params.s.indexOf('0x') == 0 ? params.s.substring(2) : params.s
       );
     if (tx.accessList) params.accessList = tx.accessList;
     return tx;
@@ -93,7 +98,7 @@ export class EvmTxAPI extends EvmAPI {
   public async create(
     by: EvmAddress,
     options: CreateEvmTxOptions & {
-      sequence?: number;
+      sequence?: Int64Input;
     }
   ): Promise<EvmTx> {
     const msg = options.msgs[0];
@@ -165,29 +170,28 @@ export class EvmTxAPI extends EvmAPI {
     const params = this.toParams(tx);
 
     const v_id =
-      chainId && v
-        ? BigInt(chainId) * BigInt(2) + BigInt(35 + v - 27)
-        : BigInt(0);
+      chainId != null && v != null
+        ? BigInt(chainId) * 2n + BigInt(35 + v - 27)
+        : BigInt(v ?? 0);
 
     const values: Uint8Array[] = [
-      Convert.fromHex(params.nonce ?? '0'),
-      Convert.fromHex(params.gasPrice ?? '0'),
-      Convert.fromHex(params.gasLimit ?? '0'),
-      Convert.unpadBytes(Convert.fromHex(params.to)),
-      Convert.fromHex(params.value ?? '0'),
-      Convert.unpadBytes(tx.data ?? new Uint8Array(0)),
-      Convert.fromHex(v_id.toString(16)),
+      rlpInteger(params.nonce),
+      rlpInteger(params.gasPrice),
+      rlpInteger(params.gasLimit),
+      Convert.fromHex(params.to ?? ''),
+      rlpInteger(params.value),
+      tx.data ?? new Uint8Array(0),
+      rlpInteger(v_id.toString(16)),
       Convert.unpadBytes(tx.r ?? new Uint8Array(0)),
       Convert.unpadBytes(tx.s ?? new Uint8Array(0)),
     ];
 
-    const serializedMsg =
-      '0x' + Convert.toHex(RLP.encode(values));
+    const serializedMsg = '0x' + Convert.toHex(RLP.encode(values));
 
     const response = await this.e.post(
       this.ecd.config.id,
       'eth_sendRawTransaction',
-      [serializedMsg],
+      [serializedMsg]
     );
 
     return response;
@@ -293,34 +297,31 @@ export class EvmTxAPI extends EvmAPI {
     const params = this.toParams(tx);
 
     const values: Uint8Array[] = [
-      params.nonce ? Convert.fromHex(params.nonce) : new Uint8Array(0),
-      params.gasPrice
-        ? Convert.fromHex(params.gasPrice)
-        : new Uint8Array(0),
-      params.gasLimit
-        ? Convert.fromHex(params.gasLimit)
-        : new Uint8Array(0),
-      Convert.unpadBytes(Convert.fromHex(params.to)),
-      params.value ? Convert.fromHex(params.value) : new Uint8Array(0),
-      Convert.unpadBytes(tx.data ?? new Uint8Array(0)),
-      params.chainId
-        ? Convert.fromHex(params.chainId)
-        : new Uint8Array(0),
-      new Uint8Array(0),
-      new Uint8Array(0),
+      rlpInteger(params.nonce),
+      rlpInteger(params.gasPrice),
+      rlpInteger(params.gasLimit),
+      Convert.fromHex(params.to ?? ''),
+      rlpInteger(params.value),
+      tx.data ?? new Uint8Array(0),
     ];
+
+    if (tx.chainId != null) {
+      values.push(
+        rlpInteger(params.chainId),
+        new Uint8Array(0),
+        new Uint8Array(0)
+      );
+    }
 
     const rlp = RLP.encode(values);
     const msgHash = keccak_256(rlp);
 
-    const [ sig, recid ] = await secp256k1.sign(
-      msgHash,
-      privateKey,
-      {
-        recovered: true,
-        der: false,
-      },
-    );
+    const recovered = secp256k1.sign(msgHash, privateKey, {
+      prehash: false,
+      format: 'recovered',
+    });
+    const recid = recovered[0];
+    const sig = recovered.subarray(1);
     tx.r = sig.slice(0, 32);
     tx.s = sig.slice(32, 64);
     tx.v = recid ? 0x1c : 0x1b;

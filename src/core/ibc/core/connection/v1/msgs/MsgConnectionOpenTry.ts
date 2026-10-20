@@ -1,3 +1,4 @@
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
 import { AccAddress } from '../../../../../bech32';
@@ -46,7 +47,7 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
     public proof_consensus: string,
     public consensus_height: HeightV1 | undefined,
     public signer: AccAddress,
-    public host_consensus_state_proof: string,
+    public host_consensus_state_proof: string
   ) {
     super();
     this.delay_period = new Int(delay_period);
@@ -61,7 +62,7 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
   }
 
   public static fromData(
-    data: MsgConnectionOpenTryV1.Data,
+    data: MsgConnectionOpenTryV1.Data
   ): MsgConnectionOpenTryV1 {
     const {
       client_id,
@@ -81,7 +82,7 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
     return new MsgConnectionOpenTryV1(
       client_id,
       previous_connection_id,
-      client_state,
+      anyFromData(client_state),
       counterparty ? CounterpartyV1.fromData(counterparty) : undefined,
       delay_period,
       counterparty_versions.map(VersionV1.fromData),
@@ -91,7 +92,7 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
       proof_consensus,
       consensus_height ? HeightV1.fromData(consensus_height) : undefined,
       signer,
-      host_consensus_state_proof,
+      host_consensus_state_proof
     );
   }
 
@@ -115,37 +116,45 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
       '@type': '/ibc.core.connection.v1.MsgConnectionOpenTry',
       client_id,
       previous_connection_id,
-      client_state,
+      client_state: anyToData(client_state),
       counterparty: counterparty ? counterparty.toData() : undefined,
       delay_period: delay_period.toFixed(0),
-      counterparty_versions: counterparty_versions.map(version => version.toData()),
+      counterparty_versions: counterparty_versions.map(version =>
+        version.toData()
+      ),
       proof_height: proof_height ? proof_height.toData() : undefined,
       proof_init,
       proof_client,
       proof_consensus,
-      consensus_height: consensus_height ? consensus_height.toData() : undefined,
+      consensus_height: consensus_height
+        ? consensus_height.toData()
+        : undefined,
       signer,
       host_consensus_state_proof,
     };
   }
 
   public static fromProto(
-    proto: MsgConnectionOpenTryV1.Proto,
+    proto: MsgConnectionOpenTryV1.Proto
   ): MsgConnectionOpenTryV1 {
     return new MsgConnectionOpenTryV1(
       proto.clientId,
       proto.previousConnectionId,
       proto.clientState,
-      proto.counterparty ? CounterpartyV1.fromProto(proto.counterparty) : undefined,
+      proto.counterparty
+        ? CounterpartyV1.fromProto(proto.counterparty)
+        : undefined,
       proto.delayPeriod.toString(),
       proto.counterpartyVersions.map(VersionV1.fromProto),
       proto.proofHeight ? HeightV1.fromProto(proto.proofHeight) : undefined,
       Convert.toBase64(proto.proofInit),
       Convert.toBase64(proto.proofClient),
       Convert.toBase64(proto.proofConsensus),
-      proto.consensusHeight ? HeightV1.fromProto(proto.consensusHeight) : undefined,
+      proto.consensusHeight
+        ? HeightV1.fromProto(proto.consensusHeight)
+        : undefined,
       proto.signer,
-      Convert.toBase64(proto.hostConsensusStateProof),
+      Convert.toBase64(proto.hostConsensusStateProof)
     );
   }
 
@@ -171,12 +180,16 @@ export class MsgConnectionOpenTryV1 extends JSONSerializable<
       clientState: client_state,
       counterparty: counterparty ? counterparty.toProto() : undefined,
       delayPeriod: delay_period.toFixed(0),
-      counterpartyVersions: counterparty_versions.map(version => version.toProto()),
+      counterpartyVersions: counterparty_versions.map(version =>
+        version.toProto()
+      ),
       proofHeight: proof_height ? proof_height.toProto() : undefined,
       proofInit: Convert.fromBase64(proof_init),
       proofClient: Convert.fromBase64(proof_client),
       proofConsensus: Convert.fromBase64(proof_consensus),
-      consensusHeight: consensus_height ? consensus_height.toProto() : undefined,
+      consensusHeight: consensus_height
+        ? consensus_height.toProto()
+        : undefined,
       signer,
       hostConsensusStateProof: Convert.fromBase64(host_consensus_state_proof),
     });

@@ -97,7 +97,7 @@ export class Duration extends JSONSerializable<
   }
 
   public static fromString(str: string): Duration {
-    let dec = new Dec(0);
+    let dec: Dec;
     if (str.endsWith('ns')) {
       dec = new Dec(str.substring(0, str.length - 2));
       dec = dec.div(1000000000);

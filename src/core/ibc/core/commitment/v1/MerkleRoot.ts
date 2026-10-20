@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../util/json';
 import { Convert } from '../../../../../util/convert';
 import { MerkleRoot as MerkleRootV1_pb } from '@xpla/xpla.proto/ibc/core/commitment/v1/commitment';

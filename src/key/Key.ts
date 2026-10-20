@@ -1,3 +1,4 @@
+import { Int64Input } from '../util/int64';
 import { bech32 } from 'bech32';
 import {
   AccAddress,
@@ -22,11 +23,10 @@ import { Convert } from '../util/convert';
  * an implementation of a basic mnemonic-based key.
  */
 export abstract class Key {
-
   public abstract get privateKeyHex(): string;
 
   public abstract get publicKeyHex(): string;
-  
+
   /**
    * You will need to supply `sign`, which produces a signature for an arbitrary bytes payload
    * with the ECDSA curve secp256pk1.
@@ -35,7 +35,10 @@ export abstract class Key {
    */
   public abstract sign(payload: Uint8Array): Promise<Uint8Array>;
 
-  public async verify(payload: Uint8Array, signature: Uint8Array): Promise<boolean> {
+  public async verify(
+    payload: Uint8Array,
+    signature: Uint8Array
+  ): Promise<boolean> {
     if (!this.publicKey) {
       throw new Error('Could not compute accAddress: missing rawAddress');
     }
@@ -86,7 +89,10 @@ export abstract class Key {
    *
    * @param publicKey raw compressed bytes public key
    */
-  constructor(public publicKey?: PublicKey, public evm: boolean = false) {}
+  constructor(
+    public publicKey?: PublicKey,
+    public evm: boolean = false
+  ) {}
 
   /**
    * Signs a [[StdSignMsg]] with the method supplied by the child class.
@@ -98,7 +104,7 @@ export abstract class Key {
   public async createSignatureAmino(
     tx: SignDoc,
     isClassic?: boolean,
-    signMode?: SignMode,
+    signMode?: SignMode
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -130,7 +136,7 @@ export abstract class Key {
   public async createSignatureText(
     tx: SignDoc,
     isClassic?: boolean,
-    signMode?: SignMode,
+    signMode?: SignMode
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -161,7 +167,7 @@ export abstract class Key {
   public async createSignature(
     signDoc: SignDoc,
     isClassic?: boolean,
-    signMode?: SignMode,
+    signMode?: SignMode
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -189,7 +195,10 @@ export abstract class Key {
     return new SignatureV2(
       this.publicKey,
       new SignatureV2.Descriptor(
-        new SignatureV2.Descriptor.Single(signMode ?? SignMode.SIGN_MODE_DIRECT, sigBytes)
+        new SignatureV2.Descriptor.Single(
+          signMode ?? SignMode.SIGN_MODE_DIRECT,
+          sigBytes
+        )
       ),
       signDoc.sequence
     );
@@ -205,7 +214,7 @@ export abstract class Key {
     signDoc: SignDoc,
     signers: SignerInfo[],
     isClassic?: boolean,
-    signMode?: SignMode,
+    signMode?: SignMode
   ): Promise<SignatureV2> {
     if (!this.publicKey) {
       throw new Error(
@@ -227,7 +236,10 @@ export abstract class Key {
     return new SignatureV2(
       this.publicKey,
       new SignatureV2.Descriptor(
-        new SignatureV2.Descriptor.Single(signMode ?? SignMode.SIGN_MODE_DIRECT, sigBytes)
+        new SignatureV2.Descriptor.Single(
+          signMode ?? SignMode.SIGN_MODE_DIRECT,
+          sigBytes
+        )
       ),
       signDoc.sequence
     );
@@ -253,11 +265,23 @@ export abstract class Key {
 
     let signature: SignatureV2;
     if (options.signMode === SignMode.SIGN_MODE_LEGACY_AMINO_JSON) {
-      signature = await this.createSignatureAmino(sign_doc, isClassic, options.signMode);
+      signature = await this.createSignatureAmino(
+        sign_doc,
+        isClassic,
+        options.signMode
+      );
     } else if (options.signMode === SignMode.SIGN_MODE_TEXTUAL) {
-      signature = await this.createSignature(sign_doc, isClassic, options.signMode);
+      signature = await this.createSignature(
+        sign_doc,
+        isClassic,
+        options.signMode
+      );
     } else {
-      signature = await this.createSignature(sign_doc, isClassic, options.signMode);
+      signature = await this.createSignature(
+        sign_doc,
+        isClassic,
+        options.signMode
+      );
     }
 
     const sigData = signature.data.single as SignatureV2.Descriptor.Single;
@@ -281,7 +305,7 @@ export abstract class Key {
   public async signTxWithSigners(
     tx: Tx,
     signers: SignerInfo[],
-    accountNumber: number,
+    accountNumber: Int64Input,
     chainID: string,
     isClassic?: boolean
   ): Promise<Tx> {
@@ -322,25 +346,24 @@ export abstract class Key {
       signature = await this.createSignatureAmino(
         sign_doc,
         isClassic,
-        signers[this_signer].mode_info.single!.mode,
+        signers[this_signer].mode_info.single!.mode
       );
     } else if (
       signers[this_signer].mode_info.single &&
-      signers[this_signer].mode_info.single!.mode ===
-        SignMode.SIGN_MODE_TEXTUAL
+      signers[this_signer].mode_info.single!.mode === SignMode.SIGN_MODE_TEXTUAL
     ) {
       signature = await this.createSignatureWithSigners(
         sign_doc,
         signers,
         isClassic,
-        signers[this_signer].mode_info.single!.mode,
+        signers[this_signer].mode_info.single!.mode
       );
     } else {
       signature = await this.createSignatureWithSigners(
         sign_doc,
         signers,
         isClassic,
-        signers[this_signer].mode_info.single!.mode,
+        signers[this_signer].mode_info.single!.mode
       );
     }
 
@@ -360,8 +383,8 @@ export abstract class Key {
 }
 
 export interface SignOptions {
-  accountNumber: number;
-  sequence: number;
+  accountNumber: Int64Input;
+  sequence: Int64Input;
   signMode: SignMode;
   chainID: string;
 }

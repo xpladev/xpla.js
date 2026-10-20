@@ -1,4 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  DecisionPolicyData,
+  DecisionPolicyAmino,
+  decisionPolicyFromData,
+  decisionPolicyToData,
+  decisionPolicyFromAmino,
+  decisionPolicyToAmino,
+} from '../DecisionPolicy';
+import { AnyData } from '../../../../util/any';
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,19 +18,22 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
   MsgCreateGroupPolicyV1.Data,
   MsgCreateGroupPolicyV1.Proto
 > {
+  public group_id: Int64;
   /**
    * @param admin is the account address of the group admin
    * @param group_id is the unique ID of the group
    * @param metadata is any arbitrary metadata attached to the group policy
    * @param decision_policy specifies the group policy's decision policy
    */
+
   constructor(
     public admin: AccAddress,
-    public group_id: number,
+    group_id: Int64Input,
     public metadata: string,
     public decision_policy: Any | undefined
   ) {
     super();
+    this.group_id = parseInt64(group_id);
   }
 
   public static fromAmino(
@@ -33,9 +45,9 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
     } = data;
     return new MsgCreateGroupPolicyV1(
       admin,
-      Number.parseInt(group_id),
+      group_id,
       metadata,
-      decision_policy
+      decisionPolicyFromAmino(decision_policy)
     );
   }
 
@@ -49,7 +61,7 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
         admin,
         group_id: group_id.toFixed(),
         metadata,
-        decision_policy,
+        decision_policy: decisionPolicyToAmino(decision_policy),
       },
     };
   }
@@ -61,9 +73,9 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
     const { admin, group_id, metadata, decision_policy } = data;
     return new MsgCreateGroupPolicyV1(
       admin,
-      Number.parseInt(group_id),
+      group_id,
       metadata,
-      decision_policy
+      decisionPolicyFromData(decision_policy)
     );
   }
 
@@ -74,7 +86,7 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
       admin,
       group_id: group_id.toFixed(),
       metadata,
-      decision_policy,
+      decision_policy: decisionPolicyToData(decision_policy),
     };
   }
 
@@ -84,7 +96,7 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
   ): MsgCreateGroupPolicyV1 {
     return new MsgCreateGroupPolicyV1(
       proto.admin,
-      proto.groupId.toNumber(),
+      proto.groupId,
       proto.metadata,
       proto.decisionPolicy
     );
@@ -94,7 +106,7 @@ export class MsgCreateGroupPolicyV1 extends JSONSerializable<
     const { admin, group_id, metadata, decision_policy } = this;
     return MsgCreateGroupPolicyV1_pb.fromPartial({
       admin,
-      groupId: group_id,
+      groupId: group_id.toString(),
       metadata,
       decisionPolicy: decision_policy,
     });
@@ -125,7 +137,7 @@ export namespace MsgCreateGroupPolicyV1 {
       admin: AccAddress;
       group_id: string;
       metadata: string;
-      decision_policy: Any | undefined;
+      decision_policy: DecisionPolicyAmino | undefined;
     };
   }
 
@@ -134,7 +146,7 @@ export namespace MsgCreateGroupPolicyV1 {
     admin: AccAddress;
     group_id: string;
     metadata: string;
-    decision_policy: Any | undefined;
+    decision_policy: DecisionPolicyData | AnyData | Any | undefined;
   }
 
   export type Proto = MsgCreateGroupPolicyV1_pb;

@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { Timestamp } from '../../Timestamp';
 import { JSONSerializable } from '../../../util/json';
 import { Int } from '../../numeric';
@@ -113,6 +114,7 @@ export namespace UnbondingDelegationV1B1 {
   > {
     public completion_time: Timestamp | undefined;
 
+    public creation_height: Int64;
     /**
      * Note that the size of the undelegation is `initial_balance - balance`
      * @param initial_balance balance of delegation prior to initiating unbond
@@ -120,13 +122,15 @@ export namespace UnbondingDelegationV1B1 {
      * @param creation_height height of blockchain when entry was created
      * @param completion_time time when unbonding will be completed
      */
+
     constructor(
       public initial_balance: Int,
       public balance: Int,
-      public creation_height: number,
+      creation_height: Int64Input,
       completion_time: Timestamp.Input | undefined
     ) {
       super();
+      this.creation_height = parseInt64(creation_height);
       this.completion_time = Timestamp.from(completion_time);
     }
 
@@ -145,7 +149,7 @@ export namespace UnbondingDelegationV1B1 {
       return new Entry(
         new Int(initial_balance),
         new Int(balance),
-        Number.parseInt(creation_height),
+        creation_height,
         Timestamp.fromData(completion_time)
       );
     }
@@ -165,7 +169,7 @@ export namespace UnbondingDelegationV1B1 {
       return new Entry(
         new Int(initial_balance),
         new Int(balance),
-        Number.parseInt(creation_height),
+        creation_height,
         Timestamp.fromData(completion_time)
       );
     }
@@ -176,7 +180,7 @@ export namespace UnbondingDelegationV1B1 {
       return UnbondingDelegationEntryV1B1_pb.fromPartial({
         balance: balance.toString(),
         completionTime: completion_time?.toProto(),
-        creationHeight: creation_height,
+        creationHeight: creation_height.toString(),
         initialBalance: initial_balance.toString(),
       });
     }
@@ -185,7 +189,7 @@ export namespace UnbondingDelegationV1B1 {
       return new Entry(
         new Int(proto.initialBalance),
         new Int(proto.balance),
-        proto.creationHeight.toNumber(),
+        proto.creationHeight,
         Timestamp.fromProto(proto.completionTime)
       );
     }

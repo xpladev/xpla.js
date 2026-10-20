@@ -1,3 +1,4 @@
+import { Int64Input, Int64, parseInt64 } from '../../../util/int64';
 import { BaseAPI } from './BaseAPI';
 import {
   Msg,
@@ -8,13 +9,17 @@ import {
   TxBody,
   AuthInfo,
   Fee,
-  Dec,
   PublicKey,
   TxLog,
 } from '../../../core';
 import { hashToHex } from '../../../util/hash';
 import { LCDClient } from '../LCDClient';
-import { APIParams, ApiResponseError, Pagination, PaginationOptions } from '../APIRequester';
+import {
+  APIParams,
+  ApiResponseError,
+  Pagination,
+  PaginationOptions,
+} from '../APIRequester';
 import { BroadcastMode as BroadcastModeV2 } from '@xpla/xpla.proto/cosmos/tx/v1beta1/service';
 import { EvmMessage } from '../../../client/ecd/msgs';
 import { Convert } from '../../../util/convert';
@@ -22,11 +27,11 @@ import { Convert } from '../../../util/convert';
 const POLL_INTERVAL = 500;
 
 interface Wait {
-  height: number;
+  height: Int64;
   txhash: string;
   raw_log: string;
-  gas_wanted: number;
-  gas_used: number;
+  gas_wanted: Int64;
+  gas_used: Int64;
   logs: TxLog[];
   timestamp: string;
 }
@@ -37,19 +42,19 @@ interface Block extends Wait {
 }
 
 interface Sync {
-  height: number;
+  height: Int64;
   txhash: string;
   raw_log: string;
 }
 
 interface Async {
-  height: number;
+  height: Int64;
   txhash: string;
 }
 
 export type TxBroadcastResult<
   B extends Wait | Block | Sync | Async,
-  C extends TxSuccess | TxError | {}
+  C extends object,
 > = B & C;
 
 export interface TxSuccess {
@@ -70,13 +75,13 @@ export type BlockTxBroadcastResult = TxBroadcastResult<
   Block,
   TxSuccess | TxError
 >;
-export type SyncTxBroadcastResult = TxBroadcastResult<Sync, TxError | {}>;
-export type AsyncTxBroadcastResult = TxBroadcastResult<Async, {}>;
+export type SyncTxBroadcastResult = TxBroadcastResult<Sync, TxError | object>;
+export type AsyncTxBroadcastResult = TxBroadcastResult<Async, object>;
 
 export function isTxError<
   T extends TxBroadcastResult<B, C> | TxError,
   B extends Wait | Block | Sync,
-  C extends TxSuccess | TxError | {}
+  C extends object,
 >(x: T): x is T & TxBroadcastResult<B, TxError> {
   return (
     (x as T & TxError).code !== undefined &&
@@ -114,12 +119,12 @@ export namespace SyncTxBroadcastResult {
 
 export interface SignerOptions {
   address: string;
-  sequenceNumber?: number;
+  sequenceNumber?: Int64Input;
   publicKey?: PublicKey | null;
 }
 
 export interface SignerData {
-  sequenceNumber: number;
+  sequenceNumber: Int64Input;
   publicKey?: PublicKey | null;
 }
 
@@ -131,7 +136,7 @@ export interface CreateTxOptions {
   gasPrices?: Coins.Input;
   gasAdjustment?: Numeric.Input;
   feeDenoms?: string[];
-  timeoutHeight?: number;
+  timeoutHeight?: Int64Input;
 }
 
 export interface TxResult {
@@ -209,18 +214,19 @@ export class TxAPI extends BaseAPI {
    * Looks up a transaction on the blockchain, addressed by its hash
    * @param txHash transaction's hash
    */
-  public async txInfo(txHash: string, params: APIParams = {}): Promise<TxInfo | TxError> {
-    return this.c
-      .getRaw(`/cosmos/tx/v1beta1/txs/${txHash}`, params)
-      .then(v => {
-        if ('tx_response' in v) {
-          return TxInfo.fromData(v.tx_response, this.lcd.config.isClassic);
-        }
-        if ('code' in v) {
-          return v as TxError;
-        }
-        throw v;
-      });
+  public async txInfo(
+    txHash: string,
+    params: APIParams = {}
+  ): Promise<TxInfo | TxError> {
+    return this.c.getRaw(`/cosmos/tx/v1beta1/txs/${txHash}`, params).then(v => {
+      if ('tx_response' in v) {
+        return TxInfo.fromData(v.tx_response, this.lcd.config.isClassic);
+      }
+      if ('code' in v) {
+        return v as TxError;
+      }
+      throw v;
+    });
   }
 
   /**
@@ -235,7 +241,7 @@ export class TxAPI extends BaseAPI {
    */
   public async create(
     signers: SignerOptions[],
-    options: CreateTxOptions,
+    options: CreateTxOptions
   ): Promise<Tx> {
     let { fee } = options;
     const { msgs, memo, timeoutHeight } = options;
@@ -306,7 +312,7 @@ export class TxAPI extends BaseAPI {
    */
   public async txInfosByHeight(
     height: number | undefined,
-    timeout = 30000,
+    timeout = 30000
   ): Promise<TxInfo[]> {
     const txhashes = await this.txHashesByHeight(height);
     const txInfos: TxInfo[] = [];
@@ -341,21 +347,20 @@ export class TxAPI extends BaseAPI {
       if (!(txInfo instanceof TxInfo)) {
         throw new ApiResponseError(
           `Unable to get the TxInfo of ${txhashes[0]}`,
-          txInfo,
+          txInfo
         );
       }
     }
-  
+
     // Read all txinfo and push to array
     for (const txhash of txhashes) {
       const info = await this.txInfo(txhash);
       if (info instanceof TxInfo) {
         txInfos.push(info);
-      }
-      else {
+      } else {
         throw new ApiResponseError(
           `Unable to get the TxInfo of ${txhash}`,
-          info,
+          info
         );
       }
     }
@@ -376,7 +381,7 @@ export class TxAPI extends BaseAPI {
     const gasPrices = options.gasPrices ?? this.lcd.config.gasPrices;
     const gasAdjustment =
       options.gasAdjustment ?? this.lcd.config.gasAdjustment ?? 2.0;
-    const feeDenoms = options.feeDenoms ?? [ 'axpla' ];
+    const feeDenoms = options.feeDenoms ?? ['axpla'];
     const msgs = options.msgs;
     let gas = options.gas;
     let gasPricesCoins: Coins | undefined;
@@ -418,7 +423,7 @@ export class TxAPI extends BaseAPI {
       ? gasPricesCoins.mul(gas).toIntCeilCoins()
       : '0axpla';
 
-    return new Fee(Number.parseInt(gas), feeAmount);
+    return new Fee(gas, feeAmount);
   }
 
   public async estimateGas(
@@ -448,7 +453,9 @@ export class TxAPI extends BaseAPI {
       })
       .then(d => SimulateResponse.fromData(d));
 
-    return Math.ceil(parseFloat(gasAdjustment.toString()) * simulateRes.gas_info.gas_used);
+    return Math.ceil(
+      parseFloat(gasAdjustment.toString()) * simulateRes.gas_info.gas_used
+    );
   }
 
   public async computeTax(): Promise<Coins> {
@@ -511,13 +518,13 @@ export class TxAPI extends BaseAPI {
 
     if (txResponse.code != undefined && txResponse.code != 0) {
       const result: WaitTxBroadcastResult = {
-        height: Number.parseInt(txResponse.height),
+        height: parseInt64(txResponse.height),
         txhash: txResponse.txhash,
         raw_log: txResponse.raw_log,
         code: txResponse.code,
         codespace: txResponse.codespace,
-        gas_used: 0,
-        gas_wanted: 0,
+        gas_used: parseInt64(0),
+        gas_wanted: parseInt64(0),
         timestamp: '',
         logs: [],
       };
@@ -548,7 +555,7 @@ export class TxAPI extends BaseAPI {
     if (!(txInfo instanceof TxInfo)) {
       throw new ApiResponseError(
         `Unable to get the TxInfo of ${txResponse.txhash}`,
-        txInfo,
+        txInfo
       );
     }
 
@@ -557,9 +564,9 @@ export class TxAPI extends BaseAPI {
       raw_log: txInfo.raw_log,
       gas_wanted: txInfo.gas_wanted,
       gas_used: txInfo.gas_used,
-      height: +txInfo.height,
+      height: txInfo.height,
       logs: (txInfo.logs ?? []).map(TxLog.fromData),
-      code: txInfo.code,
+      code: txInfo.code ?? 0,
       codespace: txInfo.codespace,
       timestamp: txInfo.timestamp,
     };
@@ -577,9 +584,9 @@ export class TxAPI extends BaseAPI {
       const blockResult: BlockTxBroadcastResult = {
         txhash: d.txhash,
         raw_log: d.raw_log,
-        gas_wanted: Number.parseInt(d.gas_wanted),
-        gas_used: Number.parseInt(d.gas_used),
-        height: +d.height,
+        gas_wanted: parseInt64(d.gas_wanted),
+        gas_used: parseInt64(d.gas_used),
+        height: parseInt64(d.height),
         logs: d.logs.map(TxLog.fromData),
         code: d.code,
         codespace: d.codespace,
@@ -605,7 +612,7 @@ export class TxAPI extends BaseAPI {
       'BROADCAST_MODE_SYNC'
     ).then(({ tx_response: d }) => {
       const blockResult: any = {
-        height: +d.height,
+        height: parseInt64(d.height),
         txhash: d.txhash,
         raw_log: d.raw_log,
       };
@@ -631,7 +638,7 @@ export class TxAPI extends BaseAPI {
       tx,
       'BROADCAST_MODE_ASYNC'
     ).then(({ tx_response: d }) => ({
-      height: +d.height,
+      height: parseInt64(d.height),
       txhash: d.txhash,
     }));
   }
@@ -657,13 +664,13 @@ export class TxAPI extends BaseAPI {
       if (query.length > 0) {
         query += ' AND ';
       }
-      query += v.key === 'tx.height' ? `${v.key}=${v.value}` : `${v.key}='${v.value}'`;
+      query +=
+        v.key === 'tx.height' ? `${v.key}=${v.value}` : `${v.key}='${v.value}'`;
     });
     // post v0.47.x
     if (options.query !== undefined) {
       params.append('query', options.query);
-    }
-    else if (query.length > 0) {
+    } else if (query.length > 0) {
       params.append('query', query);
     }
     // pre v0.47.x

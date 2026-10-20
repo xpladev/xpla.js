@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../util/int64';
 import { Convert } from '../util/convert';
 import { PublicKey } from './PublicKey';
 import { ModeInfo } from './Tx';
@@ -12,17 +13,20 @@ import { MultiSignature } from '@xpla/xpla.proto/cosmos/crypto/multisig/v1beta1/
 export { SignMode } from '@xpla/xpla.proto/cosmos/tx/signing/v1beta1/signing';
 
 export class SignatureV2 {
+  public sequence: Int64;
   constructor(
     public public_key: PublicKey,
     public data: SignatureV2.Descriptor,
-    public sequence: number
-  ) {}
+    sequence: Int64Input
+  ) {
+    this.sequence = parseInt64(sequence);
+  }
 
   public static fromData(data: SignatureV2.Data): SignatureV2 {
     return new SignatureV2(
       PublicKey.fromData(data.public_key),
       SignatureV2.Descriptor.fromData(data.data),
-      Number.parseInt(data.sequence)
+      data.sequence
     );
   }
 
@@ -67,9 +71,11 @@ export namespace SignatureV2 {
     public single?: Descriptor.Single;
     public multi?: Descriptor.Multi;
     constructor(data: Descriptor.Single | Descriptor.Multi) {
-      data instanceof Descriptor.Single
-        ? (this.single = data)
-        : (this.multi = data);
+      if (data instanceof Descriptor.Single) {
+        this.single = data;
+      } else {
+        this.multi = data;
+      }
     }
 
     public static fromData(data: Descriptor.Data): Descriptor {
@@ -142,7 +148,10 @@ export namespace SignatureV2 {
     }
 
     export class Single {
-      constructor(public mode: SignMode, public signature: string) {}
+      constructor(
+        public mode: SignMode,
+        public signature: string
+      ) {}
 
       public static fromData(data: Single.Data): Single {
         return new Single(signModeFromJSON(data.mode), data.signature);

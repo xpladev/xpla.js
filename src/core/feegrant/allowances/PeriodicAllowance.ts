@@ -1,6 +1,6 @@
 import { Duration } from '../../Duration';
 import { Timestamp } from '../../Timestamp';
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { BasicAllowance } from './BasicAllowance';

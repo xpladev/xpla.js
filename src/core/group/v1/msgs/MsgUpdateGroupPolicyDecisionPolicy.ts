@@ -1,4 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  DecisionPolicyData,
+  DecisionPolicyAmino,
+  decisionPolicyFromData,
+  decisionPolicyToData,
+  decisionPolicyFromAmino,
+  decisionPolicyToAmino,
+} from '../DecisionPolicy';
+import { AnyData } from '../../../../util/any';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -32,7 +40,7 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
     return new MsgUpdateGroupPolicyDecisionPolicyV1(
       admin,
       group_policy_address,
-      decision_policy
+      decisionPolicyFromAmino(decision_policy)
     );
   }
 
@@ -47,7 +55,7 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
       value: {
         admin,
         group_policy_address,
-        decision_policy,
+        decision_policy: decisionPolicyToAmino(decision_policy),
       },
     };
   }
@@ -60,7 +68,7 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
     return new MsgUpdateGroupPolicyDecisionPolicyV1(
       admin,
       group_policy_address,
-      decision_policy
+      decisionPolicyFromData(decision_policy)
     );
   }
 
@@ -72,7 +80,7 @@ export class MsgUpdateGroupPolicyDecisionPolicyV1 extends JSONSerializable<
       '@type': '/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy',
       admin,
       group_policy_address,
-      decision_policy,
+      decision_policy: decisionPolicyToData(decision_policy),
     };
   }
 
@@ -126,7 +134,7 @@ export namespace MsgUpdateGroupPolicyDecisionPolicyV1 {
     value: {
       admin: AccAddress;
       group_policy_address: AccAddress;
-      decision_policy: Any | undefined;
+      decision_policy: DecisionPolicyAmino | undefined;
     };
   }
 
@@ -134,7 +142,7 @@ export namespace MsgUpdateGroupPolicyDecisionPolicyV1 {
     '@type': '/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy';
     admin: AccAddress;
     group_policy_address: AccAddress;
-    decision_policy: Any | undefined;
+    decision_policy: DecisionPolicyData | AnyData | Any | undefined;
   }
 
   export type Proto = MsgUpdateGroupPolicyDecisionPolicyV1_pb;

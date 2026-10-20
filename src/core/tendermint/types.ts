@@ -1,5 +1,6 @@
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { Timestamp } from '../Timestamp';
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { JSONSerializable } from '../../util/json';
 import { Convert } from '../../util/convert';
 import { Consensus } from './version';
@@ -19,8 +20,6 @@ import {
   blockIDFlagFromJSON,
   blockIDFlagToJSON,
 } from '@xpla/xpla.proto/tendermint/types/validator';
-
-import Long from 'long';
 
 /** Header defines the structure of a Tendermint block header. */
 export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
@@ -160,7 +159,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
       Convert.toBase64(appHash),
       Convert.toBase64(lastResultsHash),
       Convert.toBase64(evidenceHash),
-      Convert.toUTF8(proposerAddress),
+      Convert.toUTF8(proposerAddress)
     );
   }
 
@@ -184,7 +183,7 @@ export class Header extends JSONSerializable<any, Header.Data, Header.Proto> {
     return Header_pb.fromPartial({
       version: version?.toProto(),
       chainId,
-      height: Long.fromString(height),
+      height: height.toString(),
       time: time?.toProto(),
       lastBlockId: lastBlockId?.toProto(),
       lastCommitHash: Convert.fromBase64(lastCommitHash),
@@ -230,7 +229,10 @@ export class SignedHeader extends JSONSerializable<
    * @param header
    * @param commit
    */
-  constructor(public header?: Header, public commit?: Commit) {
+  constructor(
+    public header?: Header,
+    public commit?: Commit
+  ) {
     super();
   }
 
@@ -294,7 +296,10 @@ export class BlockID extends JSONSerializable<
    * @param hash
    * @param partSetHeader
    */
-  constructor(public hash: string, public partSetHeader?: PartSetHeader) {
+  constructor(
+    public hash: string,
+    public partSetHeader?: PartSetHeader
+  ) {
     super();
   }
 
@@ -360,7 +365,10 @@ export class PartSetHeader extends JSONSerializable<
    * @param total
    * @param hash
    */
-  constructor(public total: number, public hash: string) {
+  constructor(
+    public total: number,
+    public hash: string
+  ) {
     super();
   }
 
@@ -387,10 +395,7 @@ export class PartSetHeader extends JSONSerializable<
   }
 
   public static fromProto(proto: PartSetHeader.Proto): PartSetHeader {
-    return new PartSetHeader(
-      proto.total,
-      Convert.toBase64(proto.hash),
-    );
+    return new PartSetHeader(proto.total, Convert.toBase64(proto.hash));
   }
 
   public toProto(): PartSetHeader.Proto {
@@ -413,19 +418,22 @@ export namespace PartSetHeader {
 
 /** Commit contains the evidence that a block was committed by a set of validators. */
 export class Commit extends JSONSerializable<any, Commit.Data, Commit.Proto> {
+  public height: Int64;
   /**
    * @param height
    * @param round
    * @param blockId
    * @param signatures
    */
+
   constructor(
-    public height: Long,
+    height: Int64Input,
     public round: number,
     public blockId: BlockID | undefined,
     public signatures: CommitSig[]
   ) {
     super();
+    this.height = parseInt64(height);
   }
 
   public static fromAmino(_: any): Commit {
@@ -439,7 +447,7 @@ export class Commit extends JSONSerializable<any, Commit.Data, Commit.Proto> {
   public static fromData(data: Commit.Data): Commit {
     const { height, round, block_id: blockId, signatures } = data;
     return new Commit(
-      Long.fromString(height),
+      height,
       Number.parseInt(round),
       blockId ? BlockID.fromData(blockId) : undefined,
       signatures.map(CommitSig.fromData)
@@ -470,7 +478,7 @@ export class Commit extends JSONSerializable<any, Commit.Data, Commit.Proto> {
   public toProto(): Commit.Proto {
     const { height, round, blockId, signatures } = this;
     return Commit_pb.fromPartial({
-      height,
+      height: height.toString(),
       round,
       blockId: blockId?.toProto(),
       signatures: signatures.map(sig => sig.toProto()),
@@ -548,7 +556,7 @@ export class CommitSig extends JSONSerializable<
       blockIdFlag,
       Convert.toBase64(validatorAddress),
       Timestamp.fromProto(timestamp),
-      Convert.toBase64(signature),
+      Convert.toBase64(signature)
     );
   }
 
@@ -560,9 +568,7 @@ export class CommitSig extends JSONSerializable<
         ? Convert.fromBase64(validatorAddress)
         : undefined,
       timestamp: timestamp?.toProto(),
-      signature: signature
-        ? Convert.fromBase64(signature)
-        : undefined,
+      signature: signature ? Convert.fromBase64(signature) : undefined,
     });
   }
 }
@@ -583,17 +589,20 @@ export class ValidatorSet extends JSONSerializable<
   ValidatorSet.Data,
   ValidatorSet.Proto
 > {
+  public totalVotingPower: Int64;
   /**
    * @param validators
    * @param proposer
    * @param totalVotingPower
    */
+
   constructor(
     public validators: Validator[],
     public proposer: Validator | undefined,
-    public totalVotingPower: Long
+    totalVotingPower: Int64Input
   ) {
     super();
+    this.totalVotingPower = parseInt64(totalVotingPower);
   }
 
   public static fromAmino(_: any): ValidatorSet {
@@ -609,7 +618,7 @@ export class ValidatorSet extends JSONSerializable<
     return new ValidatorSet(
       validators.map(Validator.fromData),
       proposer ? Validator.fromData(proposer) : undefined,
-      Long.fromString(total_voting_power)
+      total_voting_power
     );
   }
 
@@ -637,7 +646,7 @@ export class ValidatorSet extends JSONSerializable<
     return ValidatorSet_pb.fromPartial({
       validators: validators.map(val => val.toProto()),
       proposer: proposer?.toProto() || undefined,
-      totalVotingPower,
+      totalVotingPower: totalVotingPower.toString(),
     });
   }
 }
@@ -657,19 +666,24 @@ export class Validator extends JSONSerializable<
   Validator.Data,
   Validator.Proto
 > {
+  public votingPower: Int64;
+  public proposerPriority: Int64;
   /**
    * @param address
    * @param pubKey
    * @param votingPower
    * @param proposerPriority
    */
+
   constructor(
     public address: string, // not AccAddress in case of opposite chain is not cosmos-sdk based
     public pubKey: PublicKey | undefined,
-    public votingPower: Long,
-    public proposerPriority: Long
+    votingPower: Int64Input,
+    proposerPriority: Int64Input
   ) {
     super();
+    this.votingPower = parseInt64(votingPower);
+    this.proposerPriority = parseInt64(proposerPriority);
   }
 
   public static fromAmino(_: any): Validator {
@@ -690,8 +704,8 @@ export class Validator extends JSONSerializable<
     return new Validator(
       address,
       pubKey ? PublicKey.fromData(pubKey) : undefined,
-      Long.fromString(votingPower),
-      Long.fromString(proposerPriority)
+      votingPower,
+      proposerPriority
     );
   }
 
@@ -721,8 +735,8 @@ export class Validator extends JSONSerializable<
     return Validator_pb.fromPartial({
       address: Convert.fromBase64(address),
       pubKey: pubKey?.toProto() || undefined,
-      votingPower,
-      proposerPriority,
+      votingPower: votingPower.toString(),
+      proposerPriority: proposerPriority.toString(),
     });
   }
 }

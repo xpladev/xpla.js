@@ -1,6 +1,5 @@
 import { JSONSerializable } from '../../../../../util/json';
 import { Convert } from '../../../../../util/convert';
-import { HeightV1 } from '../../client/v1/Height';
 import { Acknowledgement as AcknowledgementV1_pb } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
 
 /**

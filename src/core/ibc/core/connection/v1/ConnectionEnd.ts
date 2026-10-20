@@ -4,7 +4,9 @@ import { VersionV1 } from './Version';
 import { CounterpartyV1 } from './Counterparty';
 import {
   ConnectionEnd as ConnectionEndV1_pb,
-  State, stateFromJSON, stateToJSON,
+  State,
+  stateFromJSON,
+  stateToJSON,
 } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 
 /**
@@ -30,37 +32,25 @@ export class ConnectionEndV1 extends JSONSerializable<
     public versions: VersionV1[],
     public state: State,
     public counterparty: CounterpartyV1 | undefined,
-    delay_period: Numeric.Input,
+    delay_period: Numeric.Input
   ) {
     super();
     this.delay_period = new Int(delay_period);
   }
 
   public static fromAmino(data: ConnectionEndV1.Amino): ConnectionEndV1 {
-    const {
-      client_id,
-      versions,
-      state,
-      counterparty,
-      delay_period,
-    } = data;
+    const { client_id, versions, state, counterparty, delay_period } = data;
     return new ConnectionEndV1(
       client_id,
       versions.map(VersionV1.fromAmino),
       stateFromJSON(state),
       counterparty ? CounterpartyV1.fromAmino(counterparty) : undefined,
-      delay_period,
+      delay_period
     );
   }
 
   public toAmino(): ConnectionEndV1.Amino {
-    const {
-      client_id,
-      versions,
-      state,
-      counterparty,
-      delay_period,
-    } = this;
+    const { client_id, versions, state, counterparty, delay_period } = this;
     const res: ConnectionEndV1.Amino = {
       client_id,
       versions: versions.map(version => version.toAmino()),
@@ -72,30 +62,18 @@ export class ConnectionEndV1 extends JSONSerializable<
   }
 
   public static fromData(data: ConnectionEndV1.Data): ConnectionEndV1 {
-    const {
-      client_id,
-      versions,
-      state,
-      counterparty,
-      delay_period,
-    } = data;
+    const { client_id, versions, state, counterparty, delay_period } = data;
     return new ConnectionEndV1(
       client_id,
       versions.map(VersionV1.fromData),
       stateFromJSON(state),
       counterparty ? CounterpartyV1.fromData(counterparty) : undefined,
-      delay_period,
+      delay_period
     );
   }
 
   public toData(): ConnectionEndV1.Data {
-    const {
-      client_id,
-      versions,
-      state,
-      counterparty,
-      delay_period,
-    } = this;
+    const { client_id, versions, state, counterparty, delay_period } = this;
     const res: ConnectionEndV1.Data = {
       client_id,
       versions: versions.map(version => version.toData()),
@@ -111,19 +89,15 @@ export class ConnectionEndV1 extends JSONSerializable<
       proto.clientId,
       proto.versions.map(VersionV1.fromProto),
       stateFromJSON(proto.state),
-      proto.counterparty ? CounterpartyV1.fromProto(proto.counterparty) : undefined,
-      proto.delayPeriod.toString(),
+      proto.counterparty
+        ? CounterpartyV1.fromProto(proto.counterparty)
+        : undefined,
+      proto.delayPeriod.toString()
     );
   }
 
   public toProto(): ConnectionEndV1.Proto {
-    const {
-      client_id,
-      versions,
-      state,
-      counterparty,
-      delay_period,
-    } = this;
+    const { client_id, versions, state, counterparty, delay_period } = this;
     return ConnectionEndV1_pb.fromPartial({
       clientId: client_id,
       versions: versions.map(version => version.toProto()),
@@ -139,7 +113,7 @@ export namespace ConnectionEndV1 {
     client_id: string;
     versions: VersionV1.Amino[];
     state: string;
-    counterparty: CounterpartyV1.Amino | undefined;
+    counterparty?: CounterpartyV1.Amino;
     delay_period: string;
   }
 
@@ -147,7 +121,7 @@ export namespace ConnectionEndV1 {
     client_id: string;
     versions: VersionV1.Data[];
     state: string;
-    counterparty: CounterpartyV1.Data | undefined;
+    counterparty?: CounterpartyV1.Data;
     delay_period: string;
   }
 

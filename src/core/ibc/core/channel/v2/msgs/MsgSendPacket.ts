@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../../../util/int64';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
@@ -14,23 +15,25 @@ export class MsgSendPacketV2 extends JSONSerializable<
   MsgSendPacketV2.Data,
   MsgSendPacketV2.Proto
 > {
+  public timeout_timestamp: Int64;
   /**
    * @param sourceClient
    * @param timeoutTimestamp
    * @param payloads
    * @param signer signer address
    */
+
   constructor(
     public source_client: string,
-    public timeout_timestamp: number,
+    timeout_timestamp: Int64Input,
     public payloads: PayloadV2[],
-    public signer: AccAddress,
+    public signer: AccAddress
   ) {
     super();
+    this.timeout_timestamp = parseInt64(timeout_timestamp);
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgSendPacketV2 {
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgSendPacketV2 {
     throw new Error('Amino not supported');
   }
 
@@ -42,12 +45,7 @@ export class MsgSendPacketV2 extends JSONSerializable<
     data: MsgSendPacketV2.Data,
     _?: boolean
   ): MsgSendPacketV2 {
-    const {
-      source_client,
-      timeout_timestamp,
-      payloads,
-      signer,
-    } = data;
+    const { source_client, timeout_timestamp, payloads, signer } = data;
     return new MsgSendPacketV2(
       source_client,
       timeout_timestamp,
@@ -57,17 +55,12 @@ export class MsgSendPacketV2 extends JSONSerializable<
   }
 
   public toData(_?: boolean): MsgSendPacketV2.Data {
-    const {
-      source_client,
-      timeout_timestamp,
-      payloads,
-      signer,
-    } = this;
+    const { source_client, timeout_timestamp, payloads, signer } = this;
     return {
       '@type': '/ibc.core.channel.v2.MsgSendPacket',
       source_client,
-      timeout_timestamp,
-      payloads,
+      timeout_timestamp: timeout_timestamp.toString(),
+      payloads: payloads.map(p => p.toData()),
       signer,
     };
   }
@@ -78,23 +71,18 @@ export class MsgSendPacketV2 extends JSONSerializable<
   ): MsgSendPacketV2 {
     return new MsgSendPacketV2(
       proto.sourceClient,
-      proto.timeoutTimestamp.toNumber(),
+      proto.timeoutTimestamp,
       proto.payloads.map(PayloadV2.fromProto),
-      proto.signer,
+      proto.signer
     );
   }
 
   public toProto(_?: boolean): MsgSendPacketV2.Proto {
-    const {
-      source_client,
-      timeout_timestamp,
-      payloads,
-      signer,
-    } = this;
+    const { source_client, timeout_timestamp, payloads, signer } = this;
     return MsgSendPacketV2_pb.fromPartial({
       sourceClient: source_client,
-      timeoutTimestamp: timeout_timestamp,
-      payloads: payloads.map((p) => p.toProto()),
+      timeoutTimestamp: timeout_timestamp.toString(),
+      payloads: payloads.map(p => p.toProto()),
       signer,
     });
   }
@@ -107,9 +95,7 @@ export class MsgSendPacketV2 extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgSendPacketV2 {
-    return MsgSendPacketV2.fromProto(
-      MsgSendPacketV2_pb.decode(msgAny.value)
-    );
+    return MsgSendPacketV2.fromProto(MsgSendPacketV2_pb.decode(msgAny.value));
   }
 }
 
@@ -117,7 +103,7 @@ export namespace MsgSendPacketV2 {
   export interface Data {
     '@type': '/ibc.core.channel.v2.MsgSendPacket';
     source_client: string;
-    timeout_timestamp: number;
+    timeout_timestamp: string;
     payloads: PayloadV2.Data[];
     signer: AccAddress;
   }

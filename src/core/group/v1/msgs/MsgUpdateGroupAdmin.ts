@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -9,17 +9,20 @@ export class MsgUpdateGroupAdminV1 extends JSONSerializable<
   MsgUpdateGroupAdminV1.Data,
   MsgUpdateGroupAdminV1.Proto
 > {
+  public group_id: Int64;
   /**
    * @param admin is the current account address of the group admin
    * @param group_id is the unique ID of the group
    * @param new_admin is the group new admin account address
    */
+
   constructor(
     public admin: AccAddress,
-    public group_id: number,
+    group_id: Int64Input,
     public new_admin: AccAddress
   ) {
     super();
+    this.group_id = parseInt64(group_id);
   }
 
   public static fromAmino(
@@ -29,11 +32,7 @@ export class MsgUpdateGroupAdminV1 extends JSONSerializable<
     const {
       value: { admin, group_id, new_admin },
     } = data;
-    return new MsgUpdateGroupAdminV1(
-      admin,
-      Number.parseInt(group_id),
-      new_admin
-    );
+    return new MsgUpdateGroupAdminV1(admin, group_id, new_admin);
   }
 
   public toAmino(isClassic?: boolean): MsgUpdateGroupAdminV1.Amino {
@@ -55,11 +54,7 @@ export class MsgUpdateGroupAdminV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgUpdateGroupAdminV1 {
     const { admin, group_id, new_admin } = data;
-    return new MsgUpdateGroupAdminV1(
-      admin,
-      Number.parseInt(group_id),
-      new_admin
-    );
+    return new MsgUpdateGroupAdminV1(admin, group_id, new_admin);
   }
 
   public toData(_isClassic?: boolean): MsgUpdateGroupAdminV1.Data {
@@ -78,7 +73,7 @@ export class MsgUpdateGroupAdminV1 extends JSONSerializable<
   ): MsgUpdateGroupAdminV1 {
     return new MsgUpdateGroupAdminV1(
       proto.admin,
-      proto.groupId.toNumber(),
+      proto.groupId,
       proto.newAdmin
     );
   }
@@ -87,7 +82,7 @@ export class MsgUpdateGroupAdminV1 extends JSONSerializable<
     const { admin, group_id, new_admin } = this;
     return MsgUpdateGroupAdminV1_pb.fromPartial({
       admin,
-      groupId: group_id,
+      groupId: group_id.toString(),
       newAdmin: new_admin,
     });
   }

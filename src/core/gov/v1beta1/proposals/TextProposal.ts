@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { TextProposal as TextProposal_pb } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';

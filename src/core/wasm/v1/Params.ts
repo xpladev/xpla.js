@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccessConfig } from './AccessConfig';
 import { AccessType } from './AccessTypeParam';
@@ -14,8 +13,8 @@ export class CodesParamsV1 extends JSONSerializable<
   CodesParamsV1.Proto
 > {
   /**
-   * @param code_upload_access 
-   * @param instantiate_default_permission 
+   * @param code_upload_access
+   * @param instantiate_default_permission
    */
   constructor(
     public code_upload_access: AccessConfig | undefined,

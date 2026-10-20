@@ -1,5 +1,5 @@
 import { EvmAPI } from './BaseAPI';
-import { Account, EvmAddress, EvmAccount, Numeric } from '../../../core';
+import { Account, EvmAddress, EvmAccount } from '../../../core';
 import { ECDClient } from '../ECDClient';
 
 export class EvmAuthAPI extends EvmAPI {
@@ -14,17 +14,15 @@ export class EvmAuthAPI extends EvmAPI {
    * @param address address of account to look up
    */
   public async accountInfo(address: EvmAddress): Promise<Account> {
-    const account = new EvmAccount(address, 0);
     return this.e
       .post(this.ecd.config.id, 'eth_getTransactionCount', [address, 'latest'])
       .then(response => {
         if (this.e.isError(response)) {
           throw this.e.getError(response);
         }
-        account.nonce = response.result;
         return new EvmAccount(
           address,
-          Numeric.parse(response.result).toNumber()
+          response.result
         );
       });
   }

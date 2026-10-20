@@ -2,6 +2,10 @@ import { JSONSerializable } from '../../../../../util/json';
 import { CounterpartyV1 } from './Counterparty';
 import {
   State,
+  stateFromJSON,
+  stateToJSON,
+  orderFromJSON,
+  orderToJSON,
   Order,
   Channel as ChannelV1_pb,
 } from '@xpla/xpla.proto/ibc/core/channel/v1/channel';
@@ -59,8 +63,8 @@ export class ChannelV1 extends JSONSerializable<
   public static fromData(data: ChannelV1.Data): ChannelV1 {
     const { state, ordering, counterparty, connection_hops, version } = data;
     return new ChannelV1(
-      state,
-      ordering,
+      stateFromJSON(state),
+      orderFromJSON(ordering),
       counterparty ? CounterpartyV1.fromData(counterparty) : undefined,
       connection_hops,
       version
@@ -70,8 +74,8 @@ export class ChannelV1 extends JSONSerializable<
   public toData(): ChannelV1.Data {
     const { state, ordering, counterparty, connection_hops, version } = this;
     const res: ChannelV1.Data = {
-      state,
-      ordering,
+      state: stateToJSON(state),
+      ordering: orderToJSON(ordering),
       counterparty: counterparty ? counterparty.toData() : undefined,
       connection_hops,
       version,
@@ -113,8 +117,8 @@ export namespace ChannelV1 {
   }
 
   export interface Data {
-    state: State;
-    ordering: Order;
+    state: State | string;
+    ordering: Order | string;
     counterparty?: CounterpartyV1.Data;
     connection_hops: string[];
     version: string;

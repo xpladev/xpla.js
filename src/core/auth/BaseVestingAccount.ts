@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { Coins } from '../Coins';
 import { BaseAccount } from './BaseAccount';
@@ -14,6 +14,7 @@ export class BaseVestingAccount extends JSONSerializable<
   BaseVestingAccount.Data,
   BaseVestingAccount.Proto
 > {
+  public end_time: Int64;
   /**
    *
    * @param base_account account information
@@ -22,21 +23,23 @@ export class BaseVestingAccount extends JSONSerializable<
    * @param delegated_vesting
    * @param end_time
    */
+
   constructor(
     public base_account: BaseAccount,
     public original_vesting: Coins,
     public delegated_free: Coins,
     public delegated_vesting: Coins,
-    public end_time: number
+    end_time: Int64Input
   ) {
     super();
+    this.end_time = parseInt64(end_time);
   }
 
-  public getAccountNumber(): number {
+  public getAccountNumber(): Int64 {
     return this.base_account.account_number;
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.base_account.sequence;
   }
 
@@ -81,7 +84,7 @@ export class BaseVestingAccount extends JSONSerializable<
       Coins.fromAmino(amino.value.original_vesting),
       Coins.fromAmino(amino.value.delegated_free),
       Coins.fromAmino(amino.value.delegated_vesting),
-      Number.parseInt(amino.value.end_time)
+      amino.value.end_time
     );
   }
 
@@ -118,7 +121,7 @@ export class BaseVestingAccount extends JSONSerializable<
       Coins.fromData(data.original_vesting),
       Coins.fromData(data.delegated_free),
       Coins.fromData(data.delegated_vesting),
-      Number.parseInt(data.end_time)
+      data.end_time
     );
   }
 
@@ -135,7 +138,7 @@ export class BaseVestingAccount extends JSONSerializable<
       baseAccount: base_account.toProto(),
       delegatedFree: delegated_free.toProto(),
       delegatedVesting: delegated_vesting.toProto(),
-      endTime: end_time,
+      endTime: end_time.toString(),
       originalVesting: original_vesting.toProto(),
     });
   }
@@ -153,7 +156,7 @@ export class BaseVestingAccount extends JSONSerializable<
       Coins.fromProto(proto.originalVesting),
       Coins.fromProto(proto.delegatedFree),
       Coins.fromProto(proto.delegatedVesting),
-      proto.endTime.toNumber()
+      proto.endTime
     );
   }
 }

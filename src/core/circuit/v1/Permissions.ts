@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Permissions as PermissionsV1_pb, Permissions_Level } from '@xpla/xpla.proto/cosmos/circuit/v1/types';
 

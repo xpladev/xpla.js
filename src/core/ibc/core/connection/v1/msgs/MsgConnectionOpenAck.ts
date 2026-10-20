@@ -1,3 +1,4 @@
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
 import { AccAddress } from '../../../../../bech32';
@@ -39,7 +40,7 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
     public proof_consensus: string,
     public consensus_height: HeightV1 | undefined,
     public signer: AccAddress,
-    public host_consensus_state_proof: string,
+    public host_consensus_state_proof: string
   ) {
     super();
   }
@@ -53,7 +54,7 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
   }
 
   public static fromData(
-    data: MsgConnectionOpenAckV1.Data,
+    data: MsgConnectionOpenAckV1.Data
   ): MsgConnectionOpenAckV1 {
     const {
       connection_id,
@@ -72,14 +73,14 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
       connection_id,
       counterparty_connection_id,
       version ? VersionV1.fromData(version) : undefined,
-      client_state,
+      anyFromData(client_state),
       proof_height ? HeightV1.fromData(proof_height) : undefined,
       proof_try,
       proof_client,
       proof_consensus,
       consensus_height ? HeightV1.fromData(consensus_height) : undefined,
       signer,
-      host_consensus_state_proof,
+      host_consensus_state_proof
     );
   }
 
@@ -102,19 +103,21 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
       connection_id,
       counterparty_connection_id,
       version: version ? version.toData() : undefined,
-      client_state,
+      client_state: anyToData(client_state),
       proof_height: proof_height ? proof_height.toData() : undefined,
       proof_try,
       proof_client,
       proof_consensus,
-      consensus_height: consensus_height ? consensus_height.toData() : undefined,
+      consensus_height: consensus_height
+        ? consensus_height.toData()
+        : undefined,
       signer,
       host_consensus_state_proof,
     };
   }
 
   public static fromProto(
-    proto: MsgConnectionOpenAckV1.Proto,
+    proto: MsgConnectionOpenAckV1.Proto
   ): MsgConnectionOpenAckV1 {
     return new MsgConnectionOpenAckV1(
       proto.connectionId,
@@ -125,9 +128,11 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
       Convert.toBase64(proto.proofTry),
       Convert.toBase64(proto.proofClient),
       Convert.toBase64(proto.proofConsensus),
-      proto.consensusHeight ? HeightV1.fromProto(proto.consensusHeight) : undefined,
+      proto.consensusHeight
+        ? HeightV1.fromProto(proto.consensusHeight)
+        : undefined,
       proto.signer,
-      Convert.toBase64(proto.hostConsensusStateProof),
+      Convert.toBase64(proto.hostConsensusStateProof)
     );
   }
 
@@ -154,7 +159,9 @@ export class MsgConnectionOpenAckV1 extends JSONSerializable<
       proofTry: Convert.fromBase64(proof_try),
       proofClient: Convert.fromBase64(proof_client),
       proofConsensus: Convert.fromBase64(proof_consensus),
-      consensusHeight: consensus_height ? consensus_height.toProto() : undefined,
+      consensusHeight: consensus_height
+        ? consensus_height.toProto()
+        : undefined,
       signer,
       hostConsensusStateProof: Convert.fromBase64(host_consensus_state_proof),
     });

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -34,7 +33,7 @@ export class MsgClearContractAdminV1 extends JSONSerializable<
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   public toAmino(isClassic?: boolean): MsgClearContractAdminV1.Amino {
     const { admin, contract } = this;
     if (isClassic) {

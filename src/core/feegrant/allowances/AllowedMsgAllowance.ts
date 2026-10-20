@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { BasicAllowance } from './BasicAllowance';
 import { PeriodicAllowance } from './PeriodicAllowance';

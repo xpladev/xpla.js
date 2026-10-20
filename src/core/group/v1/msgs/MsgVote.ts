@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -13,6 +13,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
   MsgGroupVoteV1.Data,
   MsgGroupVoteV1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id is the unique ID of the proposal
    * @param voter is the voter account address
@@ -20,14 +21,16 @@ export class MsgGroupVoteV1 extends JSONSerializable<
    * @param metadata is any arbitrary metadata attached to the vote
    * @param exec defines whether the proposal should be executed immediately after voting or not
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public voter: AccAddress,
     public option: VoteOption,
     public metadata: string,
     public exec: Exec
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -37,13 +40,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
     const {
       value: { proposal_id, voter, option, metadata, exec },
     } = data;
-    return new MsgGroupVoteV1(
-      Number.parseInt(proposal_id),
-      voter,
-      option,
-      metadata,
-      exec
-    );
+    return new MsgGroupVoteV1(proposal_id, voter, option, metadata, exec);
   }
 
   public toAmino(isClassic?: boolean): MsgGroupVoteV1.Amino {
@@ -65,13 +62,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgGroupVoteV1 {
     const { proposal_id, voter, option, metadata, exec } = data;
-    return new MsgGroupVoteV1(
-      Number.parseInt(proposal_id),
-      voter,
-      option,
-      metadata,
-      exec
-    );
+    return new MsgGroupVoteV1(proposal_id, voter, option, metadata, exec);
   }
 
   public toData(_isClassic?: boolean): MsgGroupVoteV1.Data {
@@ -91,7 +82,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgGroupVoteV1 {
     return new MsgGroupVoteV1(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.voter,
       proto.option,
       proto.metadata,
@@ -102,7 +93,7 @@ export class MsgGroupVoteV1 extends JSONSerializable<
   public toProto(_isClassic?: boolean): MsgGroupVoteV1.Proto {
     const { proposal_id, voter, option, metadata, exec } = this;
     return MsgGroupVoteV1_pb.fromPartial({
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       voter,
       option,
       metadata,

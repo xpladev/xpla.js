@@ -1,4 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  DecisionPolicyData,
+  DecisionPolicyAmino,
+  decisionPolicyFromData,
+  decisionPolicyToData,
+  decisionPolicyFromAmino,
+  decisionPolicyToAmino,
+} from '../DecisionPolicy';
+import { AnyData } from '../../../../util/any';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -49,7 +57,7 @@ export class MsgCreateGroupWithPolicyV1 extends JSONSerializable<
       group_metadata,
       group_policy_metadata,
       group_policy_as_admin,
-      decision_policy
+      decisionPolicyFromAmino(decision_policy)
     );
   }
 
@@ -72,7 +80,7 @@ export class MsgCreateGroupWithPolicyV1 extends JSONSerializable<
         group_metadata,
         group_policy_metadata,
         group_policy_as_admin,
-        decision_policy,
+        decision_policy: decisionPolicyToAmino(decision_policy),
       },
     };
   }
@@ -95,7 +103,7 @@ export class MsgCreateGroupWithPolicyV1 extends JSONSerializable<
       group_metadata,
       group_policy_metadata,
       group_policy_as_admin,
-      decision_policy
+      decisionPolicyFromData(decision_policy)
     );
   }
 
@@ -115,7 +123,7 @@ export class MsgCreateGroupWithPolicyV1 extends JSONSerializable<
       group_metadata,
       group_policy_metadata,
       group_policy_as_admin,
-      decision_policy,
+      decision_policy: decisionPolicyToData(decision_policy),
     };
   }
 
@@ -175,15 +183,14 @@ export class MsgCreateGroupWithPolicyV1 extends JSONSerializable<
 export namespace MsgCreateGroupWithPolicyV1 {
   export interface Amino {
     type:
-      | 'group/MsgCreateGroupWithPolicy'
-      | 'cosmos-sdk/MsgCreateGroupWithPolicy';
+      'group/MsgCreateGroupWithPolicy' | 'cosmos-sdk/MsgCreateGroupWithPolicy';
     value: {
       admin: AccAddress;
       members: MemberRequest[];
       group_metadata: string;
       group_policy_metadata: string;
       group_policy_as_admin: boolean;
-      decision_policy: Any | undefined;
+      decision_policy: DecisionPolicyAmino | undefined;
     };
   }
 
@@ -194,7 +201,7 @@ export namespace MsgCreateGroupWithPolicyV1 {
     group_metadata: string;
     group_policy_metadata: string;
     group_policy_as_admin: boolean;
-    decision_policy: Any | undefined;
+    decision_policy: DecisionPolicyData | AnyData | Any | undefined;
   }
 
   export type Proto = MsgCreateGroupWithPolicyV1_pb;

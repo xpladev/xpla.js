@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Coin } from '../../../Coin';
 import { Int } from '../../../numeric';
@@ -55,7 +54,7 @@ export class MsgCreateValidatorV1B1 extends JSONSerializable<
       },
     } = data;
     return new MsgCreateValidatorV1B1(
-      description,
+      ValidatorV1B1.Description.fromAmino(description),
       ValidatorV1B1.CommissionRates.fromAmino(commission),
       new Int(min_self_delegation),
       delegator_address,
@@ -80,7 +79,13 @@ export class MsgCreateValidatorV1B1 extends JSONSerializable<
         ? 'staking/MsgCreateValidator'
         : 'cosmos-sdk/MsgCreateValidator',
       value: {
-        description,
+        description: isClassic
+          ? (Object.fromEntries(
+              Object.entries(description.toAmino()).filter(
+                ([, value]) => value !== ''
+              )
+            ) as ValidatorV1B1.Description.Amino)
+          : description.toAmino(),
         commission: commission.toAmino(),
         min_self_delegation: min_self_delegation.toString(),
         delegator_address,
@@ -105,7 +110,7 @@ export class MsgCreateValidatorV1B1 extends JSONSerializable<
       value,
     } = data;
     return new MsgCreateValidatorV1B1(
-      description,
+      ValidatorV1B1.Description.fromData(description),
       ValidatorV1B1.CommissionRates.fromData(commission),
       new Int(min_self_delegation),
       delegator_address,
@@ -127,7 +132,7 @@ export class MsgCreateValidatorV1B1 extends JSONSerializable<
     } = this;
     return {
       '@type': '/cosmos.staking.v1beta1.MsgCreateValidator',
-      description,
+      description: description.toData(),
       commission: commission.toData(),
       min_self_delegation: min_self_delegation.toString(),
       delegator_address,
@@ -199,7 +204,7 @@ export namespace MsgCreateValidatorV1B1 {
   export interface Amino {
     type: 'staking/MsgCreateValidator' | 'cosmos-sdk/MsgCreateValidator';
     value: {
-      description: ValidatorV1B1.Description;
+      description: ValidatorV1B1.Description.Amino;
       commission: ValidatorV1B1.CommissionRates.Amino;
       min_self_delegation: string;
       delegator_address: AccAddress;
@@ -211,7 +216,7 @@ export namespace MsgCreateValidatorV1B1 {
 
   export interface Data {
     '@type': '/cosmos.staking.v1beta1.MsgCreateValidator';
-    description: ValidatorV1B1.Description;
+    description: ValidatorV1B1.Description.Data;
     commission: ValidatorV1B1.CommissionRates.Data;
     min_self_delegation: string;
     delegator_address: AccAddress;

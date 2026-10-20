@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -12,15 +12,18 @@ export class MsgCancelProposalV1 extends JSONSerializable<
   MsgCancelProposalV1.Data,
   MsgCancelProposalV1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id Id of porposal to deposit to
    * @param proposer proposer's account address
    */
+
   constructor(
-    public proposal_id: number,
-    public proposer: AccAddress,
+    proposal_id: Int64Input,
+    public proposer: AccAddress
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -30,10 +33,7 @@ export class MsgCancelProposalV1 extends JSONSerializable<
     const {
       value: { proposal_id, proposer },
     } = data;
-    return new MsgCancelProposalV1(
-      Number.parseInt(proposal_id),
-      proposer,
-    );
+    return new MsgCancelProposalV1(proposal_id, proposer);
   }
 
   public toAmino(_isClassic?: boolean): MsgCancelProposalV1.Amino {
@@ -52,10 +52,7 @@ export class MsgCancelProposalV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgCancelProposalV1 {
     const { proposal_id, proposer } = data;
-    return new MsgCancelProposalV1(
-      Number.parseInt(proposal_id),
-      proposer,
-    );
+    return new MsgCancelProposalV1(proposal_id, proposer);
   }
 
   public toData(_isClassic?: boolean): MsgCancelProposalV1.Data {
@@ -71,16 +68,13 @@ export class MsgCancelProposalV1 extends JSONSerializable<
     proto: MsgCancelProposalV1.Proto,
     _isClassic?: boolean
   ): MsgCancelProposalV1 {
-    return new MsgCancelProposalV1(
-      proto.proposalId.toNumber(),
-      proto.proposer,
-    );
+    return new MsgCancelProposalV1(proto.proposalId, proto.proposer);
   }
 
   public toProto(_isClassic?: boolean): MsgCancelProposalV1.Proto {
     const { proposal_id, proposer } = this;
     return MsgCancelProposalV1_pb.fromPartial({
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       proposer,
     });
   }
@@ -92,7 +86,10 @@ export class MsgCancelProposalV1 extends JSONSerializable<
     });
   }
 
-  public static unpackAny(msgAny: Any, isClassic?: boolean): MsgCancelProposalV1 {
+  public static unpackAny(
+    msgAny: Any,
+    isClassic?: boolean
+  ): MsgCancelProposalV1 {
     return MsgCancelProposalV1.fromProto(
       MsgCancelProposalV1_pb.decode(msgAny.value),
       isClassic

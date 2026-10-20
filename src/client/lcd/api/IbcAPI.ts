@@ -1,23 +1,26 @@
 import { BaseAPI } from './BaseAPI';
-import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
+import {
+  APIParams,
+  CosmosParams,
+  Pagination,
+  PaginationOptions,
+} from '../APIRequester';
 import { Int, Numeric } from '../../../core/numeric';
 import {
   ChannelV1,
+  IdentifiedChannelV1,
   IbcChannelCounterpartyV1 as PortChannel,
   PacketIdV1,
   PacketStateV1,
   ConnectionEndV1,
+  IdentifiedConnectionV1,
   HeightV1,
   IdentifiedClientStateV1,
-  ConsensusStateWithHeightV1,
   IbcClientParamsV1,
   IbcConnectionParamsV1,
   ConnectionPathsV1,
 } from '../../../core/ibc/core';
-import {
-  ClientStateV1,
-  ConsensusStateV1,
-} from '../../../core/ibc/lightclient';
+import { ClientStateV1, ConsensusStateV1 } from '../../../core/ibc/lightclient';
 import { LCDClient } from '../LCDClient';
 import { Convert } from '../../../util/convert';
 
@@ -84,15 +87,15 @@ export class IbcAPI extends BaseAPI {
    */
   public async channels(
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ ChannelV1[], Pagination, HeightV1 ]> {
+  ): Promise<[IdentifiedChannelV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
-        channels: ChannelV1.Data[];
+        channels: IdentifiedChannelV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
       }>(`/ibc/core/channel/v1/channels`, params)
       .then(d => [
-        d.channels.map(ChannelV1.fromData),
+        d.channels.map(IdentifiedChannelV1.fromData),
         d.pagination,
         HeightV1.fromData(d.height),
       ]);
@@ -101,15 +104,15 @@ export class IbcAPI extends BaseAPI {
   public async channelsByConnection(
     connection_id: string,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ ChannelV1[], Pagination, HeightV1 ]> {
+  ): Promise<[IdentifiedChannelV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
-        channels: ChannelV1.Data[];
+        channels: IdentifiedChannelV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
       }>(`/ibc/core/channel/v1/connections/${connection_id}/channels`, params)
       .then(d => [
-        d.channels.map(ChannelV1.fromData),
+        d.channels.map(IdentifiedChannelV1.fromData),
         d.pagination,
         HeightV1.fromData(d.height),
       ]);
@@ -123,13 +126,16 @@ export class IbcAPI extends BaseAPI {
   public async port(
     port_channel: PortChannel,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ChannelV1, Proof ]> {
+  ): Promise<[ChannelV1, Proof]> {
     return this.c
       .get<{
         channel: ChannelV1.Data;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}`,
+        params
+      )
       .then(d => {
         return [
           ChannelV1.fromData(d.channel),
@@ -148,13 +154,16 @@ export class IbcAPI extends BaseAPI {
   public async channelClientState(
     port_channel: PortChannel,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ChannelV1, Proof ]> {
+  ): Promise<[ChannelV1, Proof]> {
     return this.c
       .get<{
-        channel: ChannelV1.Data,
-        proof: string | null,
-        proof_height: HeightV1.Data,
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}`, params)
+        channel: ChannelV1.Data;
+        proof: string | null;
+        proof_height: HeightV1.Data;
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}`,
+        params
+      )
       .then(d => {
         return [
           ChannelV1.fromData(d.channel),
@@ -174,13 +183,16 @@ export class IbcAPI extends BaseAPI {
     port_channel: PortChannel,
     height: HeightV1,
     params: APIParams = {}
-  ): Promise<[ ConsensusStateV1, Proof ]> {
+  ): Promise<[ConsensusStateV1, Proof]> {
     return this.c
       .get<{
-        consensus_state: ConsensusStateV1.Data,
-        proof: string | null,
-        proof_height: HeightV1.Data,
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/consensus_state/revision/${height.revision_number}/height/${height.revision_height}`, params)
+        consensus_state: ConsensusStateV1.Data;
+        proof: string | null;
+        proof_height: HeightV1.Data;
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/consensus_state/revision/${height.revision_number}/height/${height.revision_height}`,
+        params
+      )
       .then(d => {
         return [
           ConsensusStateV1.fromData(d.consensus_state),
@@ -195,45 +207,51 @@ export class IbcAPI extends BaseAPI {
   public async nextSequence(
     port_channel: PortChannel,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ Int, Proof ]> {
+  ): Promise<[Int, Proof]> {
     return this.c
       .get<{
         next_sequence_receive: Numeric.Input;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/next_sequence`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/next_sequence`,
+        params
+      )
       .then(d => [
         new Int(d.next_sequence_receive),
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async nextSequenceSend(
     port_channel: PortChannel,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ Int, Proof ]> {
+  ): Promise<[Int, Proof]> {
     return this.c
       .get<{
         next_sequence_send: Numeric.Input;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/next_sequence_send`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/next_sequence_send`,
+        params
+      )
       .then(d => [
         new Int(d.next_sequence_send),
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async nextSequenceSendByClient(
     client_id: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ Int, Proof ]> {
+  ): Promise<[Int, Proof]> {
     return this.c
       .get<{
         next_sequence_send: Numeric.Input;
@@ -245,20 +263,23 @@ export class IbcAPI extends BaseAPI {
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async packetAcknowledgements(
     port_channel: PortChannel,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
+  ): Promise<[PacketStateV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
         acknowledgements: PacketStateV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/packet_acknowledgements`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/packet_acknowledgements`,
+        params
+      )
       .then(d => [
         d.acknowledgements.map(PacketStateV1.fromData),
         d.pagination,
@@ -269,13 +290,16 @@ export class IbcAPI extends BaseAPI {
   public async packetAcknowledgementsByClient(
     client_id: string,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
+  ): Promise<[PacketStateV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
         acknowledgements: PacketStateV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_acknowledgements`, params)
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_acknowledgements`,
+        params
+      )
       .then(d => [
         d.acknowledgements.map(PacketStateV1.fromData),
         d.pagination,
@@ -286,19 +310,22 @@ export class IbcAPI extends BaseAPI {
   public async packetAcknowledgement(
     packet_id: PacketIdV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string, Proof ]> {
+  ): Promise<[string, Proof]> {
     return this.c
       .get<{
         acknowledgement: string;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_acks/${packet_id.sequence}`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_acks/${packet_id.sequence}`,
+        params
+      )
       .then(d => [
         d.acknowledgement,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -306,32 +333,38 @@ export class IbcAPI extends BaseAPI {
     client_id: string,
     sequence: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string, Proof ]> {
+  ): Promise<[string, Proof]> {
     return this.c
       .get<{
         acknowledgement: string;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_acks/${sequence}`, params)
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_acks/${sequence}`,
+        params
+      )
       .then(d => [
         d.acknowledgement,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async packetCommitments(
     port_channel: PortChannel,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
+  ): Promise<[PacketStateV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
         commitments: PacketStateV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
-      }>(`/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/packet_commitments`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${port_channel.channel_id}/ports/${port_channel.port_id}/packet_commitments`,
+        params
+      )
       .then(d => [
         d.commitments.map(PacketStateV1.fromData),
         d.pagination,
@@ -342,7 +375,7 @@ export class IbcAPI extends BaseAPI {
   public async packetCommitmentsByClient(
     client_id: string,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ PacketStateV1[], Pagination, HeightV1 ]> {
+  ): Promise<[PacketStateV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
         commitments: PacketStateV1.Data[];
@@ -359,19 +392,22 @@ export class IbcAPI extends BaseAPI {
   public async packetCommitment(
     packet_id: PacketIdV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string, Proof ]> {
+  ): Promise<[string, Proof]> {
     return this.c
       .get<{
         commitment: string;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}`,
+        params
+      )
       .then(d => [
         d.commitment,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -379,100 +415,106 @@ export class IbcAPI extends BaseAPI {
     client_id: string,
     sequence: Numeric.Input,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string, Proof ]> {
+  ): Promise<[string, Proof]> {
     return this.c
       .get<{
         commitment: string;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${sequence}`, params)
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${sequence}`,
+        params
+      )
       .then(d => [
         d.commitment,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async packetCommitmentUnreceivedAcknowledgements(
     packet_id: PacketIdV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string[], HeightV1 ]> {
+  ): Promise<[string[], HeightV1]> {
     return this.c
       .get<{
         sequences: string[];
         height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}/unreceived_acks`, params)
-      .then(d => [
-        d.sequences,
-        HeightV1.fromData(d.height),
-      ]);
+      }>(
+        `/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}/unreceived_acks`,
+        params
+      )
+      .then(d => [d.sequences, HeightV1.fromData(d.height)]);
   }
 
   public async packetCommitmentUnreceivedAcknowledgementsByClient(
     client_id: string,
     packet_ack_sequences: string[],
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string[], HeightV1 ]> {
+  ): Promise<[string[], HeightV1]> {
     return this.c
       .get<{
         sequences: string[];
         height: HeightV1.Data;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${packet_ack_sequences.join(',')}/unreceived_acks`, params)
-      .then(d => [
-        d.sequences,
-        HeightV1.fromData(d.height),
-      ]);
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${packet_ack_sequences.join(',')}/unreceived_acks`,
+        params
+      )
+      .then(d => [d.sequences, HeightV1.fromData(d.height)]);
   }
 
   public async packetCommitmentUnreceivedPackets(
     packet_id: PacketIdV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string[], HeightV1 ]> {
+  ): Promise<[string[], HeightV1]> {
     return this.c
       .get<{
         sequences: string[];
         height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}/unreceived_packets`, params)
-      .then(d => [
-        d.sequences,
-        HeightV1.fromData(d.height),
-      ]);
+      }>(
+        `/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_commitments/${packet_id.sequence}/unreceived_packets`,
+        params
+      )
+      .then(d => [d.sequences, HeightV1.fromData(d.height)]);
   }
 
   public async packetCommitmentUnreceivedPacketsByClient(
     client_id: string,
     sequences: string[],
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ string[], HeightV1 ]> {
+  ): Promise<[string[], HeightV1]> {
     return this.c
       .get<{
         sequences: string[];
         height: HeightV1.Data;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${sequences.join(',')}/unreceived_packets`, params)
-      .then(d => [
-        d.sequences,
-        HeightV1.fromData(d.height),
-      ]);
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_commitments/${sequences.join(',')}/unreceived_packets`,
+        params
+      )
+      .then(d => [d.sequences, HeightV1.fromData(d.height)]);
   }
 
   public async packetReceipts(
     packet_id: PacketIdV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ boolean, Proof ]> {
+  ): Promise<[boolean, Proof]> {
     return this.c
       .get<{
         received: boolean;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_receipts/${packet_id.sequence}`, params)
+      }>(
+        `/ibc/core/channel/v1/channels/${packet_id.channel_id}/ports/${packet_id.port_id}/packet_receipts/${packet_id.sequence}`,
+        params
+      )
       .then(d => [
         d.received,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -480,19 +522,22 @@ export class IbcAPI extends BaseAPI {
     client_id: string,
     sequence: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ boolean, Proof ]> {
+  ): Promise<[boolean, Proof]> {
     return this.c
       .get<{
         received: boolean;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/channel/v2/clients/${client_id}/packet_receipts/${sequence}`, params)
+      }>(
+        `/ibc/core/channel/v2/clients/${client_id}/packet_receipts/${sequence}`,
+        params
+      )
       .then(d => [
         d.received,
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -501,15 +546,15 @@ export class IbcAPI extends BaseAPI {
    */
   public async connections(
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ConnectionEndV1[], Pagination, HeightV1 ]> {
+  ): Promise<[IdentifiedConnectionV1[], Pagination, HeightV1]> {
     return this.c
       .get<{
-        connections: ConnectionEndV1.Data[];
+        connections: IdentifiedConnectionV1.Data[];
         height: HeightV1.Data;
         pagination: Pagination;
       }>(`/ibc/core/connection/v1/connections`, params)
       .then(d => [
-        d.connections.map(ConnectionEndV1.fromData),
+        d.connections.map(IdentifiedConnectionV1.fromData),
         d.pagination,
         HeightV1.fromData(d.height),
       ]);
@@ -518,7 +563,7 @@ export class IbcAPI extends BaseAPI {
   public async clientConnectionPaths(
     client_id: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ConnectionPathsV1, Proof ]> {
+  ): Promise<[ConnectionPathsV1, Proof]> {
     return this.c
       .get<{
         connection_paths: string[];
@@ -533,7 +578,7 @@ export class IbcAPI extends BaseAPI {
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -544,7 +589,7 @@ export class IbcAPI extends BaseAPI {
   public async connection(
     connection_id: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ConnectionEndV1, Proof ]> {
+  ): Promise<[ConnectionEndV1, Proof]> {
     return this.c
       .get<{
         connection: ConnectionEndV1.Data;
@@ -556,26 +601,29 @@ export class IbcAPI extends BaseAPI {
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
   public async connectionClientState(
     connection_id: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ IdentifiedClientStateV1, Proof ]> {
+  ): Promise<[IdentifiedClientStateV1, Proof]> {
     return this.c
       .get<{
         identified_client_state: IdentifiedClientStateV1.Data;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/connection/v1/connections/${connection_id}/client_state`, params)
+      }>(
+        `/ibc/core/connection/v1/connections/${connection_id}/client_state`,
+        params
+      )
       .then(d => [
         IdentifiedClientStateV1.fromData(d.identified_client_state),
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -583,14 +631,19 @@ export class IbcAPI extends BaseAPI {
     connection_id: string,
     height: HeightV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ { client_id: string, consensus_state: ConsensusStateV1 }, Proof ]> {
+  ): Promise<
+    [{ client_id: string; consensus_state: ConsensusStateV1 }, Proof]
+  > {
     return this.c
       .get<{
         client_id: string;
         consensus_state: ConsensusStateV1.Data;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/connection/v1/connections/${connection_id}/consensus_state/revision/${height.revision_number}/height/${height.revision_height}`, params)
+      }>(
+        `/ibc/core/connection/v1/connections/${connection_id}/consensus_state/revision/${height.revision_number}/height/${height.revision_height}`,
+        params
+      )
       .then(d => [
         {
           client_id: d.client_id,
@@ -599,7 +652,7 @@ export class IbcAPI extends BaseAPI {
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -608,7 +661,10 @@ export class IbcAPI extends BaseAPI {
     params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
-      .get<{ creator: string }>(`/ibc/core/client/v1/client_creator/${client_id}`, params)
+      .get<{ creator: string }>(
+        `/ibc/core/client/v1/client_creator/${client_id}`,
+        params
+      )
       .then(d => d.creator);
   }
 
@@ -617,10 +673,15 @@ export class IbcAPI extends BaseAPI {
    */
   public async clientStates(
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ { client_id: string, client_state: ClientStateV1 }[], Pagination ]> {
+  ): Promise<
+    [{ client_id: string; client_state: ClientStateV1 }[], Pagination]
+  > {
     return this.c
       .get<{
-        client_states: { client_id: string, client_state: ClientStateV1.Data }[];
+        client_states: {
+          client_id: string;
+          client_state: ClientStateV1.Data;
+        }[];
         pagination: Pagination;
       }>(`/ibc/core/client/v1/client_states`, params)
       .then(d => [
@@ -640,7 +701,7 @@ export class IbcAPI extends BaseAPI {
   public async clientState(
     client_id: string,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ClientStateV1, Proof ]> {
+  ): Promise<[ClientStateV1, Proof]> {
     return this.c
       .get<{
         client_state: ClientStateV1.Data;
@@ -652,7 +713,7 @@ export class IbcAPI extends BaseAPI {
         {
           proof: d.proof ?? '',
           proof_height: HeightV1.fromData(d.proof_height),
-        }
+        },
       ]);
   }
 
@@ -666,7 +727,10 @@ export class IbcAPI extends BaseAPI {
     params: Partial<APIParams & CosmosParams> = {}
   ): Promise<string> {
     return this.c
-      .get<{ status: string }>(`/ibc/core/client/v1/client_status/${client_id}`, params)
+      .get<{ status: string }>(
+        `/ibc/core/client/v1/client_status/${client_id}`,
+        params
+      )
       .then(d => d.status);
   }
 
@@ -678,7 +742,9 @@ export class IbcAPI extends BaseAPI {
   public async clientConsensusStates(
     client_id: string,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ { height: HeightV1, consensus_state: ConsensusStateV1 }[], Pagination ]> {
+  ): Promise<
+    [{ height: HeightV1; consensus_state: ConsensusStateV1 }[], Pagination]
+  > {
     return this.c
       .get<{
         consensus_states: {
@@ -699,7 +765,7 @@ export class IbcAPI extends BaseAPI {
   public async clientConsensusStateHeights(
     client_id: string,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[ HeightV1[], Pagination ]> {
+  ): Promise<[HeightV1[], Pagination]> {
     return this.c
       .get<{
         consensus_state_heights: HeightV1.Data[];
@@ -715,13 +781,16 @@ export class IbcAPI extends BaseAPI {
     client_id: string,
     height: HeightV1,
     params: Partial<APIParams & CosmosParams> = {}
-  ): Promise<[ ConsensusStateV1, Proof ]> {
+  ): Promise<[ConsensusStateV1, Proof]> {
     return this.c
       .get<{
         consensus_state: ConsensusStateV1.Data;
         proof: string | null;
         proof_height: HeightV1.Data;
-      }>(`/ibc/core/client/v1/consensus_states/${client_id}/revision/${height.revision_number}/height/${height.revision_height}`, params)
+      }>(
+        `/ibc/core/client/v1/consensus_states/${client_id}/revision/${height.revision_number}/height/${height.revision_height}`,
+        params
+      )
       .then(d => [
         ConsensusStateV1.fromData(d.consensus_state),
         {
@@ -752,29 +821,43 @@ export class IbcAPI extends BaseAPI {
   }
 
   public async verifyMembership(
-    membership: VerifyMembership,
+    membership: VerifyMembership
   ): Promise<boolean> {
-    return await this.c.post<{
-      success: boolean;
-    }>(
-      '/ibc/core/client/v1/verify_membership',
-      VerifyMembership.toData(membership),
-    ).then(d => d.success);
+    return await this.c
+      .post<{
+        success: boolean;
+      }>(
+        '/ibc/core/client/v1/verify_membership',
+        VerifyMembership.toData(membership)
+      )
+      .then(d => d.success);
   }
 
-  public async clientParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<IbcClientParamsV1> {
+  public async clientParameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<IbcClientParamsV1> {
     return this.c
-      .get<{ params: IbcClientParamsV1.Data }>('/ibc/client/v1/params', params)
+      .get<{ params: IbcClientParamsV1.Data }>(
+        '/ibc/core/client/v1/params',
+        params
+      )
       .then(({ params: d }) => IbcClientParamsV1.fromData(d));
   }
 
-  public async channelParameters(_: Partial<APIParams & CosmosParams> = {}): Promise<any> {
+  public async channelParameters(
+    _: Partial<APIParams & CosmosParams> = {}
+  ): Promise<any> {
     throw new Error('Not Implemented');
   }
 
-  public async connectionParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<IbcConnectionParamsV1> {
+  public async connectionParameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<IbcConnectionParamsV1> {
     return this.c
-      .get<{ params: IbcConnectionParamsV1.Data }>('/ibc/core/connection/v1/params', params)
+      .get<{ params: IbcConnectionParamsV1.Data }>(
+        '/ibc/core/connection/v1/params',
+        params
+      )
       .then(({ params: d }) => IbcConnectionParamsV1.fromData(d));
   }
 }

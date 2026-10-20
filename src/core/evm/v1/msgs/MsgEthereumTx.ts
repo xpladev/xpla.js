@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgEthereumTx as MsgEthereumTxV1_pb } from '@xpla/xpla.proto/cosmos/evm/vm/v1/tx';

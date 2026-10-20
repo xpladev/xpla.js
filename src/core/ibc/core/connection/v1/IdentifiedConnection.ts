@@ -1,138 +1,72 @@
-import { JSONSerializable } from '../../../../../util/json';
-import { VersionV1 } from './Version';
-import { CounterpartyV1 } from './Counterparty';
-import {
-  IdentifiedConnection as IdentifiedConnectionV1_pb,
-  State, stateFromJSON, stateToJSON,
-} from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
+import { Numeric } from '../../../../numeric';
+import { ConnectionEndV1 } from './ConnectionEnd';
+import { IdentifiedConnection as IdentifiedConnection_pb } from '@xpla/xpla.proto/ibc/core/connection/v1/connection';
 
-/**
- * IdentifiedConnection defines a connection with additional connection identifier field
- */
-export class IdentifiedConnectionV1 extends JSONSerializable<
-  IdentifiedConnectionV1.Amino,
-  IdentifiedConnectionV1.Data,
-  IdentifiedConnectionV1.Proto
-> {
-  /**
-   * @param id connection identifier.
-   * @param client_id client associated with this connection.
-   * @param versions IBC version which can be utilised to determine encodings or protocols for channels or packets utilising this connection.
-   * @param state current state of the connection end.
-   * @param counterparty counterparty chain associated with this connection.
-   * @param delay_period delay period associated with this connection.
-   */
+/** A list entry retaining its local chain identifiers. */
+export class IdentifiedConnectionV1 extends ConnectionEndV1 {
   constructor(
     public id: string,
-    public client_id: string,
-    public versions: VersionV1[],
-    public state: State,
-    public counterparty: CounterpartyV1 | undefined,
-    public delay_period: number
+    client_id: string,
+    versions: ConnectionEndV1['versions'],
+    state: ConnectionEndV1['state'],
+    counterparty: ConnectionEndV1['counterparty'],
+    delay_period: Numeric.Input
   ) {
-    super();
+    super(client_id, versions, state, counterparty, delay_period);
   }
-
-  public static fromAmino(
-    data: IdentifiedConnectionV1.Amino
+  private static fromValue(
+    value: ConnectionEndV1,
+    id: string
   ): IdentifiedConnectionV1 {
-    const { id, client_id, versions, state, counterparty, delay_period } = data;
     return new IdentifiedConnectionV1(
       id,
-      client_id,
-      versions.map(VersionV1.fromAmino),
-      stateFromJSON(state),
-      counterparty ? CounterpartyV1.fromAmino(counterparty) : undefined,
-      Number.parseInt(delay_period)
+      value.client_id,
+      value.versions,
+      value.state,
+      value.counterparty,
+      value.delay_period
     );
   }
-
-  public toAmino(): IdentifiedConnectionV1.Amino {
-    const { id, client_id, versions, state, counterparty, delay_period } = this;
-    const res: IdentifiedConnectionV1.Amino = {
-      id,
-      client_id,
-      versions: versions.map(version => version.toAmino()),
-      state: stateToJSON(state),
-      counterparty: counterparty?.toAmino(),
-      delay_period: delay_period.toFixed(),
-    };
-    return res;
-  }
-
   public static fromData(
     data: IdentifiedConnectionV1.Data
   ): IdentifiedConnectionV1 {
-    const { id, client_id, versions, state, counterparty, delay_period } = data;
-    return new IdentifiedConnectionV1(
-      id,
-      client_id,
-      versions.map(VersionV1.fromData),
-      stateFromJSON(state),
-      counterparty ? CounterpartyV1.fromData(counterparty) : undefined,
-      Number.parseInt(delay_period)
+    return IdentifiedConnectionV1.fromValue(
+      ConnectionEndV1.fromData(data),
+      data.id
     );
   }
-
   public toData(): IdentifiedConnectionV1.Data {
-    const { id, client_id, versions, state, counterparty, delay_period } = this;
-    const res: IdentifiedConnectionV1.Amino = {
-      id,
-      client_id,
-      versions: versions.map(version => version.toData()),
-      state: stateToJSON(state),
-      counterparty: counterparty?.toData(),
-      delay_period: delay_period.toFixed(),
-    };
-    return res;
+    return { ...super.toData(), id: this.id };
   }
-
-  public static fromProto(
-    proto: IdentifiedConnectionV1.Proto
+  public static fromAmino(
+    data: IdentifiedConnectionV1.Amino
   ): IdentifiedConnectionV1 {
-    return new IdentifiedConnectionV1(
-      proto.id,
-      proto.clientId,
-      proto.versions.map(VersionV1.fromProto),
-      proto.state,
-      proto.counterparty
-        ? CounterpartyV1.fromProto(proto.counterparty)
-        : undefined,
-      proto.delayPeriod.toNumber()
+    return IdentifiedConnectionV1.fromValue(
+      ConnectionEndV1.fromAmino(data),
+      data.id
     );
   }
-
+  public toAmino(): IdentifiedConnectionV1.Amino {
+    return { ...super.toAmino(), id: this.id };
+  }
+  public static fromProto(
+    data: IdentifiedConnectionV1.Proto
+  ): IdentifiedConnectionV1 {
+    return IdentifiedConnectionV1.fromValue(
+      ConnectionEndV1.fromProto(data),
+      data.id
+    );
+  }
   public toProto(): IdentifiedConnectionV1.Proto {
-    const { id, client_id, versions, state, counterparty, delay_period } = this;
-    return IdentifiedConnectionV1_pb.fromPartial({
-      id,
-      clientId: client_id,
-      versions: versions.map(v => v.toProto()),
-      state,
-      counterparty: counterparty?.toProto(),
-      delayPeriod: delay_period,
-    });
+    return { ...super.toProto(), id: this.id };
   }
 }
-
 export namespace IdentifiedConnectionV1 {
-  export interface Amino {
+  export type Proto = IdentifiedConnection_pb;
+  export interface Data extends ConnectionEndV1.Data {
     id: string;
-    client_id: string;
-    versions: VersionV1.Amino[];
-    state: string;
-    counterparty?: CounterpartyV1.Amino;
-    delay_period: string;
   }
-
-  export interface Data {
+  export interface Amino extends ConnectionEndV1.Amino {
     id: string;
-    client_id: string;
-    versions: VersionV1.Data[];
-    state: string;
-    counterparty?: CounterpartyV1.Data;
-    delay_period: string;
   }
-
-  export type Proto = IdentifiedConnectionV1_pb;
 }
