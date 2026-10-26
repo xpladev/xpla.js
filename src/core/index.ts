@@ -48,14 +48,8 @@ export * from './feemarket';
 // Governance
 export * from './gov';
 
-// Group
-export * from './group';
-
 // Mint
 export * from './mint';
-
-// NFT
-export * from './nft';
 
 // MsgAuth
 export * from './authz/msgs';

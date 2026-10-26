@@ -1,4 +1,5 @@
 import { Int64Input, parseInt64 } from '../../../util/int64';
+import { Convert } from '../../../util/convert';
 import { BaseAPI } from './BaseAPI';
 import {
   ProposalV1,
@@ -261,30 +262,78 @@ export class GovAPI extends BaseAPI {
     voter?: AccAddress,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[(VoteV1 | VoteV1B1)[], Pagination]> {
-    // Current state may retain votes in any proposal status. Completed proposals
-    // normally prune them, so empty/not-found responses fall back to tx history.
-    try {
-      if (voter !== undefined) {
-        const data = await this.c.get<{ vote?: VoteV1.Data }>(
-          `/cosmos/gov/v1/proposals/${proposalId}/votes/${voter}`,
-          params
+    const historyPrefix = 'xpla-gov-votes-history:';
+    const proposalKey = parseInt64(proposalId).toFixed();
+    const cursor = params['pagination.key'];
+    let historyKey: string | undefined;
+    if (cursor?.startsWith(historyPrefix)) {
+      try {
+        const decoded = JSON.parse(
+          Convert.toUTF8(Convert.fromBase64(cursor.slice(historyPrefix.length)))
         );
-        if (data.vote)
-          return [[VoteV1.fromData(data.vote)], { next_key: null, total: 1 }];
-      } else {
-        const data = await this.c.get<{
-          votes: VoteV1.Data[];
-          pagination: Pagination;
-        }>(`/cosmos/gov/v1/proposals/${proposalId}/votes`, params);
-        if (data.votes.length || params['pagination.key']) {
-          return [data.votes.map(v => VoteV1.fromData(v)), data.pagination];
-        }
+        if (
+          decoded.proposal !== proposalKey ||
+          decoded.voter !== (voter ?? null) ||
+          typeof decoded.key !== 'string' ||
+          !decoded.key
+        )
+          throw new Error('Invalid cursor');
+        historyKey = decoded.key;
+      } catch {
+        throw new TypeError(
+          'Invalid governance vote history cursor for this proposal/voter'
+        );
       }
-    } catch (error) {
-      if (
-        (error as { response?: { status?: number } }).response?.status !== 404
-      )
-        throw error;
+    }
+
+    if (historyKey === undefined) {
+      let emptyPagination: Pagination = { next_key: null, total: 0 };
+      try {
+        if (voter !== undefined) {
+          const data = await this.c.get<{ vote?: VoteV1.Data }>(
+            `/cosmos/gov/v1/proposals/${proposalId}/votes/${voter}`,
+            params
+          );
+          if (data.vote)
+            return [[VoteV1.fromData(data.vote)], { next_key: null, total: 1 }];
+        } else {
+          const data = await this.c.get<{
+            votes: VoteV1.Data[];
+            pagination: Pagination;
+          }>(`/cosmos/gov/v1/proposals/${proposalId}/votes`, params);
+          if (data.votes.length || cursor) {
+            return [data.votes.map(v => VoteV1.fromData(v)), data.pagination];
+          }
+          emptyPagination = data.pagination;
+        }
+      } catch (error) {
+        if (
+          (error as { response?: { status?: number } }).response?.status !== 404
+        )
+          throw error;
+      }
+
+      // Active proposals with no votes are a successful empty result, not evidence
+      // of pruning. Only finalized (or removed) proposals need historical lookup.
+      try {
+        const proposal = await this.proposal(proposalId, {
+          block_height: params.block_height,
+        });
+        if (
+          ![
+            ProposalStatus.PROPOSAL_STATUS_PASSED,
+            ProposalStatus.PROPOSAL_STATUS_REJECTED,
+            ProposalStatus.PROPOSAL_STATUS_FAILED,
+          ].includes(proposal.status)
+        ) {
+          return [[], emptyPagination];
+        }
+      } catch (error) {
+        if (
+          (error as { response?: { status?: number } }).response?.status !== 404
+        )
+          throw error;
+      }
     }
 
     // build search params
@@ -304,9 +353,11 @@ export class GovAPI extends BaseAPI {
       txparams.append('events', `proposal_vote.voter='${voter}'`);
     }
 
-    Object.entries(params).forEach(v => {
-      txparams.append(v[0], v[1] as string);
+    Object.entries(params).forEach(([key, value]) => {
+      if (key !== 'pagination.key' && value != null)
+        txparams.append(key, String(value));
     });
+    if (historyKey !== undefined) txparams.set('pagination.key', historyKey);
 
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, txparams)
@@ -379,7 +430,25 @@ export class GovAPI extends BaseAPI {
           }, votes)
         );
 
-        return [votes, d.pagination];
+        const nextKey = d.pagination.next_key;
+        return [
+          votes,
+          {
+            ...d.pagination,
+            next_key: nextKey
+              ? historyPrefix +
+                Convert.toBase64(
+                  Convert.fromUTF8(
+                    JSON.stringify({
+                      proposal: proposalKey,
+                      voter: voter ?? null,
+                      key: nextKey,
+                    })
+                  )
+                )
+              : null,
+          },
+        ];
       });
   }
 

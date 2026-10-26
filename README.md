@@ -149,6 +149,13 @@ no custom Timestamp JSON helper is required from xpla.proto. SDK `toData()`
 continues to emit RFC3339 strings even though the underlying proto's `toJSON()`
 uses raw Timestamp objects.
 
+## Supported modules
+
+Cosmos SDK `group` and `nft` modules are not enabled on XPLA and are not exposed
+by this SDK. Their message classes, exports, and message dispatch entries have
+been removed. Keep these modules excluded from future upgrades unless support
+is explicitly enabled. This does not affect EVM NFT APIs or CosmWasm CW721.
+
 ## Transaction and allowance serialization
 
 Amino sign documents include `unordered` when true and `timeout_timestamp` when
@@ -174,6 +181,19 @@ SDK JSON round trips; it is not expanded LCD JSON. Unsupported expanded `@type`
 objects throw instead of silently losing their contents. Supply raw Any bytes
 for types without a supported JSON codec.
 
+IBC client messages also accept expanded LCD JSON for Tendermint `Header`,
+`ClientState`, `ConsensusState`, and `Misbehaviour`, and Wasm `ClientState`,
+`ConsensusState`, and `ClientMessage`. RFC3339 timestamps and duration strings
+retain nanosecond precision. Raw `{ typeUrl, value }` Any inputs remain supported;
+IBC `toData()` continues to emit that raw representation.
+
+Governance vote queries return empty results for active proposals with no votes.
+For finalized or removed proposals, missing votes fall back to indexed transaction
+history. Pass the returned `pagination.next_key` unchanged as `pagination.key`:
+history cursors are opaque, scoped to the proposal and voter, and continue on the
+history endpoint. History still requires retained, indexed transactions and
+represents vote actions, including revotes.
+
 ## Protobuf 1.14 and 64-bit integers
 
 This development branch uses `@xpla/xpla.proto@1.14.0`. Generated protobuf
@@ -182,7 +202,7 @@ This development branch uses `@xpla/xpla.proto@1.14.0`. Generated protobuf
 passing through JavaScript numbers.
 
 This changes property and return types for account numbers, sequences, gas
-limits, transaction heights, proposal/group/code IDs, IBC heights and packet
+limits, transaction heights, proposal/code IDs, IBC heights and packet
 counters, and staking/vesting integer timestamps. Wallet account/sequence
 queries and the migrated LCD code/upgrade queries also return `Int` values.
 Existing safe number constructor arguments remain supported; use decimal strings

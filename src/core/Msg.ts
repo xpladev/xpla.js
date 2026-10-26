@@ -57,25 +57,7 @@ import {
   MsgUpdateGovParamsV1,
   MsgCancelProposalV1,
 } from './gov';
-import {
-  GroupMsgV1,
-  MsgCreateGroupV1,
-  MsgUpdateGroupMembersV1,
-  MsgUpdateGroupAdminV1,
-  MsgUpdateGroupMetadataV1,
-  MsgCreateGroupPolicyV1,
-  MsgUpdateGroupPolicyAdminV1,
-  MsgCreateGroupWithPolicyV1,
-  MsgUpdateGroupPolicyDecisionPolicyV1,
-  MsgUpdateGroupPolicyMetadataV1,
-  MsgGroupSubmitProposalV1,
-  MsgGroupWithdrawProposalV1,
-  MsgGroupVoteV1,
-  MsgGroupExecV1,
-  MsgLeaveGroupV1,
-} from './group';
 import { MintMsgV1B1, MsgUpdateMintParamsV1B1 } from './mint';
-import { NftMsgV1B1, MsgNftSendV1B1 } from './nft';
 import {
   AuthzMsg,
   MsgGrantAuthorization,
@@ -205,9 +187,7 @@ export type Msg =
   | FeemarketMsgV1
   | GovMsgV1B1
   | GovMsgV1
-  | GroupMsgV1
   | MintMsgV1B1
-  | NftMsgV1B1
   | AuthzMsg
   | SlashingMsgV1B1
   | StakingMsgV1B1
@@ -238,7 +218,6 @@ export namespace Msg {
     | FeemarketMsgV1.Amino
     | GovMsgV1B1.Amino
     | GovMsgV1.Amino
-    | GroupMsgV1.Amino
     | MintMsgV1B1.Amino
     | AuthzMsg.Amino
     | SlashingMsgV1B1.Amino
@@ -263,9 +242,7 @@ export namespace Msg {
     | FeemarketMsgV1.Data
     | GovMsgV1B1.Data
     | GovMsgV1.Data
-    | GroupMsgV1.Data
     | MintMsgV1B1.Data
-    | NftMsgV1B1.Data
     | AuthzMsg.Data
     | SlashingMsgV1B1.Data
     | StakingMsgV1B1.Data
@@ -295,9 +272,7 @@ export namespace Msg {
     | FeemarketMsgV1.Proto
     | GovMsgV1B1.Proto
     | GovMsgV1.Proto
-    | GroupMsgV1.Proto
     | MintMsgV1B1.Proto
-    | NftMsgV1B1.Proto
     | AuthzMsg.Proto
     | SlashingMsgV1B1.Proto
     | StakingMsgV1B1.Proto
@@ -433,50 +408,6 @@ export namespace Msg {
         return MsgUpdateGovParamsV1.fromAmino(data, isClassic);
       case 'cosmos-sdk/v1/MsgCancelProposal':
         return MsgCancelProposalV1.fromAmino(data, isClassic);
-
-      // group
-      case 'group/MsgCreateGroup':
-      case 'cosmos-sdk/MsgCreateGroup':
-        return MsgCreateGroupV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupMembers':
-      case 'cosmos-sdk/MsgUpdateGroupMembers':
-        return MsgUpdateGroupMembersV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupAdmin':
-      case 'cosmos-sdk/MsgUpdateGroupAdmin':
-        return MsgUpdateGroupAdminV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupMetadata':
-      case 'cosmos-sdk/MsgUpdateGroupMetadata':
-        return MsgUpdateGroupMetadataV1.fromAmino(data, isClassic);
-      case 'group/MsgCreateGroupPolicy':
-      case 'cosmos-sdk/MsgCreateGroupPolicy':
-        return MsgCreateGroupPolicyV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupPolicyAdmin':
-      case 'cosmos-sdk/MsgUpdateGroupPolicyAdmin':
-        return MsgUpdateGroupPolicyAdminV1.fromAmino(data, isClassic);
-      case 'group/MsgCreateGroupWithPolicy':
-      case 'cosmos-sdk/MsgCreateGroupWithPolicy':
-        return MsgCreateGroupWithPolicyV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupDecisionPolicy':
-      case 'cosmos-sdk/MsgUpdateGroupDecisionPolicy':
-        return MsgUpdateGroupPolicyDecisionPolicyV1.fromAmino(data, isClassic);
-      case 'group/MsgUpdateGroupPolicyMetadata':
-      case 'cosmos-sdk/MsgUpdateGroupPolicyMetadata':
-        return MsgUpdateGroupPolicyMetadataV1.fromAmino(data, isClassic);
-      case 'group/MsgSubmitProposal':
-      case 'cosmos-sdk/group/MsgSubmitProposal':
-        return MsgGroupSubmitProposalV1.fromAmino(data, isClassic);
-      case 'group/MsgWithdrawProposal':
-      case 'cosmos-sdk/group/MsgWithdrawProposal':
-        return MsgGroupWithdrawProposalV1.fromAmino(data, isClassic);
-      case 'group/MsgVote':
-      case 'cosmos-sdk/group/MsgVote':
-        return MsgGroupVoteV1.fromAmino(data, isClassic);
-      case 'group/MsgExec':
-      case 'cosmos-sdk/group/MsgExec':
-        return MsgGroupExecV1.fromAmino(data, isClassic);
-      case 'group/MsgLeaveGroup':
-      case 'cosmos-sdk/group/MsgLeaveGroup':
-        return MsgLeaveGroupV1.fromAmino(data, isClassic);
 
       // mint
       case 'cosmos-sdk/x/mint/MsgUpdateParams':
@@ -720,43 +651,9 @@ export namespace Msg {
       case '/cosmos.gov.v1.MsgCancelProposal':
         return MsgCancelProposalV1.fromData(data, isClassic);
 
-      // group
-      case '/cosmos.group.v1.MsgCreateGroup':
-        return MsgCreateGroupV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupMembers':
-        return MsgUpdateGroupMembersV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupAdmin':
-        return MsgUpdateGroupAdminV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupMetadata':
-        return MsgUpdateGroupMetadataV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgCreateGroupPolicy':
-        return MsgCreateGroupPolicyV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyAdmin':
-        return MsgUpdateGroupPolicyAdminV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgCreateGroupWithPolicy':
-        return MsgCreateGroupWithPolicyV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy':
-        return MsgUpdateGroupPolicyDecisionPolicyV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyMetadata':
-        return MsgUpdateGroupPolicyMetadataV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgSubmitProposal':
-        return MsgGroupSubmitProposalV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgWithdrawProposal':
-        return MsgGroupWithdrawProposalV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgVote':
-        return MsgGroupVoteV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgExec':
-        return MsgGroupExecV1.fromData(data, isClassic);
-      case '/cosmos.group.v1.MsgLeaveGroup':
-        return MsgLeaveGroupV1.fromData(data, isClassic);
-
       // mint
       case '/cosmos.mint.v1beta1.MsgUpdateParams':
         return MsgUpdateMintParamsV1B1.fromData(data, isClassic);
-
-      // nft
-      case '/cosmos.nft.v1beta1.MsgSend':
-        return MsgNftSendV1B1.fromData(data, isClassic);
 
       // authz
       case '/cosmos.authz.v1beta1.MsgGrant':
@@ -1052,43 +949,9 @@ export namespace Msg {
       case '/cosmos.gov.v1.MsgCancelProposal':
         return MsgCancelProposalV1.unpackAny(proto, isClassic);
 
-      // group
-      case '/cosmos.group.v1.MsgCreateGroup':
-        return MsgCreateGroupV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupMembers':
-        return MsgUpdateGroupMembersV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupAdmin':
-        return MsgUpdateGroupAdminV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupMetadata':
-        return MsgUpdateGroupMetadataV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgCreateGroupPolicy':
-        return MsgCreateGroupPolicyV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyAdmin':
-        return MsgUpdateGroupPolicyAdminV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgCreateGroupWithPolicy':
-        return MsgCreateGroupWithPolicyV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy':
-        return MsgUpdateGroupPolicyDecisionPolicyV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgUpdateGroupPolicyMetadata':
-        return MsgUpdateGroupPolicyMetadataV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgSubmitProposal':
-        return MsgGroupSubmitProposalV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgWithdrawProposal':
-        return MsgGroupWithdrawProposalV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgVote':
-        return MsgGroupVoteV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgExec':
-        return MsgGroupExecV1.unpackAny(proto, isClassic);
-      case '/cosmos.group.v1.MsgLeaveGroup':
-        return MsgLeaveGroupV1.unpackAny(proto, isClassic);
-
       // mint
       case '/cosmos.mint.v1beta1.MsgUpdateParams':
         return MsgUpdateMintParamsV1B1.unpackAny(proto, isClassic);
-
-      // nft
-      case '/cosmos.nft.v1beta1.MsgSend':
-        return MsgNftSendV1B1.unpackAny(proto, isClassic);
 
       // authz
       case '/cosmos.authz.v1beta1.MsgGrant':
