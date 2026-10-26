@@ -71,13 +71,13 @@ const DEFAULT_NETWORK_TYPE_BY_CHAIN_ID: { [key: string]: boolean } = {
 
 const DEFAULT_GAS_PRICES_BY_CHAIN_ID: { [key: string]: Coins.Input } = {
   default: {
-    axpla: 850000000000,
+    axpla: 10000000000000,
   },
   'dimension_37-1': {
-    axpla: 850000000000,
+    axpla: 10000000000000,
   },
   'cube_47-5': {
-    axpla: 850000000000,
+    axpla: 1200000000000,
   },
 };
 
