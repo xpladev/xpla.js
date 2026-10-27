@@ -1,3 +1,12 @@
+import { MsgUpdateLegacyERC20ParamsV1 } from './erc20/v1/msgs/MsgUpdateLegacyERC20ParamsV1';
+import { MsgUpdateLegacyEvmParamsV1 } from './evm/v1/msgs/MsgUpdateLegacyEvmParamsV1';
+import {
+  MsgAddRateLimitV1,
+  MsgUpdateRateLimitV1,
+  MsgRemoveRateLimitV1,
+  MsgResetRateLimitV1,
+} from './ratelimit';
+import { MsgUpdateDynamicDeflationParamsV1B1 } from './xpla';
 import { AuthMsgV1B1, MsgUpdateAuthParamsV1B1 } from './auth';
 import {
   BankMsgV1B1,
@@ -185,6 +194,13 @@ export type Msg =
   | DistributionMsgV1B1
   | FeeGrantMsg
   | FeemarketMsgV1
+  | MsgUpdateLegacyERC20ParamsV1
+  | MsgUpdateLegacyEvmParamsV1
+  | MsgAddRateLimitV1
+  | MsgUpdateRateLimitV1
+  | MsgRemoveRateLimitV1
+  | MsgResetRateLimitV1
+  | MsgUpdateDynamicDeflationParamsV1B1
   | GovMsgV1B1
   | GovMsgV1
   | MintMsgV1B1
@@ -216,6 +232,13 @@ export namespace Msg {
     | DistributionMsgV1B1.Amino
     | FeeGrantMsg.Amino
     | FeemarketMsgV1.Amino
+    | MsgUpdateLegacyERC20ParamsV1.Amino
+    | MsgUpdateLegacyEvmParamsV1.Amino
+    | MsgAddRateLimitV1.Amino
+    | MsgUpdateRateLimitV1.Amino
+    | MsgRemoveRateLimitV1.Amino
+    | MsgResetRateLimitV1.Amino
+    | MsgUpdateDynamicDeflationParamsV1B1.Amino
     | GovMsgV1B1.Amino
     | GovMsgV1.Amino
     | MintMsgV1B1.Amino
@@ -240,6 +263,13 @@ export namespace Msg {
     | DistributionMsgV1B1.Data
     | FeeGrantMsg.Data
     | FeemarketMsgV1.Data
+    | MsgUpdateLegacyERC20ParamsV1.Data
+    | MsgUpdateLegacyEvmParamsV1.Data
+    | MsgAddRateLimitV1.Data
+    | MsgUpdateRateLimitV1.Data
+    | MsgRemoveRateLimitV1.Data
+    | MsgResetRateLimitV1.Data
+    | MsgUpdateDynamicDeflationParamsV1B1.Data
     | GovMsgV1B1.Data
     | GovMsgV1.Data
     | MintMsgV1B1.Data
@@ -270,6 +300,13 @@ export namespace Msg {
     | DistributionMsgV1B1.Proto
     | FeeGrantMsg.Proto
     | FeemarketMsgV1.Proto
+    | MsgUpdateLegacyERC20ParamsV1.Proto
+    | MsgUpdateLegacyEvmParamsV1.Proto
+    | MsgAddRateLimitV1.Proto
+    | MsgUpdateRateLimitV1.Proto
+    | MsgRemoveRateLimitV1.Proto
+    | MsgResetRateLimitV1.Proto
+    | MsgUpdateDynamicDeflationParamsV1B1.Proto
     | GovMsgV1B1.Proto
     | GovMsgV1.Proto
     | MintMsgV1B1.Proto
@@ -294,6 +331,21 @@ export namespace Msg {
 
   export function fromAmino(data: Msg.Amino, isClassic?: boolean): Msg {
     switch (data.type) {
+      case 'ratelimit/MsgAddRateLimit':
+        return MsgAddRateLimitV1.fromAmino(data);
+
+      case 'ratelimit/MsgUpdateRateLimit':
+        return MsgUpdateRateLimitV1.fromAmino(data);
+
+      case 'ratelimit/MsgRemoveRateLimit':
+        return MsgRemoveRateLimitV1.fromAmino(data);
+
+      case 'ratelimit/MsgResetRateLimit':
+        return MsgResetRateLimitV1.fromAmino(data);
+
+      case 'xpladev/x/dynamicdeflation/MsgUpdateParams':
+        return MsgUpdateDynamicDeflationParamsV1B1.fromAmino(data);
+
       // auth
       case 'cosmos-sdk/x/auth/MsgUpdateParams':
         return MsgUpdateAuthParamsV1B1.fromAmino(data, isClassic);
@@ -369,6 +421,7 @@ export namespace Msg {
         return MsgPruneAllowances.fromAmino(data, isClassic);
 
       // feemarket
+      case 'cosmos/evm/x/feemarket/MsgUpdateParams':
       case 'ethermint/x/feemarket/MsgUpdateParams':
         return MsgUpdateFeemarketParamsV1.fromAmino(data, isClassic);
 
@@ -537,6 +590,7 @@ export namespace Msg {
         return MsgConvertERC20V1.fromAmino(data);
       case 'ethermint/erc20/MsgUpdateParams':
       case 'evmos/erc20/MsgUpdateParams':
+        return MsgUpdateLegacyERC20ParamsV1.fromAmino(data);
       case 'evm/erc20/MsgUpdateParams':
       case 'cosmos/evm/x/erc20/MsgUpdateParams':
         return MsgUpdateERC20ParamsV1.fromAmino(data);
@@ -552,6 +606,7 @@ export namespace Msg {
       case 'cosmos/evm/x/vm/MsgRegisterPreinstalls':
         return MsgRegisterPreinstallsV1.fromAmino(data);
       case 'ethermint/x/evm/MsgUpdateParams':
+        return MsgUpdateLegacyEvmParamsV1.fromAmino(data);
       case 'evm/MsgUpdateParams':
       case 'cosmos/evm/x/vm/MsgUpdateParams':
         return MsgUpdateEvmParamsV1.fromAmino(data);
@@ -573,6 +628,27 @@ export namespace Msg {
   }
   export function fromData(data: Msg.Data, isClassic?: boolean): Msg {
     switch (data['@type']) {
+      case '/ratelimit.v1.MsgAddRateLimit':
+        return MsgAddRateLimitV1.fromData(data);
+
+      case '/ratelimit.v1.MsgUpdateRateLimit':
+        return MsgUpdateRateLimitV1.fromData(data);
+
+      case '/ratelimit.v1.MsgRemoveRateLimit':
+        return MsgRemoveRateLimitV1.fromData(data);
+
+      case '/ratelimit.v1.MsgResetRateLimit':
+        return MsgResetRateLimitV1.fromData(data);
+
+      case '/xpla.dynamicdeflation.v1beta1.MsgUpdateParams':
+        return MsgUpdateDynamicDeflationParamsV1B1.fromData(data);
+
+      case '/ethermint.evm.v1.MsgUpdateParams':
+        return MsgUpdateLegacyEvmParamsV1.fromData(data);
+
+      case '/evmos.erc20.v1.MsgUpdateParams':
+        return MsgUpdateLegacyERC20ParamsV1.fromData(data);
+
       // auth
       case '/cosmos.auth.v1beta1.MsgUpdateParams':
         return MsgUpdateAuthParamsV1B1.fromData(data, isClassic);
@@ -624,6 +700,7 @@ export namespace Msg {
         return MsgPruneAllowances.fromData(data, isClassic);
 
       // feemarket
+      case '/cosmos.evm.feemarket.v1.MsgUpdateParams':
       case '/ethermint.feemarket.v1.MsgUpdateParams':
         return MsgUpdateFeemarketParamsV1.fromData(data, isClassic);
 
@@ -871,6 +948,27 @@ export namespace Msg {
 
   export function fromProto(proto: Any, isClassic?: boolean): Msg {
     switch (proto.typeUrl) {
+      case '/ratelimit.v1.MsgAddRateLimit':
+        return MsgAddRateLimitV1.unpackAny(proto);
+
+      case '/ratelimit.v1.MsgUpdateRateLimit':
+        return MsgUpdateRateLimitV1.unpackAny(proto);
+
+      case '/ratelimit.v1.MsgRemoveRateLimit':
+        return MsgRemoveRateLimitV1.unpackAny(proto);
+
+      case '/ratelimit.v1.MsgResetRateLimit':
+        return MsgResetRateLimitV1.unpackAny(proto);
+
+      case '/xpla.dynamicdeflation.v1beta1.MsgUpdateParams':
+        return MsgUpdateDynamicDeflationParamsV1B1.unpackAny(proto);
+
+      case '/ethermint.evm.v1.MsgUpdateParams':
+        return MsgUpdateLegacyEvmParamsV1.unpackAny(proto);
+
+      case '/evmos.erc20.v1.MsgUpdateParams':
+        return MsgUpdateLegacyERC20ParamsV1.unpackAny(proto);
+
       // auth
       case '/cosmos.auth.v1beta1.MsgUpdateParams':
         return MsgUpdateAuthParamsV1B1.unpackAny(proto, isClassic);
@@ -922,6 +1020,7 @@ export namespace Msg {
         return MsgPruneAllowances.unpackAny(proto, isClassic);
 
       // feemarket
+      case '/cosmos.evm.feemarket.v1.MsgUpdateParams':
       case '/ethermint.feemarket.v1.MsgUpdateParams':
         return MsgUpdateFeemarketParamsV1.unpackAny(proto, isClassic);
 

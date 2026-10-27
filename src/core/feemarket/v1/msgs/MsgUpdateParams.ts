@@ -1,7 +1,7 @@
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
-import { MsgUpdateParams as MsgUpdateFeemarketParamsV1_pb } from '@xpla/xpla.proto/ethermint/feemarket/v1/tx';
+import { MsgUpdateParams as MsgUpdateFeemarketParamsV1_pb } from '@xpla/xpla.proto/cosmos/evm/feemarket/v1/tx';
 import { FeemarketParamsV1 } from '../Params';
 
 export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
@@ -15,7 +15,8 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
    */
   constructor(
     public authority: AccAddress,
-    public params: FeemarketParamsV1 | undefined
+    public params: FeemarketParamsV1 | undefined,
+    public legacy = false
   ) {
     super();
   }
@@ -29,17 +30,20 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
     } = data;
     return new MsgUpdateFeemarketParamsV1(
       authority,
-      params ? FeemarketParamsV1.fromAmino(params) : undefined
+      params ? FeemarketParamsV1.fromAmino(params) : undefined,
+      data.type === 'ethermint/x/feemarket/MsgUpdateParams'
     );
   }
 
   public toAmino(_isClassic?: boolean): MsgUpdateFeemarketParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'ethermint/x/feemarket/MsgUpdateParams',
+      type: this.legacy
+        ? 'ethermint/x/feemarket/MsgUpdateParams'
+        : 'cosmos/evm/x/feemarket/MsgUpdateParams',
       value: {
         authority,
-        params: params ? params.toAmino() : undefined,
+        params: params ? params.toAmino(this.legacy) : undefined,
       },
     };
   }
@@ -51,26 +55,32 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
     const { authority, params } = data;
     return new MsgUpdateFeemarketParamsV1(
       authority,
-      params ? FeemarketParamsV1.fromData(params) : undefined
+      params ? FeemarketParamsV1.fromData(params) : undefined,
+      data['@type'] === '/ethermint.feemarket.v1.MsgUpdateParams'
     );
   }
 
   public toData(_isClassic?: boolean): MsgUpdateFeemarketParamsV1.Data {
     const { authority, params } = this;
     return {
-      '@type': '/ethermint.feemarket.v1.MsgUpdateParams',
+      '@type': this.legacy
+        ? '/ethermint.feemarket.v1.MsgUpdateParams'
+        : '/cosmos.evm.feemarket.v1.MsgUpdateParams',
       authority,
-      params: params ? params.toData() : undefined,
+      params: params ? params.toData(this.legacy) : undefined,
     };
   }
 
   public static fromProto(
     proto: MsgUpdateFeemarketParamsV1.Proto,
-    _isClassic?: boolean
+    legacy = false
   ): MsgUpdateFeemarketParamsV1 {
     return new MsgUpdateFeemarketParamsV1(
       proto.authority,
-      proto.params ? FeemarketParamsV1.fromProto(proto.params) : undefined
+      proto.params
+        ? FeemarketParamsV1.fromProto(proto.params, legacy)
+        : undefined,
+      legacy
     );
   }
 
@@ -78,13 +88,15 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
     const { authority, params } = this;
     return MsgUpdateFeemarketParamsV1_pb.fromPartial({
       authority,
-      params: params ? params.toProto() : undefined,
+      params: params ? params.toProto(this.legacy) : undefined,
     });
   }
 
   public packAny(_isClassic?: boolean): Any {
     return Any.fromPartial({
-      typeUrl: '/ethermint.feemarket.v1.MsgUpdateParams',
+      typeUrl: this.legacy
+        ? '/ethermint.feemarket.v1.MsgUpdateParams'
+        : '/cosmos.evm.feemarket.v1.MsgUpdateParams',
       value: MsgUpdateFeemarketParamsV1_pb.encode(this.toProto()).finish(),
     });
   }
@@ -93,15 +105,20 @@ export class MsgUpdateFeemarketParamsV1 extends JSONSerializable<
     msgAny: Any,
     _isClassic?: boolean
   ): MsgUpdateFeemarketParamsV1 {
-    return MsgUpdateFeemarketParamsV1.fromProto(
-      MsgUpdateFeemarketParamsV1_pb.decode(msgAny.value)
+    const msg = MsgUpdateFeemarketParamsV1.fromProto(
+      MsgUpdateFeemarketParamsV1_pb.decode(msgAny.value),
+      msgAny.typeUrl === '/ethermint.feemarket.v1.MsgUpdateParams'
     );
+    msg.legacy = msgAny.typeUrl === '/ethermint.feemarket.v1.MsgUpdateParams';
+    return msg;
   }
 }
 
 export namespace MsgUpdateFeemarketParamsV1 {
   export interface Amino {
-    type: 'ethermint/x/feemarket/MsgUpdateParams';
+    type:
+      | 'ethermint/x/feemarket/MsgUpdateParams'
+      | 'cosmos/evm/x/feemarket/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: FeemarketParamsV1.Amino | undefined;
@@ -109,7 +126,9 @@ export namespace MsgUpdateFeemarketParamsV1 {
   }
 
   export interface Data {
-    '@type': '/ethermint.feemarket.v1.MsgUpdateParams';
+    '@type':
+      | '/ethermint.feemarket.v1.MsgUpdateParams'
+      | '/cosmos.evm.feemarket.v1.MsgUpdateParams';
     authority: AccAddress;
     params: FeemarketParamsV1.Data | undefined;
   }

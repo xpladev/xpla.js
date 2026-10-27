@@ -88,3 +88,5 @@ export * from './bech32';
 
 // eip55 types
 export * from './eip55';
+
+export * from './ratelimit';

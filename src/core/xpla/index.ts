@@ -19,3 +19,7 @@ export {
   MsgUnregisterVolunteerValidatorV1B1 as MsgUnregisterVolunteerValidator,
   MsgBurnV1B1 as MsgBurn,
 } from './v1beta1/msgs';
+
+export * from './v1beta1/DynamicDeflationParams';
+export { DynamicDeflationParamsV1B1 as DynamicDeflationParams } from './v1beta1/DynamicDeflationParams';
+export { MsgUpdateDynamicDeflationParamsV1B1 as MsgUpdateDynamicDeflationParams } from './v1beta1/msgs';
