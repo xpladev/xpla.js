@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { Dec, Numeric } from '../../numeric';
 import {
   Vote as VoteV1B1_pb,
   VoteOption,
+  voteOptionFromJSON,
   WeightedVoteOption as WeightedVoteOptionV1B1_pb,
 } from '@xpla/xpla.proto/cosmos/gov/v1beta1/gov';
 
@@ -16,23 +17,26 @@ export class VoteV1B1 extends JSONSerializable<
   VoteV1B1.Data,
   VoteV1B1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id ID of proposal to vote on
    * @param voter voter's account address
    * @param options voting options
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public voter: AccAddress,
     public options: WeightedVoteOptionV1B1[]
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(data: VoteV1B1.Amino, _?: boolean): VoteV1B1 {
     const { proposal_id, voter, options } = data;
     return new VoteV1B1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(v => WeightedVoteOptionV1B1.fromAmino(v))
     );
@@ -53,7 +57,7 @@ export class VoteV1B1 extends JSONSerializable<
   public static fromData(data: VoteV1B1.Data, _?: boolean): VoteV1B1 {
     const { proposal_id, voter, options } = data;
     return new VoteV1B1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(v => WeightedVoteOptionV1B1.fromData(v))
     );
@@ -73,7 +77,7 @@ export class VoteV1B1 extends JSONSerializable<
 
   public static fromProto(proto: VoteV1B1.Proto, _?: boolean): VoteV1B1 {
     return new VoteV1B1(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.voter,
       proto.options.map(o => WeightedVoteOptionV1B1.fromProto(o))
     );
@@ -83,7 +87,7 @@ export class VoteV1B1 extends JSONSerializable<
     const { proposal_id, voter, options } = this;
     return VoteV1B1_pb.fromPartial({
       options: options.map(o => o.toProto()),
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       voter,
     });
   }
@@ -114,7 +118,10 @@ export class WeightedVoteOptionV1B1 extends JSONSerializable<
   WeightedVoteOptionV1B1.Proto
 > {
   public weight: Dec;
-  constructor(public option: VoteOption, weight: Numeric.Input) {
+  constructor(
+    public option: VoteOption,
+    weight: Numeric.Input
+  ) {
     super();
     this.weight = new Dec(weight);
   }
@@ -140,7 +147,7 @@ export class WeightedVoteOptionV1B1 extends JSONSerializable<
     _?: boolean
   ): WeightedVoteOptionV1B1 {
     const { option, weight } = data;
-    return new WeightedVoteOptionV1B1(option, weight);
+    return new WeightedVoteOptionV1B1(voteOptionFromJSON(option), weight);
   }
 
   public toData(_?: boolean): WeightedVoteOptionV1B1.Data {

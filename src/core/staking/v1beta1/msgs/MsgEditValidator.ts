@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Dec, Int, Numeric } from '../../../numeric';
 import { ValAddress } from '../../../bech32';
@@ -32,7 +31,7 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
     public description: ValidatorV1B1.Description,
     public validator_address: ValAddress,
     commission_rate?: Numeric.Input,
-    min_self_delegation?: Numeric.Input,
+    min_self_delegation?: Numeric.Input
   ) {
     super();
     this.commission_rate = commission_rate
@@ -75,7 +74,7 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
         ? 'staking/MsgEditValidator'
         : 'cosmos-sdk/MsgEditValidator',
       value: {
-        description,
+        description: description.toAmino(),
         validator_address,
         commission_rate: commission_rate
           ? commission_rate.toFixed()
@@ -102,7 +101,7 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
         : undefined,
       data.minSelfDelegation !== ''
         ? new Int(data.minSelfDelegation)
-        : undefined,
+        : undefined
     );
   }
 
@@ -166,7 +165,7 @@ export class MsgEditValidatorV1B1 extends JSONSerializable<
     } = this;
     return {
       '@type': '/cosmos.staking.v1beta1.MsgEditValidator',
-      description,
+      description: description.toData(),
       validator_address,
       commission_rate: commission_rate ? commission_rate.toString() : undefined,
       min_self_delegation: min_self_delegation

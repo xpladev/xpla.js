@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { PublicKey } from '../PublicKey';
 import { JSONSerializable } from '../../util/json';
 import { AccAddress } from '../bech32';
@@ -13,6 +13,8 @@ export class BaseAccount extends JSONSerializable<
   BaseAccount.Data,
   BaseAccount.Proto
 > {
+  public account_number: Int64;
+  public sequence: Int64;
   /**
    * Creates a new Account object, holding information about a basic account.
    *
@@ -21,20 +23,23 @@ export class BaseAccount extends JSONSerializable<
    * @param account_number account number on the blockchain
    * @param sequence sequence number, or number of transactions that have been posted
    */
+
   constructor(
     public address: AccAddress,
     public public_key: PublicKey | null,
-    public account_number: number,
-    public sequence: number
+    account_number: Int64Input,
+    sequence: Int64Input
   ) {
     super();
+    this.account_number = parseInt64(account_number);
+    this.sequence = parseInt64(sequence);
   }
 
-  public getAccountNumber(): number {
+  public getAccountNumber(): Int64 {
     return this.account_number;
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.sequence;
   }
 
@@ -66,8 +71,8 @@ export class BaseAccount extends JSONSerializable<
     return new BaseAccount(
       address || '',
       public_key ? PublicKey.fromAmino(public_key) : null,
-      Number.parseInt(account_number) || 0,
-      Number.parseInt(sequence) || 0
+      account_number ?? '0',
+      sequence ?? '0'
     );
   }
 
@@ -80,8 +85,8 @@ export class BaseAccount extends JSONSerializable<
     return new BaseAccount(
       address || '',
       pub_key ? PublicKey.fromData(pub_key) : null,
-      Number.parseInt(account_number) || 0,
-      Number.parseInt(sequence) || 0
+      account_number ?? '0',
+      sequence ?? '0'
     );
   }
 
@@ -101,8 +106,8 @@ export class BaseAccount extends JSONSerializable<
     return BaseAccount_pb.fromPartial({
       address,
       pubKey: public_key?.packAny(),
-      accountNumber: account_number,
-      sequence: sequence,
+      accountNumber: account_number.toString(),
+      sequence: sequence.toString(),
     });
   }
 
@@ -114,8 +119,8 @@ export class BaseAccount extends JSONSerializable<
     return new BaseAccount(
       baseAccountProto.address,
       pubkey ? PublicKey.fromProto(pubkey) : null,
-      baseAccountProto.accountNumber.toNumber(),
-      baseAccountProto.sequence.toNumber()
+      baseAccountProto.accountNumber,
+      baseAccountProto.sequence
     );
   }
 
@@ -156,8 +161,7 @@ export namespace BaseAccount {
 
   export interface Data extends DataValue {
     '@type':
-      | '/cosmos.auth.v1beta1.BaseAccount'
-      | '/ethermint.types.v1.EthAccount';
+      '/cosmos.auth.v1beta1.BaseAccount' | '/ethermint.types.v1.EthAccount';
   }
 
   export type Proto = BaseAccount_pb;

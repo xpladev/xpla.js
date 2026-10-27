@@ -1,3 +1,5 @@
+import { Int64Input, parseInt64 } from '../../../util/int64';
+import { Convert } from '../../../util/convert';
 import { BaseAPI } from './BaseAPI';
 import {
   ProposalV1,
@@ -14,7 +16,12 @@ import {
   GovParamsV1,
 } from '../../../core';
 
-import { APIParams, CosmosParams, Pagination, PaginationOptions } from '../APIRequester';
+import {
+  APIParams,
+  CosmosParams,
+  Pagination,
+  PaginationOptions,
+} from '../APIRequester';
 import { TxSearchResult } from './TxAPI';
 import { ProposalStatus } from '@xpla/xpla.proto/cosmos/gov/v1/gov';
 import { LCDClient } from '../LCDClient';
@@ -98,7 +105,7 @@ export class GovAPI extends BaseAPI {
    * @param proposalId proposal's ID
    */
   public async proposal(
-    proposalId: number,
+    proposalId: Int64Input,
     params: Partial<APIParams & CosmosParams> = {}
   ): Promise<ProposalV1> {
     return this.c
@@ -113,14 +120,29 @@ export class GovAPI extends BaseAPI {
    * Get the proposal's proposer
    * @param proposalId proposal's ID
    */
-  public async proposer(proposalId: number): Promise<AccAddress> {
-    proposalId;
+  public async proposer(proposalId: Int64Input): Promise<AccAddress> {
+    try {
+      const proposal = await this.proposal(proposalId);
+      if (proposal.proposer) return proposal.proposer;
+    } catch (error) {
+      // Only missing state may fall back to retained transaction history.
+      if (
+        (error as { response?: { status?: number } }).response?.status !== 404
+      )
+        throw error;
+    }
     const creationTx = await this.searchProposalCreationTx(proposalId);
     const msg = creationTx.body.messages.find(
-      msg => msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal'
+      msg =>
+        msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal' ||
+        msg['@type'] === '/cosmos.gov.v1beta1.MsgSubmitProposal'
     );
 
-    if (msg && msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal') {
+    if (
+      msg &&
+      (msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal' ||
+        msg['@type'] === '/cosmos.gov.v1beta1.MsgSubmitProposal')
+    ) {
       return msg.proposer;
     }
 
@@ -131,14 +153,19 @@ export class GovAPI extends BaseAPI {
    * Get the proposal's initial deposit
    * @param proposalId proposal's ID
    */
-  public async initialDeposit(proposalId: number): Promise<Coins> {
-    proposalId;
+  public async initialDeposit(proposalId: Int64Input): Promise<Coins> {
     const creationTx = await this.searchProposalCreationTx(proposalId);
     const msg = creationTx.body.messages.find(
-      msg => msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal'
+      msg =>
+        msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal' ||
+        msg['@type'] === '/cosmos.gov.v1beta1.MsgSubmitProposal'
     );
 
-    if (msg && msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal') {
+    if (
+      msg &&
+      (msg['@type'] === '/cosmos.gov.v1.MsgSubmitProposal' ||
+        msg['@type'] === '/cosmos.gov.v1beta1.MsgSubmitProposal')
+    ) {
       return Coins.fromData(msg.initial_deposit);
     }
 
@@ -150,11 +177,9 @@ export class GovAPI extends BaseAPI {
    * @param proposalId proposal's ID
    */
   public async deposits(
-    proposalId: number,
+    proposalId: Int64Input,
     _params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
   ): Promise<[Deposit[], Pagination]> {
-    proposalId;
-    _params;
     const proposal = await this.proposal(proposalId);
     if (
       proposal.status === ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD ||
@@ -174,9 +199,8 @@ export class GovAPI extends BaseAPI {
     // build search params
     const params = new URLSearchParams();
     // post v0.47.x
-    params.append('query', `message.action='/cosmos.gov.v1.MsgDeposit' AND proposal_deposit.proposal_id=${proposalId}`);
+    params.append('query', `proposal_deposit.proposal_id=${proposalId}`);
     // pre v0.47.x
-    params.append('events', `message.action='/cosmos.gov.v1.MsgDeposit'`);
     params.append('events', `proposal_deposit.proposal_id=${proposalId}`);
 
     Object.entries(_params).forEach(v => {
@@ -190,8 +214,9 @@ export class GovAPI extends BaseAPI {
         d.txs.map(tx =>
           tx.body.messages.forEach(msg => {
             if (
-              msg['@type'] === '/cosmos.gov.v1.MsgDeposit' &&
-              Number.parseInt(msg.proposal_id) == proposalId
+              (msg['@type'] === '/cosmos.gov.v1.MsgDeposit' ||
+                msg['@type'] === '/cosmos.gov.v1beta1.MsgDeposit') &&
+              parseInt64(msg.proposal_id).eq(proposalId)
             ) {
               deposits.push(
                 new Deposit(
@@ -207,18 +232,14 @@ export class GovAPI extends BaseAPI {
       });
   }
 
-  public async searchProposalCreationTx(proposalId: number): Promise<Tx.Data> {
+  public async searchProposalCreationTx(
+    proposalId: Int64Input
+  ): Promise<Tx.Data> {
     // build search params
     const params = new URLSearchParams();
-    params.append(
-      'events',
-      `message.action='/cosmos.gov.v1.MsgSubmitProposal'`
-    );
     params.append('events', `submit_proposal.proposal_id=${proposalId}`);
     // post v0.47.x
-    params.append(
-      'query',
-      `message.action='/cosmos.gov.v1.MsgSubmitProposal' AND submit_proposal.proposal_id=${proposalId}`);
+    params.append('query', `submit_proposal.proposal_id=${proposalId}`);
 
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, params)
@@ -231,31 +252,88 @@ export class GovAPI extends BaseAPI {
   }
 
   /**
-   * Get the current votes for a proposal
+   * Get votes from current state, falling back to indexed transaction history.
+   * Historical results contain vote actions (including revotes), paginated by
+   * transaction. Pruned/unindexed transactions cannot be recovered by the SDK.
    * @param proposalId proposal's ID
    */
   public async votes(
-    proposalId: number,
+    proposalId: Int64Input,
     voter?: AccAddress,
     params: Partial<PaginationOptions & APIParams & CosmosParams> = {}
-  ): Promise<[(VoteV1|VoteV1B1)[], Pagination]> {
-    proposalId;
-    const proposal = await this.proposal(proposalId);
-    if (proposal.status === ProposalStatus.PROPOSAL_STATUS_DEPOSIT_PERIOD) {
-      if (voter !== undefined) {
-        return this.c
-          .get<{ vote: VoteV1.Data }>(
+  ): Promise<[(VoteV1 | VoteV1B1)[], Pagination]> {
+    const historyPrefix = 'xpla-gov-votes-history:';
+    const proposalKey = parseInt64(proposalId).toFixed();
+    const cursor = params['pagination.key'];
+    let historyKey: string | undefined;
+    if (cursor?.startsWith(historyPrefix)) {
+      try {
+        const decoded = JSON.parse(
+          Convert.toUTF8(Convert.fromBase64(cursor.slice(historyPrefix.length)))
+        );
+        if (
+          decoded.proposal !== proposalKey ||
+          decoded.voter !== (voter ?? null) ||
+          typeof decoded.key !== 'string' ||
+          !decoded.key
+        )
+          throw new Error('Invalid cursor');
+        historyKey = decoded.key;
+      } catch {
+        throw new TypeError(
+          'Invalid governance vote history cursor for this proposal/voter'
+        );
+      }
+    }
+
+    if (historyKey === undefined) {
+      let emptyPagination: Pagination = { next_key: null, total: 0 };
+      try {
+        if (voter !== undefined) {
+          const data = await this.c.get<{ vote?: VoteV1.Data }>(
             `/cosmos/gov/v1/proposals/${proposalId}/votes/${voter}`,
             params
-          )
-          .then(d => [ [VoteV1.fromData(d.vote)], { next_key: null, total: 1 }]);
-      }
-      return this.c
-        .get<{ votes: VoteV1.Data[]; pagination: Pagination }>(
-          `/cosmos/gov/v1/proposals/${proposalId}/votes`,
-          params
+          );
+          if (data.vote)
+            return [[VoteV1.fromData(data.vote)], { next_key: null, total: 1 }];
+        } else {
+          const data = await this.c.get<{
+            votes: VoteV1.Data[];
+            pagination: Pagination;
+          }>(`/cosmos/gov/v1/proposals/${proposalId}/votes`, params);
+          if (data.votes.length || cursor) {
+            return [data.votes.map(v => VoteV1.fromData(v)), data.pagination];
+          }
+          emptyPagination = data.pagination;
+        }
+      } catch (error) {
+        if (
+          (error as { response?: { status?: number } }).response?.status !== 404
         )
-        .then(d => [d.votes.map(v => VoteV1.fromData(v)), d.pagination]);
+          throw error;
+      }
+
+      // Active proposals with no votes are a successful empty result, not evidence
+      // of pruning. Only finalized (or removed) proposals need historical lookup.
+      try {
+        const proposal = await this.proposal(proposalId, {
+          block_height: params.block_height,
+        });
+        if (
+          ![
+            ProposalStatus.PROPOSAL_STATUS_PASSED,
+            ProposalStatus.PROPOSAL_STATUS_REJECTED,
+            ProposalStatus.PROPOSAL_STATUS_FAILED,
+          ].includes(proposal.status)
+        ) {
+          return [[], emptyPagination];
+        }
+      } catch (error) {
+        if (
+          (error as { response?: { status?: number } }).response?.status !== 404
+        )
+          throw error;
+      }
     }
 
     // build search params
@@ -263,52 +341,67 @@ export class GovAPI extends BaseAPI {
     // post v0.47.x
     if (voter === undefined) {
       txparams.append('query', `proposal_vote.proposal_id=${proposalId}`);
-    }
-    else {
-      txparams.append('query', `proposal_vote.proposal_id=${proposalId} AND proposal_vote.voter=${voter}`);
+    } else {
+      txparams.append(
+        'query',
+        `proposal_vote.proposal_id=${proposalId} AND proposal_vote.voter='${voter}'`
+      );
     }
     // pre v0.47.x
     txparams.append('events', `proposal_vote.proposal_id=${proposalId}`);
     if (voter !== undefined) {
-      txparams.append('events', `proposal_vote.voter=${voter}`);
+      txparams.append('events', `proposal_vote.voter='${voter}'`);
     }
 
-    Object.entries(params).forEach(v => {
-      txparams.append(v[0], v[1] as string);
+    Object.entries(params).forEach(([key, value]) => {
+      if (key !== 'pagination.key' && value != null)
+        txparams.append(key, String(value));
     });
+    if (historyKey !== undefined) txparams.set('pagination.key', historyKey);
 
     return this.c
       .get<TxSearchResult.Data>(`/cosmos/tx/v1beta1/txs`, txparams)
       .then(d => {
-        const votes: (VoteV1|VoteV1B1)[] = [];
+        const votes: (VoteV1 | VoteV1B1)[] = [];
         d.txs.map(tx =>
           tx.body.messages.forEach(msg => {
             if (
+              voter !== undefined &&
+              (!('voter' in msg) || msg.voter !== voter)
+            )
+              return;
+            if (
               msg['@type'] === '/cosmos.gov.v1.MsgVote' &&
-              Number.parseInt(msg.proposal_id) == proposalId
+              parseInt64(msg.proposal_id).eq(proposalId)
             ) {
               votes.push(
                 new VoteV1(
                   proposalId,
                   msg.voter,
-                  [new WeightedVoteOptionV1(msg.option, '1')],
+                  [
+                    WeightedVoteOptionV1.fromData({
+                      option: msg.option,
+                      weight: '1',
+                    }),
+                  ],
                   msg.metadata
                 )
               );
             } else if (
               msg['@type'] === '/cosmos.gov.v1beta1.MsgVote' &&
-              Number.parseInt(msg.proposal_id) == proposalId
+              parseInt64(msg.proposal_id).eq(proposalId)
             ) {
               votes.push(
-                new VoteV1B1(
-                  proposalId,
-                  msg.voter,
-                  [new WeightedVoteOptionV1B1(msg.option, '1')],
-                )
+                new VoteV1B1(proposalId, msg.voter, [
+                  WeightedVoteOptionV1B1.fromData({
+                    option: msg.option,
+                    weight: '1',
+                  }),
+                ])
               );
             } else if (
               msg['@type'] === '/cosmos.gov.v1.MsgVoteWeighted' &&
-              Number.parseInt(msg.proposal_id) == proposalId
+              parseInt64(msg.proposal_id).eq(proposalId)
             ) {
               votes.push(
                 new VoteV1(
@@ -322,7 +415,7 @@ export class GovAPI extends BaseAPI {
               );
             } else if (
               msg['@type'] === '/cosmos.gov.v1beta1.MsgVoteWeighted' &&
-              Number.parseInt(msg.proposal_id) == proposalId
+              parseInt64(msg.proposal_id).eq(proposalId)
             ) {
               votes.push(
                 new VoteV1B1(
@@ -330,14 +423,32 @@ export class GovAPI extends BaseAPI {
                   msg.voter,
                   msg.options.map((o: WeightedVoteOptionV1B1.Data) =>
                     WeightedVoteOptionV1B1.fromData(o)
-                  ),
+                  )
                 )
               );
             }
           }, votes)
         );
 
-        return [votes, d.pagination];
+        const nextKey = d.pagination.next_key;
+        return [
+          votes,
+          {
+            ...d.pagination,
+            next_key: nextKey
+              ? historyPrefix +
+                Convert.toBase64(
+                  Convert.fromUTF8(
+                    JSON.stringify({
+                      proposal: proposalKey,
+                      voter: voter ?? null,
+                      key: nextKey,
+                    })
+                  )
+                )
+              : null,
+          },
+        ];
       });
   }
 
@@ -346,7 +457,7 @@ export class GovAPI extends BaseAPI {
    * @param proposalId proposal's ID
    */
   public async tally(
-    proposalId: number,
+    proposalId: Int64Input,
     params: Partial<APIParams & CosmosParams> = {}
   ): Promise<Tally> {
     return this.c
@@ -363,7 +474,9 @@ export class GovAPI extends BaseAPI {
   }
 
   /** Gets the Gov module's current parameters  */
-  public async parameters(params: Partial<APIParams & CosmosParams> = {}): Promise<GovParamsV1> {
+  public async parameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<GovParamsV1> {
     return this.c
       .get<{ params: any }>(`/cosmos/gov/v1/params/deposit`, params)
       .then(({ params: d }) => GovParamsV1.fromData(d));
@@ -381,7 +494,9 @@ export class GovAPI extends BaseAPI {
   }
 
   /** Gets the Gov module's voting parameters */
-  public async votingParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<VotingParams> {
+  public async votingParameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<VotingParams> {
     const govparams = await this.parameters(params);
     return {
       voting_period: govparams.voting_period?.seconds.toNumber() ?? 0,
@@ -389,7 +504,9 @@ export class GovAPI extends BaseAPI {
   }
 
   /** Gets teh Gov module's tally parameters */
-  public async tallyParameters(params: Partial<APIParams & CosmosParams> = {}): Promise<TallyParams> {
+  public async tallyParameters(
+    params: Partial<APIParams & CosmosParams> = {}
+  ): Promise<TallyParams> {
     const govparams = await this.parameters(params);
     return {
       quorum: new Dec(govparams.quorum),

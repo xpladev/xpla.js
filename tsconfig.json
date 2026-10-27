@@ -1,31 +1,21 @@
 {
-  "include": ["src", "types"],
-  "exclude": ["/node_modules/", "./src/**/*.spec.ts"],
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true,
-    "baseUrl": "./",
-    "declaration": true,
-    "esModuleInterop": true,
-    "lib": ["es2015", "es2016", "es2017", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
-    "outDir": "dist",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
     "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
     "sourceMap": true,
     "strict": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "target": "es2015",
-    "paths": {
-      "*": ["src/*"]
-    }
-  }
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"]
 }

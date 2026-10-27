@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { Timestamp } from '../../Timestamp';
 import { Coins } from '../../Coins';
 import { Int } from '../../numeric';
@@ -56,6 +57,7 @@ export class ProposalV1B1 extends JSONSerializable<
   public voting_start_time: Timestamp | undefined;
   public voting_end_time: Timestamp | undefined;
 
+  public id: Int64;
   /**
    *
    * @param id proposal's ID
@@ -68,8 +70,9 @@ export class ProposalV1B1 extends JSONSerializable<
    * @param voting_start_time time voting period will start
    * @param voting_end_time time voting period will end
    */
+
   constructor(
-    public id: number,
+    id: Int64Input,
     public content: ProposalV1B1.Content,
     public status: ProposalStatus,
     public final_tally_result: ProposalV1B1.FinalTallyResult,
@@ -80,6 +83,7 @@ export class ProposalV1B1 extends JSONSerializable<
     voting_end_time: Timestamp.Input | undefined
   ) {
     super();
+    this.id = parseInt64(id);
     this.submit_time = Timestamp.from(submit_time);
     this.deposit_end_time = Timestamp.from(deposit_end_time);
     this.voting_start_time = Timestamp.from(voting_start_time);
@@ -103,7 +107,7 @@ export class ProposalV1B1 extends JSONSerializable<
     } = data;
 
     return new ProposalV1B1(
-      Number.parseInt(id),
+      id,
       ProposalV1B1.Content.fromAmino(content, isClassic),
       status,
       {
@@ -158,7 +162,7 @@ export class ProposalV1B1 extends JSONSerializable<
     } = data;
 
     return new ProposalV1B1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       ProposalV1B1.Content.fromData(content, isClassic),
       proposalStatusFromJSON(status),
       {
@@ -211,7 +215,7 @@ export class ProposalV1B1 extends JSONSerializable<
     const voting_end_time = data.votingEndTime;
 
     return new ProposalV1B1(
-      id.toNumber(),
+      id,
       ProposalV1B1.Content.fromProto(content as Any, isClassic),
       status,
       {
@@ -242,7 +246,7 @@ export class ProposalV1B1 extends JSONSerializable<
     }
 
     return ProposalV1B1_pb.fromPartial({
-      proposalId: this.id,
+      proposalId: this.id.toString(),
       content: this.content.packAny(isClassic),
       status,
       finalTallyResult: ftr,
@@ -467,7 +471,7 @@ export namespace ProposalV1B1 {
         case '/ethermint.erc20.v1.RegisterCoinProposal':
         case '/evmos.erc20.v1.RegisterCoinProposal':
         case '/cosmos.evm.erc20.v1.RegisterCoinProposal':
-            return RegisterCoinProposal.fromData(data, isClassic);
+          return RegisterCoinProposal.fromData(data, isClassic);
         case '/ethermint.erc20.v1.RegisterERC20Proposal':
         case '/evmos.erc20.v1.RegisterERC20Proposal':
         case '/cosmos.evm.erc20.v1.RegisterERC20Proposal':
@@ -532,7 +536,7 @@ export namespace ProposalV1B1 {
         case '/ethermint.erc20.v1.RegisterCoinProposal':
         case '/evmos.erc20.v1.RegisterCoinProposal':
         case '/cosmos.evm.erc20.v1.RegisterCoinProposal':
-            return RegisterCoinProposal.unpackAny(anyProto, isClassic);
+          return RegisterCoinProposal.unpackAny(anyProto, isClassic);
         case '/ethermint.erc20.v1.RegisterERC20Proposal':
         case '/evmos.erc20.v1.RegisterERC20Proposal':
         case '/cosmos.evm.erc20.v1.RegisterERC20Proposal':

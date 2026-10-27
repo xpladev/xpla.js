@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable, removeNull } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
@@ -16,6 +17,7 @@ export class InstantiateContractProposal extends JSONSerializable<
 > {
   public init_coins: Coins;
 
+  public code_id: Int64;
   /**
    * @param title a short summary
    * @param description a human readable text
@@ -26,17 +28,19 @@ export class InstantiateContractProposal extends JSONSerializable<
    * @param init_coins are transferred to the contract on execution
    * @param label label for the contract. v2 supported only
    */
+
   constructor(
     public title: string,
     public description: string,
     public run_as: AccAddress,
     public admin: AccAddress | undefined,
-    public code_id: number,
+    code_id: Int64Input,
     public init_msg: object | string,
     init_coins: Coins.Input = {},
     public label: string = ''
   ) {
     super();
+    this.code_id = parseInt64(code_id);
     this.init_coins = new Coins(init_coins);
   }
 
@@ -55,7 +59,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       description,
       run_as,
       admin,
-      Number.parseInt(code_id),
+      code_id,
       msg,
       Coins.fromAmino(funds),
       label
@@ -103,7 +107,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       proto.description,
       proto.runAs,
       proto.admin !== '' ? proto.admin : undefined,
-      proto.codeId.toNumber(),
+      proto.codeId,
       JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds),
       proto.label
@@ -129,7 +133,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       description,
       runAs: run_as,
       admin,
-      codeId: code_id,
+      codeId: code_id.toString(),
       funds: init_coins.toIntCoins().toProto(),
       msg: Convert.fromUTF8(JSON.stringify(init_msg)),
       label,
@@ -175,7 +179,7 @@ export class InstantiateContractProposal extends JSONSerializable<
       description,
       run_as,
       admin !== '' ? admin : undefined,
-      Number.parseInt(code_id),
+      code_id,
       msg,
       Coins.fromData(funds),
       label

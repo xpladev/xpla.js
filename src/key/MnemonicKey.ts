@@ -1,7 +1,11 @@
 // Adapted from https://github.com/xpla/xpla-js/blob/master/src/utils/keyUtils.ts
 
-import { mnemonicToSeedSync, generateMnemonic, validateMnemonic } from '@scure/bip39';
-import { wordlist as engWordlist } from '@scure/bip39/wordlists/english';
+import {
+  mnemonicToSeedSync,
+  generateMnemonic,
+  validateMnemonic,
+} from '@scure/bip39';
+import { wordlist as engWordlist } from '@scure/bip39/wordlists/english.js';
 import { HDKey } from '@scure/bip32';
 import { RawKey } from './RawKey';
 
@@ -92,9 +96,8 @@ export class MnemonicKey extends RawKey {
     let seed: Uint8Array;
     try {
       seed = mnemonicToSeedSync(mnemonic, passphrase);
-    }
-    catch (e) {
-      throw new Error('Invalid mnemonic');
+    } catch (e) {
+      throw new Error('Invalid mnemonic', { cause: e });
     }
     const masterKey = HDKey.fromMasterSeed(seed);
     const hdPathXpla = `m/44'/${coinType}'/${account}'/0/${index}`;
@@ -109,7 +112,10 @@ export class MnemonicKey extends RawKey {
     this.mnemonic = mnemonic;
   }
 
-  public static isValidMnemonic(mnemonic: string, wordlist?: string[]): boolean {
+  public static isValidMnemonic(
+    mnemonic: string,
+    wordlist?: string[]
+  ): boolean {
     return validateMnemonic(mnemonic, wordlist ?? DEFAULT_OPTIONS.wordlist);
   }
 }

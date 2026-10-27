@@ -1,23 +1,28 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { Convert } from '../../util/convert';
 import { Proof as Proof_pb } from '@xpla/xpla.proto/tendermint/crypto/proof';
 import { PublicKey as PublicKey_pb } from '@xpla/xpla.proto/tendermint/crypto/keys';
 
 export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
+  public total: Int64;
+  public index: Int64;
   /**
    * @param total
    * @param index
    * @param leafHash
    * @param aunts
    */
+
   constructor(
-    public total: number,
-    public index: number,
+    total: Int64Input,
+    index: Int64Input,
     public leafHash: string,
     public aunts: string[]
   ) {
     super();
+    this.total = parseInt64(total);
+    this.index = parseInt64(index);
   }
 
   public static fromAmino(_: any): Proof {
@@ -30,12 +35,7 @@ export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
 
   public static fromData(data: Proof.Data): Proof {
     const { total, index, leaf_hash: leafHash, aunts } = data;
-    return new Proof(
-      Number.parseInt(total),
-      Number.parseInt(index),
-      leafHash,
-      aunts
-    );
+    return new Proof(total, index, leafHash, aunts);
   }
 
   public toData(): Proof.Data {
@@ -51,8 +51,8 @@ export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
 
   public static fromProto(proto: Proof.Proto): Proof {
     return new Proof(
-      proto.total.toNumber(),
-      proto.index.toNumber(),
+      proto.total,
+      proto.index,
       Convert.toBase64(proto.leafHash),
       proto.aunts.map(Convert.toBase64)
     );
@@ -61,8 +61,8 @@ export class Proof extends JSONSerializable<any, Proof.Data, Proof.Proto> {
   public toProto(): Proof.Proto {
     const { total, index, leafHash, aunts } = this;
     return Proof_pb.fromPartial({
-      total,
-      index,
+      total: total.toString(),
+      index: index.toString(),
       leafHash: Convert.fromBase64(leafHash),
       aunts: aunts.map(Convert.fromBase64),
     });
@@ -90,7 +90,10 @@ export class PublicKey extends JSONSerializable<
    * @param ed25519
    * @param secp256k1
    */
-  constructor(public ed25519?: string, public secp256k1?: string) {
+  constructor(
+    public ed25519?: string,
+    public secp256k1?: string
+  ) {
     super();
   }
 

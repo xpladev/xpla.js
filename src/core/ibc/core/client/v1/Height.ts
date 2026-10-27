@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../../util/int64';
 import { JSONSerializable } from '../../../../../util/json';
 import { Height as HeightV1_pb } from '@xpla/xpla.proto/ibc/core/client/v1/client';
 
@@ -18,42 +19,40 @@ export class HeightV1 extends JSONSerializable<
   HeightV1.Data,
   HeightV1.Proto
 > {
+  public revision_number: Int64;
+  public revision_height: Int64;
   /**
    * @param revision_number the revision that the client is currently on
    * @param revision_height the height within the given revision
    */
-  constructor(
-    public revision_number: number,
-    public revision_height: number,
-  ) {
+
+  constructor(revision_number: Int64Input, revision_height: Int64Input) {
     super();
+    this.revision_number = parseInt64(revision_number);
+    this.revision_height = parseInt64(revision_height);
   }
 
   public static fromAmino(data: HeightV1.Amino): HeightV1 {
     const { revision_number, revision_height } = data;
-    return new HeightV1(
-      parseInt(revision_number ?? '0'),
-      parseInt(revision_height ?? '0')
-    );
+    return new HeightV1(revision_number ?? '0', revision_height ?? '0');
   }
 
   public toAmino(): HeightV1.Amino {
     const { revision_number, revision_height } = this;
     const res: HeightV1.Amino = {
-      revision_number:
-        revision_number > 0 ? revision_number.toFixed() : undefined,
-      revision_height:
-        revision_height > 0 ? revision_height.toFixed() : undefined,
+      revision_number: revision_number.gt(0)
+        ? revision_number.toFixed()
+        : undefined,
+      revision_height: revision_height.gt(0)
+        ? revision_height.toFixed()
+        : undefined,
     };
     return res;
   }
 
   public static fromData(data: HeightV1.Data): HeightV1 {
     const { revision_number, revision_height } = data;
-    return new HeightV1(
-      Number.parseInt(revision_number),
-      Number.parseInt(revision_height)
-    );
+    return new HeightV1(revision_number, revision_height);
   }
 
   public toData(): HeightV1.Data {
@@ -66,17 +65,14 @@ export class HeightV1 extends JSONSerializable<
   }
 
   public static fromProto(proto: HeightV1.Proto): HeightV1 {
-    return new HeightV1(
-      proto.revisionNumber.toNumber(),
-      proto.revisionHeight.toNumber()
-    );
+    return new HeightV1(proto.revisionNumber, proto.revisionHeight);
   }
 
   public toProto(): HeightV1.Proto {
     const { revision_number, revision_height } = this;
     return HeightV1_pb.fromPartial({
-      revisionNumber: revision_number,
-      revisionHeight: revision_height,
+      revisionNumber: revision_number.toString(),
+      revisionHeight: revision_height.toString(),
     });
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -40,7 +39,7 @@ export class MsgConvertERC20V1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgConvertERC20V1.Amino {
     const { contract_address, amount, receiver, sender } = this;
     return {
-      type: 'evm/MsgConvertERC20',
+      type: 'cosmos/evm/MsgConvertERC20',
       value: {
         contract_address,
         amount,
@@ -108,7 +107,11 @@ export class MsgConvertERC20V1 extends JSONSerializable<
 
 export namespace MsgConvertERC20V1 {
   export interface Amino {
-    type: 'ethermint/MsgConvertERC20' | 'evmos/MsgConvertERC20' | 'evm/MsgConvertERC20';
+    type:
+      | 'ethermint/MsgConvertERC20'
+      | 'evmos/MsgConvertERC20'
+      | 'evm/MsgConvertERC20'
+      | 'cosmos/evm/MsgConvertERC20';
     value: {
       contract_address: AccAddress;
       amount: string;

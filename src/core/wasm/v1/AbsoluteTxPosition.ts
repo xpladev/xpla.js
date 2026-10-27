@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable } from '../../../util/json';
 import { AbsoluteTxPosition as AbsoluteTxPosition_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/types';
 
@@ -9,19 +10,21 @@ export class AbsoluteTxPosition extends JSONSerializable<
   AbsoluteTxPosition.Data,
   AbsoluteTxPosition.Proto
 > {
+  public block_height: Int64;
+  public tx_index: Int64;
   /**
    * @param block_height
    * @param tx_index
    */
-  constructor(public block_height: number, public tx_index: number) {
+
+  constructor(block_height: Int64Input, tx_index: Int64Input) {
     super();
+    this.block_height = parseInt64(block_height);
+    this.tx_index = parseInt64(tx_index);
   }
 
   public static fromAmino(data: AbsoluteTxPosition.Amino): AbsoluteTxPosition {
-    return new AbsoluteTxPosition(
-      Number.parseInt(data.block_height),
-      Number.parseInt(data.tx_index)
-    );
+    return new AbsoluteTxPosition(data.block_height, data.tx_index);
   }
 
   public toAmino(): AbsoluteTxPosition.Amino {
@@ -33,10 +36,7 @@ export class AbsoluteTxPosition extends JSONSerializable<
   }
 
   public static fromData(data: AbsoluteTxPosition.Data): AbsoluteTxPosition {
-    return new AbsoluteTxPosition(
-      Number.parseInt(data.block_height),
-      Number.parseInt(data.tx_index)
-    );
+    return new AbsoluteTxPosition(data.block_height, data.tx_index);
   }
 
   public toData(): AbsoluteTxPosition.Data {
@@ -48,16 +48,13 @@ export class AbsoluteTxPosition extends JSONSerializable<
   }
 
   public static fromProto(proto: AbsoluteTxPosition.Proto): AbsoluteTxPosition {
-    return new AbsoluteTxPosition(
-      proto.blockHeight.toNumber(),
-      proto.txIndex.toNumber()
-    );
+    return new AbsoluteTxPosition(proto.blockHeight, proto.txIndex);
   }
 
   public toProto(): AbsoluteTxPosition.Proto {
     return AbsoluteTxPosition_pb.fromPartial({
-      blockHeight: this.block_height,
-      txIndex: this.tx_index,
+      blockHeight: this.block_height.toString(),
+      txIndex: this.tx_index.toString(),
     });
   }
 }

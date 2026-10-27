@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { ToggleTokenConversionProposal as ToggleTokenConversionProposal_pb } from '@xpla/xpla.proto/cosmos/evm/erc20/v1/erc20';

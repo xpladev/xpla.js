@@ -47,9 +47,9 @@ export namespace IbcConnectionMsg {
 }
 
 export {
-    MsgConnectionOpenInitV1 as MsgConnectionOpenInit,
-    MsgConnectionOpenTryV1 as MsgConnectionOpenTry,
-    MsgConnectionOpenAckV1 as MsgConnectionOpenAck,
-    MsgConnectionOpenConfirmV1 as MsgConnectionOpenConfirm,
-    MsgUpdateIbcConnectionParamsV1 as MsgUpdateIbcConnectionParams,
-}
+  MsgConnectionOpenInitV1 as MsgConnectionOpenInit,
+  MsgConnectionOpenTryV1 as MsgConnectionOpenTry,
+  MsgConnectionOpenAckV1 as MsgConnectionOpenAck,
+  MsgConnectionOpenConfirmV1 as MsgConnectionOpenConfirm,
+  MsgUpdateIbcConnectionParamsV1 as MsgUpdateIbcConnectionParams,
+};

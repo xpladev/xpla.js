@@ -44,7 +44,7 @@ export class EVMRequester {
   }
 
   public static deepCopy(obj: any) {
-    let copy: Record<string, any> = {};
+    let copy: Record<string, any>;
 
     // Handle the 3 simple types, and null or undefined
     if (null == obj || 'object' != typeof obj) return obj;

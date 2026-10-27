@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -37,7 +36,7 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
   public toAmino(_isClassic?: boolean): MsgUpdateERC20ParamsV1.Amino {
     const { authority, params } = this;
     return {
-      type: 'evm/erc20/MsgUpdateParams',
+      type: 'cosmos/evm/x/erc20/MsgUpdateParams',
       value: {
         authority,
         params: params ? params.toAmino() : undefined,
@@ -102,7 +101,11 @@ export class MsgUpdateERC20ParamsV1 extends JSONSerializable<
 
 export namespace MsgUpdateERC20ParamsV1 {
   export interface Amino {
-    type: 'ethermint/erc20/MsgUpdateParams' | 'evmos/erc20/MsgUpdateParams' | 'evm/erc20/MsgUpdateParams';
+    type:
+      | 'ethermint/erc20/MsgUpdateParams'
+      | 'evmos/erc20/MsgUpdateParams'
+      | 'evm/erc20/MsgUpdateParams'
+      | 'cosmos/evm/x/erc20/MsgUpdateParams';
     value: {
       authority: AccAddress;
       params: ERC20ParamsV1.Amino | undefined;

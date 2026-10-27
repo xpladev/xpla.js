@@ -2,8 +2,8 @@ import { Key } from './Key';
 import { SimplePublicKey } from '../core/PublicKey';
 import { Convert } from '../util/convert';
 
-import * as secp256k1 from '@noble/secp256k1';
-import { keccak_256 } from '@noble/hashes/sha3';
+import { secp256k1 } from '@noble/curves/secp256k1.js';
+import { keccak_256 } from '@noble/hashes/sha3.js';
 
 /**
  * An implementation of the Key interfaces that uses a raw private key.
@@ -15,20 +15,17 @@ export class RawKey extends Key {
   public privateKey: Uint8Array;
 
   constructor(privateKey: Uint8Array) {
-    const publicKey = secp256k1.getPublicKey(
-      privateKey,
-      true
-    );
+    const publicKey = secp256k1.getPublicKey(privateKey, true);
     super(new SimplePublicKey(publicKey));
     this.privateKey = privateKey;
   }
 
   public static isValidPrivateKey(privateKey: Uint8Array): boolean {
-    return secp256k1.utils.isValidPrivateKey(privateKey);
+    return secp256k1.utils.isValidSecretKey(privateKey);
   }
 
   public isValid(): boolean {
-    return secp256k1.utils.isValidPrivateKey(this.privateKey);
+    return secp256k1.utils.isValidSecretKey(this.privateKey);
   }
 
   public get privateKeyHex(): string {
@@ -36,14 +33,15 @@ export class RawKey extends Key {
   }
 
   public get publicKeyHex(): string {
-    return Convert.toHex(Convert.fromBase64((this.publicKey as SimplePublicKey).key));
+    return Convert.toHex(
+      Convert.fromBase64((this.publicKey as SimplePublicKey).key)
+    );
   }
 
   public async sign(payload: Uint8Array): Promise<Uint8Array> {
-    return secp256k1.sign(
-      keccak_256(payload),
-      this.privateKey,
-      { der: false },
-    ).then(value => Uint8Array.from(value));
+    return secp256k1.sign(keccak_256(payload), this.privateKey, {
+      prehash: false,
+      format: 'compact',
+    });
   }
 }

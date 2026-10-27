@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable, removeNull } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
@@ -10,6 +11,7 @@ export class MigrateContractProposal extends JSONSerializable<
   MigrateContractProposal.Data,
   MigrateContractProposal.Proto
 > {
+  public new_code_id: Int64;
   /**
    * @param title a short summary
    * @param description a human readable text
@@ -17,14 +19,16 @@ export class MigrateContractProposal extends JSONSerializable<
    * @param new_code_id reference to the new code on the blockchain
    * @param migrate_msg JSON message to configure the migrate state of the contract
    */
+
   constructor(
     public title: string,
     public description: string,
     public contract: AccAddress,
-    public new_code_id: number,
+    new_code_id: Int64Input,
     public migrate_msg: object | string // json object or string
   ) {
     super();
+    this.new_code_id = parseInt64(new_code_id);
   }
 
   public static fromAmino(
@@ -41,7 +45,7 @@ export class MigrateContractProposal extends JSONSerializable<
       title,
       description,
       contract,
-      Number.parseInt(code_id),
+      code_id,
       msg
     );
   }
@@ -74,7 +78,7 @@ export class MigrateContractProposal extends JSONSerializable<
       proto.title,
       proto.description,
       proto.contract,
-      proto.codeId.toNumber(),
+      proto.codeId,
       JSON.parse(Convert.toUTF8(proto.msg))
     );
   }
@@ -88,7 +92,7 @@ export class MigrateContractProposal extends JSONSerializable<
       title,
       description,
       contract,
-      codeId: new_code_id,
+      codeId: new_code_id.toString(),
       msg: Convert.fromUTF8(JSON.stringify(migrate_msg)),
     });
   }
@@ -129,7 +133,7 @@ export class MigrateContractProposal extends JSONSerializable<
       title,
       description,
       contract,
-      Number.parseInt(code_id),
+      code_id,
       msg
     );
   }

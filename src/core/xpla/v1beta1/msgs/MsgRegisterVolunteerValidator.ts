@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { PublicKey } from '../../../PublicKey';
+import { anyFromData } from '../../../../util/any';
 import { JSONSerializable } from '../../../../util/json';
 import { Coin } from '../../../Coin';
 import { AccAddress } from '../../../bech32';
@@ -25,7 +26,7 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
     public delegator_address: AccAddress,
     public validator_address: AccAddress,
     public pubkey: Any | undefined,
-    public amount: Coin | undefined,
+    public amount: Coin | undefined
   ) {
     super();
   }
@@ -46,15 +47,19 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
     } = data;
     return new MsgRegisterVolunteerValidatorV1B1(
       authority,
-      validator_description ? ValidatorV1B1.Description.fromAmino(validator_description) : undefined,
+      validator_description
+        ? ValidatorV1B1.Description.fromAmino(validator_description)
+        : undefined,
       delegator_address,
       validator_address,
-      pubkey ? Any.fromPartial(pubkey): undefined,
-      amount ? Coin.fromAmino(amount) : undefined,
+      pubkey ? PublicKey.fromAmino(pubkey).packAny() : undefined,
+      amount ? Coin.fromAmino(amount) : undefined
     );
   }
 
-  public toAmino(_isClassic?: boolean): MsgRegisterVolunteerValidatorV1B1.Amino {
+  public toAmino(
+    _isClassic?: boolean
+  ): MsgRegisterVolunteerValidatorV1B1.Amino {
     const {
       authority,
       validator_description,
@@ -70,7 +75,7 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
         validator_description: validator_description?.toAmino(),
         delegator_address,
         validator_address,
-        pubkey,
+        pubkey: pubkey ? PublicKey.fromProto(pubkey).toAmino() : undefined,
         amount: amount?.toAmino(),
       },
     };
@@ -91,11 +96,17 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
 
     return new MsgRegisterVolunteerValidatorV1B1(
       authority,
-      validator_description ? ValidatorV1B1.Description.fromData(validator_description) : undefined,
+      validator_description
+        ? ValidatorV1B1.Description.fromData(validator_description)
+        : undefined,
       delegator_address,
       validator_address,
-      Any.fromJSON(pubkey),
-      amount ? Coin.fromData(amount) : undefined,
+      pubkey
+        ? '@type' in pubkey
+          ? PublicKey.fromData(pubkey).packAny()
+          : anyFromData(pubkey)
+        : undefined,
+      amount ? Coin.fromData(amount) : undefined
     );
   }
 
@@ -114,7 +125,7 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
       validator_description: validator_description?.toData(),
       delegator_address,
       validator_address,
-      pubkey: pubkey ? Any.toJSON(pubkey) : undefined,
+      pubkey: pubkey ? PublicKey.fromProto(pubkey).toData() : undefined,
       amount: amount?.toData(),
     };
   }
@@ -125,15 +136,19 @@ export class MsgRegisterVolunteerValidatorV1B1 extends JSONSerializable<
   ): MsgRegisterVolunteerValidatorV1B1 {
     return new MsgRegisterVolunteerValidatorV1B1(
       proto.authority,
-      proto.validatorDescription ? ValidatorV1B1.Description.fromProto(proto.validatorDescription) : undefined,
+      proto.validatorDescription
+        ? ValidatorV1B1.Description.fromProto(proto.validatorDescription)
+        : undefined,
       proto.delegatorAddress,
       proto.validatorAddress,
       proto.pubkey,
-      proto.amount ? Coin.fromProto(proto.amount) : undefined,
+      proto.amount ? Coin.fromProto(proto.amount) : undefined
     );
   }
 
-  public toProto(_isClassic?: boolean): MsgRegisterVolunteerValidatorV1B1.Proto {
+  public toProto(
+    _isClassic?: boolean
+  ): MsgRegisterVolunteerValidatorV1B1.Proto {
     const {
       authority,
       validator_description,

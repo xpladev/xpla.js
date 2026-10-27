@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
 import { Coin } from '../../../../../Coin';
@@ -48,9 +47,8 @@ export class MsgTransferV1 extends JSONSerializable<
 
     this.token = token;
     this.timeout_height = timeout_height;
-    this.timeout_timestamp = timeout_timestamp
-      ? Numeric.parse(timeout_timestamp)
-      : undefined;
+    const timestamp = timeout_timestamp === undefined ? undefined : Numeric.parse(timeout_timestamp);
+    this.timeout_timestamp = timestamp?.isZero() ? undefined : timestamp;
   }
 
   public static fromAmino(data: MsgTransferV1.Amino, _?: boolean): MsgTransferV1 {
@@ -137,7 +135,7 @@ export class MsgTransferV1 extends JSONSerializable<
       sender,
       receiver,
       timeout_height ? HeightV1.fromData(timeout_height) : undefined,
-      timeout_timestamp ? Number.parseInt(timeout_timestamp) : undefined,
+      timeout_timestamp,
       memo,
       encoding,
     );
@@ -172,7 +170,7 @@ export class MsgTransferV1 extends JSONSerializable<
   }
 
   public static fromProto(proto: MsgTransferV1.Proto, _?: boolean): MsgTransferV1 {
-    if (!proto.timeoutHeight && proto.timeoutTimestamp.toNumber() == 0) {
+    if (!proto.timeoutHeight && proto.timeoutTimestamp === '0') {
       throw 'both of timeout_height and timeout_timestamp are empty';
     }
 
@@ -183,7 +181,7 @@ export class MsgTransferV1 extends JSONSerializable<
       proto.sender,
       proto.receiver,
       proto.timeoutHeight ? HeightV1.fromProto(proto.timeoutHeight) : undefined,
-      proto.timeoutTimestamp.toNumber(),
+      proto.timeoutTimestamp,
       proto.memo,
       proto.encoding,
     );

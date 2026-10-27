@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { EvmAPI } from './BaseAPI';
 import { EvmAddress } from '../../../core';
 import { Numeric } from '../../../core/numeric';
@@ -213,7 +212,7 @@ export class EvmNftAPI extends EvmAPI {
 
     let pageNo = 1;
     let pageLimit = 10;
-    let offset = 0;
+    let offset: number;
 
     if (params['pagination.key']) {
       pageNo = parseInt(params['pagination.key']);
@@ -236,12 +235,8 @@ export class EvmNftAPI extends EvmAPI {
 
     const tokens: number[] = [];
     for (let i = start; i < end; ++i) {
-      try {
-        const tokenId = await this.tokenId(contract, i, owner);
-        tokens.push(tokenId.toNumber());
-      } catch (e) {
-        throw new Error((e as Error).message);
-      }
+      const tokenId = await this.tokenId(contract, i, owner);
+      tokens.push(tokenId.toNumber());
     }
 
     return [tokens, { next_key, total }];
@@ -256,7 +251,7 @@ export class EvmNftAPI extends EvmAPI {
 
     let pageNo = 1;
     let pageLimit = 10;
-    let offset = 0;
+    let offset: number;
 
     if (params['pagination.key']) {
       pageNo = parseInt(params['pagination.key']);
@@ -279,12 +274,8 @@ export class EvmNftAPI extends EvmAPI {
 
     const tokens: number[] = [];
     for (let i = start; i < end; ++i) {
-      try {
-        const tokenId = await this.tokenId(contract, i);
-        tokens.push(tokenId.toNumber());
-      } catch (e) {
-        throw new Error((e as Error).message);
-      }
+      const tokenId = await this.tokenId(contract, i);
+      tokens.push(tokenId.toNumber());
     }
 
     return [tokens, { next_key, total }];

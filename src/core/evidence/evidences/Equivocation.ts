@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import Long from 'long';
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable } from '../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { Equivocation as Equivocation_pb } from '@xpla/xpla.proto/cosmos/evidence/v1beta1/evidence';
@@ -15,8 +14,8 @@ export class Equivocation extends JSONSerializable<
   Equivocation.Proto
 > {
   public time: Timestamp | undefined;
-  public height: Long;
-  public power: Long;
+  public height: Int64;
+  public power: Int64;
 
   /**
    * @param height equivocation height
@@ -24,16 +23,17 @@ export class Equivocation extends JSONSerializable<
    * @param power equivocation validator power
    * @param consensus_address equivocation validator consensus address
    */
+
   constructor(
-    height: string | number | Long,
+    height: Int64Input,
     time: Timestamp.Input | undefined,
-    power: string | number | Long,
+    power: Int64Input,
     public consensus_address: string
   ) {
     super();
+    this.height = parseInt64(height);
+    this.power = parseInt64(power);
     this.time = Timestamp.from(time);
-    this.height = Long.fromValue(height);
-    this.power = Long.fromValue(power);
   }
 
   public static fromAmino(
@@ -103,9 +103,9 @@ export class Equivocation extends JSONSerializable<
   public toProto(_isClassic?: boolean): Equivocation.Proto {
     const { height, time, power, consensus_address } = this;
     return Equivocation_pb.fromPartial({
-      height,
+      height: height.toString(),
       time: time?.toProto(),
-      power,
+      power: power.toString(),
       consensusAddress: consensus_address,
     });
   }
@@ -118,7 +118,10 @@ export class Equivocation extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, isClassic?: boolean): Equivocation {
-    return Equivocation.fromProto(Equivocation_pb.decode(msgAny.value), isClassic);
+    return Equivocation.fromProto(
+      Equivocation_pb.decode(msgAny.value),
+      isClassic
+    );
   }
 }
 

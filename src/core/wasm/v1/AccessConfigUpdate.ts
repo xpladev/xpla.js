@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable } from '../../../util/json';
 import { AccessConfig } from './AccessConfig';
 import { AccessConfigUpdate as AccessConfigUpdate_pb } from '@xpla/xpla.proto/cosmwasm/wasm/v1/proposal_legacy';
@@ -10,20 +11,23 @@ export class AccessConfigUpdate extends JSONSerializable<
   AccessConfigUpdate.Data,
   AccessConfigUpdate.Proto
 > {
+  public code_id: Int64;
   /**
    * @param code_id the reference to the stored WASM code to be updated
    * @param instantiate_permission to apply to the set of code ids
    */
+
   constructor(
-    public code_id: number,
+    code_id: Int64Input,
     public instantiate_permission?: AccessConfig
   ) {
     super();
+    this.code_id = parseInt64(code_id);
   }
 
   public static fromAmino(data: AccessConfigUpdate.Amino): AccessConfigUpdate {
     return new AccessConfigUpdate(
-      Number.parseInt(data.code_id),
+      data.code_id,
       data.instantiate_permission
         ? AccessConfig.fromAmino(data.instantiate_permission)
         : undefined
@@ -40,7 +44,7 @@ export class AccessConfigUpdate extends JSONSerializable<
 
   public static fromData(data: AccessConfigUpdate.Data): AccessConfigUpdate {
     return new AccessConfigUpdate(
-      Number.parseInt(data.code_id),
+      data.code_id,
       data.instantiate_permission
         ? AccessConfig.fromData(data.instantiate_permission)
         : undefined
@@ -57,7 +61,7 @@ export class AccessConfigUpdate extends JSONSerializable<
 
   public static fromProto(proto: AccessConfigUpdate.Proto): AccessConfigUpdate {
     return new AccessConfigUpdate(
-      proto.codeId.toNumber(),
+      proto.codeId,
       proto.instantiatePermission
         ? AccessConfig.fromProto(proto.instantiatePermission)
         : undefined
@@ -66,7 +70,7 @@ export class AccessConfigUpdate extends JSONSerializable<
 
   public toProto(): AccessConfigUpdate.Proto {
     return AccessConfigUpdate_pb.fromPartial({
-      codeId: this.code_id,
+      codeId: this.code_id.toString(),
       instantiatePermission: this.instantiate_permission?.toProto(),
     });
   }

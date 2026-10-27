@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable, removeNull } from '../../../util/json';
 import { Convert } from '../../../util/convert';
 import { AbsoluteTxPosition } from './AbsoluteTxPosition';
@@ -16,23 +17,26 @@ export class HistoryEntry extends JSONSerializable<
   HistoryEntry.Data,
   HistoryEntry.Proto
 > {
+  public code_id: Int64;
   /**
    * @param operation access type
    * @param code_id
    */
+
   constructor(
     public operation: ContractCodeHistoryOperationType,
-    public code_id: number,
+    code_id: Int64Input,
     public updated: AbsoluteTxPosition | undefined,
     public msg: object | string
   ) {
     super();
+    this.code_id = parseInt64(code_id);
   }
 
   public static fromAmino(data: HistoryEntry.Amino): HistoryEntry {
     return new HistoryEntry(
       contractCodeHistoryOperationTypeFromJSON(data.operation),
-      Number.parseInt(data.code_id),
+      data.code_id,
       data.updated ? AbsoluteTxPosition.fromAmino(data.updated) : undefined,
       data.msg
     );
@@ -51,7 +55,7 @@ export class HistoryEntry extends JSONSerializable<
   public static fromData(data: HistoryEntry.Data): HistoryEntry {
     return new HistoryEntry(
       contractCodeHistoryOperationTypeFromJSON(data.operation),
-      Number.parseInt(data.code_id),
+      data.code_id,
       data.updated ? AbsoluteTxPosition.fromData(data.updated) : undefined,
       data.msg
     );
@@ -70,7 +74,7 @@ export class HistoryEntry extends JSONSerializable<
   public static fromProto(proto: HistoryEntry.Proto): HistoryEntry {
     return new HistoryEntry(
       proto.operation,
-      proto.codeId.toNumber(),
+      proto.codeId,
       proto.updated ? AbsoluteTxPosition.fromProto(proto.updated) : undefined,
       JSON.parse(Convert.toUTF8(proto.msg))
     );
@@ -79,7 +83,7 @@ export class HistoryEntry extends JSONSerializable<
   public toProto(): HistoryEntry.Proto {
     return HistoryEntry_pb.fromPartial({
       operation: this.operation,
-      codeId: this.code_id,
+      codeId: this.code_id.toString(),
       updated: this.updated?.toProto(),
       msg: Convert.fromUTF8(JSON.stringify(removeNull(this.msg))),
     });

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { Coins } from '../../../Coins';
 import { AccAddress } from '../../../bech32';
@@ -14,17 +14,20 @@ export class MsgDepositV1 extends JSONSerializable<
   MsgDepositV1.Proto
 > {
   public amount: Coins;
+  public proposal_id: Int64;
   /**
    * @param proposal_id Id of porposal to deposit to
    * @param depositor depositor's account address
    * @param amount amount to deposit
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public depositor: AccAddress,
     amount: Coins.Input
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
     this.amount = new Coins(amount);
   }
 
@@ -35,11 +38,7 @@ export class MsgDepositV1 extends JSONSerializable<
     const {
       value: { proposal_id, depositor, amount },
     } = data;
-    return new MsgDepositV1(
-      Number.parseInt(proposal_id),
-      depositor,
-      Coins.fromAmino(amount)
-    );
+    return new MsgDepositV1(proposal_id, depositor, Coins.fromAmino(amount));
   }
 
   public toAmino(_?: boolean): MsgDepositV1.Amino {
@@ -59,11 +58,7 @@ export class MsgDepositV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgDepositV1 {
     const { proposal_id, depositor, amount } = data;
-    return new MsgDepositV1(
-      Number.parseInt(proposal_id),
-      depositor,
-      Coins.fromData(amount)
-    );
+    return new MsgDepositV1(proposal_id, depositor, Coins.fromData(amount));
   }
 
   public toData(_isClassic?: boolean): MsgDepositV1.Data {
@@ -81,7 +76,7 @@ export class MsgDepositV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgDepositV1 {
     return new MsgDepositV1(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.depositor,
       Coins.fromProto(proto.amount)
     );
@@ -92,7 +87,7 @@ export class MsgDepositV1 extends JSONSerializable<
     return MsgDepositV1_pb.fromPartial({
       amount: amount.toProto(),
       depositor,
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
     });
   }
 

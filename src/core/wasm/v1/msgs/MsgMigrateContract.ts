@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable, removeNull } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
@@ -10,19 +10,22 @@ export class MsgMigrateContractV1 extends JSONSerializable<
   MsgMigrateContractV1.Data,
   MsgMigrateContractV1.Proto
 > {
+  public new_code_id: Int64;
   /**
    * @param admin contract admin
    * @param contract contract address to be migrated from
    * @param new_code_id reference to the new code on the blockchain
    * @param migrate_msg JSON message to configure the migrate state of the contract
    */
+
   constructor(
     public admin: AccAddress,
     public contract: AccAddress,
-    public new_code_id: number,
+    new_code_id: Int64Input,
     public migrate_msg: object | string // json object or string
   ) {
     super();
+    this.new_code_id = parseInt64(new_code_id);
   }
 
   public static fromAmino(
@@ -32,12 +35,7 @@ export class MsgMigrateContractV1 extends JSONSerializable<
     const {
       value: { sender, contract, code_id, msg },
     } = data;
-    return new MsgMigrateContractV1(
-      sender,
-      contract,
-      Number.parseInt(code_id),
-      msg
-    );
+    return new MsgMigrateContractV1(sender, contract, code_id, msg);
   }
 
   public toAmino(_isClassic?: boolean): MsgMigrateContractV1.Amino {
@@ -60,7 +58,7 @@ export class MsgMigrateContractV1 extends JSONSerializable<
     return new MsgMigrateContractV1(
       proto.sender,
       proto.contract,
-      proto.codeId.toNumber(),
+      proto.codeId,
       JSON.parse(Convert.toUTF8(proto.msg))
     );
   }
@@ -70,7 +68,7 @@ export class MsgMigrateContractV1 extends JSONSerializable<
     return MsgMigrateContractV1_pb.fromPartial({
       sender: admin,
       contract,
-      codeId: new_code_id,
+      codeId: new_code_id.toString(),
       msg: Convert.fromUTF8(JSON.stringify(migrate_msg)),
     });
   }
@@ -96,12 +94,7 @@ export class MsgMigrateContractV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgMigrateContractV1 {
     const { sender, contract, code_id, msg } = data;
-    return new MsgMigrateContractV1(
-      sender,
-      contract,
-      Number.parseInt(code_id),
-      msg
-    );
+    return new MsgMigrateContractV1(sender, contract, code_id, msg);
   }
 
   public toData(_isClassic?: boolean): MsgMigrateContractV1.Data {

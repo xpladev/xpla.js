@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { PeriodV1B1 } from '../Period';
@@ -10,18 +11,21 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
   MsgCreatePeriodicVestingAccountV1B1.Data,
   MsgCreatePeriodicVestingAccountV1B1.Proto
 > {
+  public start_time: Int64;
   /**
    * @param from_address sender's address
    * @param to_address recipient's address
    * @param start of vesting as unix time (in seconds)
    */
+
   constructor(
     public from_address: AccAddress,
     public to_address: AccAddress,
-    public start_time: number,
+    start_time: Int64Input,
     public vesting_periods: PeriodV1B1[]
   ) {
     super();
+    this.start_time = parseInt64(start_time);
   }
 
   public static fromAmino(
@@ -34,7 +38,7 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
     return new MsgCreatePeriodicVestingAccountV1B1(
       from_address,
       to_address,
-      Number.parseInt(start_time),
+      start_time,
       vesting_periods.map(x => PeriodV1B1.fromAmino(x, isClassic))
     );
   }
@@ -67,7 +71,7 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
     return new MsgCreatePeriodicVestingAccountV1B1(
       from_address,
       to_address,
-      Number.parseInt(start_time),
+      start_time,
       vesting_periods.map(x => PeriodV1B1.fromData(x, isClassic))
     );
   }
@@ -90,7 +94,7 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
     return new MsgCreatePeriodicVestingAccountV1B1(
       proto.fromAddress,
       proto.toAddress,
-      proto.startTime.toNumber(),
+      proto.startTime,
       proto.vestingPeriods.map(x => PeriodV1B1.fromProto(x, isClassic))
     );
   }
@@ -102,7 +106,7 @@ export class MsgCreatePeriodicVestingAccountV1B1 extends JSONSerializable<
     return MsgCreatePeriodicVestingAccountV1B1_pb.fromPartial({
       fromAddress: from_address,
       toAddress: to_address,
-      startTime: start_time,
+      startTime: start_time.toString(),
       vestingPeriods: vesting_periods.map(x =>
         Period.decode(x.packAny(isClassic).value)
       ),

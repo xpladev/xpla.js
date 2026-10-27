@@ -12,37 +12,26 @@ export class MsgIBCCloseChannelV1 extends JSONSerializable<
   /**
    * @param channel by which the packet will be sent
    */
-  constructor(
-    public channel: string,
-  ) {
+  constructor(public channel: string) {
     super();
   }
 
   public static fromAmino(
-    data_: MsgIBCCloseChannelV1.Amino,
+    _data: MsgIBCCloseChannelV1.Amino,
     _isClassic?: boolean
   ): MsgIBCCloseChannelV1 {
-    const { channel } = data_;
-    return new MsgIBCCloseChannelV1(
-      channel ?? '',
-    );
+    throw new Error('Amino not supported');
   }
 
   public toAmino(_isClassic?: boolean): MsgIBCCloseChannelV1.Amino {
-    const { channel } = this;
-    return {
-      type: undefined,
-      channel: channel.length > 0 ? channel : undefined,
-    };
+    throw new Error('Amino not supported');
   }
 
   public static fromProto(
     proto: MsgIBCCloseChannelV1.Proto,
     _isClassic?: boolean
   ): MsgIBCCloseChannelV1 {
-    return new MsgIBCCloseChannelV1(
-      proto.channel,
-    );
+    return new MsgIBCCloseChannelV1(proto.channel);
   }
 
   public toProto(_isClassic?: boolean): MsgIBCCloseChannelV1.Proto {
@@ -59,7 +48,10 @@ export class MsgIBCCloseChannelV1 extends JSONSerializable<
     });
   }
 
-  public static unpackAny(msgAny: Any, isClassic?: boolean): MsgIBCCloseChannelV1 {
+  public static unpackAny(
+    msgAny: Any,
+    isClassic?: boolean
+  ): MsgIBCCloseChannelV1 {
     return MsgIBCCloseChannelV1.fromProto(
       MsgIBCCloseChannelV1_pb.decode(msgAny.value),
       isClassic
@@ -71,9 +63,7 @@ export class MsgIBCCloseChannelV1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgIBCCloseChannelV1 {
     const { channel } = data_;
-    return new MsgIBCCloseChannelV1(
-      channel,
-    );
+    return new MsgIBCCloseChannelV1(channel);
   }
 
   public toData(_isClassic?: boolean): MsgIBCCloseChannelV1.Data {

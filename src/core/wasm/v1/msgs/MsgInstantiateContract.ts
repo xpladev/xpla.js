@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable, removeNull } from '../../../../util/json';
 import { Convert } from '../../../../util/convert';
 import { AccAddress } from '../../../bech32';
@@ -13,6 +13,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
 > {
   public init_coins: Coins;
 
+  public code_id: Int64;
   /**
    * @param sender is a sender address
    * @param admin is an optional contract admin address who can migrate the contract, put empty string to disable migration
@@ -21,15 +22,17 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
    * @param init_coins are transferred to the contract on execution
    * @param label label for the contract. v2 supported only
    */
+
   constructor(
     public sender: AccAddress,
     public admin: AccAddress | undefined,
-    public code_id: number,
+    code_id: Int64Input,
     public init_msg: object | string,
     init_coins: Coins.Input = {},
     public label: string
   ) {
     super();
+    this.code_id = parseInt64(code_id);
     this.init_coins = new Coins(init_coins);
   }
 
@@ -43,10 +46,10 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     return new MsgInstantiateContractV1(
       sender,
       admin,
-      Number.parseInt(code_id),
+      code_id,
       msg,
       Coins.fromAmino(funds),
-      label ?? '',
+      label ?? ''
     );
   }
 
@@ -72,7 +75,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     return new MsgInstantiateContractV1(
       proto.sender,
       proto.admin !== '' ? proto.admin : undefined,
-      proto.codeId.toNumber(),
+      proto.codeId,
       JSON.parse(Convert.toUTF8(proto.msg)),
       Coins.fromProto(proto.funds),
       proto.label !== '' ? proto.label : ''
@@ -83,7 +86,7 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     const { sender, admin, code_id, init_msg, init_coins, label } = this;
     return MsgInstantiateContractV1_pb.fromPartial({
       admin,
-      codeId: code_id,
+      codeId: code_id.toString(),
       funds: init_coins.toIntCoins().toProto(),
       msg: Convert.fromUTF8(JSON.stringify(init_msg)),
       sender,
@@ -118,10 +121,10 @@ export class MsgInstantiateContractV1 extends JSONSerializable<
     return new MsgInstantiateContractV1(
       sender,
       admin !== '' ? admin : undefined,
-      Number.parseInt(code_id),
+      code_id,
       msg,
       Coins.fromData(funds),
-      label ?? '',
+      label ?? ''
     );
   }
 

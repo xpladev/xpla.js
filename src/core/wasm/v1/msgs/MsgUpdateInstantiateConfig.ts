@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -10,17 +10,20 @@ export class MsgUpdateInstantiateConfigV1 extends JSONSerializable<
   MsgUpdateInstantiateConfigV1.Data,
   MsgUpdateInstantiateConfigV1.Proto
 > {
+  public code_id: Int64;
   /**
    * @param sender is the that actor that signed the messages
    * @param code_id references the stored WASM code
    * @param new_instantiate_permission is the new access control
    */
+
   constructor(
     public sender: AccAddress,
-    public code_id: number,
+    code_id: Int64Input,
     public new_instantiate_permission: AccessConfig | undefined
   ) {
     super();
+    this.code_id = parseInt64(code_id);
   }
 
   public static fromAmino(
@@ -32,7 +35,7 @@ export class MsgUpdateInstantiateConfigV1 extends JSONSerializable<
     } = data;
     return new MsgUpdateInstantiateConfigV1(
       sender,
-      Number.parseInt(code_id),
+      code_id,
       new_instantiate_permission
         ? AccessConfig.fromAmino(new_instantiate_permission)
         : undefined
@@ -57,7 +60,7 @@ export class MsgUpdateInstantiateConfigV1 extends JSONSerializable<
   ): MsgUpdateInstantiateConfigV1 {
     return new MsgUpdateInstantiateConfigV1(
       proto.sender,
-      proto.codeId.toNumber(),
+      proto.codeId,
       proto.newInstantiatePermission
         ? AccessConfig.fromProto(proto.newInstantiatePermission)
         : undefined
@@ -68,7 +71,7 @@ export class MsgUpdateInstantiateConfigV1 extends JSONSerializable<
     const { sender, code_id, new_instantiate_permission } = this;
     return MsgUpdateInstantiateConfigV1_pb.fromPartial({
       sender,
-      codeId: code_id,
+      codeId: code_id.toString(),
       newInstantiatePermission: new_instantiate_permission?.toProto(),
     });
   }
@@ -99,7 +102,7 @@ export class MsgUpdateInstantiateConfigV1 extends JSONSerializable<
     const { sender, code_id, new_instantiate_permission } = data;
     return new MsgUpdateInstantiateConfigV1(
       sender,
-      Number.parseInt(code_id),
+      code_id,
       new_instantiate_permission
         ? AccessConfig.fromData(new_instantiate_permission)
         : undefined

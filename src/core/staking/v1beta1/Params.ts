@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Dec, Denom, Duration, Numeric } from '../../../core';
 import { Params as StakingParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/staking/v1beta1/staking';

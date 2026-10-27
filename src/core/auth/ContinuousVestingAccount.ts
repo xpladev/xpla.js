@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { PublicKey } from '../PublicKey';
@@ -17,23 +18,26 @@ export class ContinuousVestingAccount extends JSONSerializable<
   ContinuousVestingAccount.Data,
   ContinuousVestingAccount.Proto
 > {
+  public start_time: Int64;
   /**
    *
    * @param base_vesting_account account information
    * @param start_time vesting start time
    */
+
   constructor(
     public base_vesting_account: BaseVestingAccount,
-    public start_time: number
+    start_time: Int64Input
   ) {
     super();
+    this.start_time = parseInt64(start_time);
   }
 
-  public getAccountNumber(): number {
+  public getAccountNumber(): Int64 {
     return this.base_vesting_account.getAccountNumber();
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.base_vesting_account.getSequenceNumber();
   }
 
@@ -68,7 +72,7 @@ export class ContinuousVestingAccount extends JSONSerializable<
     }
     return new ContinuousVestingAccount(
       base_vesting_account,
-      Number.parseInt(data.value.start_time)
+      data.value.start_time
     );
   }
 
@@ -96,10 +100,7 @@ export class ContinuousVestingAccount extends JSONSerializable<
       ...data.base_vesting_account,
     });
 
-    return new ContinuousVestingAccount(
-      base_vesting_account,
-      Number.parseInt(data.start_time)
-    );
+    return new ContinuousVestingAccount(base_vesting_account, data.start_time);
   }
 
   public toProto(isClassic?: boolean): ContinuousVestingAccount.Proto {
@@ -110,7 +111,7 @@ export class ContinuousVestingAccount extends JSONSerializable<
 
     return ContinuousVestingAccount_pb.fromPartial({
       baseVestingAccount: base_vesting_account.toProto(),
-      startTime: start_time,
+      startTime: start_time.toString(),
     });
   }
 
@@ -127,7 +128,7 @@ export class ContinuousVestingAccount extends JSONSerializable<
 
     return new ContinuousVestingAccount(
       baseVestingAccount,
-      ContinuousVestingAccountProto.startTime.toNumber()
+      ContinuousVestingAccountProto.startTime
     );
   }
 

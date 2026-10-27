@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export function prepareSignBytes(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(prepareSignBytes);

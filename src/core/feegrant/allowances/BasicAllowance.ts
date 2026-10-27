@@ -1,5 +1,5 @@
 import { Timestamp } from '../../Timestamp';
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';

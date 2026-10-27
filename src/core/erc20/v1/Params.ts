@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Params as ERC20ParamsV1_pb } from '@xpla/xpla.proto/cosmos/evm/erc20/v1/genesis';
 

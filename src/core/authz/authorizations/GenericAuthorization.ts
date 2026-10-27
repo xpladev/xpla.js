@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { GenericAuthorization as GenericAuthorization_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/authz';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';

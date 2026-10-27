@@ -48,7 +48,9 @@ export class Extension {
   }
 
   destroy() {
-    this.inpageStream && this.inpageStream.destroy();
+    if (this.inpageStream) {
+      this.inpageStream.destroy();
+    }
   }
 
   private generateId(): number {
@@ -91,7 +93,9 @@ export class Extension {
   on(...args: any[]): void {
     this.inpageStream.on('data', (data: ResponseData) => {
       if (typeof args[0] === 'string') {
-        data.name === args[0] && args[1](data.payload, data.name);
+        if (data.name === args[0]) {
+          args[1](data.payload, data.name);
+        }
       } else {
         args[0](data.payload, data.name);
       }
@@ -111,7 +115,9 @@ export class Extension {
   once(...args: any[]): void {
     this.inpageStream.once('data', (data: ResponseData) => {
       if (typeof args[0] === 'string') {
-        data.name === args[0] && args[1](data.payload, data.name);
+        if (data.name === args[0]) {
+          args[1](data.payload, data.name);
+        }
       } else {
         args[0](data.payload, data.name);
       }

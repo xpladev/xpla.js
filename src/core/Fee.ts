@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../util/int64';
 import { JSONSerializable } from '../util/json';
 import { Coins } from './Coins';
 import { Int } from './numeric';
@@ -11,31 +12,29 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   /** Fee amount to be paid */
   public readonly amount: Coins;
 
+  public readonly gas_limit: Int64;
   /**
    * Creates a new Fee object.
    * @param gas gas limit
    * @param amount amount to be paid to validator
    */
+
   constructor(
-    public readonly gas_limit: number,
+    gas_limit: Int64Input,
     amount: Coins.Input,
     public payer?: AccAddress,
     public granter?: AccAddress
   ) {
     super();
+    this.gas_limit = parseInt64(gas_limit);
     this.amount = new Coins(amount);
-    if (payer && payer.length < 1) payer = undefined;
-    if (granter && granter.length < 1) granter = undefined;
+    this.payer = payer || undefined;
+    this.granter = granter || undefined;
   }
 
   public static fromAmino(data: Fee.Amino): Fee {
     const { gas, amount, payer, granter } = data;
-    return new Fee(
-      Number.parseInt(gas),
-      Coins.fromAmino(amount),
-      payer,
-      granter
-    );
+    return new Fee(gas, Coins.fromAmino(amount), payer, granter);
   }
 
   public toAmino(): Fee.Amino {
@@ -50,7 +49,7 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
 
   public static fromData(data: Fee.Data): Fee {
     return new Fee(
-      Number.parseInt(data.gas_limit),
+      data.gas_limit,
       Coins.fromData(data.amount),
       data.payer,
       data.granter
@@ -69,7 +68,7 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
 
   public static fromProto(proto: Fee.Proto): Fee {
     return new Fee(
-      proto.gasLimit.toNumber(),
+      proto.gasLimit,
       Coins.fromProto(proto.amount),
       proto.payer.length > 0 ? proto.payer : undefined,
       proto.granter.length > 0 ? proto.granter : undefined
@@ -79,7 +78,7 @@ export class Fee extends JSONSerializable<Fee.Amino, Fee.Data, Fee.Proto> {
   public toProto(): Fee.Proto {
     const { gas_limit, amount, payer, granter } = this;
     return Fee_pb.fromPartial({
-      gasLimit: gas_limit,
+      gasLimit: gas_limit.toString(),
       amount: amount.toProto(),
       granter,
       payer,

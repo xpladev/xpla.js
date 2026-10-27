@@ -1,4 +1,4 @@
-import { sha256 as SHA256 } from '@noble/hashes/sha256';
+import { sha256 as SHA256 } from '@noble/hashes/sha2.js';
 // import { ripemd160 } from '@noble/hashes/ripemd160';
 import { Convert } from './convert';
 

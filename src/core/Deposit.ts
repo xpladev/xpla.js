@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../util/int64';
 import { Coins } from './Coins';
 import { JSONSerializable } from '../util/json';
 import { AccAddress } from './bech32';
@@ -12,27 +13,26 @@ export class Deposit extends JSONSerializable<
   Deposit.Proto
 > {
   public amount: Coins;
+  public proposal_id: Int64;
   /**
    * @param proposal_id Id of porposal to deposit to
    * @param depositor depositor's account address
    * @param amount amount to deposit
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public depositor: AccAddress,
     amount: Coins.Input
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
     this.amount = new Coins(amount);
   }
 
   public static fromAmino(data: Deposit.Amino): Deposit {
     const { proposal_id, depositor, amount } = data;
-    return new Deposit(
-      Number.parseInt(proposal_id),
-      depositor,
-      Coins.fromAmino(amount)
-    );
+    return new Deposit(proposal_id, depositor, Coins.fromAmino(amount));
   }
 
   public toAmino(): Deposit.Amino {
@@ -46,11 +46,7 @@ export class Deposit extends JSONSerializable<
 
   public static fromData(data: Deposit.Data): Deposit {
     const { proposal_id, depositor, amount } = data;
-    return new Deposit(
-      Number.parseInt(proposal_id),
-      depositor,
-      Coins.fromData(amount)
-    );
+    return new Deposit(proposal_id, depositor, Coins.fromData(amount));
   }
 
   public toData(): Deposit.Data {
@@ -64,7 +60,7 @@ export class Deposit extends JSONSerializable<
 
   public static fromProto(data: Deposit.Proto): Deposit {
     return new Deposit(
-      data.proposalId.toNumber(),
+      data.proposalId,
       data.depositor,
       Coins.fromProto(data.amount)
     );
@@ -73,7 +69,7 @@ export class Deposit extends JSONSerializable<
   public toProto(): Deposit.Proto {
     const { proposal_id, depositor, amount } = this;
     return Deposit_pb.fromPartial({
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       depositor: depositor,
       amount: amount.toProto(),
     });

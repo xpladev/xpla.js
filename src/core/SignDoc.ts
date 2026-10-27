@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../util/int64';
 import { JSONSerializable } from '../util/json';
 import { Convert } from '../util/convert';
 import { Msg } from './Msg';
@@ -17,6 +18,8 @@ export class SignDoc extends JSONSerializable<
   SignDoc.Data,
   SignDoc.Proto
 > {
+  public account_number: Int64;
+  public sequence: Int64;
   /**
    *
    * @param chain_id ID of blockchain to submit transaction to
@@ -29,14 +32,17 @@ export class SignDoc extends JSONSerializable<
    * @param timeout_height optional transaction timeout height, does not support amino
    * @param public_key Signer's public key, only used at direct sign mode
    */
+
   constructor(
     public chain_id: string,
-    public account_number: number,
-    public sequence: number,
+    account_number: Int64Input,
+    sequence: Int64Input,
     public auth_info: AuthInfo,
     public tx_body: TxBody
   ) {
     super();
+    this.account_number = parseInt64(account_number);
+    this.sequence = parseInt64(sequence);
   }
 
   public toAmino(isClassic?: boolean): SignDoc.Amino {
@@ -61,7 +67,7 @@ export class SignDoc extends JSONSerializable<
       account_number: account_number.toString(),
       sequence: sequence.toString(),
       timeout_height:
-        timeout_height && timeout_height !== 0
+        timeout_height && !timeout_height.isZero()
           ? timeout_height.toString()
           : undefined,
       unordered: unordered || undefined,
@@ -88,7 +94,7 @@ export class SignDoc extends JSONSerializable<
     return SignDoc_pb.fromPartial({
       bodyBytes: tx_body.toBytes(isClassic),
       authInfoBytes: auth_info.toBytes(),
-      accountNumber: account_number,
+      accountNumber: account_number.toString(),
       chainId: chain_id,
     });
   }

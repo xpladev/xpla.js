@@ -15,7 +15,9 @@ export class FeemarketAPI extends BaseAPI {
         .get<{ base_fee: string }>('/cosmos/evm/feemarket/v1/base_fee', params)
         .catch(() => { throw new Error('Not Implemented') })
         .then(d => d.base_fee ?? '');
-    } catch {}
+    } catch {
+      // Older chains expose the Ethermint route instead.
+    }
     // for 1.7
     return await this.c
       .get<{ base_fee: string }>('/ethermint/feemarket/v1/base_fee', params)
@@ -29,7 +31,9 @@ export class FeemarketAPI extends BaseAPI {
         .get<{ gas: string }>('/cosmos/evm/feemarket/v1/block_gas', params)
         .catch(() => { throw new Error('Not Implemented') })
         .then(d => d.gas ?? '');
-    } catch {}
+    } catch {
+      // Older chains expose the Ethermint route instead.
+    }
     // for 1.7
     return await this.c
       .get<{ gas: string }>('/ethermint/feemarket/v1/block_gas', params)
@@ -48,7 +52,9 @@ export class FeemarketAPI extends BaseAPI {
         .get<{ params: any }>('/cosmos/evm/feemarket/v1/params', params)
         .catch(() => { throw new Error('Not Implemented') })
         .then(({ params: d }) => FeemarketParamsV1.fromData(d));
-    } catch {}
+    } catch {
+      // Older chains expose the Ethermint route instead.
+    }
     // for 1.7
     return await this.c
       .get<{ params: any }>('/ethermint/feemarket/v1/params', params)

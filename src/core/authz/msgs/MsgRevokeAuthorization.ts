@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { AccAddress } from '../../bech32';
 import { MsgRevoke as MsgRevoke_pb } from '@xpla/xpla.proto/cosmos/authz/v1beta1/tx';

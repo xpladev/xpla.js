@@ -1,5 +1,5 @@
 import { JSONSerializable } from '../../../../../util/json';
-import { BaseAccount } from '../../../../..';
+import { BaseAccount } from '../../../../auth/BaseAccount';
 import { InterchainAccount as InterchainAccount_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/v1/account';
 
 /**

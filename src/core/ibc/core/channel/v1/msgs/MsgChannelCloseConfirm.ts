@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
 import { AccAddress } from '../../../../../bech32';
@@ -31,8 +30,7 @@ export class MsgChannelCloseConfirmV1 extends JSONSerializable<
     super();
   }
 
-  public static fromAmino(_: any, isClassic?: boolean): MsgChannelCloseConfirmV1 {
-    isClassic;
+  public static fromAmino(_: any, _isClassic?: boolean): MsgChannelCloseConfirmV1 {
     throw new Error('Amino not supported');
   }
 

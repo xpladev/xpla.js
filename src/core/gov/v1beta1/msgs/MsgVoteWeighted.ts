@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../util/int64';
 import { JSONSerializable } from '../../../../util/json';
 import { AccAddress } from '../../../bech32';
 import { WeightedVoteOptionV1B1 } from '../Vote';
@@ -13,17 +13,20 @@ export class MsgVoteWeightedV1B1 extends JSONSerializable<
   MsgVoteWeightedV1B1.Data,
   MsgVoteWeightedV1B1.Proto
 > {
+  public proposal_id: Int64;
   /**
    * @param proposal_id ID of proposal to vote on
    * @param voter voter's account address
    * @param option one of voting options
    */
+
   constructor(
-    public proposal_id: number,
+    proposal_id: Int64Input,
     public voter: AccAddress,
     public options: WeightedVoteOptionV1B1[]
   ) {
     super();
+    this.proposal_id = parseInt64(proposal_id);
   }
 
   public static fromAmino(
@@ -34,7 +37,7 @@ export class MsgVoteWeightedV1B1 extends JSONSerializable<
       value: { proposal_id, voter, options },
     } = data;
     return new MsgVoteWeightedV1B1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(o => WeightedVoteOptionV1B1.fromAmino(o))
     );
@@ -58,7 +61,7 @@ export class MsgVoteWeightedV1B1 extends JSONSerializable<
   ): MsgVoteWeightedV1B1 {
     const { proposal_id, voter, options } = data;
     return new MsgVoteWeightedV1B1(
-      Number.parseInt(proposal_id),
+      proposal_id,
       voter,
       options.map(o => WeightedVoteOptionV1B1.fromData(o))
     );
@@ -79,7 +82,7 @@ export class MsgVoteWeightedV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): MsgVoteWeightedV1B1 {
     return new MsgVoteWeightedV1B1(
-      proto.proposalId.toNumber(),
+      proto.proposalId,
       proto.voter,
       proto.options.map(o => WeightedVoteOptionV1B1.fromProto(o))
     );
@@ -89,7 +92,7 @@ export class MsgVoteWeightedV1B1 extends JSONSerializable<
     const { proposal_id, voter, options } = this;
     return MsgVoteWeightedV1B1_pb.fromPartial({
       options: options.map(o => o.toProto()),
-      proposalId: proposal_id,
+      proposalId: proposal_id.toString(),
       voter,
     });
   }

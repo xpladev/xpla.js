@@ -1,39 +1,30 @@
-import { verify } from 'eip55';
-import { Convert } from '../util/convert';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
 /** `0x-` prefixed account address */
 export type EvmAddress = string;
 
-function checkPrefixAndLength(
-  data: string,
-  length: number,
-  strict = true
-): boolean {
-  if (strict) {
-    return verify(data);
+/** Encode an Ethereum address using its EIP-55 checksum. */
+export function checksumEvmAddress(address: string): EvmAddress {
+  if (!/^(?:0x)?[0-9a-fA-F]{40}$/.test(address)) {
+    throw new TypeError('Bad address');
   }
-
-  if (data.startsWith('0x')) {
-    const address = data.substring(2);
-
-    try {
-      const bytes = Convert.fromHex(address);
-      return bytes.length === length;
-    } catch {
-      return false;
-    }
-  }
-
-  return false;
+  const lower = address.replace(/^0x/, '').toLowerCase();
+  const hash = bytesToHex(keccak_256(utf8ToBytes(lower)));
+  return (
+    '0x' +
+    Array.from(lower, (char, i) =>
+      parseInt(hash[i], 16) >= 8 ? char.toUpperCase() : char
+    ).join('')
+  );
 }
 
 export namespace EvmAddress {
-  /**
-   * Checks if a string is a valid evm account address.
-   *
-   * @param data string to check
-   */
+  /** Check the address length, hex encoding and, by default, EIP-55 checksum. */
   export function validate(data: string, strict = true): boolean {
-    return checkPrefixAndLength(data, 42, strict);
+    if (typeof data !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(data)) {
+      return false;
+    }
+    return !strict || checksumEvmAddress(data) === data;
   }
 }

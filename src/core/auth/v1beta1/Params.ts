@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { Int, Numeric } from '../../numeric';
 import { Params as AuthParamsV1B1_pb } from '@xpla/xpla.proto/cosmos/auth/v1beta1/auth';

@@ -1,3 +1,4 @@
+import { Int64, Int64Input, parseInt64 } from '../../util/int64';
 import { JSONSerializable } from '../../util/json';
 import { BaseVestingAccount } from './BaseVestingAccount';
 import { Coins } from '../Coins';
@@ -18,25 +19,28 @@ export class PeriodicVestingAccount extends JSONSerializable<
   PeriodicVestingAccount.Data,
   PeriodicVestingAccount.Proto
 > {
+  public start_time: Int64;
   /**
    *
    * @param base_vesting_account account information
    * @param start_time vesting start time
    * @param vesting_periods vesting period entries
    */
+
   constructor(
     public base_vesting_account: BaseVestingAccount,
-    public start_time: number,
+    start_time: Int64Input,
     public vesting_periods: PeriodicVestingAccount.Period[]
   ) {
     super();
+    this.start_time = parseInt64(start_time);
   }
 
-  public getAccountNumber(): number {
+  public getAccountNumber(): Int64 {
     return this.base_vesting_account.getAccountNumber();
   }
 
-  public getSequenceNumber(): number {
+  public getSequenceNumber(): Int64 {
     return this.base_vesting_account.getSequenceNumber();
   }
 
@@ -73,10 +77,8 @@ export class PeriodicVestingAccount extends JSONSerializable<
 
     return new PeriodicVestingAccount(
       base_vesting_account,
-      Number.parseInt(data.value.start_time),
-      data.value.vesting_periods.map(
-        PeriodicVestingAccount.Period.fromAmino
-      )
+      data.value.start_time,
+      data.value.vesting_periods.map(PeriodicVestingAccount.Period.fromAmino)
     );
   }
 
@@ -106,7 +108,7 @@ export class PeriodicVestingAccount extends JSONSerializable<
     }
     return new PeriodicVestingAccount(
       base_vesting_account,
-      Number.parseInt(data.start_time),
+      data.start_time,
       data.vesting_periods.map(PeriodicVestingAccount.Period.fromData)
     );
   }
@@ -136,7 +138,7 @@ export class PeriodicVestingAccount extends JSONSerializable<
 
     return new PeriodicVestingAccount(
       baseVestingAccount,
-      proto.startTime.toNumber(),
+      proto.startTime,
       proto.vestingPeriods.map(this.Period.fromProto)
     );
   }
@@ -189,8 +191,13 @@ export namespace PeriodicVestingAccount {
     Period.Data,
     Period.Proto
   > {
-    constructor(public length: number, public amount: Coins) {
+    public length: Int64;
+    constructor(
+      length: Int64Input,
+      public amount: Coins
+    ) {
       super();
+      this.length = parseInt64(length);
     }
     public toAmino(): Period.Amino {
       const { length, amount } = this;
@@ -202,7 +209,7 @@ export namespace PeriodicVestingAccount {
 
     public static fromAmino(data: Period.Amino): Period {
       const { length, amount } = data;
-      return new Period(Number.parseInt(length), Coins.fromAmino(amount));
+      return new Period(length, Coins.fromAmino(amount));
     }
 
     public toData(): Period.Data {
@@ -215,19 +222,19 @@ export namespace PeriodicVestingAccount {
 
     public static fromData(data: Period.Data): Period {
       const { length, amount } = data;
-      return new Period(Number.parseInt(length), Coins.fromData(amount));
+      return new Period(length, Coins.fromData(amount));
     }
 
     public toProto(): Period.Proto {
       const { length, amount } = this;
       return Period_pb.fromPartial({
-        length,
+        length: length.toString(),
         amount: amount.toProto(),
       });
     }
 
     public static fromProto(proto: Period.Proto): Period {
-      return new Period(proto.length.toNumber(), Coins.fromProto(proto.amount));
+      return new Period(proto.length, Coins.fromProto(proto.amount));
     }
   }
 

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { anyFromData, anyToData } from '../../../../../../util/any';
 import { JSONSerializable } from '../../../../../../util/json';
 import { AccAddress } from '../../../../../bech32';
-import { PlanV1B1 } from '../../../../../upgrade/v1beta1'
+import { PlanV1B1 } from '../../../../../upgrade/v1beta1';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgIBCSoftwareUpgrade as MsgIbcSoftwareUpgradeV1_pb } from '@xpla/xpla.proto/ibc/core/client/v1/tx';
 
@@ -18,12 +18,15 @@ export class MsgIbcSoftwareUpgradeV1 extends JSONSerializable<
   constructor(
     public plan: PlanV1B1 | undefined,
     public upgraded_client_state: any | undefined,
-    public signer: AccAddress,
+    public signer: AccAddress
   ) {
     super();
   }
 
-  public static fromAmino(_: any, _isClassic?: boolean): MsgIbcSoftwareUpgradeV1 {
+  public static fromAmino(
+    _: any,
+    _isClassic?: boolean
+  ): MsgIbcSoftwareUpgradeV1 {
     throw new Error('Amino not supported');
   }
 
@@ -35,28 +38,20 @@ export class MsgIbcSoftwareUpgradeV1 extends JSONSerializable<
     data: MsgIbcSoftwareUpgradeV1.Data,
     _?: boolean
   ): MsgIbcSoftwareUpgradeV1 {
-    const {
-      plan,
-      upgraded_client_state,
-      signer,
-    } = data;
+    const { plan, upgraded_client_state, signer } = data;
     return new MsgIbcSoftwareUpgradeV1(
       plan ? PlanV1B1.fromData(plan) : undefined,
-      upgraded_client_state,
-      signer,
+      anyFromData(upgraded_client_state),
+      signer
     );
   }
 
   public toData(_?: boolean): MsgIbcSoftwareUpgradeV1.Data {
-    const {
-      plan,
-      upgraded_client_state,
-      signer,
-    } = this;
+    const { plan, upgraded_client_state, signer } = this;
     return {
       '@type': '/ibc.core.client.v1.MsgIBCSoftwareUpgrade',
       plan: plan ? plan.toData() : undefined,
-      upgraded_client_state,
+      upgraded_client_state: anyToData(upgraded_client_state),
       signer,
     };
   }
@@ -68,16 +63,12 @@ export class MsgIbcSoftwareUpgradeV1 extends JSONSerializable<
     return new MsgIbcSoftwareUpgradeV1(
       proto.plan ? PlanV1B1.fromProto(proto.plan) : undefined,
       proto.upgradedClientState,
-      proto.signer,
+      proto.signer
     );
   }
 
   public toProto(_?: boolean): MsgIbcSoftwareUpgradeV1.Proto {
-    const {
-      plan,
-      upgraded_client_state,
-      signer,
-    } = this;
+    const { plan, upgraded_client_state, signer } = this;
     return MsgIbcSoftwareUpgradeV1_pb.fromPartial({
       plan: plan ? plan.toProto() : undefined,
       upgradedClientState: upgraded_client_state,
@@ -93,7 +84,9 @@ export class MsgIbcSoftwareUpgradeV1 extends JSONSerializable<
   }
 
   public static unpackAny(msgAny: Any, _?: boolean): MsgIbcSoftwareUpgradeV1 {
-    return MsgIbcSoftwareUpgradeV1.fromProto(MsgIbcSoftwareUpgradeV1_pb.decode(msgAny.value));
+    return MsgIbcSoftwareUpgradeV1.fromProto(
+      MsgIbcSoftwareUpgradeV1_pb.decode(msgAny.value)
+    );
   }
 }
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../../../../util/int64';
 import { JSONSerializable } from '../../../../../../util/json';
 import { Convert } from '../../../../../../util/convert';
 import { AccAddress } from '../../../../../bech32';
@@ -15,6 +15,7 @@ export class MsgTimeoutV1 extends JSONSerializable<
   MsgTimeoutV1.Data,
   MsgTimeoutV1.Proto
 > {
+  public next_sequence_recv: Int64;
   /**
    * @param packet
    * @param proof_unreceived
@@ -22,14 +23,16 @@ export class MsgTimeoutV1 extends JSONSerializable<
    * @param next_seuqnce_recv
    * @param signer signer address
    */
+
   constructor(
     public packet: PacketV1 | undefined,
     public proof_unreceived: string,
     public proof_height: HeightV1 | undefined,
-    public next_sequence_recv: number,
+    next_sequence_recv: Int64Input,
     public signer: AccAddress
   ) {
     super();
+    this.next_sequence_recv = parseInt64(next_sequence_recv);
   }
 
   public static fromAmino(_: any, _isClassic?: boolean): MsgTimeoutV1 {
@@ -52,7 +55,7 @@ export class MsgTimeoutV1 extends JSONSerializable<
       packet ? PacketV1.fromData(packet) : undefined,
       proof_unreceived,
       proof_height ? HeightV1.fromData(proof_height) : undefined,
-      Number.parseInt(next_sequence_recv),
+      next_sequence_recv,
       signer
     );
   }
@@ -75,12 +78,15 @@ export class MsgTimeoutV1 extends JSONSerializable<
     };
   }
 
-  public static fromProto(proto: MsgTimeoutV1.Proto, _?: boolean): MsgTimeoutV1 {
+  public static fromProto(
+    proto: MsgTimeoutV1.Proto,
+    _?: boolean
+  ): MsgTimeoutV1 {
     return new MsgTimeoutV1(
       proto.packet ? PacketV1.fromProto(proto.packet) : undefined,
       Convert.toBase64(proto.proofUnreceived),
       proto.proofHeight ? HeightV1.fromProto(proto.proofHeight) : undefined,
-      proto.nextSequenceRecv.toNumber(),
+      proto.nextSequenceRecv,
       proto.signer
     );
   }
@@ -97,7 +103,7 @@ export class MsgTimeoutV1 extends JSONSerializable<
       packet: packet ? packet.toProto() : undefined,
       proofUnreceived: Convert.fromBase64(proof_unreceived),
       proofHeight: proof_height ? proof_height.toProto() : undefined,
-      nextSequenceRecv: next_sequence_recv,
+      nextSequenceRecv: next_sequence_recv.toString(),
       signer,
     });
   }

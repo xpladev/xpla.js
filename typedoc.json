@@ -7,6 +7,5 @@
   "name": "Xpla.js",
   "excludePrivate": true,
   "excludeProtected": true,
-  "media": "img",
   "hideGenerator": true
 }

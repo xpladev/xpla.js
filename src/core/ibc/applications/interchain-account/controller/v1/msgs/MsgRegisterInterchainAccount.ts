@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../../../../../util/json';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
 import { MsgRegisterInterchainAccount as MsgRegisterInterchainAccountV1_pb } from '@xpla/xpla.proto/ibc/applications/interchain_accounts/controller/v1/tx';

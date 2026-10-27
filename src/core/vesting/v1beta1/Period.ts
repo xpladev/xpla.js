@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Int64, Int64Input, parseInt64 } from '../../../util/int64';
 import { JSONSerializable } from '../../../util/json';
 import { Coins } from '../../Coins';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';
@@ -14,12 +14,15 @@ export class PeriodV1B1 extends JSONSerializable<
 > {
   public amount: Coins;
 
+  public length: Int64;
   /**
    * @param length
    * @param amount
    */
-  constructor(public length: number, amount: Coins.Input) {
+
+  constructor(length: Int64Input, amount: Coins.Input) {
     super();
+    this.length = parseInt64(length);
     this.amount = new Coins(amount);
   }
 
@@ -28,7 +31,7 @@ export class PeriodV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): PeriodV1B1 {
     const { length, amount } = data;
-    return new PeriodV1B1(Number.parseInt(length), Coins.fromAmino(amount));
+    return new PeriodV1B1(length, Coins.fromAmino(amount));
   }
 
   public toAmino(_isClassic?: boolean): PeriodV1B1.Amino {
@@ -46,7 +49,7 @@ export class PeriodV1B1 extends JSONSerializable<
     _isClassic?: boolean
   ): PeriodV1B1 {
     const { length, amount } = data;
-    return new PeriodV1B1(Number.parseInt(length), Coins.fromData(amount));
+    return new PeriodV1B1(length, Coins.fromData(amount));
   }
 
   public toData(_isClassic?: boolean): PeriodV1B1.Data {
@@ -63,16 +66,13 @@ export class PeriodV1B1 extends JSONSerializable<
     proto: PeriodV1B1.Proto,
     _isClassic?: boolean
   ): PeriodV1B1 {
-    return new PeriodV1B1(
-      proto.length.toNumber(),
-      Coins.fromProto(proto.amount)
-    );
+    return new PeriodV1B1(proto.length, Coins.fromProto(proto.amount));
   }
 
   public toProto(_isClassic?: boolean): PeriodV1B1.Proto {
     const { length, amount } = this;
     return PeriodV1B1_pb.fromPartial({
-      length: length,
+      length: length.toString(),
       amount: amount.toProto(),
     });
   }

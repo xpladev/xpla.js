@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JSONSerializable } from '../../../util/json';
 import { ParamChange, ParamChanges } from '../ParamChange';
 import { Any } from '@xpla/xpla.proto/google/protobuf/any';

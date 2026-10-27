@@ -1,14 +1,18 @@
+import { Int64, Int64Input } from '../../util/int64';
 import { Key } from '../../key';
 import { CreateEvmTxOptions } from './api/TxAPI';
 import { ECDClient } from './ECDClient';
 import { EvmTx, EvmMessage } from './msgs';
 
 export class EvmWallet {
-  constructor(public ecd: ECDClient, public key: Key) {}
+  constructor(
+    public ecd: ECDClient,
+    public key: Key
+  ) {}
 
   public accountNumberAndSequence(): Promise<{
-    account_number: number;
-    sequence: number;
+    account_number: Int64;
+    sequence: Int64;
   }> {
     return this.ecd.auth.accountInfo(this.key.accAddress).then(d => {
       return {
@@ -18,13 +22,13 @@ export class EvmWallet {
     });
   }
 
-  public accountNumber(): Promise<number> {
+  public accountNumber(): Promise<Int64> {
     return this.ecd.auth.accountInfo(this.key.accAddress).then(d => {
       return d.getAccountNumber();
     });
   }
 
-  public nonce(): Promise<number> {
+  public nonce(): Promise<Int64> {
     return this.ecd.auth.accountInfo(this.key.accAddress).then(d => {
       return d.getSequenceNumber();
     });
@@ -32,7 +36,7 @@ export class EvmWallet {
 
   public async createAndSignTx(
     options: CreateEvmTxOptions & {
-      sequence?: number;
+      sequence?: Int64Input;
     }
   ): Promise<EvmTx> {
     const msgs = options.msgs;
