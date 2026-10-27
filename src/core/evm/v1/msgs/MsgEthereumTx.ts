@@ -6,6 +6,7 @@ import {
   ExtensionOptionsEthereumTx,
 } from '@xpla/xpla.proto-v1_8/cosmos/evm/vm/v1/tx';
 import { Convert } from '../../../../util/convert';
+import { AnyData, anyFromData, anyToData } from '../../../../util/any';
 
 /**
  * evm MsgEthereumTx
@@ -51,7 +52,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
       hash,
       from,
       size,
-      data,
+      data && 'typeUrl' in data ? anyFromData(data) : data,
       raw ? Convert.fromBase64(raw) : undefined
     );
   }
@@ -72,7 +73,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
         hash,
         from,
         size,
-        data,
+        data: data && 'typeUrl' in data ? anyToData(data) : data,
         raw: raw ? Convert.toBase64(raw) : undefined,
       },
     };
@@ -95,7 +96,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
       hash,
       from,
       size,
-      data,
+      data && 'typeUrl' in data ? anyFromData(data) : data,
       raw ? Convert.fromHex(raw) : undefined
     );
   }
@@ -115,7 +116,7 @@ export class MsgEthereumTxV1 extends JSONSerializable<
       hash,
       from,
       size,
-      data,
+      data: data && 'typeUrl' in data ? anyToData(data) : data,
       raw: raw ? Convert.toHex(raw) : undefined,
     };
   }
@@ -216,7 +217,7 @@ export namespace MsgEthereumTxV1 {
       | 'evm/MsgEthereumTx'
       | 'cosmos/evm/MsgEthereumTx';
     value: {
-      data: ExtensionOptionsEthereumTx | Any | undefined;
+      data: ExtensionOptionsEthereumTx | Any | AnyData | undefined;
       size: number | undefined;
       hash: string | undefined;
       from: string; // base64
@@ -226,9 +227,8 @@ export namespace MsgEthereumTxV1 {
 
   export interface Data {
     '@type':
-      | '/ethermint.evm.v1.MsgEthereumTx'
-      | '/cosmos.evm.vm.v1.MsgEthereumTx';
-    data: ExtensionOptionsEthereumTx | Any | undefined;
+      '/ethermint.evm.v1.MsgEthereumTx' | '/cosmos.evm.vm.v1.MsgEthereumTx';
+    data: ExtensionOptionsEthereumTx | Any | AnyData | undefined;
     size: number | undefined;
     hash: string | undefined;
     from: string; // base64

@@ -1,8 +1,6 @@
 import { JSONSerializable } from '../../../util/json';
 import { Int, Dec, Numeric } from '../../numeric';
-import {
-  Params as FeemarketParamsV1_pb,
-} from '@xpla/xpla.proto/cosmos/evm/feemarket/v1/feemarket';
+import { Params as FeemarketParamsV1_pb } from '@xpla/xpla.proto/cosmos/evm/feemarket/v1/feemarket';
 
 export class FeemarketParamsV1 extends JSONSerializable<
   FeemarketParamsV1.Amino,
@@ -10,7 +8,7 @@ export class FeemarketParamsV1 extends JSONSerializable<
   FeemarketParamsV1.Proto
 > {
   public enable_height: Int;
-  public base_fee: Int;
+  public base_fee: Dec;
   public min_gas_price: Dec;
   public min_gas_multiplier: Dec;
 
@@ -30,16 +28,19 @@ export class FeemarketParamsV1 extends JSONSerializable<
     enable_height: Numeric.Input,
     base_fee: Numeric.Input,
     min_gas_price: Numeric.Input,
-    min_gas_multiplier: Numeric.Input,
+    min_gas_multiplier: Numeric.Input
   ) {
     super();
     this.enable_height = new Int(enable_height);
-    this.base_fee = new Int(base_fee);
+    this.base_fee = new Dec(base_fee);
     this.min_gas_price = new Dec(min_gas_price);
     this.min_gas_multiplier = new Dec(min_gas_multiplier);
   }
 
-  public static fromAmino(data: FeemarketParamsV1.Amino, _?: boolean): FeemarketParamsV1 {
+  public static fromAmino(
+    data: FeemarketParamsV1.Amino,
+    _?: boolean
+  ): FeemarketParamsV1 {
     const {
       no_base_fee,
       base_fee_change_denominator,
@@ -56,11 +57,11 @@ export class FeemarketParamsV1 extends JSONSerializable<
       enable_height ?? 0,
       base_fee ?? 0,
       min_gas_price ?? 0,
-      min_gas_multiplier ?? 0.0,
+      min_gas_multiplier ?? 0.0
     );
   }
 
-  public toAmino(_?: boolean): FeemarketParamsV1.Amino {
+  public toAmino(legacy = false): FeemarketParamsV1.Amino {
     const {
       no_base_fee,
       base_fee_change_denominator,
@@ -76,7 +77,7 @@ export class FeemarketParamsV1 extends JSONSerializable<
       base_fee_change_denominator,
       elasticity_multiplier,
       enable_height: enable_height.toFixed(0),
-      base_fee: base_fee.toFixed(0),
+      base_fee: base_fee.toFixed(legacy ? 0 : 18),
       min_gas_price: min_gas_price.toFixed(18),
       min_gas_multiplier: min_gas_multiplier.toFixed(18),
     };
@@ -84,7 +85,10 @@ export class FeemarketParamsV1 extends JSONSerializable<
     return res;
   }
 
-  public static fromData(data: FeemarketParamsV1.Data, _?: boolean): FeemarketParamsV1 {
+  public static fromData(
+    data: FeemarketParamsV1.Data,
+    _?: boolean
+  ): FeemarketParamsV1 {
     const {
       no_base_fee,
       base_fee_change_denominator,
@@ -101,11 +105,11 @@ export class FeemarketParamsV1 extends JSONSerializable<
       enable_height,
       base_fee,
       min_gas_price,
-      min_gas_multiplier,
+      min_gas_multiplier
     );
   }
 
-  public toData(_?: boolean): FeemarketParamsV1.Data {
+  public toData(legacy = false): FeemarketParamsV1.Data {
     const {
       no_base_fee,
       base_fee_change_denominator,
@@ -117,12 +121,14 @@ export class FeemarketParamsV1 extends JSONSerializable<
     } = this;
 
     const res: FeemarketParamsV1.Data = {
-      '@type': '/cosmos.evm.feemarket.v1.Params',
+      '@type': legacy
+        ? '/ethermint.feemarket.v1.Params'
+        : '/cosmos.evm.feemarket.v1.Params',
       no_base_fee,
       base_fee_change_denominator,
       elasticity_multiplier,
       enable_height: enable_height.toFixed(0),
-      base_fee: base_fee.toFixed(0),
+      base_fee: base_fee.toFixed(legacy ? 0 : 18),
       min_gas_price: min_gas_price.toFixed(18),
       min_gas_multiplier: min_gas_multiplier.toFixed(18),
     };
@@ -130,20 +136,23 @@ export class FeemarketParamsV1 extends JSONSerializable<
     return res;
   }
 
-  public static fromProto(proto: FeemarketParamsV1.Proto, _?: boolean): FeemarketParamsV1 {
+  public static fromProto(
+    proto: FeemarketParamsV1.Proto,
+    legacy = false
+  ): FeemarketParamsV1 {
     const dec18 = new Dec(10).pow(18);
     return new FeemarketParamsV1(
       proto.noBaseFee,
       proto.baseFeeChangeDenominator,
       proto.elasticityMultiplier,
       proto.enableHeight.toString(),
-      proto.baseFee,
+      legacy ? proto.baseFee : new Dec(proto.baseFee).div(dec18),
       new Dec(proto.minGasPrice).div(dec18), // for cosmos-sdk/types.Dec type
-      new Dec(proto.minGasMultiplier).div(dec18), // for cosmos-sdk/types.Dec type
+      new Dec(proto.minGasMultiplier).div(dec18) // for cosmos-sdk/types.Dec type
     );
   }
 
-  public toProto(_?: boolean): FeemarketParamsV1.Proto {
+  public toProto(legacy = false): FeemarketParamsV1.Proto {
     const {
       no_base_fee,
       base_fee_change_denominator,
@@ -159,7 +168,7 @@ export class FeemarketParamsV1 extends JSONSerializable<
       baseFeeChangeDenominator: base_fee_change_denominator,
       elasticityMultiplier: elasticity_multiplier,
       enableHeight: enable_height.toFixed(0),
-      baseFee: base_fee.toFixed(0),
+      baseFee: legacy ? base_fee.toFixed(0) : base_fee.mul(dec18).toFixed(0),
       minGasPrice: min_gas_price.mul(dec18).toFixed(0), // for cosmos-sdk/types.Dec type
       minGasMultiplier: min_gas_multiplier.mul(dec18).toFixed(0), // for cosmos-sdk/types.Dec type
     });
@@ -179,8 +188,7 @@ export namespace FeemarketParamsV1 {
 
   export interface Data {
     '@type':
-      | '/ethermint.feemarket.v1.Params'
-      | '/cosmos.evm.feemarket.v1.Params';
+      '/ethermint.feemarket.v1.Params' | '/cosmos.evm.feemarket.v1.Params';
     no_base_fee: boolean;
     base_fee_change_denominator: number;
     elasticity_multiplier: number;

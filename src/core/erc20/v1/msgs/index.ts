@@ -1,3 +1,4 @@
+import { MsgUpdateLegacyERC20ParamsV1 } from './MsgUpdateLegacyERC20ParamsV1';
 import { MsgConvertCoinV1 } from './MsgConvertCoin';
 import { MsgConvertERC20V1 } from './MsgConvertERC20';
 import { MsgUpdateERC20ParamsV1 } from './MsgUpdateParams';
@@ -9,18 +10,24 @@ export * from './MsgUpdateParams';
 export type Erc20MsgV1 =
   | MsgConvertCoinV1
   | MsgConvertERC20V1
-  | MsgUpdateERC20ParamsV1;
+  | MsgUpdateERC20ParamsV1
+  | MsgUpdateLegacyERC20ParamsV1;
 export namespace Erc20MsgV1 {
   export type Amino =
     | MsgConvertCoinV1.Amino
     | MsgConvertERC20V1.Amino
-    | MsgUpdateERC20ParamsV1.Amino;
+    | MsgUpdateERC20ParamsV1.Amino
+    | MsgUpdateLegacyERC20ParamsV1.Amino;
   export type Data =
     | MsgConvertCoinV1.Data
     | MsgConvertERC20V1.Data
-    | MsgUpdateERC20ParamsV1.Data;
+    | MsgUpdateERC20ParamsV1.Data
+    | MsgUpdateLegacyERC20ParamsV1.Data;
   export type Proto =
     | MsgConvertCoinV1.Proto
     | MsgConvertERC20V1.Proto
-    | MsgUpdateERC20ParamsV1.Proto;
+    | MsgUpdateERC20ParamsV1.Proto
+    | MsgUpdateLegacyERC20ParamsV1.Proto;
 }
+
+export * from './MsgUpdateLegacyERC20ParamsV1';
